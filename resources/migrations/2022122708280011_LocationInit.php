@@ -12,18 +12,13 @@ declare(strict_types=1);
 namespace App\Migration;
 
 use App\Entity\Location;
-use App\Enum\LocationType;
-use App\Service\LocationService;
-use Lyrasoft\Luna\Services\LocaleService;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
-use Windwalker\ORM\Nested\Position;
 use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
-use Windwalker\Stream\Stream;
 
-use function Windwalker\chronos;
+use function Windwalker\fs;
 
 /**
  * Migration UP: 2022122708280011_LocationInit.
@@ -71,12 +66,12 @@ $mig->up(
         );
 
         /** @var NestedSetMapper $mapper */
-        $mapper = $orm->mapper(Location::class);
-        $mapper->createRootIfNotExist(
-            [
-                'type' => LocationType::ROOT(),
-            ]
-        );
+        // $mapper = $orm->mapper(Location::class);
+        // $mapper->createRootIfNotExist(
+        //     [
+        //         'type' => LocationType::ROOT(),
+        //     ]
+        // );
 
         $importLocations($orm);
     }
@@ -92,85 +87,25 @@ $mig->down(
     }
 );
 
-$importLocations = function (ORM $orm) use ($mig, $app) {
-    $locationService = $app->service(LocationService::class);
-    $zipFile = __DIR__ . '/data/locations.zip';
-    $countriesData = Stream::wrap("zip://$zipFile#countries.json", Stream::MODE_READ_ONLY_FROM_BEGIN)
-        ->getContents();
-    $zonesData = Stream::wrap("zip://$zipFile#zones.json", Stream::MODE_READ_ONLY_FROM_BEGIN)
-        ->getContents();
-
-    $countries = json_decode($countriesData, true);
-    $zones = json_decode($zonesData, true);
-
+$importLocations = static function (ORM $orm) use ($mig, $app) {
     /** @var NestedSetMapper<Location> $mapper */
     $mapper = $orm->mapper(Location::class);
 
-    $countriesMapping = [];
+    $lines = fs(__DIR__ . '/data/locations.csv')
+        ->read()
+        ->explode("\n")
+        ->filter('strlen');
 
-    $regions = array_unique(array_column($countries, 'region'));
+    $keys = str_getcsv((string) $lines->shift());
+    $locations = $lines->map(
+        static fn(string $line) => array_combine($keys, str_getcsv($line))
+    );
 
-    foreach ($regions as $region) {
-        $locationService->getOrCreateContinent($region);
-    }
-
-    /**
-     * @var array{
-     *     id: int, region: string, subregion: string, title: string,
-     *     native: string, code: string, code3: string, address_format: string,
-     *     postcode_required: int, call_prefix: int, has_states: int
-     *     } $country
-     */
-    foreach ($countries as $country) {
-        $item = $mapper->createEntity();
-
-        $continent = $locationService->getOrCreateContinent($country['region']);
-
-        $item->setType(LocationType::COUNTRY());
-        $item->setTitle($country['title']);
-        $item->setNative($country['native']);
-        $item->setRegion($country['region']);
-        $item->setSubregion($country['subregion']);
-        $item->setCode($country['code']);
-        $item->setCode3($country['code3']);
-        $item->setAddressFormat($country['address_format']);
-        $item->setPostcodeRequired((bool) $country['postcode_required']);
-        $item->setCallPrefix((string) $country['call_prefix']);
-        $item->setHasStates((bool) $country['has_states']);
-
-        $mapper->setPosition($item, $continent->getId(), Position::LAST_CHILD);
-
-        $location = $mapper->createOne($item);
-
-        $countriesMapping[$country['id']] = $location;
-
-        $mig->outCounting();
-    }
-
-    foreach (array_chunk($zones, 500) as $zoneChunk) {
-        $query = $orm->insert(Location::class);
-        $query->columns('type', 'parent_id', 'title', 'code', 'address_format', 'created');
-
-        /** @var array{ id: int, country_id: int, title: string, code: string } $zone */
-        foreach ($zoneChunk as $zone) {
-            /** @var Location $country */
-            $country = $countriesMapping[$zone['country_id']];
-
-            $query->values(
-                [
-                    LocationType::STATE(),
-                    $country->getId(),
-                    $zone['title'],
-                    $zone['code'],
-                    '',
-                    chronos()
-                ]
-            );
-
-            $mig->outCounting();
-        }
-
-        $query->execute();
+    foreach ($locations->chunk(500) as $chunk) {
+        $mapper->insert()
+            ->columns(...$keys)
+            ->values(...$chunk)
+            ->execute();
     }
 
     $mapper->rebuild();
