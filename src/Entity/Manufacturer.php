@@ -15,6 +15,7 @@ use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\Luna\Attributes\Slugify;
+use Lyrasoft\Luna\Entity\User;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -52,6 +53,9 @@ class Manufacturer implements EntityInterface
     #[Column('image')]
     protected string $image = '';
 
+    #[Column('introtext')]
+    protected string $introtext = '';
+
     #[Column('page_id')]
     protected int $pageId = 0;
 
@@ -88,6 +92,9 @@ class Manufacturer implements EntityInterface
     #[Modifier]
     protected int $modifiedBy = 0;
 
+    #[Column('language')]
+    protected string $language = '';
+
     #[Column('params')]
     #[Cast(JsonCast::class)]
     protected array $params = [];
@@ -95,7 +102,10 @@ class Manufacturer implements EntityInterface
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
-        //
+        $rm = $metadata->getRelationManager();
+
+        $rm->manyToOne('user')
+            ->targetTo(User::class, created_by: 'id');
     }
 
     public function getId(): ?int
@@ -142,6 +152,18 @@ class Manufacturer implements EntityInterface
     public function setImage(string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getIntrotext(): string
+    {
+        return $this->introtext;
+    }
+
+    public function setIntrotext(string $introtext): static
+    {
+        $this->introtext = $introtext;
 
         return $this;
     }
@@ -250,6 +272,18 @@ class Manufacturer implements EntityInterface
     public function setModifiedBy(int $modifiedBy): static
     {
         $this->modifiedBy = $modifiedBy;
+
+        return $this;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): static
+    {
+        $this->language = $language;
 
         return $this;
     }
