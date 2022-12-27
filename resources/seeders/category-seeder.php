@@ -26,16 +26,16 @@ use Windwalker\Utilities\Utf8String;
 /**
  * Category Seeder
  *
- * @var Seeder          $seeder
- * @var ORM             $orm
+ * @var Seeder $seeder
+ * @var ORM $orm
  * @var DatabaseAdapter $db
  */
 $seeder->import(
     static function () use ($seeder, $orm, $db) {
         $types = [
-            'article' => [
-                'max_level' => 3,
-                'number' => 30
+            'product' => [
+                'max_level' => 2,
+                'number' => 30,
             ],
         ];
 
