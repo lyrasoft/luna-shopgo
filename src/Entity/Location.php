@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Windwalker\Core\DateTime\Chronos;
@@ -113,193 +114,256 @@ class Location implements EntityInterface
     {
         //
     }
-    public function getId() : ?int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
-    public function setId(?int $id) : static
+
+    public function setId(?int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
-    public function getCategoryId() : int
+
+    public function getCategoryId(): int
     {
         return $this->categoryId;
     }
-    public function setCategoryId(int $categoryId) : static
+
+    public function setCategoryId(int $categoryId): static
     {
         $this->categoryId = $categoryId;
+
         return $this;
     }
-    public function getParentId() : int
+
+    public function getParentId(): int
     {
         return $this->parentId;
     }
-    public function setParentId(int $parentId) : static
+
+    public function setParentId(int $parentId): static
     {
         $this->parentId = $parentId;
+
         return $this;
     }
-    public function getType() : string
+
+    public function getType(): string
     {
         return $this->type;
     }
-    public function setType(string $type) : static
+
+    public function setType(string $type): static
     {
         $this->type = $type;
+
         return $this;
     }
-    public function getLft() : int
+
+    public function getLft(): int
     {
         return $this->lft;
     }
-    public function setLft(int $lft) : static
+
+    public function setLft(int $lft): static
     {
         $this->lft = $lft;
+
         return $this;
     }
-    public function getRgt() : int
+
+    public function getRgt(): int
     {
         return $this->rgt;
     }
-    public function setRgt(int $rgt) : static
+
+    public function setRgt(int $rgt): static
     {
         $this->rgt = $rgt;
+
         return $this;
     }
-    public function getLevel() : int
+
+    public function getLevel(): int
     {
         return $this->level;
     }
-    public function setLevel(int $level) : static
+
+    public function setLevel(int $level): static
     {
         $this->level = $level;
+
         return $this;
     }
-    public function getRegion() : string
+
+    public function getRegion(): string
     {
         return $this->region;
     }
-    public function setRegion(string $region) : static
+
+    public function setRegion(string $region): static
     {
         $this->region = $region;
+
         return $this;
     }
-    public function getSubregion() : string
+
+    public function getSubregion(): string
     {
         return $this->subregion;
     }
-    public function setSubregion(string $subregion) : static
+
+    public function setSubregion(string $subregion): static
     {
         $this->subregion = $subregion;
+
         return $this;
     }
-    public function getTitle() : string
+
+    public function getTitle(): string
     {
         return $this->title;
     }
-    public function setTitle(string $title) : static
+
+    public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
-    public function getCode() : string
+
+    public function getCode(): string
     {
         return $this->code;
     }
-    public function setCode(string $code) : static
+
+    public function setCode(string $code): static
     {
         $this->code = $code;
+
         return $this;
     }
-    public function getCode3() : string
+
+    public function getCode3(): string
     {
         return $this->code3;
     }
-    public function setCode3(string $code3) : static
+
+    public function setCode3(string $code3): static
     {
         $this->code3 = $code3;
+
         return $this;
     }
-    public function getAddressFormat() : string
+
+    public function getAddressFormat(): string
     {
         return $this->addressFormat;
     }
-    public function setAddressFormat(string $addressFormat) : static
+
+    public function setAddressFormat(string $addressFormat): static
     {
         $this->addressFormat = $addressFormat;
+
         return $this;
     }
-    public function isPostcodeRequired() : bool
+
+    public function isPostcodeRequired(): bool
     {
         return $this->postcodeRequired;
     }
-    public function setPostcodeRequired(bool $postcodeRequired) : static
+
+    public function setPostcodeRequired(bool $postcodeRequired): static
     {
         $this->postcodeRequired = $postcodeRequired;
+
         return $this;
     }
-    public function isHasStates() : bool
+
+    public function isHasStates(): bool
     {
         return $this->hasStates;
     }
-    public function setHasStates(bool $hasStates) : static
+
+    public function setHasStates(bool $hasStates): static
     {
         $this->hasStates = $hasStates;
+
         return $this;
     }
-    public function getCallPrefix() : string
+
+    public function getCallPrefix(): string
     {
         return $this->callPrefix;
     }
-    public function setCallPrefix(string $callPrefix) : static
+
+    public function setCallPrefix(string $callPrefix): static
     {
         $this->callPrefix = $callPrefix;
+
         return $this;
     }
-    public function getCreated() : ?Chronos
+
+    public function getCreated(): ?Chronos
     {
         return $this->created;
     }
-    public function setCreated(\DateTimeInterface|string|null $created) : static
+
+    public function setCreated(DateTimeInterface|string|null $created): static
     {
         $this->created = Chronos::wrapOrNull($created);
+
         return $this;
     }
-    public function getModified() : ?Chronos
+
+    public function getModified(): ?Chronos
     {
         return $this->modified;
     }
-    public function setModified(\DateTimeInterface|string|null $modified) : static
+
+    public function setModified(DateTimeInterface|string|null $modified): static
     {
         $this->modified = Chronos::wrapOrNull($modified);
+
         return $this;
     }
-    public function getCreatedBy() : int
+
+    public function getCreatedBy(): int
     {
         return $this->createdBy;
     }
-    public function setCreatedBy(int $createdBy) : static
+
+    public function setCreatedBy(int $createdBy): static
     {
         $this->createdBy = $createdBy;
+
         return $this;
     }
-    public function getModifiedBy() : int
+
+    public function getModifiedBy(): int
     {
         return $this->modifiedBy;
     }
-    public function setModifiedBy(int $modifiedBy) : static
+
+    public function setModifiedBy(int $modifiedBy): static
     {
         $this->modifiedBy = $modifiedBy;
+
         return $this;
     }
-    public function getParams() : array
+
+    public function getParams(): array
     {
         return $this->params;
     }
-    public function setParams(array $params) : static
+
+    public function setParams(array $params): static
     {
         $this->params = $params;
+
         return $this;
     }
 }

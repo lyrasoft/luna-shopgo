@@ -1,11 +1,11 @@
 <?php
 
 /**
-* Part of starter project.
-*
-* @copyright  Copyright (C) 2021 __ORGANIZATION__.
-* @license    __LICENSE__
-*/
+ * Part of starter project.
+ *
+ * @copyright  Copyright (C) 2021 __ORGANIZATION__.
+ * @license    __LICENSE__
+ */
 
 declare(strict_types=1);
 
@@ -22,44 +22,57 @@ use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
-* The OrderState class.
-*/
+ * The OrderState class.
+ */
 #[Table('order_states', 'order_state')]
 class OrderState implements EntityInterface
 {
     use EntityTrait;
+
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
+
     #[Column('title')]
     protected string $title = '';
+
     #[Column('default')]
     #[Cast('bool', 'int')]
     protected bool $default = false;
+
     #[Column('color')]
     protected string $color = '';
+
     #[Column('image')]
     protected string $image = '';
+
     #[Column('notice')]
     #[Cast('bool', 'int')]
     protected bool $notice = false;
+
     #[Column('attach_invoice')]
     #[Cast('bool', 'int')]
     protected bool $attachInvoice = false;
+
     #[Column('shipped')]
     #[Cast('bool', 'int')]
     protected bool $shipped = false;
+
     #[Column('paid')]
     #[Cast('bool', 'int')]
     protected bool $paid = false;
+
     #[Column('returned')]
     #[Cast('bool', 'int')]
     protected bool $returned = false;
+
     #[Column('done')]
     #[Cast('bool', 'int')]
     protected bool $done = false;
+
     #[Column('cancel')]
     #[Cast('bool', 'int')]
     protected bool $cancel = false;
+
     #[Column('rollback')]
     #[Cast('bool', 'int')]
     protected bool $rollback = false;
@@ -69,121 +82,160 @@ class OrderState implements EntityInterface
     {
         //
     }
-    public function getId() : ?int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
-    public function setId(?int $id) : static
+
+    public function setId(?int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
-    public function getTitle() : string
+
+    public function getTitle(): string
     {
         return $this->title;
     }
-    public function setTitle(string $title) : static
+
+    public function setTitle(string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
-    public function isDefault() : bool
+
+    public function isDefault(): bool
     {
         return $this->default;
     }
-    public function setDefault(bool $default) : static
+
+    public function setDefault(bool $default): static
     {
         $this->default = $default;
+
         return $this;
     }
-    public function getColor() : string
+
+    public function getColor(): string
     {
         return $this->color;
     }
-    public function setColor(string $color) : static
+
+    public function setColor(string $color): static
     {
         $this->color = $color;
+
         return $this;
     }
-    public function getImage() : string
+
+    public function getImage(): string
     {
         return $this->image;
     }
-    public function setImage(string $image) : static
+
+    public function setImage(string $image): static
     {
         $this->image = $image;
+
         return $this;
     }
-    public function isNotice() : bool
+
+    public function isNotice(): bool
     {
         return $this->notice;
     }
-    public function setNotice(bool $notice) : static
+
+    public function setNotice(bool $notice): static
     {
         $this->notice = $notice;
+
         return $this;
     }
-    public function isAttachInvoice() : bool
+
+    public function isAttachInvoice(): bool
     {
         return $this->attachInvoice;
     }
-    public function setAttachInvoice(bool $attachInvoice) : static
+
+    public function setAttachInvoice(bool $attachInvoice): static
     {
         $this->attachInvoice = $attachInvoice;
+
         return $this;
     }
-    public function isShipped() : bool
+
+    public function isShipped(): bool
     {
         return $this->shipped;
     }
-    public function setShipped(bool $shipped) : static
+
+    public function setShipped(bool $shipped): static
     {
         $this->shipped = $shipped;
+
         return $this;
     }
-    public function isPaid() : bool
+
+    public function isPaid(): bool
     {
         return $this->paid;
     }
-    public function setPaid(bool $paid) : static
+
+    public function setPaid(bool $paid): static
     {
         $this->paid = $paid;
+
         return $this;
     }
-    public function isReturned() : bool
+
+    public function isReturned(): bool
     {
         return $this->returned;
     }
-    public function setReturned(bool $returned) : static
+
+    public function setReturned(bool $returned): static
     {
         $this->returned = $returned;
+
         return $this;
     }
-    public function isDone() : bool
+
+    public function isDone(): bool
     {
         return $this->done;
     }
-    public function setDone(bool $done) : static
+
+    public function setDone(bool $done): static
     {
         $this->done = $done;
+
         return $this;
     }
-    public function isCancel() : bool
+
+    public function isCancel(): bool
     {
         return $this->cancel;
     }
-    public function setCancel(bool $cancel) : static
+
+    public function setCancel(bool $cancel): static
     {
         $this->cancel = $cancel;
+
         return $this;
     }
-    public function isRollback() : bool
+
+    public function isRollback(): bool
     {
         return $this->rollback;
     }
-    public function setRollback(bool $rollback) : static
+
+    public function setRollback(bool $rollback): static
     {
         $this->rollback = $rollback;
+
         return $this;
     }
 }

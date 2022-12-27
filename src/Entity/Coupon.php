@@ -1,19 +1,20 @@
 <?php
 
 /**
-* Part of starter project.
-*
-* @copyright  Copyright (C) 2021 __ORGANIZATION__.
-* @license    __LICENSE__
-*/
+ * Part of starter project.
+ *
+ * @copyright  Copyright (C) 2021 __ORGANIZATION__.
+ * @license    __LICENSE__
+ */
 
 declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
-use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\CastNullable;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
@@ -24,23 +25,29 @@ use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
-* The Coupon class.
-*/
+ * The Coupon class.
+ */
 #[Table('coupons', 'coupon')]
 class Coupon implements EntityInterface
 {
     use EntityTrait;
+
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
+
     #[Column('discount_id')]
     protected int $discountId = 0;
+
     #[Column('user_id')]
     protected int $userId = 0;
+
     #[Column('code')]
     protected string $code = '';
+
     #[Column('used')]
     #[Cast('bool', 'int')]
     protected bool $used = false;
+
     #[Column('used_at')]
     #[CastNullable(Chronos::class)]
     protected ?Chronos $usedAt = null;
@@ -50,58 +57,76 @@ class Coupon implements EntityInterface
     {
         //
     }
-    public function getId() : ?int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
-    public function setId(?int $id) : static
+
+    public function setId(?int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
-    public function getDiscountId() : int
+
+    public function getDiscountId(): int
     {
         return $this->discountId;
     }
-    public function setDiscountId(int $discountId) : static
+
+    public function setDiscountId(int $discountId): static
     {
         $this->discountId = $discountId;
+
         return $this;
     }
-    public function getUserId() : int
+
+    public function getUserId(): int
     {
         return $this->userId;
     }
-    public function setUserId(int $userId) : static
+
+    public function setUserId(int $userId): static
     {
         $this->userId = $userId;
+
         return $this;
     }
-    public function getCode() : string
+
+    public function getCode(): string
     {
         return $this->code;
     }
-    public function setCode(string $code) : static
+
+    public function setCode(string $code): static
     {
         $this->code = $code;
+
         return $this;
     }
-    public function isUsed() : bool
+
+    public function isUsed(): bool
     {
         return $this->used;
     }
-    public function setUsed(bool $used) : static
+
+    public function setUsed(bool $used): static
     {
         $this->used = $used;
+
         return $this;
     }
-    public function getUsedAt() : ?Chronos
+
+    public function getUsedAt(): ?Chronos
     {
         return $this->usedAt;
     }
-    public function setUsedAt(\DateTimeInterface|string|null $usedAt) : static
+
+    public function setUsedAt(DateTimeInterface|string|null $usedAt): static
     {
         $this->usedAt = Chronos::wrapOrNull($usedAt);
+
         return $this;
     }
 }

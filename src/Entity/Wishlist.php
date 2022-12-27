@@ -1,21 +1,22 @@
 <?php
 
 /**
-* Part of starter project.
-*
-* @copyright  Copyright (C) 2021 __ORGANIZATION__.
-* @license    __LICENSE__
-*/
+ * Part of starter project.
+ *
+ * @copyright  Copyright (C) 2021 __ORGANIZATION__.
+ * @license    __LICENSE__
+ */
 
 declare(strict_types=1);
 
 namespace App\Entity;
 
-use Windwalker\ORM\Attributes\AutoIncrement;
+use DateTimeInterface;
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\CastNullable;
-use Windwalker\ORM\Attributes\CreatedTime;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\CreatedTime;
 use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
@@ -24,18 +25,22 @@ use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
-* The Wishlist class.
-*/
+ * The Wishlist class.
+ */
 #[Table('wishlists', 'wishlist')]
 class Wishlist implements EntityInterface
 {
     use EntityTrait;
+
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
+
     #[Column('uesr_id')]
     protected int $uesrId = 0;
+
     #[Column('product_id')]
     protected int $productId = 0;
+
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
@@ -46,40 +51,52 @@ class Wishlist implements EntityInterface
     {
         //
     }
-    public function getId() : ?int
+
+    public function getId(): ?int
     {
         return $this->id;
     }
-    public function setId(?int $id) : static
+
+    public function setId(?int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
-    public function getUesrId() : int
+
+    public function getUesrId(): int
     {
         return $this->uesrId;
     }
-    public function setUesrId(int $uesrId) : static
+
+    public function setUesrId(int $uesrId): static
     {
         $this->uesrId = $uesrId;
+
         return $this;
     }
-    public function getProductId() : int
+
+    public function getProductId(): int
     {
         return $this->productId;
     }
-    public function setProductId(int $productId) : static
+
+    public function setProductId(int $productId): static
     {
         $this->productId = $productId;
+
         return $this;
     }
-    public function getCreated() : ?Chronos
+
+    public function getCreated(): ?Chronos
     {
         return $this->created;
     }
-    public function setCreated(\DateTimeInterface|string|null $created) : static
+
+    public function setCreated(DateTimeInterface|string|null $created): static
     {
         $this->created = Chronos::wrapOrNull($created);
+
         return $this;
     }
 }
