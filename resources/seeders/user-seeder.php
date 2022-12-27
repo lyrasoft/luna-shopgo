@@ -37,7 +37,7 @@ $seeder->import(
         $mapper = $orm->mapper(User::class);
 
         $pass = $password->hash('1234');
-        $basicRole = $accessService->getBasicRole();
+        $basicRole = $accessService->getBasicRoles();
 
         foreach (range(1, 50) as $i) {
             $item = $mapper->createEntity();

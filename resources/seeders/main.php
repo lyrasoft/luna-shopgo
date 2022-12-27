@@ -19,8 +19,9 @@ return [
     __DIR__ . '/tag-seeder.php',
     __DIR__ . '/article-seeder.php',
     __DIR__ . '/page-seeder.php',
-    __DIR__ . '/menu-seeder.php',
+    // __DIR__ . '/menu-seeder.php',
     __DIR__ . '/widget-seeder.php',
     __DIR__ . '/manufacturer-seeder.php',
     __DIR__ . '/product-seeder.php',
+    __DIR__ . '/address-seeder.php',
 ];

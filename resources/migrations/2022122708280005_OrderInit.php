@@ -68,7 +68,7 @@ $mig->up(
 
                 $schema->addIndex('user_id');
                 $schema->addIndex('no');
-                $schema->addIndex('invoice_data');
+                // $schema->addIndex('invoice_data');
                 $schema->addIndex('payment_no');
                 $schema->addIndex('shipping_no');
             }
