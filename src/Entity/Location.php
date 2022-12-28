@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\LocationType;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -22,20 +23,21 @@ use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CreatedTime;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Attributes\PK;
-use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
-use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Nested\NestedEntityInterface;
+use Windwalker\ORM\Nested\NestedEntityTrait;
 
 /**
  * The Location class.
  */
-#[Table('locations', 'location')]
-class Location implements EntityInterface
+#[NestedSet('locations', 'location')]
+class Location implements NestedEntityInterface
 {
-    use EntityTrait;
+    use NestedEntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
@@ -43,20 +45,9 @@ class Location implements EntityInterface
     #[Column('category_id')]
     protected int $categoryId = 0;
 
-    #[Column('parent_id')]
-    protected int $parentId = 0;
-
     #[Column('type')]
-    protected string $type = '';
-
-    #[Column('lft')]
-    protected int $lft = 0;
-
-    #[Column('rgt')]
-    protected int $rgt = 0;
-
-    #[Column('level')]
-    protected int $level = 0;
+    #[Cast(LocationType::class)]
+    protected LocationType $type;
 
     #[Column('region')]
     protected string $region = '';
@@ -79,6 +70,8 @@ class Location implements EntityInterface
     #[Column('postcode_required')]
     #[Cast('bool', 'int')]
     protected bool $postcodeRequired = false;
+    #[Column('native')]
+    protected string $native = '';
 
     #[Column('has_states')]
     #[Cast('bool', 'int')]
@@ -115,6 +108,11 @@ class Location implements EntityInterface
         //
     }
 
+    public function getPrimaryKeyValue(): ?int
+    {
+        return $this->getId();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -135,66 +133,6 @@ class Location implements EntityInterface
     public function setCategoryId(int $categoryId): static
     {
         $this->categoryId = $categoryId;
-
-        return $this;
-    }
-
-    public function getParentId(): int
-    {
-        return $this->parentId;
-    }
-
-    public function setParentId(int $parentId): static
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getLft(): int
-    {
-        return $this->lft;
-    }
-
-    public function setLft(int $lft): static
-    {
-        $this->lft = $lft;
-
-        return $this;
-    }
-
-    public function getRgt(): int
-    {
-        return $this->rgt;
-    }
-
-    public function setRgt(int $rgt): static
-    {
-        $this->rgt = $rgt;
-
-        return $this;
-    }
-
-    public function getLevel(): int
-    {
-        return $this->level;
-    }
-
-    public function setLevel(int $level): static
-    {
-        $this->level = $level;
 
         return $this;
     }
@@ -364,6 +302,27 @@ class Location implements EntityInterface
     {
         $this->params = $params;
 
+        return $this;
+    }
+
+    public function getType(): LocationType
+    {
+        return $this->type;
+    }
+
+    public function setType(string|LocationType $type): static
+    {
+        $this->type = LocationType::wrap($type);
+
+        return $this;
+    }
+    public function getNative() : string
+    {
+        return $this->native;
+    }
+    public function setNative(string $native) : static
+    {
+        $this->native = $native;
         return $this;
     }
 }
