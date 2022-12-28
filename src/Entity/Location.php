@@ -70,6 +70,7 @@ class Location implements NestedEntityInterface
     #[Column('postcode_required')]
     #[Cast('bool', 'int')]
     protected bool $postcodeRequired = false;
+
     #[Column('native')]
     protected string $native = '';
 
@@ -316,13 +317,16 @@ class Location implements NestedEntityInterface
 
         return $this;
     }
-    public function getNative() : string
+
+    public function getNative(): string
     {
         return $this->native;
     }
-    public function setNative(string $native) : static
+
+    public function setNative(string $native): static
     {
         $this->native = $native;
+
         return $this;
     }
 }
