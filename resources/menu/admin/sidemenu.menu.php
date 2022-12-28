@@ -59,5 +59,5 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.language.title')))
 $menu->link($lang('luna.config.title', $lang('luna.config.type.core')))
     ->to($nav->to('config_core'));
 
-$menu->link($lang('unicorn.title.grid', title: $lang('luna-shopgo.manufacturer.title')))
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.manufacturer.title')))
     ->to($nav->to('manufacturer_list'));

@@ -158,7 +158,7 @@ class ManufacturerListView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.grid', title: $this->trans('luna-shopgo.manufacturer.title'))
+                $this->trans('unicorn.title.grid', title: $this->trans('shopgo.manufacturer.title'))
             );
     }
 }

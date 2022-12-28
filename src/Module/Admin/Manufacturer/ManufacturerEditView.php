@@ -105,7 +105,7 @@ class ManufacturerEditView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.edit', title: $this->trans('luna-shopgo.manufacturer.title'))
+                $this->trans('unicorn.title.edit', title: $this->trans('shopgo.manufacturer.title'))
             );
     }
 }

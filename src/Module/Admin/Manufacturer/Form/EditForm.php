@@ -59,7 +59,7 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.image'));
 
                 $form->add('introtext', TinymceEditorField::class)
-                    ->label($this->trans('luna-shopgo.manufacturer.field.introtext'))
+                    ->label($this->trans('shopgo.manufacturer.field.introtext'))
                     ->editorOptions(
                         [
                             'height' => 400,
@@ -72,14 +72,14 @@ class EditForm implements FieldDefinitionInterface
             'seo',
             function (Form $form) {
                 $form->add('meta_title', TextField::class)
-                    ->label($this->trans('luna-shopgo.manufacturer.field.meta.title'));
+                    ->label($this->trans('shopgo.manufacturer.field.meta.title'));
 
                 $form->add('meta_description', TextareaField::class)
-                    ->label($this->trans('luna-shopgo.manufacturer.field.meta.description'))
+                    ->label($this->trans('shopgo.manufacturer.field.meta.description'))
                     ->rows(4);
 
                 $form->add('meta_keywords', TextField::class)
-                    ->label($this->trans('luna-shopgo.manufacturer.field.meta.keywords'));
+                    ->label($this->trans('shopgo.manufacturer.field.meta.keywords'));
             }
         );
 
@@ -87,7 +87,7 @@ class EditForm implements FieldDefinitionInterface
             'meta',
             function (Form $form) {
                 $form->add('tags', TagListField::class)
-                    ->label($this->trans('luna-shopgo.manufacturer.field.tags'))
+                    ->label($this->trans('shopgo.manufacturer.field.tags'))
                     ->multiple(true);
 
                 $form->add('state', SwitcherField::class)

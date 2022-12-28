@@ -63,7 +63,7 @@ use Windwalker\Form\Form;
                 </x-fieldset>
             </div>
             <div class="col-lg-5">
-                <x-fieldset name="seo" :title="$lang('luna-shopgo.manufacturer.fieldset.seo')"
+                <x-fieldset name="seo" :title="$lang('shopgo.manufacturer.fieldset.seo')"
                     :form="$form"
                     class="mb-4"
                     is="card"
