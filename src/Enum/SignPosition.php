@@ -47,6 +47,6 @@ class SignPosition extends Enum implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('luna-shopgo.currency.sign.position.' . $this->getKey());
+        return $lang->trans('shopgo.currency.sign.position.' . $this->getKey());
     }
 }

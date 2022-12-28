@@ -158,7 +158,7 @@ class CurrencyListView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.grid', title: $this->trans('luna-shopgo.currency.title'))
+                $this->trans('unicorn.title.grid', title: $this->trans('shopgo.currency.title'))
             );
     }
 }

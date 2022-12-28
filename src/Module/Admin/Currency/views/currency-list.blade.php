@@ -79,7 +79,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                         {{-- Exchange rate --}}
                         <th class="text-nowrap">
                             <x-sort field="currency.exchange_rate">
-                                @lang('luna-shopgo.currency.field.exchange.rate')
+                                @lang('shopgo.currency.field.exchange.rate')
                             </x-sort>
                         </th>
 

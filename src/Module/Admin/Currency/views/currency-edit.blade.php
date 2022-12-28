@@ -56,7 +56,7 @@ use Windwalker\Form\Form;
                 </x-fieldset>
             </div>
             <div class="col-lg-5">
-                <x-card :title="$lang('luna-shopgo.currency.example.title')" class="mb-4">
+                <x-card :title="$lang('shopgo.currency.example.title')" class="mb-4">
                     <h3 class="j-currency-example text-primary">$</h3>
                 </x-card>
 

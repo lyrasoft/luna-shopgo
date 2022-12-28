@@ -84,7 +84,7 @@ class CurrencyEditView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.edit', title: $this->trans('luna-shopgo.currency.title'))
+                $this->trans('unicorn.title.edit', title: $this->trans('shopgo.currency.title'))
             );
     }
 }

@@ -49,32 +49,32 @@ class EditForm implements FieldDefinitionInterface
             'basic',
             function (Form $form) {
                 $form->add('code', TextField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.code'))
+                    ->label($this->trans('shopgo.currency.field.code'))
                     ->required(true);
 
                 $form->add('sign', TextField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.sign'));
+                    ->label($this->trans('shopgo.currency.field.sign'));
 
                 $form->add('sign_position', ListField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.sign.position'))
+                    ->label($this->trans('shopgo.currency.field.sign.position'))
                     ->defaultValue(SignPosition::START)
                     ->registerOptions(SignPosition::getTransItems($this->lang));
 
                 $form->add('exchange_rate', TextField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.exchange.rate'));
+                    ->label($this->trans('shopgo.currency.field.exchange.rate'));
 
                 $form->add('decimal_place', NumberField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.decimal.place'))
+                    ->label($this->trans('shopgo.currency.field.decimal.place'))
                     ->range(0, 5);
 
                 $form->add('decimal_point', TextField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.decimal.point'));
+                    ->label($this->trans('shopgo.currency.field.decimal.point'));
 
                 $form->add('num_separator', TextField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.num.separator'));
+                    ->label($this->trans('shopgo.currency.field.num.separator'));
 
                 $form->add('space', SwitcherField::class)
-                    ->label($this->trans('luna-shopgo.currency.field.space'))
+                    ->label($this->trans('shopgo.currency.field.space'))
                     ->defaultValue(0)
                     ->circle(true)
                     ->size('sm')
