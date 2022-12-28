@@ -63,9 +63,9 @@ class ManufacturerController
                 $data = $event->getData();
 
                 $data['image'] = $fileUploadService->handleFileIfUploaded(
-                        $app->file('item')['image'] ?? null,
-                        'images/manufacturer/cover-' . md5((string) $data['id']) . '.{ext}'
-                    )?->getUri(true) ?? $data['image'];
+                    $app->file('item')['image'] ?? null,
+                    'images/manufacturer/cover-' . md5((string) $data['id']) . '.{ext}'
+                )?->getUri(true) ?? $data['image'];
 
                 $repository->save($data);
 
