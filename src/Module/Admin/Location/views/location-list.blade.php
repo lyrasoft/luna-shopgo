@@ -17,6 +17,7 @@ namespace App\View;
  */
 
 use App\Entity\Location;
+use Unicorn\Html\Breadcrumb;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -25,12 +26,34 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 use App\Module\Admin\Location\LocationListView;
+use Windwalker\Data\Collection;
 
 /**
- * @var Location $entity
+ * @var Location   $entity
+ * @var Collection $parents
+ * @var Location   $parent
+ * @var Location   $current
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
+
+$breadcrumb = $app->service(Breadcrumb::class);
+$breadcrumb->push(
+    $lang('shopgo.location.root'),
+    $nav->self()->var('current_id', 0)
+);
+
+$parents->shift();
+$parentsCount = count($parents);
+
+foreach ($parents as $i => $parent) {
+    $breadcrumb->push(
+        $parent->getTitle(),
+        ($i + 1) !== $parentsCount
+            ? $nav->self()->var('current_id', $parent->getId())
+            : null
+    );
+}
 
 $orders = [];
 ?>
@@ -47,7 +70,20 @@ $orders = [];
         data-ordering="{{ $ordering }}"
         method="post">
 
-        <x-filter-bar :form="$form" :open="$showFilters"></x-filter-bar>
+        <x-filter-bar :form="$form" :open="$showFilters">
+            <x-slot name="end">
+                @if (!$current->isRoot())
+                    <div class="d-flex gap-3">
+                        <a href="{{ $nav->self()->var('current_id', $current->getParentId()) }}"
+                            class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-chevron-left"></i>
+                            @lang('shopgo.location.button.back')
+                        </a>
+                        {!! $breadcrumb->render() !!}
+                    </div>
+                @endif
+            </x-slot>
+        </x-filter-bar>
 
         @if (count($items))
             {{-- RESPONSIVE TABLE DESC --}}
@@ -69,6 +105,11 @@ $orders = [];
                             <x-sort field="location.state">
                                 @lang('unicorn.field.state')
                             </x-sort>
+                        </th>
+
+                        {{-- Type --}}
+                        <th style="width: 5%" class="text-nowrap">
+                            @lang('unicorn.field.type')
                         </th>
 
                         {{-- Title --}}
@@ -132,19 +173,30 @@ $orders = [];
                                 ></x-state-dropdown>
                             </td>
 
-                            {{-- Title --}}
+                            {{-- Type --}}
                             <td>
-                                <div class="d-flex gap-2">
-                                    @if ($item->level > 1)
-                                        <div class="">
-                                            {{ str_repeat('—', $item->level - 1) }}
-                                        </div>
-                                    @endif
+                                {{ $entity->getType()->getTitle($lang) }}
+                            </td>
+
+                            {{-- Title --}}
+                            <td class="">
+                                <div class="d-flex">
                                     <div>
                                         <a href="{{ $nav->to('location_edit')->id($entity->getId()) }}">
+                                            <i class="fa fa-edit small"></i>
                                             {{ $item->title }}
                                         </a>
                                     </div>
+
+                                    @if ($entity->getRgt() - $entity->getLft() > 1)
+                                        <div class="ms-auto ml-auto">
+                                            <a href="{{ $nav->self()->var('current_id', $entity->getId()) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-list"></i>
+                                                @lang('shopgo.location.see.children')
+                                            </a>
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
 
