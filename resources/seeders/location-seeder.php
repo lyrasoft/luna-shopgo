@@ -11,12 +11,9 @@ declare(strict_types=1);
 
 namespace App\Seeder;
 
-use App\Entity\Location;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\ORM;
-
-use function Windwalker\fs;
 
 /**
  * Location Seeder
@@ -29,7 +26,7 @@ $seeder->import(
     static function () use ($seeder, $orm, $db) {
         $faker = $seeder->faker('en_US');
 
-        $mapper = $orm->mapper(Location::class);
+        //
     }
 );
 

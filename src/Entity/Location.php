@@ -15,6 +15,7 @@ use App\Enum\LocationType;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
+use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
@@ -26,7 +27,6 @@ use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Cast\JsonCast;
-use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Nested\NestedEntityInterface;
 use Windwalker\ORM\Nested\NestedEntityTrait;
@@ -70,6 +70,7 @@ class Location implements NestedEntityInterface
     #[Column('postcode_required')]
     #[Cast('bool', 'int')]
     protected bool $postcodeRequired = false;
+
     #[Column('native')]
     protected string $native = '';
 
@@ -97,6 +98,11 @@ class Location implements NestedEntityInterface
     #[Column('modified_by')]
     #[Modifier]
     protected int $modifiedBy = 0;
+
+    #[Column('state')]
+    #[Cast('int')]
+    #[Cast(BasicState::class)]
+    protected BasicState $state;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
@@ -316,13 +322,28 @@ class Location implements NestedEntityInterface
 
         return $this;
     }
-    public function getNative() : string
+
+    public function getNative(): string
     {
         return $this->native;
     }
-    public function setNative(string $native) : static
+
+    public function setNative(string $native): static
     {
         $this->native = $native;
+
+        return $this;
+    }
+
+    public function getState(): BasicState
+    {
+        return $this->state;
+    }
+
+    public function setState(int|BasicState $state): static
+    {
+        $this->state = BasicState::wrap($state);
+
         return $this;
     }
 }
