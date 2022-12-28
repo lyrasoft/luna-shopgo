@@ -108,6 +108,4 @@ $importLocations = static function (ORM $orm) use ($mig, $app) {
             ->values(...$chunk)
             ->execute();
     }
-
-    $mapper->rebuild();
 };

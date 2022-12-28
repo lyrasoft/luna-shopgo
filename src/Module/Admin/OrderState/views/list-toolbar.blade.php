@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        LocationListView  The view model object.
+ * @var  $vm        OrderStateListView  The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,7 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use App\Module\Admin\Location\LocationListView;
+use App\Module\Admin\OrderState\OrderStateListView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -29,7 +29,7 @@ use Windwalker\Core\Router\SystemUri;
 <div x-title="toolbar" x-data="{ form: $store.grid.form, grid: $store.grid }" class="l-toolbar">
     {{-- Create --}}
     <a class="btn btn-primary btn-sm uni-btn-new"
-        href="{{ $nav->to('location_edit')->var('new', 1) }}"
+        href="{{ $nav->to('order_state_edit')->var('new', 1) }}"
         style="min-width: 150px"
     >
         <i class="fa fa-plus"></i>
@@ -37,12 +37,12 @@ use Windwalker\Core\Router\SystemUri;
     </a>
 
     {{-- Duplicate --}}
-{{--    <button type="button" class="btn btn-info btn-sm uni-btn-duplicate"--}}
-{{--        @click="grid.form.post()"--}}
-{{--    >--}}
-{{--        <i class="fa fa-clone"></i>--}}
-{{--        @lang('unicorn.toolbar.duplicate')--}}
-{{--    </button>--}}
+    <button type="button" class="btn btn-info btn-sm uni-btn-duplicate"
+        @click="grid.form.post()"
+    >
+        <i class="fa fa-clone"></i>
+        @lang('unicorn.toolbar.duplicate')
+    </button>
 
     {{-- Change State --}}
     <x-state-dropdown color-on="text"

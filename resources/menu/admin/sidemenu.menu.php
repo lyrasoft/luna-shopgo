@@ -62,3 +62,7 @@ $menu->link($lang('luna.config.title', $lang('luna.config.type.core')))
 $menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
     ->to($nav->to('location_list'))
     ->icon('fa-solid fa-marker');
+
+$menu->link($lang('unicorn.title.grid', title: $lang('luna.order_state.title')))
+    ->to($nav->to('order_state_list'))
+    ->icon('fa-solid fa-list');

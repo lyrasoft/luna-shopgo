@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
+use Lyrasoft\Luna\Attributes\Slugify;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
@@ -34,6 +35,10 @@ class OrderState implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
+
+    #[Column('alias')]
+    #[Slugify]
+    protected string $alias = '';
 
     #[Column('default')]
     #[Cast('bool', 'int')]
@@ -235,6 +240,18 @@ class OrderState implements EntityInterface
     public function setRollback(bool $rollback): static
     {
         $this->rollback = $rollback;
+
+        return $this;
+    }
+
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    public function setAlias(string $alias): static
+    {
+        $this->alias = $alias;
 
         return $this;
     }

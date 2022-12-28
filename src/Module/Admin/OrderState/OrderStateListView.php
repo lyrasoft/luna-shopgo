@@ -9,12 +9,10 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\Location;
+namespace App\Module\Admin\OrderState;
 
-use App\Entity\Location;
-use App\Module\Admin\Location\Form\GridForm;
-use App\Repository\LocationRepository;
-use Unicorn\Selector\ListSelector;
+use App\Module\Admin\OrderState\Form\GridForm;
+use App\Repository\OrderStateRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -23,32 +21,26 @@ use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
-use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
-use Windwalker\Query\Query;
-
-use function Windwalker\collect;
 
 /**
- * The LocationListView class.
+ * The OrderStateListView class.
  */
 #[ViewModel(
     layout: [
-        'default' => 'location-list',
-        'modal' => 'location-modal',
+        'default' => 'order-state-list',
+        'modal' => 'order-state-modal',
     ],
-    js: 'location-list.js'
+    js: 'order-state-list.js'
 )]
-class LocationListView implements ViewModelInterface
+class OrderStateListView implements ViewModelInterface
 {
     use TranslatorTrait;
-
-    protected ?Location $current = null;
 
     public function __construct(
         protected ORM $orm,
         #[Autowire]
-        protected LocationRepository $repository,
+        protected OrderStateRepository $repository,
         protected FormFactory $formFactory
     ) {
     }
@@ -66,14 +58,11 @@ class LocationListView implements ViewModelInterface
         $state = $this->repository->getState();
 
         // Prepare Items
-        $currentId = $state->rememberFromRequest('current_id') ?: 1;
         $page     = $state->rememberFromRequest('page');
-        $limit    = $state->rememberFromRequest('limit') ?? 50;
+        $limit    = $state->rememberFromRequest('limit') ?? 30;
         $filter   = (array) $state->rememberFromRequest('filter');
         $search   = (array) $state->rememberFromRequest('search');
         $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering();
-
-        $this->current = $current = $this->orm->findOne(Location::class, $currentId);
 
         $items = $this->repository->getListSelector()
             ->setFilters($filter)
@@ -81,19 +70,11 @@ class LocationListView implements ViewModelInterface
                 $search['*'] ?? '',
                 $this->getSearchFields()
             )
-            ->tap(
-                static fn(ListSelector $query) => $query->where('parent_id', $currentId)
-            )
             ->ordering($ordering)
             ->page($page)
             ->limit($limit);
 
         $pagination = $items->getPagination();
-
-        // Parents
-        /** @var NestedSetMapper<Location> $mapper */
-        $mapper = $this->orm->mapper(Location::class);
-        $parents = $mapper->getPath($current);
 
         // Prepare Form
         $form = $this->formFactory->create(GridForm::class);
@@ -103,7 +84,7 @@ class LocationListView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('items', 'pagination', 'form', 'showFilters', 'ordering', 'parents', 'current');
+        return compact('items', 'pagination', 'form', 'showFilters', 'ordering');
     }
 
     public function prepareItem(Collection $item): object
@@ -118,7 +99,7 @@ class LocationListView implements ViewModelInterface
      */
     public function getDefaultOrdering(): string
     {
-        return 'location.lft ASC';
+        return 'order_state.id DESC';
     }
 
     /**
@@ -129,11 +110,9 @@ class LocationListView implements ViewModelInterface
     public function getSearchFields(): array
     {
         return [
-            'location.id',
-            'location.title',
-            'location.native',
-            'location.code',
-            'location.code3',
+            'order_state.id',
+            'order_state.title',
+            'order_state.alias',
         ];
     }
 
@@ -146,7 +125,7 @@ class LocationListView implements ViewModelInterface
      */
     public function reorderEnabled(string $ordering): bool
     {
-        return $ordering === 'location.lft ASC';
+        return $ordering === 'order_state.ordering ASC';
     }
 
     /**
@@ -177,13 +156,9 @@ class LocationListView implements ViewModelInterface
      */
     protected function prepareMetadata(AppContext $app, View $view): void
     {
-        $title = $this->trans('unicorn.title.grid', title: $this->trans('luna.location.title'));
-
-        if ($this->current && !$this->current->isRoot()) {
-            $title .= ': ' . $this->current->getTitle();
-        }
-
         $view->getHtmlFrame()
-            ->setTitle($title);
+            ->setTitle(
+                $this->trans('unicorn.title.grid', title: 'OrderState')
+            );
     }
 }

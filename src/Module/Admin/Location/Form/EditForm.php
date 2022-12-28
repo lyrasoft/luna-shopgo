@@ -105,7 +105,7 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('native', TextField::class)
                     ->label($this->trans('shopgo.location.field.native'));
 
-                if ($this->type && $this->type === LocationType::COUNTRY()) {
+                if ($this->type && $this->type->equals(LocationType::COUNTRY())) {
                     $form->add('region', TextField::class)
                         ->label($this->trans('shopgo.location.field.region'));
 
@@ -136,6 +136,10 @@ class EditForm implements FieldDefinitionInterface
                         ->label($this->trans('shopgo.location.field.has_states'))
                         ->color('primary')
                         ->circle(true);
+                } else {
+                    $form->add('code', TextField::class)
+                        ->label($this->trans('shopgo.location.field.code'))
+                        ->maxlength(32);
                 }
             }
         );

@@ -119,6 +119,24 @@ $orders = [];
                             </x-sort>
                         </th>
 
+                        {{-- Native --}}
+                        <th class="text-nowrap">
+                            <x-sort field="location.native">
+                                @lang('shopgo.location.field.native')
+                            </x-sort>
+                        </th>
+
+                        {{-- Code --}}
+                        <th class="text-nowrap">
+                            <x-sort field="location.code">
+                                @lang('shopgo.location.field.code')
+                            </x-sort>
+                        </th>
+
+                        <th>
+
+                        </th>
+
                         {{-- Ordering --}}
                         <th style="width: 10%" class="text-nowrap">
                             <div class="d-flex w-100 justify-content-end">
@@ -187,17 +205,32 @@ $orders = [];
                                             {{ $item->title }}
                                         </a>
                                     </div>
-
-                                    @if ($entity->getRgt() - $entity->getLft() > 1)
-                                        <div class="ms-auto ml-auto">
-                                            <a href="{{ $nav->self()->var('current_id', $entity->getId()) }}"
-                                                class="btn btn-sm btn-outline-primary">
-                                                <i class="fa fa-list"></i>
-                                                @lang('shopgo.location.see.children')
-                                            </a>
-                                        </div>
-                                    @endif
                                 </div>
+                            </td>
+
+                            <td>
+                                <div class="text-secondary ms-2">
+                                    {{ $entity->getNative() ?: '-' }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <?php
+                                    $codes = [$entity->getCode(), $entity->getCode3()];
+                                    echo implode(' / ', array_filter($codes));
+                                ?>
+                            </td>
+
+                            <td style="width: 3%" class="text-nowrap">
+                                @if ($entity->getRgt() - $entity->getLft() > 1)
+                                    <div class="ms-auto ml-auto">
+                                        <a href="{{ $nav->self()->var('current_id', $entity->getId()) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fa fa-list"></i>
+                                            @lang('shopgo.location.see.children')
+                                        </a>
+                                    </div>
+                                @endif
                             </td>
 
                             {{-- Ordering --}}
