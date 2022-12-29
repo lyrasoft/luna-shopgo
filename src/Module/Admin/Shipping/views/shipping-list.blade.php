@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        PaymentListView The view model object.
+ * @var  $vm        ShippingListView The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,7 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use App\Entity\Payment;
+use App\Entity\Shipping;
 use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
@@ -25,10 +25,10 @@ use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
-use App\Module\Admin\Payment\PaymentListView;
+use App\Module\Admin\Shipping\ShippingListView;
 
 /**
- * @var Payment $entity
+ * @var Shipping $entity
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
@@ -66,7 +66,7 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
 
                         {{-- State --}}
                         <th style="width: 5%" class="text-nowrap">
-                            <x-sort field="payment.state">
+                            <x-sort field="shipping.state">
                                 @lang('unicorn.field.state')
                             </x-sort>
                         </th>
@@ -77,7 +77,7 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
 
                         {{-- Title --}}
                         <th class="text-nowrap">
-                            <x-sort field="payment.title">
+                            <x-sort field="shipping.title">
                                 @lang('unicorn.field.title')
                             </x-sort>
                         </th>
@@ -97,8 +97,8 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                         <th style="width: 10%" class="text-nowrap">
                             <div class="d-flex w-100 justify-content-end">
                                 <x-sort
-                                    asc="payment.ordering ASC"
-                                    desc="payment.ordering DESC"
+                                    asc="shipping.ordering ASC"
+                                    desc="shipping.ordering DESC"
                                 >
                                     @lang('unicorn.field.ordering')
                                 </x-sort>
@@ -115,7 +115,7 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
 
                         {{-- ID --}}
                         <th style="width: 1%" class="text-nowrap text-end">
-                            <x-sort field="payment.id">
+                            <x-sort field="shipping.id">
                                 @lang('unicorn.field.id')
                             </x-sort>
                         </th>
@@ -153,7 +153,7 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                             {{-- Title --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('payment_edit')->id($entity->getId()) }}">
+                                    <a href="{{ $nav->to('shipping_edit')->id($entity->getId()) }}">
                                         {{ $item->title }}
                                     </a>
                                 </div>

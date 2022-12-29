@@ -12,9 +12,12 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTimeInterface;
+use Lyrasoft\Luna\Attributes\Slugify;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
+use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\CastNullable;
@@ -27,6 +30,7 @@ use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
@@ -54,6 +58,9 @@ class Shipping implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
+    #[Column('alias')]
+    #[Slugify]
+    protected string $alias = '';
 
     #[Column('description')]
     protected string $description = '';
@@ -70,7 +77,9 @@ class Shipping implements EntityInterface
     protected array $pricing = [];
 
     #[Column('state')]
-    protected int $state = 0;
+    #[Cast('int')]
+    #[Cast(BasicState::class)]
+    protected BasicState $state;
 
     #[Column('ordering')]
     protected int $ordering = 0;
@@ -101,6 +110,22 @@ class Shipping implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
+    }
+
+    #[BeforeSaveEvent]
+    public static function beforeSave(BeforeSaveEvent $event): void
+    {
+        $data = $event->getData();
+        $orm = $event->getORM();
+
+        $exists = $orm->from(static::class)
+            ->where('alias', $data['alias'])
+            ->where('id', '!=', $data['id'] ?? 0)
+            ->get();
+
+        if ($exists) {
+            throw new ValidateFailException('Duplicated alias');
+        }
     }
 
     public function getId(): ?int
@@ -223,18 +248,6 @@ class Shipping implements EntityInterface
         return $this;
     }
 
-    public function getState(): int
-    {
-        return $this->state;
-    }
-
-    public function setState(int $state): static
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
     public function getOrdering(): int
     {
         return $this->ordering;
@@ -304,6 +317,27 @@ class Shipping implements EntityInterface
     {
         $this->params = $params;
 
+        return $this;
+    }
+
+    public function getState(): BasicState
+    {
+        return $this->state;
+    }
+
+    public function setState(int|BasicState $state): static
+    {
+        $this->state = BasicState::wrap($state);
+
+        return $this;
+    }
+    public function getAlias() : string
+    {
+        return $this->alias;
+    }
+    public function setAlias(string $alias) : static
+    {
+        $this->alias = $alias;
         return $this;
     }
 }

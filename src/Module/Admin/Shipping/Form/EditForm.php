@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\Payment\Form;
+namespace App\Module\Admin\Shipping\Form;
 
 use App\Field\LocationModalField;
-use App\Field\OrderStateListField;
+use App\Field\PaymentModalField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
@@ -57,15 +57,16 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.description'))
                     ->rows(4);
 
-                $form->add('order_state_id', OrderStateListField::class)
-                    ->label($this->trans('shopgo.payment.field.order.state'));
-
                 $form->add('location_category_id', CategoryModalField::class)
                     ->label($this->trans('shopgo.payment.field.location_category'))
                     ->categoryType('location');
 
                 $form->add('location_id', LocationModalField::class)
                     ->label($this->trans('shopgo.payment.field.location'));
+
+                $form->add('payments', PaymentModalField::class)
+                    ->label($this->trans('shopgo.shipping.field.payments'))
+                    ->multiple(true);
             }
         );
 

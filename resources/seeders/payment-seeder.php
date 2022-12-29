@@ -13,6 +13,7 @@ namespace App\Seeder;
 
 use App\Entity\OrderState;
 use App\Entity\Payment;
+use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
@@ -39,6 +40,7 @@ $seeder->import(
             $item = $mapper->createEntity();
 
             $item->setTitle(Utf8String::ucfirst($faker->word()) . ' Pay');
+            $item->setAlias(SlugHelper::safe($item->getTitle()));
             $item->setDescription($faker->paragraph());
             $item->setImage($faker->unsplashImage(400, 400));
             $item->setOrderStateId($state?->getId() ?? 0);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Seeder;
 
 use App\Entity\Shipping;
+use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
@@ -36,6 +37,7 @@ $seeder->import(
             $item = $mapper->createEntity();
 
             $item->setTitle(Utf8String::ucfirst($faker->word()) . ' Shipping');
+            $item->setAlias(SlugHelper::safe($item->getTitle()));
             $item->setDescription($faker->paragraph());
             $item->setImage($faker->unsplashImage(400, 400));
             $item->setState(1);

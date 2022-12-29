@@ -74,3 +74,7 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.order_state.title')))
 $menu->link($lang('unicorn.title.grid', title: $lang('luna.payment.title')))
     ->to($nav->to('payment_list'))
     ->icon('fa-solid fa-dollar');
+
+$menu->link($lang('unicorn.title.grid', title: $lang('luna.shipping.title')))
+    ->to($nav->to('shipping_list'))
+    ->icon('fa-solid fa-truck');

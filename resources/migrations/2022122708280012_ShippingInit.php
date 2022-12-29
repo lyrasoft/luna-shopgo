@@ -33,11 +33,12 @@ $mig->up(
                 $schema->varchar('classname');
                 $schema->varchar('type');
                 $schema->varchar('title');
+                $schema->varchar('alias');
                 $schema->longtext('description');
                 $schema->varchar('image');
                 $schema->json('payments')->nullable(true);
                 $schema->json('pricing')->nullable(true);
-                $schema->integer('state');
+                $schema->bool('state');
                 $schema->integer('ordering');
                 $schema->datetime('created');
                 $schema->datetime('modified');
@@ -48,6 +49,7 @@ $mig->up(
                 $schema->addIndex('location_category_id');
                 $schema->addIndex('location_id');
                 $schema->addIndex('type');
+                $schema->addIndex('alias');
             }
         );
     }
