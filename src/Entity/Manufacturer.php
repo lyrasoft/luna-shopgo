@@ -15,6 +15,7 @@ use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\Luna\Attributes\Slugify;
+use Lyrasoft\Luna\Data\MetaData;
 use Lyrasoft\Luna\Entity\User;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
@@ -68,8 +69,8 @@ class Manufacturer implements EntityInterface
     protected int $ordering = 0;
 
     #[Column('meta')]
-    #[Cast(JsonCast::class)]
-    protected array $meta = [];
+    #[Cast(MetaData::class, JsonCast::class)]
+    protected MetaData $meta;
 
     #[Column('search_index')]
     protected string $searchIndex = '';
@@ -204,14 +205,14 @@ class Manufacturer implements EntityInterface
         return $this;
     }
 
-    public function getMeta(): array
+    public function getMeta(): MetaData
     {
         return $this->meta;
     }
 
-    public function setMeta(array $meta): static
+    public function setMeta(MetaData|array $meta): static
     {
-        $this->meta = $meta;
+        $this->meta = MetaData::wrap($meta);
 
         return $this;
     }
