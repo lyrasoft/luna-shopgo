@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Shipping\Form;
 
+use App\Field\LocationModalField;
+use Lyrasoft\Luna\Field\CategoryModalField;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\ListField;
@@ -52,6 +54,15 @@ class GridForm implements FieldDefinitionInterface
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang))
                     ->onchange('this.form.submit()');
+
+                $form->add('shipping.location_category_id', CategoryModalField::class)
+                    ->label($this->trans('shopgo.payment.field.location.category'))
+                    ->categoryType('location')
+                    ->onchange('this.form.submit()');
+
+                $form->add('shipping.location_id', LocationModalField::class)
+                    ->label($this->trans('shopgo.payment.field.location'))
+                    ->onchange('this.form.submit()');
             }
         );
 
@@ -62,6 +73,13 @@ class GridForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.no.change'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang));
+
+                $form->add('location_category_id', CategoryModalField::class)
+                    ->label($this->trans('shopgo.payment.field.location.category'))
+                    ->categoryType('location');
+
+                $form->add('location_id', LocationModalField::class)
+                    ->label($this->trans('shopgo.payment.field.location'));
             }
         );
     }
