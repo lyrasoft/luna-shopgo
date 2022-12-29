@@ -3,7 +3,7 @@
 /**
  * Part of starter project.
  *
- * @copyright      Copyright (C) 2021 __ORGANIZATION__.
+ * @copyright    Copyright (C) 2021 __ORGANIZATION__.
  * @license        __LICENSE__
  */
 
@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Location;
+use App\Entity\Payment;
+use Lyrasoft\Luna\Entity\Category;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -20,26 +22,37 @@ use Unicorn\Repository\Actions\SaveAction;
 use Unicorn\Repository\ListRepositoryInterface;
 use Unicorn\Repository\ListRepositoryTrait;
 use Unicorn\Repository\ManageRepositoryInterface;
-use Unicorn\Repository\Nested\NestedManageRepositoryTrait;
+use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
+use Windwalker\ORM\SelectorQuery;
+use Windwalker\Query\Query;
 
 /**
- * The LocationRepository class.
+ * The PaymentRepository class.
  */
-#[Repository(entityClass: Location::class)]
-class LocationRepository implements ManageRepositoryInterface, ListRepositoryInterface
+#[Repository(entityClass: Payment::class)]
+class PaymentRepository implements ManageRepositoryInterface, ListRepositoryInterface
 {
-    use NestedManageRepositoryTrait;
+    use ManageRepositoryTrait;
     use ListRepositoryTrait;
 
     public function getListSelector(): ListSelector
     {
         $selector = $this->createSelector();
 
-        $selector->from(Location::class);
-
-        $selector->where('location.parent_id', '!=', 0)
-            ->where('location.level', '>=', 1);
+        $selector->from(Payment::class)
+            ->leftJoin(
+                Category::class,
+                'location_category',
+                'location_category.id',
+                'payment.location_category_id'
+            )
+            ->leftJoin(
+                Location::class,
+                'location',
+                'location.id',
+                'payment.location_id'
+            );
 
         return $selector;
     }
@@ -53,7 +66,12 @@ class LocationRepository implements ManageRepositoryInterface, ListRepositoryInt
     #[ConfigureAction(ReorderAction::class)]
     protected function configureReorderAction(ReorderAction $action): void
     {
-        //
+        $action->setReorderGroupHandler(
+            function (Query $query, Payment $payment) {
+                $query->where('location_category_id', $payment->getLocationCategoryId())
+                    ->where('location_id', $payment->getLocationId());
+            }
+        );
     }
 
     #[ConfigureAction(BatchAction::class)]

@@ -70,3 +70,7 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
 $menu->link($lang('unicorn.title.grid', title: $lang('luna.order_state.title')))
     ->to($nav->to('order_state_list'))
     ->icon('fa-solid fa-list');
+
+$menu->link($lang('unicorn.title.grid', title: $lang('luna.payment.title')))
+    ->to($nav->to('payment_list'))
+    ->icon('fa-solid fa-dollar');

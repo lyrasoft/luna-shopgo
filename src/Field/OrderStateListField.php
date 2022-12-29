@@ -11,22 +11,15 @@ declare(strict_types=1);
 
 namespace App\Field;
 
-use App\Entity\Location;
-use Unicorn\Field\ModalField;
-use Windwalker\DOM\DOMElement;
+use App\Entity\OrderState;
+use Unicorn\Field\SqlListField;
 
 /**
- * The LocationModalField class.
+ * The OrderStateListField class.
  */
-class LocationModalField extends ModalField
+class OrderStateListField extends SqlListField
 {
-    protected ?string $table = Location::class;
-
-    protected function configure(): void
-    {
-        $this->route('location_list');
-        $this->table(Location::class);
-    }
+    protected ?string $table = OrderState::class;
 
     /**
      * getAccessors

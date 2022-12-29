@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Seeder;
 
+use App\Entity\OrderState;
 use App\Entity\Payment;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
@@ -32,14 +33,17 @@ $seeder->import(
         /** @var EntityMapper<Payment> $mapper */
         $mapper = $orm->mapper(Payment::class);
 
+        $state = $orm->findOne(OrderState::class, ['alias' => 'handling']);
+
         foreach (range(1, 5) as $i) {
             $item = $mapper->createEntity();
 
             $item->setTitle(Utf8String::ucfirst($faker->word()) . ' Pay');
             $item->setDescription($faker->paragraph());
             $item->setImage($faker->unsplashImage(400, 400));
+            $item->setOrderStateId($state?->getId() ?? 0);
             $item->setState(1);
-            $item->setOrdering($i + 1);
+            $item->setOrdering($i);
 
             $mapper->createOne($item);
 
