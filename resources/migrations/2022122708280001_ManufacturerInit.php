@@ -31,6 +31,7 @@ $mig->up(
                 $schema->varchar('title');
                 $schema->varchar('alias');
                 $schema->varchar('image');
+                $schema->longtext('introtext');
                 $schema->integer('page_id');
                 $schema->bool('state');
                 $schema->integer('ordering');
@@ -40,10 +41,12 @@ $mig->up(
                 $schema->datetime('modified');
                 $schema->integer('created_by');
                 $schema->integer('modified_by');
+                $schema->char('language')->length(7)->comment('Language');
                 $schema->json('params')->nullable(true);
 
                 $schema->addIndex('alias');
                 $schema->addIndex('page_id');
+                $schema->addIndex('language');
             }
         );
     }
