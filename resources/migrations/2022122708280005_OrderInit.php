@@ -20,6 +20,10 @@ use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
 
+use Windwalker\ORM\ORM;
+
+use function Windwalker\fs;
+
 /**
  * Migration UP: 2022122708280005_OrderInit.
  *
@@ -27,7 +31,7 @@ use Windwalker\Database\Schema\Schema;
  * @var ConsoleApplication $app
  */
 $mig->up(
-    static function () use ($mig) {
+    static function (ORM $orm) use ($mig) {
         $mig->createTable(
             Order::class,
             function (Schema $schema) {
@@ -145,6 +149,7 @@ $mig->up(
             function (Schema $schema) {
                 $schema->primary('id');
                 $schema->varchar('title');
+                $schema->varchar('alias');
                 $schema->bool('default');
                 $schema->varchar('color');
                 $schema->varchar('image');
@@ -156,8 +161,21 @@ $mig->up(
                 $schema->bool('done');
                 $schema->bool('cancel');
                 $schema->bool('rollback');
+
+                $schema->addIndex('alias');
             }
         );
+
+        // Create default states
+        $states = fs(__DIR__ . '/data/order-states.json')
+            ->read()
+            ->jsonDecode();
+
+        foreach ($states as $state) {
+            $orm->createOne(OrderState::class, $state);
+
+            $mig->outCounting();
+        }
     }
 );
 

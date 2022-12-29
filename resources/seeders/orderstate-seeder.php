@@ -16,7 +16,7 @@ use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\ORM;
 
 /**
- * Location Seeder
+ * Orderstate Seeder
  *
  * @var Seeder          $seeder
  * @var ORM             $orm

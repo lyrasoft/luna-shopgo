@@ -59,5 +59,13 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.language.title')))
 $menu->link($lang('luna.config.title', $lang('luna.config.type.core')))
     ->to($nav->to('config_core'));
 
+$menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
+    ->to($nav->to('location_list'))
+    ->icon('fa-solid fa-marker');
+
+$menu->link($lang('unicorn.title.grid', title: $lang('luna.order_state.title')))
+    ->to($nav->to('order_state_list'))
+    ->icon('fa-solid fa-list');
+
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.manufacturer.title')))
     ->to($nav->to('manufacturer_list'));
