@@ -21,6 +21,7 @@ return [
     __DIR__ . '/page-seeder.php',
     __DIR__ . '/menu-seeder.php',
     __DIR__ . '/widget-seeder.php',
+    __DIR__ . '/currency-seeder.php',
     __DIR__ . '/payment-seeder.php',
     __DIR__ . '/shipping-seeder.php',
     __DIR__ . '/product-seeder.php',

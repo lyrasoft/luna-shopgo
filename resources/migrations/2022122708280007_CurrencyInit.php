@@ -29,7 +29,7 @@ $mig->up(
             function (Schema $schema) {
                 $schema->primary('id');
                 $schema->varchar('title');
-                $schema->char('code')->length(3);
+                $schema->char('code')->length(10);
                 $schema->integer('code_num');
                 $schema->varchar('sign');
                 $schema->char('sign_position')->length(5)->comment('SignPosition: start,end');
