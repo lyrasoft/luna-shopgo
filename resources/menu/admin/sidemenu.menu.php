@@ -59,6 +59,10 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.language.title')))
 $menu->link($lang('luna.config.title', $lang('luna.config.type.core')))
     ->to($nav->to('config_core'));
 
+// Currency
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
+    ->to($nav->to('currency_list'));
+
 $menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
     ->to($nav->to('location_list'))
     ->icon('fa-solid fa-marker');

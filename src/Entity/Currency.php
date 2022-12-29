@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\SignPosition;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
+use Lyrasoft\Luna\Entity\User;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -54,7 +56,8 @@ class Currency implements EntityInterface
     protected string $sign = '';
 
     #[Column('sign_position')]
-    protected string $signPosition = '';
+    #[Cast(SignPosition::class)]
+    protected SignPosition $signPosition;
 
     #[Column('decimal_place')]
     protected int $decimalPlace = 0;
@@ -102,7 +105,10 @@ class Currency implements EntityInterface
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
-        //
+        $rm = $metadata->getRelationManager();
+
+        $rm->manyToOne('user')
+            ->targetTo(User::class, created_by: 'id');
     }
 
     public function getId(): ?int
@@ -165,14 +171,14 @@ class Currency implements EntityInterface
         return $this;
     }
 
-    public function getSignPosition(): string
+    public function getSignPosition(): SignPosition
     {
         return $this->signPosition;
     }
 
-    public function setSignPosition(string $signPosition): static
+    public function setSignPosition(string|SignPosition $signPosition): static
     {
-        $this->signPosition = $signPosition;
+        $this->signPosition = SignPosition::wrap($signPosition);
 
         return $this;
     }

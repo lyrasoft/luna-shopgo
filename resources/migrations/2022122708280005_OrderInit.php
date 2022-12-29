@@ -19,7 +19,6 @@ use App\Entity\Order;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
-
 use Windwalker\ORM\ORM;
 
 use function Windwalker\fs;
