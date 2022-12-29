@@ -48,6 +48,7 @@ $mig->up(
                 $schema->bool('postcode_required');
                 $schema->bool('has_states');
                 $schema->varchar('call_prefix');
+                $schema->bool('state');
                 $schema->datetime('created');
                 $schema->datetime('modified');
                 $schema->integer('created_by');
@@ -107,6 +108,4 @@ $importLocations = static function (ORM $orm) use ($mig, $app) {
             ->values(...$chunk)
             ->execute();
     }
-
-    $mapper->rebuild();
 };

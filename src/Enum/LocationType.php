@@ -58,4 +58,17 @@ class LocationType extends Enum implements EnumTranslatableInterface
     {
         return $lang->trans('shopgo.location.type.' . $this->getKey());
     }
+
+    /**
+     * @return  array<static>
+     */
+    public static function nonRootTypes(): array
+    {
+        return [
+            static::CONTINENT(),
+            static::COUNTRY(),
+            static::STATE(),
+            static::CITY(),
+        ];
+    }
 }
