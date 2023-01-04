@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
+use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
@@ -39,6 +40,10 @@ class ShopCategoryMap implements EntityInterface
 
     #[Column('category_id')]
     protected int $categoryId = 0;
+
+    #[Column('primary')]
+    #[Cast('bool', 'int')]
+    protected bool $primary = false;
 
     #[Column('ordering')]
     protected int $ordering = 0;
@@ -105,6 +110,18 @@ class ShopCategoryMap implements EntityInterface
     public function setOrdering(int $ordering): static
     {
         $this->ordering = $ordering;
+
+        return $this;
+    }
+
+    public function isPrimary(): bool
+    {
+        return $this->primary;
+    }
+
+    public function setPrimary(bool $primary): static
+    {
+        $this->primary = $primary;
 
         return $this;
     }
