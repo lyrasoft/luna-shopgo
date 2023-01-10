@@ -785,16 +785,16 @@
         },
         {
             "name": "lyrasoft/luna",
-            "version": "2.0.59",
+            "version": "2.0.60",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lyrasoft/luna.git",
-                "reference": "f033726f45fe09ea87c57dc665ccd84f44b6ea20"
+                "reference": "52495e544296ff0c942c6caae6d9fe47d2b22e76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lyrasoft/luna/zipball/f033726f45fe09ea87c57dc665ccd84f44b6ea20",
-                "reference": "f033726f45fe09ea87c57dc665ccd84f44b6ea20",
+                "url": "https://api.github.com/repos/lyrasoft/luna/zipball/52495e544296ff0c942c6caae6d9fe47d2b22e76",
+                "reference": "52495e544296ff0c942c6caae6d9fe47d2b22e76",
                 "shasum": ""
             },
             "require": {
@@ -843,9 +843,9 @@
             "homepage": "https://github.com/lyrasoft/luna",
             "support": {
                 "issues": "https://github.com/lyrasoft/luna/issues",
-                "source": "https://github.com/lyrasoft/luna/tree/2.0.59"
+                "source": "https://github.com/lyrasoft/luna/tree/2.0.60"
             },
-            "time": "2022-12-22T18:00:53+00:00"
+            "time": "2023-01-01T15:18:15+00:00"
         },
         {
             "name": "lyrasoft/toolkit",
@@ -1993,16 +1993,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v6.0.16",
+            "version": "v6.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "be294423f337dda97c810733138c0caec1bb0575"
+                "reference": "2ab307342a7233b9a260edd5ef94087aaca57d18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/be294423f337dda97c810733138c0caec1bb0575",
-                "reference": "be294423f337dda97c810733138c0caec1bb0575",
+                "url": "https://api.github.com/repos/symfony/console/zipball/2ab307342a7233b9a260edd5ef94087aaca57d18",
+                "reference": "2ab307342a7233b9a260edd5ef94087aaca57d18",
                 "shasum": ""
             },
             "require": {
@@ -2068,7 +2068,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v6.0.16"
+                "source": "https://github.com/symfony/console/tree/v6.0.17"
             },
             "funding": [
                 {
@@ -2084,7 +2084,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-25T18:58:46+00:00"
+            "time": "2022-12-28T14:21:34+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2304,16 +2304,16 @@
         },
         {
             "name": "symfony/mime",
-            "version": "v6.0.16",
+            "version": "v6.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "ad9878bede5707cdf5ff7f5c86d82a921bbbfe1c"
+                "reference": "3e6a7ba15997020778312ed576ad01ab60dc2336"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/ad9878bede5707cdf5ff7f5c86d82a921bbbfe1c",
-                "reference": "ad9878bede5707cdf5ff7f5c86d82a921bbbfe1c",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/3e6a7ba15997020778312ed576ad01ab60dc2336",
+                "reference": "3e6a7ba15997020778312ed576ad01ab60dc2336",
                 "shasum": ""
             },
             "require": {
@@ -2366,7 +2366,7 @@
                 "mime-type"
             ],
             "support": {
-                "source": "https://github.com/symfony/mime/tree/v6.0.16"
+                "source": "https://github.com/symfony/mime/tree/v6.0.17"
             },
             "funding": [
                 {
@@ -2382,7 +2382,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-11-28T12:25:56+00:00"
+            "time": "2022-12-14T16:19:02+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -3313,16 +3313,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v6.0.15",
+            "version": "v6.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "51ac0fa0ccf132a00519b87c97e8f775fa14e771"
+                "reference": "3f57003dd8a67ed76870cc03092f8501db7788d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/51ac0fa0ccf132a00519b87c97e8f775fa14e771",
-                "reference": "51ac0fa0ccf132a00519b87c97e8f775fa14e771",
+                "url": "https://api.github.com/repos/symfony/string/zipball/3f57003dd8a67ed76870cc03092f8501db7788d9",
+                "reference": "3f57003dd8a67ed76870cc03092f8501db7788d9",
                 "shasum": ""
             },
             "require": {
@@ -3378,7 +3378,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v6.0.15"
+                "source": "https://github.com/symfony/string/tree/v6.0.17"
             },
             "funding": [
                 {
@@ -3394,20 +3394,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-10T09:34:08+00:00"
+            "time": "2022-12-14T15:52:41+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v5.4.14",
+            "version": "v5.4.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "6894d06145fefebd9a4c7272baa026a1c394a430"
+                "reference": "ad74890513d07060255df2575703daf971de92c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/6894d06145fefebd9a4c7272baa026a1c394a430",
-                "reference": "6894d06145fefebd9a4c7272baa026a1c394a430",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/ad74890513d07060255df2575703daf971de92c7",
+                "reference": "ad74890513d07060255df2575703daf971de92c7",
                 "shasum": ""
             },
             "require": {
@@ -3467,7 +3467,7 @@
                 "dump"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-dumper/tree/v5.4.14"
+                "source": "https://github.com/symfony/var-dumper/tree/v5.4.17"
             },
             "funding": [
                 {
@@ -3483,7 +3483,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-10-07T08:01:20+00:00"
+            "time": "2022-12-22T10:31:03+00:00"
         },
         {
             "name": "thl/pinyin",
@@ -3589,16 +3589,16 @@
         },
         {
             "name": "windwalker/attributes",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/attributes.git",
-                "reference": "bb2b3291c321069f2f22fc3ab34f28e29245b2d5"
+                "reference": "4697c8f9a42175ee8e23452899a35591ae6fdb18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/attributes/zipball/bb2b3291c321069f2f22fc3ab34f28e29245b2d5",
-                "reference": "bb2b3291c321069f2f22fc3ab34f28e29245b2d5",
+                "url": "https://api.github.com/repos/windwalker-io/attributes/zipball/4697c8f9a42175ee8e23452899a35591ae6fdb18",
+                "reference": "4697c8f9a42175ee8e23452899a35591ae6fdb18",
                 "shasum": ""
             },
             "require": {
@@ -3638,22 +3638,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/attributes/issues",
-                "source": "https://github.com/windwalker-io/attributes/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/attributes/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/authentication",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/authentication.git",
-                "reference": "e431b258e715f48ad83fe8bf2313c358fdc922d6"
+                "reference": "eacefe91fbc5dedb854ef1182c36f68efa085b4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/authentication/zipball/e431b258e715f48ad83fe8bf2313c358fdc922d6",
-                "reference": "e431b258e715f48ad83fe8bf2313c358fdc922d6",
+                "url": "https://api.github.com/repos/windwalker-io/authentication/zipball/eacefe91fbc5dedb854ef1182c36f68efa085b4e",
+                "reference": "eacefe91fbc5dedb854ef1182c36f68efa085b4e",
                 "shasum": ""
             },
             "require": {
@@ -3693,22 +3693,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/authentication/issues",
-                "source": "https://github.com/windwalker-io/authentication/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/authentication/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/authorization",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/authorization.git",
-                "reference": "0ff358513513aee22c7b890b94e8e6d0fa9ae70d"
+                "reference": "2f313cfa19c82d00cdef483e7809d8fff58d23b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/authorization/zipball/0ff358513513aee22c7b890b94e8e6d0fa9ae70d",
-                "reference": "0ff358513513aee22c7b890b94e8e6d0fa9ae70d",
+                "url": "https://api.github.com/repos/windwalker-io/authorization/zipball/2f313cfa19c82d00cdef483e7809d8fff58d23b8",
+                "reference": "2f313cfa19c82d00cdef483e7809d8fff58d23b8",
                 "shasum": ""
             },
             "require": {
@@ -3748,22 +3748,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/authorization/issues",
-                "source": "https://github.com/windwalker-io/authorization/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/authorization/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/cache",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/cache.git",
-                "reference": "c366159c8dfdac4e87c579bc51244d9c10643c7c"
+                "reference": "e67e5a9d71d0fa6a36eb03428ca99664eb6875a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/cache/zipball/c366159c8dfdac4e87c579bc51244d9c10643c7c",
-                "reference": "c366159c8dfdac4e87c579bc51244d9c10643c7c",
+                "url": "https://api.github.com/repos/windwalker-io/cache/zipball/e67e5a9d71d0fa6a36eb03428ca99664eb6875a8",
+                "reference": "e67e5a9d71d0fa6a36eb03428ca99664eb6875a8",
                 "shasum": ""
             },
             "require": {
@@ -3818,22 +3818,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/cache/issues",
-                "source": "https://github.com/windwalker-io/cache/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/cache/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/core",
-            "version": "4.0.44",
+            "version": "4.0.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/core.git",
-                "reference": "1709543198c46fc0d6cd529135e1ab407e92e736"
+                "reference": "1c876bc631bb3f0409b7248ba9edc68949be94bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/core/zipball/1709543198c46fc0d6cd529135e1ab407e92e736",
-                "reference": "1709543198c46fc0d6cd529135e1ab407e92e736",
+                "url": "https://api.github.com/repos/windwalker-io/core/zipball/1c876bc631bb3f0409b7248ba9edc68949be94bc",
+                "reference": "1c876bc631bb3f0409b7248ba9edc68949be94bc",
                 "shasum": ""
             },
             "require": {
@@ -3899,22 +3899,22 @@
             "homepage": "https://github.com/windwalker-io/core",
             "support": {
                 "issues": "https://github.com/windwalker-io/core/issues",
-                "source": "https://github.com/windwalker-io/core/tree/4.0.44"
+                "source": "https://github.com/windwalker-io/core/tree/4.0.45"
             },
-            "time": "2022-12-22T15:50:51+00:00"
+            "time": "2023-01-01T15:11:36+00:00"
         },
         {
             "name": "windwalker/data",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/data.git",
-                "reference": "b3df20d23493ecc949b95b6d819fa4318070a36e"
+                "reference": "eb9d6e54c9de62ae9255ec9458047dbba354bb81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/data/zipball/b3df20d23493ecc949b95b6d819fa4318070a36e",
-                "reference": "b3df20d23493ecc949b95b6d819fa4318070a36e",
+                "url": "https://api.github.com/repos/windwalker-io/data/zipball/eb9d6e54c9de62ae9255ec9458047dbba354bb81",
+                "reference": "eb9d6e54c9de62ae9255ec9458047dbba354bb81",
                 "shasum": ""
             },
             "require": {
@@ -3958,22 +3958,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/data/issues",
-                "source": "https://github.com/windwalker-io/data/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/data/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/database",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/database.git",
-                "reference": "aec4f887b4865bdefa10660b3721e3be41f0592c"
+                "reference": "172f2da1485fed4246f60df2a401c632a836c2ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/database/zipball/aec4f887b4865bdefa10660b3721e3be41f0592c",
-                "reference": "aec4f887b4865bdefa10660b3721e3be41f0592c",
+                "url": "https://api.github.com/repos/windwalker-io/database/zipball/172f2da1485fed4246f60df2a401c632a836c2ff",
+                "reference": "172f2da1485fed4246f60df2a401c632a836c2ff",
                 "shasum": ""
             },
             "require": {
@@ -4028,22 +4028,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/database/issues",
-                "source": "https://github.com/windwalker-io/database/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/database/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/di",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/di.git",
-                "reference": "dec05b3819caea6aefda26a49d798edfddd866b0"
+                "reference": "a83a310d3451fe94f9f08c746f0ab6610214ba86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/di/zipball/dec05b3819caea6aefda26a49d798edfddd866b0",
-                "reference": "dec05b3819caea6aefda26a49d798edfddd866b0",
+                "url": "https://api.github.com/repos/windwalker-io/di/zipball/a83a310d3451fe94f9f08c746f0ab6610214ba86",
+                "reference": "a83a310d3451fe94f9f08c746f0ab6610214ba86",
                 "shasum": ""
             },
             "require": {
@@ -4087,22 +4087,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/di/issues",
-                "source": "https://github.com/windwalker-io/di/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/di/tree/4.0.24"
             },
-            "time": "2022-10-28T17:36:33+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/dom",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/dom.git",
-                "reference": "a1d3d7807524ce17da9721416c77c3f6e570148e"
+                "reference": "b34621a2c5e24da6b946bf8f95ae7729fe98afe3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/dom/zipball/a1d3d7807524ce17da9721416c77c3f6e570148e",
-                "reference": "a1d3d7807524ce17da9721416c77c3f6e570148e",
+                "url": "https://api.github.com/repos/windwalker-io/dom/zipball/b34621a2c5e24da6b946bf8f95ae7729fe98afe3",
+                "reference": "b34621a2c5e24da6b946bf8f95ae7729fe98afe3",
                 "shasum": ""
             },
             "require": {
@@ -4145,22 +4145,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/dom/issues",
-                "source": "https://github.com/windwalker-io/dom/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/dom/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/edge",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/edge.git",
-                "reference": "701aff9851e83fb85e7ea077e5195986cc244570"
+                "reference": "808c7212eb1784aa9cac2a8f59cd774976f1bebb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/edge/zipball/701aff9851e83fb85e7ea077e5195986cc244570",
-                "reference": "701aff9851e83fb85e7ea077e5195986cc244570",
+                "url": "https://api.github.com/repos/windwalker-io/edge/zipball/808c7212eb1784aa9cac2a8f59cd774976f1bebb",
+                "reference": "808c7212eb1784aa9cac2a8f59cd774976f1bebb",
                 "shasum": ""
             },
             "require": {
@@ -4202,22 +4202,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/edge/issues",
-                "source": "https://github.com/windwalker-io/edge/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/edge/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/environment",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/environment.git",
-                "reference": "3e890bbff13851ecf00c4e7d51c29c4529289aa8"
+                "reference": "864b93f4c6d388fc824227f71d5e4510cdd23a1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/environment/zipball/3e890bbff13851ecf00c4e7d51c29c4529289aa8",
-                "reference": "3e890bbff13851ecf00c4e7d51c29c4529289aa8",
+                "url": "https://api.github.com/repos/windwalker-io/environment/zipball/864b93f4c6d388fc824227f71d5e4510cdd23a1f",
+                "reference": "864b93f4c6d388fc824227f71d5e4510cdd23a1f",
                 "shasum": ""
             },
             "require": {
@@ -4255,22 +4255,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/environment/issues",
-                "source": "https://github.com/windwalker-io/environment/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/environment/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/event",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/event.git",
-                "reference": "719f66b3acbd2a514960aaf0654c0bce3422d30a"
+                "reference": "f9095d9a266df0a16351fe806bb5ae1391caa330"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/event/zipball/719f66b3acbd2a514960aaf0654c0bce3422d30a",
-                "reference": "719f66b3acbd2a514960aaf0654c0bce3422d30a",
+                "url": "https://api.github.com/repos/windwalker-io/event/zipball/f9095d9a266df0a16351fe806bb5ae1391caa330",
+                "reference": "f9095d9a266df0a16351fe806bb5ae1391caa330",
                 "shasum": ""
             },
             "require": {
@@ -4323,22 +4323,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/event/issues",
-                "source": "https://github.com/windwalker-io/event/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/event/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/filesystem",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/filesystem.git",
-                "reference": "07bae898f85ddb0c9b793547f0463aef6e0b2cae"
+                "reference": "df1ef078ffe25e6ca62f1dbc45a983d8f05674bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/filesystem/zipball/07bae898f85ddb0c9b793547f0463aef6e0b2cae",
-                "reference": "07bae898f85ddb0c9b793547f0463aef6e0b2cae",
+                "url": "https://api.github.com/repos/windwalker-io/filesystem/zipball/df1ef078ffe25e6ca62f1dbc45a983d8f05674bd",
+                "reference": "df1ef078ffe25e6ca62f1dbc45a983d8f05674bd",
                 "shasum": ""
             },
             "require": {
@@ -4385,22 +4385,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/filesystem/issues",
-                "source": "https://github.com/windwalker-io/filesystem/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/filesystem/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/filter",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/filter.git",
-                "reference": "439f8151af1b9508ea2087112c710a9a8f998c0d"
+                "reference": "1ea6b761829bbd1c928892d981c3bf940c0960f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/filter/zipball/439f8151af1b9508ea2087112c710a9a8f998c0d",
-                "reference": "439f8151af1b9508ea2087112c710a9a8f998c0d",
+                "url": "https://api.github.com/repos/windwalker-io/filter/zipball/1ea6b761829bbd1c928892d981c3bf940c0960f3",
+                "reference": "1ea6b761829bbd1c928892d981c3bf940c0960f3",
                 "shasum": ""
             },
             "require": {
@@ -4438,22 +4438,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/filter/issues",
-                "source": "https://github.com/windwalker-io/filter/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/filter/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/form",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/form.git",
-                "reference": "ae08e9f61def370e33d9e7bd20baed00bcd3caae"
+                "reference": "d146c8c6486504dd0b1560e7d44cd74afa4c0b12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/form/zipball/ae08e9f61def370e33d9e7bd20baed00bcd3caae",
-                "reference": "ae08e9f61def370e33d9e7bd20baed00bcd3caae",
+                "url": "https://api.github.com/repos/windwalker-io/form/zipball/d146c8c6486504dd0b1560e7d44cd74afa4c0b12",
+                "reference": "d146c8c6486504dd0b1560e7d44cd74afa4c0b12",
                 "shasum": ""
             },
             "require": {
@@ -4502,22 +4502,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/form/issues",
-                "source": "https://github.com/windwalker-io/form/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/form/tree/4.0.24"
             },
-            "time": "2022-10-29T16:14:17+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/http",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/http.git",
-                "reference": "f206526a4b79c2dd9f54c6ad370fbf418755d0ac"
+                "reference": "762203138969114795dee66ef61d0688fc90628c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/http/zipball/f206526a4b79c2dd9f54c6ad370fbf418755d0ac",
-                "reference": "f206526a4b79c2dd9f54c6ad370fbf418755d0ac",
+                "url": "https://api.github.com/repos/windwalker-io/http/zipball/762203138969114795dee66ef61d0688fc90628c",
+                "reference": "762203138969114795dee66ef61d0688fc90628c",
                 "shasum": ""
             },
             "require": {
@@ -4575,22 +4575,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/http/issues",
-                "source": "https://github.com/windwalker-io/http/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/http/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/language",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/language.git",
-                "reference": "f980d652ce2178c951eb5bf13da312cb13ef5f49"
+                "reference": "dfbc5fbc5e72bb610787c827388df83161c6b801"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/language/zipball/f980d652ce2178c951eb5bf13da312cb13ef5f49",
-                "reference": "f980d652ce2178c951eb5bf13da312cb13ef5f49",
+                "url": "https://api.github.com/repos/windwalker-io/language/zipball/dfbc5fbc5e72bb610787c827388df83161c6b801",
+                "reference": "dfbc5fbc5e72bb610787c827388df83161c6b801",
                 "shasum": ""
             },
             "require": {
@@ -4636,22 +4636,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/language/issues",
-                "source": "https://github.com/windwalker-io/language/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/language/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/orm",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/orm.git",
-                "reference": "619dd536d99f63db71b115a0aa29a28c8ed377fd"
+                "reference": "623dc756f8f2a6849f46bbd2807c168a49d8b664"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/orm/zipball/619dd536d99f63db71b115a0aa29a28c8ed377fd",
-                "reference": "619dd536d99f63db71b115a0aa29a28c8ed377fd",
+                "url": "https://api.github.com/repos/windwalker-io/orm/zipball/623dc756f8f2a6849f46bbd2807c168a49d8b664",
+                "reference": "623dc756f8f2a6849f46bbd2807c168a49d8b664",
                 "shasum": ""
             },
             "require": {
@@ -4698,22 +4698,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/orm/issues",
-                "source": "https://github.com/windwalker-io/orm/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/orm/tree/4.0.24"
             },
-            "time": "2022-10-16T07:08:38+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/pool",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/pool.git",
-                "reference": "417e64ab83becbe1ae30577a940ee7c5ee6ee0e8"
+                "reference": "d0bc247e6d9ceaa2dada5ccaefcf3e6986ebd0a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/pool/zipball/417e64ab83becbe1ae30577a940ee7c5ee6ee0e8",
-                "reference": "417e64ab83becbe1ae30577a940ee7c5ee6ee0e8",
+                "url": "https://api.github.com/repos/windwalker-io/pool/zipball/d0bc247e6d9ceaa2dada5ccaefcf3e6986ebd0a9",
+                "reference": "d0bc247e6d9ceaa2dada5ccaefcf3e6986ebd0a9",
                 "shasum": ""
             },
             "require": {
@@ -4755,22 +4755,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/pool/issues",
-                "source": "https://github.com/windwalker-io/pool/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/pool/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/query",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/query.git",
-                "reference": "60b50d33b8c1af889a6d0a8f3e00de352fd27b2f"
+                "reference": "e0f7656b00a937c37a2e8f6502926e36867ef9b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/query/zipball/60b50d33b8c1af889a6d0a8f3e00de352fd27b2f",
-                "reference": "60b50d33b8c1af889a6d0a8f3e00de352fd27b2f",
+                "url": "https://api.github.com/repos/windwalker-io/query/zipball/e0f7656b00a937c37a2e8f6502926e36867ef9b9",
+                "reference": "e0f7656b00a937c37a2e8f6502926e36867ef9b9",
                 "shasum": ""
             },
             "require": {
@@ -4812,22 +4812,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/query/issues",
-                "source": "https://github.com/windwalker-io/query/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/query/tree/4.0.24"
             },
-            "time": "2022-10-16T07:14:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/reactor",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/reactor.git",
-                "reference": "858d5362c7fba5d9d7199f388089bb548977ec45"
+                "reference": "ef6581a2369a292328fe70d481fa789836490476"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/reactor/zipball/858d5362c7fba5d9d7199f388089bb548977ec45",
-                "reference": "858d5362c7fba5d9d7199f388089bb548977ec45",
+                "url": "https://api.github.com/repos/windwalker-io/reactor/zipball/ef6581a2369a292328fe70d481fa789836490476",
+                "reference": "ef6581a2369a292328fe70d481fa789836490476",
                 "shasum": ""
             },
             "require": {
@@ -4867,22 +4867,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/reactor/issues",
-                "source": "https://github.com/windwalker-io/reactor/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/reactor/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/renderer",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/renderer.git",
-                "reference": "0050919ec43d42f31334abb2c0e259b6a6999255"
+                "reference": "26da20536fb9e6b21d5aae908d6c5b8e7eef8068"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/renderer/zipball/0050919ec43d42f31334abb2c0e259b6a6999255",
-                "reference": "0050919ec43d42f31334abb2c0e259b6a6999255",
+                "url": "https://api.github.com/repos/windwalker-io/renderer/zipball/26da20536fb9e6b21d5aae908d6c5b8e7eef8068",
+                "reference": "26da20536fb9e6b21d5aae908d6c5b8e7eef8068",
                 "shasum": ""
             },
             "require": {
@@ -4935,22 +4935,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/renderer/issues",
-                "source": "https://github.com/windwalker-io/renderer/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/renderer/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/scalars",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/scalars.git",
-                "reference": "2f67673a3d0cafa4692f53af1d4d9e641ec18fd2"
+                "reference": "b5452b8818e79731d11d5cc0c59108fd042d80fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/scalars/zipball/2f67673a3d0cafa4692f53af1d4d9e641ec18fd2",
-                "reference": "2f67673a3d0cafa4692f53af1d4d9e641ec18fd2",
+                "url": "https://api.github.com/repos/windwalker-io/scalars/zipball/b5452b8818e79731d11d5cc0c59108fd042d80fb",
+                "reference": "b5452b8818e79731d11d5cc0c59108fd042d80fb",
                 "shasum": ""
             },
             "require": {
@@ -4995,22 +4995,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/scalars/issues",
-                "source": "https://github.com/windwalker-io/scalars/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/scalars/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/session",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/session.git",
-                "reference": "c6df6780fedf6b075fadcf8eca393bb60dfaff12"
+                "reference": "cabfb812bc03175feffeaca689333d8f530a74a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/session/zipball/c6df6780fedf6b075fadcf8eca393bb60dfaff12",
-                "reference": "c6df6780fedf6b075fadcf8eca393bb60dfaff12",
+                "url": "https://api.github.com/repos/windwalker-io/session/zipball/cabfb812bc03175feffeaca689333d8f530a74a4",
+                "reference": "cabfb812bc03175feffeaca689333d8f530a74a4",
                 "shasum": ""
             },
             "require": {
@@ -5061,22 +5061,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/session/issues",
-                "source": "https://github.com/windwalker-io/session/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/session/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/stream",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/stream.git",
-                "reference": "14703e00d0bb59347f29f5861462df2e0e31b7df"
+                "reference": "ad9df769af7750d549cd353c8618b974a9098b12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/stream/zipball/14703e00d0bb59347f29f5861462df2e0e31b7df",
-                "reference": "14703e00d0bb59347f29f5861462df2e0e31b7df",
+                "url": "https://api.github.com/repos/windwalker-io/stream/zipball/ad9df769af7750d549cd353c8618b974a9098b12",
+                "reference": "ad9df769af7750d549cd353c8618b974a9098b12",
                 "shasum": ""
             },
             "require": {
@@ -5119,22 +5119,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/stream/issues",
-                "source": "https://github.com/windwalker-io/stream/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/stream/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/test",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/test.git",
-                "reference": "a55d05b47cc1a7fd468f9ff8b3d4c7de8f72467c"
+                "reference": "aa44bc3557c29c3272828e51a2ef51780f637cd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/test/zipball/a55d05b47cc1a7fd468f9ff8b3d4c7de8f72467c",
-                "reference": "a55d05b47cc1a7fd468f9ff8b3d4c7de8f72467c",
+                "url": "https://api.github.com/repos/windwalker-io/test/zipball/aa44bc3557c29c3272828e51a2ef51780f637cd4",
+                "reference": "aa44bc3557c29c3272828e51a2ef51780f637cd4",
                 "shasum": ""
             },
             "require": {
@@ -5170,22 +5170,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/test/issues",
-                "source": "https://github.com/windwalker-io/test/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/test/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/unicorn",
-            "version": "1.0.54",
+            "version": "1.0.55",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/unicorn.git",
-                "reference": "fed9d5e9f96374ee6409f5ceedffa08817d39d3b"
+                "reference": "450fef84a08ed09b596dd3780ef651c61318e5a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/fed9d5e9f96374ee6409f5ceedffa08817d39d3b",
-                "reference": "fed9d5e9f96374ee6409f5ceedffa08817d39d3b",
+                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/450fef84a08ed09b596dd3780ef651c61318e5a7",
+                "reference": "450fef84a08ed09b596dd3780ef651c61318e5a7",
                 "shasum": ""
             },
             "require": {
@@ -5240,22 +5240,22 @@
             "homepage": "https://github.com/ventoviro/unicorn",
             "support": {
                 "issues": "https://github.com/windwalker-io/unicorn/issues",
-                "source": "https://github.com/windwalker-io/unicorn/tree/1.0.54"
+                "source": "https://github.com/windwalker-io/unicorn/tree/1.0.55"
             },
-            "time": "2022-12-22T15:54:58+00:00"
+            "time": "2023-01-01T15:16:32+00:00"
         },
         {
             "name": "windwalker/uri",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/uri.git",
-                "reference": "07f602e9d824e86e540e1a17434c4a7ed5d3e1ee"
+                "reference": "2d3a6edd09cc074e691f9c9fdb54010847ec0f5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/uri/zipball/07f602e9d824e86e540e1a17434c4a7ed5d3e1ee",
-                "reference": "07f602e9d824e86e540e1a17434c4a7ed5d3e1ee",
+                "url": "https://api.github.com/repos/windwalker-io/uri/zipball/2d3a6edd09cc074e691f9c9fdb54010847ec0f5b",
+                "reference": "2d3a6edd09cc074e691f9c9fdb54010847ec0f5b",
                 "shasum": ""
             },
             "require": {
@@ -5302,22 +5302,22 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/uri/issues",
-                "source": "https://github.com/windwalker-io/uri/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/uri/tree/4.0.24"
             },
-            "time": "2022-10-13T16:28:59+00:00"
+            "time": "2023-01-01T15:10:37+00:00"
         },
         {
             "name": "windwalker/utilities",
-            "version": "4.0.23",
+            "version": "4.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/utilities.git",
-                "reference": "a377aff48a668510acede98795c0c8a9784c5c7a"
+                "reference": "1db189ed573fe2ed0c012a5bb82e8791448d36f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/utilities/zipball/a377aff48a668510acede98795c0c8a9784c5c7a",
-                "reference": "a377aff48a668510acede98795c0c8a9784c5c7a",
+                "url": "https://api.github.com/repos/windwalker-io/utilities/zipball/1db189ed573fe2ed0c012a5bb82e8791448d36f1",
+                "reference": "1db189ed573fe2ed0c012a5bb82e8791448d36f1",
                 "shasum": ""
             },
             "require": {
@@ -5363,9 +5363,9 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/utilities/issues",
-                "source": "https://github.com/windwalker-io/utilities/tree/4.0.23"
+                "source": "https://github.com/windwalker-io/utilities/tree/4.0.24"
             },
-            "time": "2022-10-16T07:07:49+00:00"
+            "time": "2023-01-01T15:29:29+00:00"
         }
     ],
     "packages-dev": [],
@@ -5382,5 +5382,5 @@
     "platform-overrides": {
         "php": "8.0.5"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -105,7 +105,7 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('native', TextField::class)
                     ->label($this->trans('shopgo.location.field.native'));
 
-                if ($this->type && $this->type->equals(LocationType::COUNTRY())) {
+                if ($this->type && $this->type === LocationType::COUNTRY()) {
                     $form->add('region', TextField::class)
                         ->label($this->trans('shopgo.location.field.region'));
 

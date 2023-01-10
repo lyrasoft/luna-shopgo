@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Enum;
 
 use MyCLabs\Enum\Enum;
+use Windwalker\Utilities\Enum\EnumSingleton;
 use Windwalker\Utilities\Enum\EnumTranslatableInterface;
 use Windwalker\Utilities\Enum\EnumTranslatableTrait;
 use Windwalker\Utilities\Contract\LanguageInterface;
@@ -25,7 +26,7 @@ use Windwalker\Utilities\Contract\LanguageInterface;
  * @method static $this STATE()
  * @method static $this CITY()
  */
-class LocationType extends Enum implements EnumTranslatableInterface
+class LocationType extends EnumSingleton implements EnumTranslatableInterface
 {
     use EnumTranslatableTrait;
 
@@ -49,7 +50,7 @@ class LocationType extends Enum implements EnumTranslatableInterface
      * @psalm-param T $value
      * @throws \UnexpectedValueException if incompatible type is given.
      */
-    public function __construct(mixed $value)
+    protected function __construct(mixed $value)
     {
         parent::__construct($value);
     }
