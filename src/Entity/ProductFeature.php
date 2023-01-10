@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\ProductFeatureType;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -42,7 +43,8 @@ class ProductFeature implements EntityInterface
     protected ?int $id = null;
 
     #[Column('type')]
-    protected string $type = '';
+    #[Cast(ProductFeatureType::class)]
+    protected ProductFeatureType $type;
 
     #[Column('title')]
     protected string $title = '';
@@ -101,18 +103,6 @@ class ProductFeature implements EntityInterface
     public function setId(?int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -245,6 +235,18 @@ class ProductFeature implements EntityInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
+
+        return $this;
+    }
+
+    public function getType(): ProductFeatureType
+    {
+        return $this->type;
+    }
+
+    public function setType(string|ProductFeatureType $type): static
+    {
+        $this->type = ProductFeatureType::wrap($type);
 
         return $this;
     }

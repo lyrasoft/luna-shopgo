@@ -18,27 +18,23 @@ use Windwalker\Utilities\Enum\EnumTranslatableTrait;
 use Windwalker\Utilities\Contract\LanguageInterface;
 
 /**
- * The SignPosition enum class.
+ * The FeatureType enum class.
  *
- * @method static $this START()
- * @method static $this END()
+ * @method static $this LIST()
+ * @method static $this COLOR()
  */
-class SignPosition extends EnumSingleton implements EnumTranslatableInterface
+class ProductFeatureType extends EnumSingleton implements EnumTranslatableInterface
 {
     use EnumTranslatableTrait;
 
-    public const START = 'start';
-
-    public const END = 'end';
+    public const LIST = 'list';
+    public const COLOR = 'color';
 
     /**
-     * Creates a new value of some type
-     *
-     * @psalm-pure
+     * Unable to directly new this object.
      *
      * @param  mixed  $value
      *
-     * @psalm-param T $value
      * @throws \UnexpectedValueException if incompatible type is given.
      */
     protected function __construct(mixed $value)
@@ -48,6 +44,6 @@ class SignPosition extends EnumSingleton implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.currency.sign.position.' . $this->getKey());
+        return $lang->trans('shopgo.product.feature.type.' . $this->getKey());
     }
 }

@@ -80,18 +80,28 @@ $seeder->import(
 
             $catelogIds = array_filter(
                 $categoryIds,
-                function ($v) use ($item) {
-                    return $v !== $item->getCategoryId();
-                }
+                static fn($v) => $v !== $item->getCategoryId()
             );
 
+            // Primary category
+            $map = $mapMapper->createEntity();
+
+            $map->setType('product');
+            $map->setTargetId($item->getId());
+            $map->setCategoryId($item->getCategoryId());
+            $map->setPrimary(true);
+            $map->setOrdering(1);
+
+            $mapMapper->createOne($map);
+
+            // Sub categories
             foreach ($faker->randomElements($catelogIds, 3) as $k => $catelogId) {
                 $map = $mapMapper->createEntity();
 
                 $map->setType('product');
                 $map->setTargetId($item->getId());
                 $map->setCategoryId((int) $catelogId);
-                $map->setOrdering($k + 1);
+                $map->setOrdering($k + 2);
 
                 $mapMapper->createOne($map);
             }
@@ -101,6 +111,7 @@ $seeder->import(
 
 $seeder->clear(
     static function () use ($seeder, $orm, $db) {
-        //
+        $seeder->truncate(Product::class);
+        $seeder->truncate(ShopCategoryMap::class);
     }
 );

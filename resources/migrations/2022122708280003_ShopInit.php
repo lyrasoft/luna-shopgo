@@ -31,6 +31,7 @@ $mig->up(
                 $schema->varchar('type')->comment('No enum - product,attribute,tab');
                 $schema->integer('target_id');
                 $schema->integer('category_id');
+                $schema->bool('primary');
                 $schema->integer('ordering');
 
                 $schema->addIndex('type');

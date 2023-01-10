@@ -4642,16 +4642,16 @@
         },
         {
             "name": "windwalker/orm",
-            "version": "4.0.24",
+            "version": "4.0.25-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/orm.git",
-                "reference": "623dc756f8f2a6849f46bbd2807c168a49d8b664"
+                "reference": "a6cee21b7ae213a0b85e6326d3845b53d8f02c31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/orm/zipball/623dc756f8f2a6849f46bbd2807c168a49d8b664",
-                "reference": "623dc756f8f2a6849f46bbd2807c168a49d8b664",
+                "url": "https://api.github.com/repos/windwalker-io/orm/zipball/a6cee21b7ae213a0b85e6326d3845b53d8f02c31",
+                "reference": "a6cee21b7ae213a0b85e6326d3845b53d8f02c31",
                 "shasum": ""
             },
             "require": {
@@ -4698,9 +4698,9 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/orm/issues",
-                "source": "https://github.com/windwalker-io/orm/tree/4.0.24"
+                "source": "https://github.com/windwalker-io/orm/tree/4.0.25-beta1"
             },
-            "time": "2023-01-01T15:10:37+00:00"
+            "time": "2023-01-03T10:59:31+00:00"
         },
         {
             "name": "windwalker/pool",
@@ -5176,16 +5176,16 @@
         },
         {
             "name": "windwalker/unicorn",
-            "version": "1.0.55",
+            "version": "1.0.56",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/unicorn.git",
-                "reference": "450fef84a08ed09b596dd3780ef651c61318e5a7"
+                "reference": "51462091b4d710f261af6e919fecad09204d4cd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/450fef84a08ed09b596dd3780ef651c61318e5a7",
-                "reference": "450fef84a08ed09b596dd3780ef651c61318e5a7",
+                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/51462091b4d710f261af6e919fecad09204d4cd4",
+                "reference": "51462091b4d710f261af6e919fecad09204d4cd4",
                 "shasum": ""
             },
             "require": {
@@ -5240,9 +5240,9 @@
             "homepage": "https://github.com/ventoviro/unicorn",
             "support": {
                 "issues": "https://github.com/windwalker-io/unicorn/issues",
-                "source": "https://github.com/windwalker-io/unicorn/tree/1.0.55"
+                "source": "https://github.com/windwalker-io/unicorn/tree/1.0.56"
             },
-            "time": "2023-01-01T15:16:32+00:00"
+            "time": "2023-01-02T10:49:50+00:00"
         },
         {
             "name": "windwalker/uri",
@@ -5308,16 +5308,16 @@
         },
         {
             "name": "windwalker/utilities",
-            "version": "4.0.24",
+            "version": "4.0.25-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/utilities.git",
-                "reference": "1db189ed573fe2ed0c012a5bb82e8791448d36f1"
+                "reference": "87f0c70ab5d0a4ba6c0544c4534c3fe097d8969a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/utilities/zipball/1db189ed573fe2ed0c012a5bb82e8791448d36f1",
-                "reference": "1db189ed573fe2ed0c012a5bb82e8791448d36f1",
+                "url": "https://api.github.com/repos/windwalker-io/utilities/zipball/87f0c70ab5d0a4ba6c0544c4534c3fe097d8969a",
+                "reference": "87f0c70ab5d0a4ba6c0544c4534c3fe097d8969a",
                 "shasum": ""
             },
             "require": {
@@ -5363,9 +5363,9 @@
             ],
             "support": {
                 "issues": "https://github.com/windwalker-io/utilities/issues",
-                "source": "https://github.com/windwalker-io/utilities/tree/4.0.24"
+                "source": "https://github.com/windwalker-io/utilities/tree/4.0.25-beta1"
             },
-            "time": "2023-01-01T15:29:29+00:00"
+            "time": "2023-01-03T13:01:54+00:00"
         }
     ],
     "packages-dev": [],
@@ -5382,5 +5382,5 @@
     "platform-overrides": {
         "php": "8.0.5"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
