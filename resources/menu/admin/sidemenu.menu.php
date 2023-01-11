@@ -60,6 +60,10 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.user.title')))
 //     ->to($nav->to('config_core'));
 
 // Currency
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.feature.title')))
+    ->to($nav->to('product_feature_list'));
+
+// Currency
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
     ->to($nav->to('currency_list'));
 
