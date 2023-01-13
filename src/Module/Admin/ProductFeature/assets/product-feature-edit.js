@@ -54,15 +54,45 @@ const app = createApp({
     });
 
     function selectItem(item) {
-
+      state.current = item;
     }
 
-    function addNewItem() {
+    function addNewItem(item = null) {
+      const i = item ? state.items.indexOf(item) + 1 : state.items.length;
 
+      state.items.splice(
+        i,
+        0,
+        ShopGoUtilities.prepareVueItem(
+          {
+            value: '',
+            text: '',
+            color: ''
+          },
+          (data) => {
+            return {
+              data: data,
+              selected: false
+            };
+          }
+        )
+      );
+    }
+
+    function removeItem(item) {
+      const i = state.items.indexOf(item);
+
+      state.items.splice(i, 1);
     }
 
     function removeItems() {
+      state.items = state.items.filter((item) => !state.selected.includes(item.uid));
 
+      if (state.selected.includes(state.current?.uid)) {
+        state.current = null;
+      }
+
+      state.selected = [];
     }
 
     function toJson(data) {
@@ -70,10 +100,12 @@ const app = createApp({
     }
 
     return {
+      type,
       ...toRefs(state),
 
       selectItem,
       addNewItem,
+      removeItem,
       removeItems,
       toJson,
     };

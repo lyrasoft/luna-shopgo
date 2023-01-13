@@ -61,6 +61,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
 
         <div class="row">
             <div class="col-lg-9">
+                <input type="hidden" name="options" value="__EMPTY_ARRAY__" />
                 <div id="product-feature-app">
                     <div class="row">
                         <div class="col-lg-6">
@@ -86,25 +87,30 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                         <template #item="{ element: item, index }">
                                             <div class="list-group-item c-option-item"
                                                 :class="[{active: current === item}]"
-                                                @click="selectItem(item)">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="c-option-item__control mr-3">
-                                                        <span class="fa fa-fw fa-ellipsis-v handle"></span>
+                                                @click="selectItem(item)"
+                                                style="cursor: pointer;"
+                                            >
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="c-option-item__control">
+                                                        <span class="fa fa-fw fa-ellipsis-v handle"
+                                                            style="cursor: move"
+                                                        ></span>
                                                         <input type="checkbox" name="selected[]" v-model="selected"
+                                                            class="form-check-input"
                                                             :value="item.uid"
                                                             @click.stop="" />
                                                     </div>
-                                                    <div v-if="type === 'color'" class="c-option-item__color mr-3">
+                                                    <div v-if="type === 'color'" class="c-option-item__color">
                                                         <div class="c-option-item__color-box rounded"
                                                             style="width: 25px; height: 25px;"
                                                             :style="{'background-color': item.data.color || '#eee'}"></div>
                                                     </div>
                                                     <div class="c-option-control__title flex-grow-1">
                                                         <div class="h5 m-0">
-                                                            @{{ item.title || '-未命名-' }}
+                                                            @{{ item.data.text || '-未命名-' }}
                                                         </div>
                                                     </div>
-                                                    <div class="c-option-control__actions d-flex align-items-center">
+                                                    <div class="c-option-control__actions d-flex align-items-center gap-1">
                                                         {{--<div class="mr-2" @click.stop="">--}}
                                                         {{--<label :for="'default-radio-' + item.uid">預設</label>--}}
                                                         {{--<input type="radio" name="item[default]" :value="item.uid"--}}
@@ -112,7 +118,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                         {{--@click="setDefault(i)" />--}}
                                                         {{--</div>--}}
                                                         <button type="button"
-                                                            class="btn btn-sm btn-light border-secondary mr-1"
+                                                            class="btn btn-sm btn-light border-secondary"
                                                             @click.stop="addNewItem(item)">
                                                             <span class="fa fa-plus"></span>
                                                         </button>
@@ -123,16 +129,12 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                     </div>
                                                 </div>
                                                 <div class="d-none">
-                                                    <input type="hidden" :name="`options[${item.uid}][id]`"
-                                                        :value="item.id" />
-                                                    <input type="hidden" :name="`options[${item.uid}][title]`"
-                                                        :value="item.title" />
+                                                    <input type="hidden" :name="`options[${item.uid}][text]`"
+                                                        :value="item.data.text" />
                                                     <input type="hidden" :name="`options[${item.uid}][value]`"
-                                                        :value="item.value" />
-                                                    <input type="hidden" :name="`options[${item.uid}][data]`"
-                                                        :value="toJson(item.data)" />
-                                                    <input type="hidden" :name="`options[${item.uid}][state]`"
-                                                        value="1" />
+                                                        :value="item.data.value" />
+                                                    <input type="hidden" :name="`options[${item.uid}][color]`"
+                                                        :value="item.data.color" />
                                                 </div>
                                             </div>
                                         </template>
@@ -140,8 +142,52 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6 l-feature-option-item">
+                            <div class="card c-option-edit">
+                                <div class="card-header">
+                                    內容
+                                </div>
+                                <div class="card-body">
+                                    <div v-if="current" class="c-option-edit__form">
+                                        <div class="form-group mb-4">
+                                            <label for="input-option-title" class="form-label">
+                                                標題
+                                            </label>
+                                            <input id="input-option-title" type="text" class="form-control"
+                                                v-model="current.data.text" />
+                                        </div>
 
+                                        <div class="form-group mb-4">
+                                            <label for="input-option-value" class="form-label">
+                                                內容
+                                            </label>
+                                            <input id="input-option-value" type="text" class="form-control"
+                                                v-model="current.data.value" />
+                                        </div>
+
+                                        <div class="form-group mb-4" v-if="type === 'color'">
+                                            <label for="input-option-value" class="form-label">
+                                                顏色
+                                            </label>
+                                            <div class="d-flex gap-2">
+                                                <input id="input-option-color" type="color" class="form-control form-control-color"
+                                                    v-model.lazy="current.data.color"
+                                                />
+                                                <input id="input-option-color-text" type="text" class="form-control"
+                                                    v-model.lazy="current.data.color"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else>
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                請選擇一個項目
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

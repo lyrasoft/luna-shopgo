@@ -56,14 +56,14 @@ use Windwalker\Core\Router\SystemUri;
     </x-state-dropdown>
 
     {{-- Batch --}}
-    <button type="button" class="btn btn-dark btn-sm uni-btn-batch"
-        @click="grid.validateChecked(null, function () {
-            (new bootstrap.Modal('#batch-modal')).show();
-        })"
-    >
-        <i class="fa fa-sliders"></i>
-        @lang('unicorn.toolbar.batch')
-    </button>
+{{--    <button type="button" class="btn btn-dark btn-sm uni-btn-batch"--}}
+{{--        @click="grid.validateChecked(null, function () {--}}
+{{--            (new bootstrap.Modal('#batch-modal')).show();--}}
+{{--        })"--}}
+{{--    >--}}
+{{--        <i class="fa fa-sliders"></i>--}}
+{{--        @lang('unicorn.toolbar.batch')--}}
+{{--    </button>--}}
 
     {{-- Delete --}}
     <button type="button" class="btn btn-outline-danger btn-sm uni-btn-delete"

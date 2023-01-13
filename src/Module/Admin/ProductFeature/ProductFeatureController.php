@@ -15,6 +15,7 @@ use App\Module\Admin\ProductFeature\Form\EditForm;
 use App\Repository\ProductFeatureRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
+use Unicorn\Repository\Event\PrepareSaveEvent;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Router\Navigator;
@@ -33,6 +34,18 @@ class ProductFeatureController
         #[Autowire] ProductFeatureRepository $repository,
     ): mixed {
         $form = $app->make(EditForm::class);
+
+        $controller->prepareSave(
+            function (PrepareSaveEvent $event) use ($app) {
+                $data = &$event->getData();
+
+                $options = $app->input('options');
+
+                if ($options !== null) {
+                    $data['options'] = array_values($options);
+                }
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 
