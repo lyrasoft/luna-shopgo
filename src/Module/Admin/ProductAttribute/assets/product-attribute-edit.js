@@ -8,6 +8,7 @@
 import '@main';
 
 u.$ui.bootstrap.tooltip();
+u.$ui.tomSelect('.has-tom-select');
 
 const formSelector = '#admin-form';
 
@@ -30,23 +31,25 @@ const $typeSelect = document.querySelector('#input-item-type');
 const { ref, onMounted, computed, createApp, toRefs, reactive } = Vue;
 
 const app = createApp({
-  name: 'ProductFeatureApp',
+  name: 'ProductAttributeApp',
   setup() {
+    const items = ShopgoVueUtilities.prepareVueItemList(
+      u.data('options') || [],
+      (item) => {
+        return {
+          data: item,
+          selected: false
+        };
+      }
+    );
+
     const type = ref($typeSelect.value);
     const state = reactive({
-      items: ShopgoVueUtilities.prepareVueItemList(
-        u.data('options') || [],
-        (item) => {
-          return {
-            data: item,
-            selected: false
-          };
-        }
-      ),
+      items,
       current: null,
       selected: [],
-      colorpicker: {}
-    })
+      defaultUid: items.find((item) => item.data.is_default)?.uid
+    });
 
     onMounted(() => {
       $typeSelect.addEventListener('change', () => {
@@ -68,7 +71,7 @@ const app = createApp({
           {
             value: '',
             text: '',
-            color: ''
+            is_default: false
           },
           (data) => {
             return {
@@ -117,6 +120,5 @@ const app = createApp({
 await u.domready();
 
 app.use(ShopGoVuePlugin);
-app.directive('colorpicker', ShopGoVuePlugin.Colorpicker);
 app.component('draggable', vuedraggable);
-app.mount('#product-feature-app');
+app.mount('#product-attribute-app');

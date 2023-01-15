@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        ProductFeatureEditView  The view model object.
+ * @var  $vm        ProductAttributeEditView  The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,8 +16,8 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use App\Entity\ProductFeature;
-use App\Module\Admin\ProductFeature\ProductFeatureEditView;
+use App\Entity\ProductAttribute;
+use App\Module\Admin\ProductAttribute\ProductAttributeEditView;
 use App\Script\ShopGoScript;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
@@ -30,8 +30,8 @@ use Windwalker\Core\Router\SystemUri;
 use Windwalker\Form\Form;
 
 /**
- * @var Form           $form
- * @var ProductFeature $item
+ * @var Form             $form
+ * @var ProductAttribute $item
  */
 
 $app->service(ShopGoScript::class)->vueUtilities();
@@ -54,16 +54,24 @@ $uniScript->data('options', $item?->getOptions() ?? []);
 @section('content')
     <form name="admin-form" id="admin-form"
         uni-form-validate='{"scroll": true}'
-        action="{{ $nav->to('product_feature_edit') }}"
+        action="{{ $nav->to('product_attribute_edit') }}"
         method="POST" enctype="multipart/form-data">
 
-        <x-title-bar :form="$form"></x-title-bar>
+        <x-title-bar :form="$form" alias-field="key"></x-title-bar>
 
         <div class="row">
+            <div class="col-lg-3">
+                <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"
+                    :form="$form"
+                    class="mb-4"
+                    is="card"
+                >
+                </x-fieldset>
+            </div>
             <div class="col-lg-9">
                 <input type="hidden" name="options" value="__EMPTY_ARRAY__" />
-                <product-feature-app id="product-feature-app">
-                    <div class="row">
+                <product-attribute-app id="product-attribute-app">
+                    <div  v-if="type !== 'bool'"  class="row">
                         <div class="col-lg-6">
                             <div class="card c-feature-option-list">
                                 <div class="card-header d-flex align-items-center">
@@ -100,24 +108,25 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                             :value="item.uid"
                                                             @click.stop="" />
                                                     </div>
-                                                    <div v-if="type === 'color'" class="c-option-item__color">
-                                                        <div class="c-option-item__color-box rounded"
-                                                            style="width: 25px; height: 25px;"
-                                                            :style="{'background-color': item.data.color || '#eee'}"></div>
-                                                    </div>
                                                     <div class="c-option-control__title flex-grow-1">
-                                                        <div class="h5 m-0">
+                                                        <span class="h5 m-0">
                                                             @{{ item.data.text || '-未命名-' }}
-                                                        </div>
+                                                        </span>
+                                                        <span v-if="type === 'select'" style="opacity: .5">
+                                                            (@{{ item.data.value }})
+                                                        </span>
                                                     </div>
                                                     <div
                                                         class="c-option-control__actions d-flex align-items-center gap-1">
-                                                        {{--<div class="mr-2" @click.stop="">--}}
-                                                        {{--<label :for="'default-radio-' + item.uid">預設</label>--}}
-                                                        {{--<input type="radio" name="item[default]" :value="item.uid"--}}
-                                                        {{--:id="'default-radio-' + item.uid"--}}
-                                                        {{--@click="setDefault(i)" />--}}
-                                                        {{--</div>--}}
+                                                        <div class="me-2" @click.stop="">
+                                                            <input type="radio"
+                                                                :value="item.uid"
+                                                                class="form-check-input"
+                                                                :id="'default-radio-' + item.uid"
+                                                                v-model="defaultUid"
+                                                            />
+                                                            <label :for="'default-radio-' + item.uid" class="form-check-label">預設</label>
+                                                        </div>
                                                         <button type="button"
                                                             class="btn btn-sm btn-light border-secondary"
                                                             @click.stop="addNewItem(item)">
@@ -136,6 +145,9 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                         :value="item.data.value" />
                                                     <input type="hidden" :name="`options[${item.uid}][color]`"
                                                         :value="item.data.color" />
+                                                    <input type="hidden" :name="`options[${item.uid}][is_default]`"
+                                                        :checked="item.uid === defaultUid"
+                                                        :value="item.uid === defaultUid ? 1 : ''" />
                                                 </div>
                                             </div>
                                         </template>
@@ -158,25 +170,12 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                 v-model="current.data.text" />
                                         </div>
 
-                                        <div class="form-group mb-4">
+                                        <div v-if="type === 'select'" class="form-group mb-4">
                                             <label for="input-option-value" class="form-label">
                                                 內容
                                             </label>
                                             <input id="input-option-value" type="text" class="form-control"
                                                 v-model="current.data.value" />
-                                        </div>
-
-                                        <div class="form-group mb-4" v-if="type === 'color'">
-                                            <label for="input-option-value" class="form-label">
-                                                顏色
-                                            </label>
-                                            <div>
-                                                <input id="input-option-color" type="text"
-                                                    v-colorpicker="colorpicker"
-                                                    class="form-control"
-                                                    v-model.lazy="current.data.color"
-                                                />
-                                            </div>
                                         </div>
                                     </div>
                                     <div v-else>
@@ -190,15 +189,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                             </div>
                         </div>
                     </div>
-                </product-feature-app>
-            </div>
-            <div class="col-lg-3">
-                <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"
-                    :form="$form"
-                    class="mb-4"
-                    is="card"
-                >
-                </x-fieldset>
+                </product-attribute-app>
             </div>
         </div>
 

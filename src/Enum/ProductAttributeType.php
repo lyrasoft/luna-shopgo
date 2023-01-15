@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace App\Enum;
 
 use MyCLabs\Enum\Enum;
+use Windwalker\Utilities\Attributes\Enum\Color;
+use Windwalker\Utilities\Attributes\Enum\Icon;
 use Windwalker\Utilities\Enum\EnumSingleton;
 use Windwalker\Utilities\Enum\EnumTranslatableInterface;
 use Windwalker\Utilities\Enum\EnumTranslatableTrait;
@@ -21,17 +23,23 @@ use Windwalker\Utilities\Contract\LanguageInterface;
  * The ProductAttributeType enum class.
  *
  * @method static $this TEXT()
- * @method static $this LIST()
+ * @method static $this SELECT()
  * @method static $this BOOL()
  */
 class ProductAttributeType extends EnumSingleton implements EnumTranslatableInterface
 {
     use EnumTranslatableTrait;
 
+    #[Color('secondary')]
+    #[Icon('font')]
     public const TEXT = 'text';
 
-    public const LIST = 'list';
+    #[Color('primary')]
+    #[Icon('list')]
+    public const SELECT = 'select';
 
+    #[Color('danger')]
+    #[Icon('toggle-on')]
     public const BOOL = 'bool';
 
     /**

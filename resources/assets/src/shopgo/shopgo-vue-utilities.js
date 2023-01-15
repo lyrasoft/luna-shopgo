@@ -5,7 +5,7 @@
  * @license    __LICENSE__
  */
 
-class ShopGoUtilities {
+window.ShopgoVueUtilities = class ShopgoVueUtilities {
   /**
    * @template {[name: string]: any} T
    * @param {T} item
@@ -33,8 +33,27 @@ class ShopGoUtilities {
   }
 }
 
-window.ShopGoUtilities = ShopGoUtilities;
-
-window.ShopGoAppPlugin = function (app) {
+window.ShopGoVuePlugin = function (app) {
   app.config.compilerOptions.whitespace = 'preserve';
 }
+
+// Directive
+
+// Colorpicker
+window.ShopGoVuePlugin.Colorpicker = {
+  async mounted(el, { value }) {
+    await u.$ui.colorPicker();
+    Spectrum.getInstance(el, Object.assign({}, value));
+  },
+  updated(el, { value }) {
+    const sp = Spectrum.getInstance(el, options);
+
+    if (JSON.stringify(value) !== JSON.stringify(sp.options)) {
+      sp.rebuild(Object.assign({}, value));
+    }
+  },
+  unmounted(el) {
+    const sp = Spectrum.getInstance(el);
+    sp.destroy();
+  }
+};
