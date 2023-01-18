@@ -126,6 +126,7 @@ $mig->up(
             ProductAttribute::class,
             function (Schema $schema) {
                 $schema->primary('id');
+                $schema->integer('category_id');
                 $schema->varchar('type')->comment('ProductAttributeType: text,list,bool');
                 $schema->varchar('title');
                 $schema->varchar('key');
@@ -138,6 +139,7 @@ $mig->up(
                 $schema->integer('modified_by');
                 $schema->json('params')->nullable(true);
 
+                $schema->addIndex('category_id');
                 $schema->addIndex('type');
                 $schema->addIndex('key');
                 $schema->addIndex('ordering');

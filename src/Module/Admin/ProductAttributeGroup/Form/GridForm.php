@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\ProductAttribute\Form;
+namespace App\Module\Admin\ProductAttributeGroup\Form;
 
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Unicorn\Enum\BasicState;
@@ -48,16 +48,15 @@ class GridForm implements FieldDefinitionInterface
         $form->ns(
             'filter',
             function (Form $form) {
-                $form->add('product_attribute.state', ListField::class)
+                $form->add('product_attribute_group.state', ListField::class)
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang))
                     ->onchange('this.form.submit()');
 
-                $form->add('product_attribute.category_id', CategoryModalField::class)
-                    ->label($this->trans('shopgo.product.attribute.field.group'))
-                    ->option($this->trans('unicorn.select.placeholder'), '')
-                    ->categoryType('attribute')
+                $form->add('category', CategoryModalField::class)
+                    ->label($this->trans('shpogo.product.attribute.group.field.category'))
+                    ->categoryType('product')
                     ->onchange('this.form.submit()');
             }
         );
@@ -65,9 +64,10 @@ class GridForm implements FieldDefinitionInterface
         $form->ns(
             'batch',
             function (Form $form) {
-                $form->add('category_id', CategoryModalField::class)
-                    ->label($this->trans('shopgo.product.attribute.field.group'))
-                    ->categoryType('attribute');
+                $form->add('state', ListField::class)
+                    ->label($this->trans('unicorn.field.state'))
+                    ->option($this->trans('unicorn.select.no.change'), '')
+                    ->registerOptions(BasicState::getTransItems($this->lang));
             }
         );
     }

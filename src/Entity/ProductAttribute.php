@@ -42,6 +42,9 @@ class ProductAttribute implements EntityInterface
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
+    #[Column('category_id')]
+    protected int $categoryId = 0;
+
     #[Column('type')]
     #[Cast(ProductAttributeType::class)]
     protected ProductAttributeType $type;
@@ -232,6 +235,18 @@ class ProductAttribute implements EntityInterface
     public function setType(string|ProductAttributeType $type): static
     {
         $this->type = ProductAttributeType::wrap($type);
+
+        return $this;
+    }
+
+    public function getCategoryId(): int
+    {
+        return $this->categoryId;
+    }
+
+    public function setCategoryId(int $categoryId): static
+    {
+        $this->categoryId = $categoryId;
 
         return $this;
     }

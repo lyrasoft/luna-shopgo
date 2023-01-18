@@ -62,6 +62,9 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.user.title')))
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.feature.title')))
     ->to($nav->to('product_feature_list'));
 
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.group.title')))
+    ->to($nav->to('product_attribute_group_list'));
+
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.title')))
     ->to($nav->to('product_attribute_list'));
 

@@ -64,7 +64,7 @@ $moreItems = array_splice($items, $max);
                 {!! $slot(item: $moreText, i: 9999) !!}
             @else
                 <span class="{{ $itemClass }}">
-                {{ $moreText }}
+                ({{ count($moreItems) }}) {{ $moreText }}
             </span>
             @endif
         </div>

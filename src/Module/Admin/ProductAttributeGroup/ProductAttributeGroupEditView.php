@@ -9,12 +9,13 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\ProductAttribute;
+namespace App\Module\Admin\ProductAttributeGroup;
 
-use App\Entity\ProductAttribute;
+use App\Entity\ProductAttributeGroup;
 use App\Entity\ShopCategoryMap;
-use App\Module\Admin\ProductAttribute\Form\EditForm;
-use App\Repository\ProductAttributeRepository;
+use App\Module\Admin\ProductAttributeGroup\Form\EditForm;
+use App\Repository\ProductAttributeGroupRepository;
+use Lyrasoft\Luna\Entity\Category;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -27,13 +28,13 @@ use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
 
 /**
- * The ProductAttributeEditView class.
+ * The ProductAttributeGroupEditView class.
  */
 #[ViewModel(
-    layout: 'product-attribute-edit',
-    js: 'product-attribute-edit.js'
+    layout: 'product-attribute-group-edit',
+    js: 'product-attribute-group-edit.js'
 )]
-class ProductAttributeEditView implements ViewModelInterface
+class ProductAttributeGroupEditView implements ViewModelInterface
 {
     use TranslatorTrait;
 
@@ -41,7 +42,7 @@ class ProductAttributeEditView implements ViewModelInterface
         protected ORM $orm,
         protected FormFactory $formFactory,
         protected Navigator $nav,
-        #[Autowire] protected ProductAttributeRepository $repository
+        #[Autowire] protected ProductAttributeGroupRepository $repository
     ) {
     }
 
@@ -57,7 +58,7 @@ class ProductAttributeEditView implements ViewModelInterface
     {
         $id = $app->input('id');
 
-        /** @var ProductAttribute $item */
+        /** @var Category $item */
         $item = $this->repository->getItem($id);
 
         $form = $this->formFactory
@@ -69,16 +70,14 @@ class ProductAttributeEditView implements ViewModelInterface
             );
 
         if ($item) {
-            $categoryIds = $this->orm->findColumn(
-                ShopCategoryMap::class,
-                'category_id',
-                [
-                    'type' => 'attribute',
-                    'target_id' => $item->getId()
-                ]
-            );
+            $categoryIds = $this->orm->select('category_id')
+                ->from(ShopCategoryMap::class)
+                ->where('type', 'attribute_group')
+                ->where('target_id', $item->getId())
+                ->loadColumn()
+                ->dump();
 
-            $form->fill(['categories' => $categoryIds->dump()]);
+            $form->fill(['categories' => $categoryIds]);
         }
 
         $this->prepareMetadata($app, $view);
@@ -98,7 +97,7 @@ class ProductAttributeEditView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.edit', title: $this->trans('shopgo.product.attribute.title'))
+                $this->trans('unicorn.title.edit', title: $this->trans('shopgo.product.attribute.group.title'))
             );
     }
 }

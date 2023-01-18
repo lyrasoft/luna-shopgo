@@ -9,26 +9,25 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\ProductAttribute\Form;
+namespace App\Module\Admin\ProductAttributeGroup\Form;
 
-use App\Enum\ProductAttributeType;
+use App\Field\CategoryFlatListField;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\Field\CategoryListField;
-use Lyrasoft\Luna\Field\CategoryModalField;
+use Lyrasoft\Luna\Field\LocaleSwitchField;
 use Lyrasoft\Luna\Field\UserModalField;
-use Unicorn\Field\CalendarField;
-use Unicorn\Field\ModalTreeField;
-use Windwalker\Core\Router\Navigator;
-use Windwalker\Form\Field\TextareaField;
-use Unicorn\Field\SwitcherField;
-use Windwalker\Form\Field\NumberField;
-use Windwalker\Form\Field\HiddenField;
 use Unicorn\Enum\BasicState;
+use Unicorn\Field\CalendarField;
+use Unicorn\Field\SingleImageDragField;
+use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Form\Field\HiddenField;
 use Windwalker\Form\Field\ListField;
+use Windwalker\Form\Field\TextareaField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
+use Windwalker\Query\Query;
 
 /**
  * The EditForm class.
@@ -36,10 +35,6 @@ use Windwalker\Form\Form;
 class EditForm implements FieldDefinitionInterface
 {
     use TranslatorTrait;
-
-    public function __construct(protected Navigator $nav)
-    {
-    }
 
     /**
      * Define the form fields.
@@ -50,49 +45,65 @@ class EditForm implements FieldDefinitionInterface
      */
     public function define(Form $form): void
     {
+        // ID
+        $form->add('id', HiddenField::class);
+
+        // Title
         $form->add('title', TextField::class)
             ->label($this->trans('unicorn.field.title'))
+            ->placeholder($this->trans('unicorn.field.title'))
             ->addFilter('trim')
             ->required(true);
 
-        $form->add('key', TextField::class)
-            ->label($this->trans('shopgo.product.attribute.field.key'));
+        // Basic fieldset
+        $form->fieldset(
+            'basic',
+            function (Form $form) {
+                $form->add('categories', CategoryFlatListField::class)
+                    ->label($this->trans('shpogo.product.attribute.group.field.category'))
+                    ->categoryType('product')
+                    ->multiple(true);
+            }
+        );
 
+        // Meta fieldset
         $form->fieldset(
             'meta',
             function (Form $form) {
-                $form->add('type', ListField::class)
-                    ->label($this->trans('shopgo.product.attribute.field.type'))
-                    ->registerFromEnums(ProductAttributeType::class, $this->lang);
-
-                $form->add('category_id', CategoryModalField::class)
-                    ->label($this->trans('shopgo.product.attribute.field.group'))
-                    ->categoryType('attribute');
-
+                // State
                 $form->add('state', SwitcherField::class)
                     ->label($this->trans('unicorn.field.published'))
+                    ->addClass('')
                     ->circle(true)
                     ->color('success')
-                    ->defaultValue('1');
+                    ->defaultValue(1);
 
+                // Created
                 $form->add('created', CalendarField::class)
-                    ->label($this->trans('unicorn.field.created'))
-                    ->disabled(true);
+                    ->label($this->trans('unicorn.field.created'));
 
+                // Modified
                 $form->add('modified', CalendarField::class)
                     ->label($this->trans('unicorn.field.modified'))
                     ->disabled(true);
 
+                // Author
                 $form->add('created_by', UserModalField::class)
-                    ->label($this->trans('unicorn.field.author'))
-                    ->disabled(true);
+                    ->label($this->trans('unicorn.field.author'));
 
+                // Modified User
                 $form->add('modified_by', UserModalField::class)
-                    ->label($this->trans('unicorn.field.modified_by'))
+                    ->label($this->trans('unicorn.field.modified.by'))
                     ->disabled(true);
             }
         );
 
-        $form->add('id', HiddenField::class);
+        // if ($this->isLocaleEnabled()) {
+        //     $form->add('language', LocaleSwitchField::class)
+        //         ->label($this->trans('luna.field.language'))
+        //         ->table(Category::class)
+        //         ->required(true)
+        //         ->allowCreateEmpty(true);
+        // }
     }
 }

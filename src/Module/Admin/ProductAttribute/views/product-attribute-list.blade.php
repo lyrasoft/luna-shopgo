@@ -72,6 +72,13 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </x-sort>
                         </th>
 
+                        {{-- Group --}}
+                        <th class="text-nowrap" style="width: 5%;">
+                            <x-sort field="product_attribute.category_id">
+                                @lang('shopgo.product.attribute.field.group')
+                            </x-sort>
+                        </th>
+
                         {{-- Title --}}
                         <th class="text-nowrap">
                             <x-sort field="product_attribute.title">
@@ -86,17 +93,12 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </x-sort>
                         </th>
 
-                        {{-- Category --}}
-                        <th class="text-nowrap">
-                            @lang('shopgo.product.attribute.field.category')
-                        </th>
-
                         {{-- Ordering --}}
                         <th style="width: 10%" class="text-nowrap">
                             <div class="d-flex w-100 justify-content-end">
                                 <x-sort
-                                    asc="product_attribute.ordering ASC"
-                                    desc="product_attribute.ordering DESC"
+                                    asc="product_attribute.category_id, product_attribute.ordering ASC"
+                                    desc="product_attribute.category_id, product_attribute.ordering DESC"
                                 >
                                     @lang('unicorn.field.ordering')
                                 </x-sort>
@@ -142,6 +144,11 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                 ></x-state-dropdown>
                             </td>
 
+                            {{-- Group --}}
+                            <td class="text-nowrap">
+                                {{ $item->category?->title ?: '-' }}
+                            </td>
+
                             {{-- Title --}}
                             <td>
                                 <div>
@@ -157,16 +164,6 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                     <i class="fa fa-fw fa-{{ $entity->getType()->getIcon() }}"></i>
                                     {{ $entity->getType()->getTitle($lang) }}
                                 </span>
-                            </td>
-
-                            {{-- Category --}}
-                            <td>
-                                <?php
-                                $categories = $categoryGroup[$entity->getId()]?->column('title') ?? [];
-                                ?>
-                                <x-shopgo.widgets.badge-list :items="$categories"
-                                    :empty-text="$lang('shopgo.text.empty')"
-                                ></x-shopgo.widgets.badge-list>
                             </td>
 
                             {{-- Ordering --}}

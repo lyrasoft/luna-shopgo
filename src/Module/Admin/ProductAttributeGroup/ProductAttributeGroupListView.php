@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace App\Module\Admin\ProductAttribute;
+namespace App\Module\Admin\ProductAttributeGroup;
 
 use App\Entity\ShopCategoryMap;
-use App\Module\Admin\ProductAttribute\Form\GridForm;
-use App\Repository\ProductAttributeRepository;
+use App\Module\Admin\ProductAttributeGroup\Form\GridForm;
+use App\Repository\ProductAttributeGroupRepository;
 use Lyrasoft\Luna\Entity\Category;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
@@ -26,23 +26,23 @@ use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
 
 /**
- * The ProductAttributeListView class.
+ * The ProductAttributeGroupListView class.
  */
 #[ViewModel(
     layout: [
-        'default' => 'product-attribute-list',
-        'modal' => 'product-attribute-modal',
+        'default' => 'product-attribute-group-list',
+        'modal' => 'product-attribute-group-modal',
     ],
-    js: 'product-attribute-list.js'
+    js: 'product-attribute-group-list.js'
 )]
-class ProductAttributeListView implements ViewModelInterface
+class ProductAttributeGroupListView implements ViewModelInterface
 {
     use TranslatorTrait;
 
     public function __construct(
         protected ORM $orm,
         #[Autowire]
-        protected ProductAttributeRepository $repository,
+        protected ProductAttributeGroupRepository $repository,
         protected FormFactory $formFactory
     ) {
     }
@@ -57,21 +57,23 @@ class ProductAttributeListView implements ViewModelInterface
      */
     public function prepare(AppContext $app, View $view): array
     {
+        $type = 'attribute';
         $state = $this->repository->getState();
 
         // Prepare Items
-        $page     = $state->rememberFromRequest('page');
-        $limit    = $state->rememberFromRequest('limit');
-        $filter   = (array) $state->rememberFromRequest('filter');
-        $search   = (array) $state->rememberFromRequest('search');
-        $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering();
+        $page = $state->rememberFromRequest('page');
+        $limit = $state->rememberFromRequest('limit');
+        $filter = (array) $state->rememberFromRequest('filter');
+        $search = (array) $state->rememberFromRequest('search');
+        $ordering = $state->rememberFromRequest('list_ordering') ?? static::getDefaultOrdering();
 
         $items = $this->repository->getListSelector()
             ->setFilters($filter)
             ->searchTextFor(
                 $search['*'] ?? '',
-                $this->getSearchFields()
+                static::getSearchFields()
             )
+            ->addFilter('category.type', $type)
             ->ordering($ordering)
             ->page($page)
             ->limit($limit);
@@ -79,6 +81,22 @@ class ProductAttributeListView implements ViewModelInterface
         $pagination = $items->getPagination();
 
         $items = $items->all();
+
+        // Prepare categories
+        $ids = $items->column('id')->dump();
+
+        $categoryGroup = $this->orm->from(Category::class)
+            ->leftJoin(ShopCategoryMap::class, 'map', 'map.category_id', 'category.id')
+            ->where('map.target_id', $ids ?: [0])
+            ->where('map.type', 'attribute_group')
+            ->order('map.category_id')
+            ->groupByJoins()
+            ->all(Category::class)
+            ->groupBy(
+                function (Category $item) {
+                    return $item->map?->target_id ?? 0;
+                }
+            );
 
         // Prepare Form
         $form = $this->formFactory->create(GridForm::class);
@@ -88,7 +106,15 @@ class ProductAttributeListView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('items', 'pagination', 'form', 'showFilters', 'ordering');
+        return compact(
+            'items',
+            'pagination',
+            'form',
+            'showFilters',
+            'ordering',
+            'type',
+            'categoryGroup'
+        );
     }
 
     public function prepareItem(Collection $item): object
@@ -103,7 +129,7 @@ class ProductAttributeListView implements ViewModelInterface
      */
     public function getDefaultOrdering(): string
     {
-        return 'product_attribute.category_id, product_attribute.ordering ASC';
+        return 'category.lft ASC';
     }
 
     /**
@@ -114,9 +140,9 @@ class ProductAttributeListView implements ViewModelInterface
     public function getSearchFields(): array
     {
         return [
-            'product_attribute.id',
-            'product_attribute.title',
-            'product_attribute.alias',
+            'category.id',
+            'category.title',
+            'category.alias',
         ];
     }
 
@@ -129,7 +155,7 @@ class ProductAttributeListView implements ViewModelInterface
      */
     public function reorderEnabled(string $ordering): bool
     {
-        return $ordering === 'product_attribute.category_id, product_attribute.ordering ASC';
+        return $ordering === 'category.ordering ASC';
     }
 
     /**
@@ -162,7 +188,7 @@ class ProductAttributeListView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.grid', title: $this->trans('shopgo.product.attribute.title'))
+                $this->trans('unicorn.title.grid', title: $this->trans('shopgo.product.attribute.group.title'))
             );
     }
 }

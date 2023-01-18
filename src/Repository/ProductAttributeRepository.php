@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ProductAttribute;
+use Lyrasoft\Luna\Entity\Category;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -23,6 +24,7 @@ use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\ORM\SelectorQuery;
+use Windwalker\Query\Query;
 
 /**
  * The ProductAttributeRepository class.
@@ -37,7 +39,8 @@ class ProductAttributeRepository implements ManageRepositoryInterface, ListRepos
     {
         $selector = $this->createSelector();
 
-        $selector->from(ProductAttribute::class);
+        $selector->from(ProductAttribute::class)
+            ->leftJoin(Category::class);
 
         return $selector;
     }
@@ -51,7 +54,11 @@ class ProductAttributeRepository implements ManageRepositoryInterface, ListRepos
     #[ConfigureAction(ReorderAction::class)]
     protected function configureReorderAction(ReorderAction $action): void
     {
-        //
+        $action->setReorderGroupHandler(
+            function (Query $query, ProductAttribute $attribute) {
+                $query->where('category_id', $attribute->getCategoryId());
+            }
+        );
     }
 
     #[ConfigureAction(BatchAction::class)]
