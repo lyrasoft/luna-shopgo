@@ -68,6 +68,9 @@ $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.g
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.title')))
     ->to($nav->to('product_attribute_list'));
 
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.tab.title')))
+    ->to($nav->to('product_tab_list'));
+
 // Currency
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
     ->to($nav->to('currency_list'));
