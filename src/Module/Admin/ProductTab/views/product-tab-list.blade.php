@@ -76,6 +76,18 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </x-sort>
                         </th>
 
+                        {{-- Source --}}
+                        <th class="text-nowrap">
+                            <x-sort field="product_tab.title">
+                                @lang('shopgo.product.tab.field.source')
+                            </x-sort>
+                        </th>
+
+                        {{-- Category --}}
+                        <th class="text-nowrap">
+                            @lang('shopgo.product.tab.field.category')
+                        </th>
+
                         {{-- Ordering --}}
                         <th style="width: 10%" class="text-nowrap">
                             <div class="d-flex w-100 justify-content-end">
@@ -134,6 +146,29 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                         {{ $item->title }}
                                     </a>
                                 </div>
+                            </td>
+
+                            {{-- Source --}}
+                            <td>
+                                <div style="max-width: 250px" class="text-truncate">
+                                    @if ($item->article->id)
+                                        @lang('shopgo.product.tab.source.article', title: $item->article->title)
+                                    @elseif ($item->page->id)
+                                        @lang('shopgo.product.tab.source.page', title: $item->page->title)
+                                    @else
+                                        @lang('shopgo.product.tab.source.content')
+                                    @endif
+                                </div>
+                            </td>
+
+                            {{-- Category --}}
+                            <td>
+                                    <?php
+                                    $categories = $categoryGroup[$entity->getId()]?->column('title') ?? [];
+                                    ?>
+                                <x-shopgo.widgets.badge-list :items="$categories"
+                                    :empty-text="$lang('shopgo.text.empty')"
+                                ></x-shopgo.widgets.badge-list>
                             </td>
 
                             {{-- Ordering --}}

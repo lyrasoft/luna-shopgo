@@ -11,6 +11,8 @@ u.$ui.bootstrap.tooltip();
 
 const formSelector = '#admin-form';
 
+u.$ui.bootstrap.keepTab(formSelector);
+
 // Validation
 u.formValidation().then(() => {
   u.$ui.disableOnSubmit(formSelector);

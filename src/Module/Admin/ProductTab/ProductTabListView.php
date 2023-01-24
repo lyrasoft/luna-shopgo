@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\ProductTab;
 
+use App\Entity\ShopCategoryMap;
 use App\Module\Admin\ProductTab\Form\GridForm;
 use App\Repository\ProductTabRepository;
+use Lyrasoft\Luna\Entity\Category;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -76,6 +78,23 @@ class ProductTabListView implements ViewModelInterface
 
         $pagination = $items->getPagination();
 
+        $items = $items->all();
+
+        $ids = $items->column('id')->dump();
+
+        $categoryGroup = $this->orm->from(Category::class)
+            ->leftJoin(ShopCategoryMap::class, 'map', 'map.category_id', 'category.id')
+            ->where('map.target_id', $ids ?: [0])
+            ->where('map.type', 'tab')
+            ->order('map.category_id')
+            ->groupByJoins()
+            ->all(Category::class)
+            ->groupBy(
+                function (Category $item) {
+                    return $item->map?->target_id ?? 0;
+                }
+            );
+
         // Prepare Form
         $form = $this->formFactory->create(GridForm::class);
         $form->fill(compact('search', 'filter'));
@@ -84,7 +103,7 @@ class ProductTabListView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('items', 'pagination', 'form', 'showFilters', 'ordering');
+        return compact('items', 'pagination', 'form', 'showFilters', 'ordering', 'categoryGroup');
     }
 
     public function prepareItem(Collection $item): object
@@ -99,7 +118,7 @@ class ProductTabListView implements ViewModelInterface
      */
     public function getDefaultOrdering(): string
     {
-        return 'product_tab.id DESC';
+        return 'product_tab.ordering ASC';
     }
 
     /**
@@ -112,7 +131,7 @@ class ProductTabListView implements ViewModelInterface
         return [
             'product_tab.id',
             'product_tab.title',
-            'product_tab.alias',
+            'product_tab.content',
         ];
     }
 

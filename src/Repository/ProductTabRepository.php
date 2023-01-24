@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ProductTab;
+use App\Entity\ShopCategoryMap;
+use Lyrasoft\Luna\Entity\Article;
+use Lyrasoft\Luna\Entity\Page;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -23,6 +26,7 @@ use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\ORM\SelectorQuery;
+use Windwalker\Query\Query;
 
 /**
  * The ProductTabRepository class.
@@ -37,7 +41,23 @@ class ProductTabRepository implements ManageRepositoryInterface, ListRepositoryI
     {
         $selector = $this->createSelector();
 
-        $selector->from(ProductTab::class);
+        $selector->from(ProductTab::class)
+            ->leftJoin(Article::class)
+            ->leftJoin(Page::class);
+
+        $selector->addFilterHandler(
+            'category',
+            function (Query $query, string $field, mixed $value) {
+                if ((string) $value !== '') {
+                    $query->whereExists(
+                        fn(Query $query) => $query->from(ShopCategoryMap::class)
+                            ->whereRaw('target_id = product_tab.id')
+                            ->where('type', 'tab')
+                            ->where('category_id', $value)
+                    );
+                }
+            }
+        );
 
         return $selector;
     }

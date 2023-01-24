@@ -48,12 +48,33 @@ use Windwalker\Form\Form;
 
         <div class="row">
             <div class="col-lg-7">
-                <x-fieldset name="basic" :title="$lang('unicorn.fieldset.basic')"
-                    :form="$form"
-                    class="mb-4"
-                    is="card"
-                >
-                </x-fieldset>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" data-bs-toggle="tab" data-bs-target="#basic">
+                            @lang('unicorn.fieldset.basic')
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a type="button" class="nav-link" data-bs-toggle="tab" data-bs-target="#category">
+                            @lang('shopgo.product.tab.field.category')
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content pt-4" id="main-tab-content">
+                    <div class="tab-pane fade show active" id="basic" role="tabpanel" tabindex="0">
+                        <x-fieldset name="basic"
+                            :form="$form"
+                            class="mb-4"
+                            is="div"
+                        >
+                        </x-fieldset>
+                    </div>
+                    <div class="tab-pane fade" id="category" role="tabpanel" tabindex="0">
+                        <x-field :field="$form['categories']" no-label></x-field>
+                    </div>
+                </div>
+
             </div>
             <div class="col-lg-5">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"

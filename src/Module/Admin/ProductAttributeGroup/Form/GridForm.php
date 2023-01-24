@@ -55,7 +55,7 @@ class GridForm implements FieldDefinitionInterface
                     ->onchange('this.form.submit()');
 
                 $form->add('category', CategoryModalField::class)
-                    ->label($this->trans('shpogo.product.attribute.group.field.category'))
+                    ->label($this->trans('shopgo.product.attribute.group.field.category'))
                     ->categoryType('product')
                     ->onchange('this.form.submit()');
             }

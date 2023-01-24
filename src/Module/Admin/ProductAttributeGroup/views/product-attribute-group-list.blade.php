@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var $app       AppContext      Application context.
- * @var $view      ViewModel       The view modal object.
+ * @var $vm      ProductAttributeGroupListView       The view modal object.
  * @var $uri       SystemUri       System Uri information.
  * @var $chronos   ChronosService  The chronos datetime service.
  * @var $nav       Navigator       Navigator object to build route.
@@ -16,6 +16,7 @@ namespace App\View;
  * @var $lang      LangService     The language translation service.
  */
 
+use App\Module\Admin\ProductAttributeGroup\ProductAttributeGroupListView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\Attributes\ViewModel;
@@ -28,8 +29,6 @@ $originOrdering = [];
 
 $workflow = $app->service(\Unicorn\Workflow\BasicStateWorkflow::class);
 $localeService = $app->service(\Lyrasoft\Luna\Services\LocaleService::class);
-
-$enableOrderControl = $ordering === 'category.lft ASC';
 
 $orders = [];
 ?>
@@ -68,12 +67,12 @@ $orders = [];
 
                         {{-- STATE --}}
                         <th style="min-width: 90px;" width="7%">
-                            <x-sort field="category.state" >@lang('unicorn.field.state')</x-sort>
+                            <x-sort field="category.state">@lang('unicorn.field.state')</x-sort>
                         </th>
 
                         {{-- TITLE --}}
                         <th style="min-width: 350px;">
-                            <x-sort field="lang.title" >@lang('unicorn.field.title')</x-sort>
+                            <x-sort field="lang.title">@lang('unicorn.field.title')</x-sort>
                         </th>
 
                         {{-- Category --}}
@@ -83,9 +82,9 @@ $orders = [];
 
                         {{-- ORDERING --}}
                         <th width="9%" class="text-nowrap">
-                            <x-sort field="category.lft" >@lang('unicorn.field.ordering')</x-sort>
+                            <x-sort field="category.lft">@lang('unicorn.field.ordering')</x-sort>
 
-                            @if ($enableOrderControl)
+                            @if ($vm->reorderEnabled($ordering))
                                 <x-save-order></x-save-order>
                             @endif
                         </th>
@@ -105,7 +104,7 @@ $orders = [];
 
                         {{-- ID --}}
                         <th style="width: 1%" class="text-nowrap text-end">
-                            <x-sort field="category.id" >@lang('unicorn.field.id')</x-sort>
+                            <x-sort field="category.id">@lang('unicorn.field.id')</x-sort>
                         </th>
                     </tr>
                     </thead>
@@ -160,9 +159,9 @@ $orders = [];
 
                             {{-- Category --}}
                             <td>
-                                    <?php
-                                    $categories = $categoryGroup[$entity->getId()]?->column('title') ?? [];
-                                    ?>
+                                <?php
+                                $categories = $categoryGroup[$entity->getId()]?->column('title') ?? [];
+                                ?>
                                 <x-shopgo.widgets.badge-list :items="$categories"
                                     :empty-text="$lang('shopgo.text.empty')"
                                 ></x-shopgo.widgets.badge-list>
@@ -171,7 +170,7 @@ $orders = [];
                             {{-- ORDERING --}}
                             <td class="text-end">
                                 <x-order-control
-                                    :enabled="$enableOrderControl"
+                                    :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
                                     :id="$item->id"
                                     :value="$order"

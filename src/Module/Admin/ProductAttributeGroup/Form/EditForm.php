@@ -12,22 +12,14 @@ declare(strict_types=1);
 namespace App\Module\Admin\ProductAttributeGroup\Form;
 
 use App\Field\CategoryFlatListField;
-use Lyrasoft\Luna\Entity\Category;
-use Lyrasoft\Luna\Field\CategoryListField;
-use Lyrasoft\Luna\Field\LocaleSwitchField;
 use Lyrasoft\Luna\Field\UserModalField;
-use Unicorn\Enum\BasicState;
 use Unicorn\Field\CalendarField;
-use Unicorn\Field\SingleImageDragField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
-use Windwalker\Form\Field\ListField;
-use Windwalker\Form\Field\TextareaField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
-use Windwalker\Query\Query;
 
 /**
  * The EditForm class.

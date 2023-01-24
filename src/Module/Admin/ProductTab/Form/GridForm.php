@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\ProductTab\Form;
 
+use Lyrasoft\Luna\Field\CategoryModalField;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\ListField;
@@ -51,6 +52,11 @@ class GridForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang))
+                    ->onchange('this.form.submit()');
+
+                $form->add('category', CategoryModalField::class)
+                    ->label($this->trans('shopgo.product.tab.field.category'))
+                    ->categoryType('product')
                     ->onchange('this.form.submit()');
             }
         );

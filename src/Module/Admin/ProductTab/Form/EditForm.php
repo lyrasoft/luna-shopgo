@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\ProductTab\Form;
 
+use App\Field\CategoryFlatListField;
 use Lyrasoft\Luna\Field\ArticleModalField;
 use Lyrasoft\Luna\Field\PageModalField;
 use Lyrasoft\Luna\Field\UserModalField;
@@ -52,10 +53,10 @@ class EditForm implements FieldDefinitionInterface
             'basic',
             function (Form $form) {
                 $form->add('article_id', ArticleModalField::class)
-                    ->label($this->trans('shopgo.product.tab.field.article_id'));
+                    ->label($this->trans('shopgo.product.tab.field.article'));
 
                 $form->add('page_id', PageModalField::class)
-                    ->label($this->trans('shopgo.product.tab.field.page_id'));
+                    ->label($this->trans('shopgo.product.tab.field.page'));
 
                 $form->add('content', TinymceEditorField::class)
                     ->label($this->trans('shopgo.product.tab.field.content'))
@@ -66,6 +67,11 @@ class EditForm implements FieldDefinitionInterface
                     );
             }
         );
+
+        $form->add('categories', CategoryFlatListField::class)
+            ->label($this->trans('shpogo.product.tab.field.category'))
+            ->categoryType('product')
+            ->multiple(true);
 
         $form->fieldset(
             'meta',
