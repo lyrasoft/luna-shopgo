@@ -55,7 +55,7 @@ $seeder->import(
 
             $item->setCategoryId((int) $faker->randomElement($categoryIds));
             // $item->setPrimaryVariantId();
-            $item->setModel($faker->sentence(1));
+            $item->setModel('PD-' . Str::padLeft((string) $i, 7, '0'));
             $item->setTitle(
                 Utf8String::ucwords(
                     $faker->sentence(1)
@@ -120,7 +120,7 @@ $seeder->import(
             $variant = new ProductVariant();
             $variant->setProductId($item->getId());
             $variant->setTitle($item->getTitle());
-            $variant->setHash(uid());
+            $variant->setHash('');
             $variant->setPrimary(true);
             $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0'));
             $variant->setQuantity(random_int(1, 30));
@@ -168,7 +168,7 @@ $seeder->import(
                 $variant->setProductId($item->getId());
                 $variant->setTitle((string) $options->column('text')->implode(' / '));
                 $variant->setHash(VariantService::hashByOptions($options));
-                $variant->setPrimary(true);
+                $variant->setPrimary(false);
                 $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0') . '-' . ($h + 1));
                 $variant->setQuantity(random_int(1, 30));
                 $variant->setSubtract(true);

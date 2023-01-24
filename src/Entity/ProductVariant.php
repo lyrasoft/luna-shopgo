@@ -85,6 +85,7 @@ class ProductVariant implements EntityInterface
     protected float $price = 0.0;
 
     #[Column('dimension')]
+    #[Cast(JsonCast::class)]
     #[Cast(ProductDimension::class)]
     protected ProductDimension $dimension;
 

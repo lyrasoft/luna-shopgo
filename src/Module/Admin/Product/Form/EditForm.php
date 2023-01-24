@@ -11,11 +11,16 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Product\Form;
 
+use App\Field\ShippingModalField;
 use Lyrasoft\Luna\Field\CategoryListField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
+use Unicorn\Field\InlineField;
+use Unicorn\Field\MultiUploaderField;
+use Unicorn\Field\SingleImageDragField;
 use Unicorn\Field\SwitcherField;
+use Unicorn\Field\TinymceEditorField;
 use Windwalker\Form\Field\TextareaField;
 use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\HiddenField;
@@ -57,7 +62,8 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('variant/price', NumberField::class)
                     ->label($this->trans('shopgo.product.field.price'))
                     ->step('0.0001')
-                    ->min(0);
+                    ->min(0)
+                    ->required(true);
 
                 $form->add('origin_price', NumberField::class)
                     ->label($this->trans('shopgo.product.field.origin_price'))
@@ -66,7 +72,8 @@ class EditForm implements FieldDefinitionInterface
 
                 $form->add('variant/quantity', NumberField::class)
                     ->label($this->trans('shopgo.product.field.quantity'))
-                    ->min(0);
+                    ->min(0)
+                    ->required(true);
 
                 $form->add('variant/subtract', SwitcherField::class)
                     ->label($this->trans('shopgo.product.field.subtract'))
@@ -77,11 +84,60 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('safe_quantity', NumberField::class)
                     ->label($this->trans('shopgo.product.field.safe_quantity'))
                     ->min(0);
+
+                $form->add('stock_text', TextField::class)
+                    ->label($this->trans('shopgo.product.field.stock_text'));
             }
         );
 
         $form->fieldset(
             'info2',
+            function (Form $form) {
+                $form->add('can_attach', SwitcherField::class)
+                    ->label($this->trans('shopgo.product.field.can_attach'))
+                    ->circle(true)
+                    ->color('success')
+                    ->defaultValue('1');
+
+                $form->add('manufacturer_id', NumberField::class)
+                    ->label($this->trans('shopgo.product.field.manufacturer'));
+
+                $form->add('variant/dimension', InlineField::class)
+                    ->label($this->trans('shopgo.product.field.dimension'))
+                    ->showLabel(true)
+                    ->asGroup(true)
+                    ->configureForm(
+                        function (Form $form) {
+                            $form->add('length', NumberField::class)
+                                ->label($this->trans('shopgo.product.field.length'))
+                                ->step('0.0001')
+                                ->set('floating', true);
+
+                            $form->add('width', NumberField::class)
+                                ->label($this->trans('shopgo.product.field.width'))
+                                ->step('0.0001')
+                                ->set('floating', true);
+
+                            $form->add('height', NumberField::class)
+                                ->label($this->trans('shopgo.product.field.height'))
+                                ->step('0.0001')
+                                ->set('floating', true);
+                        }
+                    );
+
+                $form->add('variant/dimension/weight', NumberField::class)
+                    ->label($this->trans('shopgo.product.field.weight'))
+                    ->step('0.0001')
+                    ->set('floating', true);
+
+                $form->add('shippings', ShippingModalField::class)
+                    ->label($this->trans('shopgo.product.field.shippings'))
+                    ->multiple(true);
+            }
+        );
+
+        $form->fieldset(
+            'info3',
             function (Form $form) {
                 $form->add('model', TextField::class)
                     ->label($this->trans('shopgo.product.field.model'));
@@ -103,33 +159,64 @@ class EditForm implements FieldDefinitionInterface
 
                 $form->add('variant/mpn', TextField::class)
                     ->label($this->trans('shopgo.product.field.mpn'));
-
-                $form->add('can_attach', SwitcherField::class)
-                    ->label($this->trans('shopgo.product.field.can_attach'))
-                    ->circle(true)
-                    ->color('success')
-                    ->defaultValue('1');
-
-                $form->add('shippings', TextareaField::class)
-                    ->label($this->trans('shopgo.product.field.shippings'))
-                    ->rows(7);
             }
         );
 
         $form->fieldset(
-            'text',
+            'images',
             function (Form $form) {
-                $form->add('intro', TextareaField::class)
-                    ->label($this->trans('shopgo.product.field.intro'))
-                    ->rows(7);
+                $form->add('variant/cover', SingleImageDragField::class)
+                    ->label($this->trans('shopgo.product.field.cover'))
+                    ->crop(true)
+                    ->width(800)
+                    ->height(800)
+                    ->ajax(true)
+                    ->showSizeNotice(true);
 
-                $form->add('description', TextareaField::class)
-                    ->label($this->trans('unicorn.field.description'))
-                    ->rows(7);
+                $form->add('variant/images', MultiUploaderField::class)
+                    ->label($this->trans('shopgo.product.field.images'));
             }
         );
-        $form->add('id', HiddenField::class);
 
+        $form->fieldset(
+            'about',
+            function (Form $form) {
+                $form->add('intro', TinymceEditorField::class)
+                    ->label($this->trans('shopgo.product.field.intro'))
+                    ->editorOptions(
+                        [
+                            'height' => 450
+                        ]
+                    );
+
+                $form->add('description', TinymceEditorField::class)
+                    ->label($this->trans('unicorn.field.description'))
+                    ->editorOptions(
+                        [
+                            'height' => 550
+                        ]
+                    );
+            }
+        );
+
+        $form->fieldset(
+            'seo',
+            function (Form $form) {
+                $form->add('meta/title', TextField::class)
+                    ->label($this->trans('shopgo.product.field.meta.title'))
+                    ->maxlength(255);
+
+                $form->add('meta/description', TextareaField::class)
+                    ->label($this->trans('shopgo.product.field.meta.description'))
+                    ->rows(4);
+
+                $form->add('meta/keywords', TextField::class)
+                    ->label($this->trans('shopgo.product.field.meta.keywords'))
+                    ->maxlength(255);
+            }
+        );
+
+        $form->add('id', HiddenField::class);
 
         $form->fieldset(
             'meta',
@@ -153,20 +240,14 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('hide', SwitcherField::class)
                     ->label($this->trans('shopgo.product.field.hide'))
                     ->circle(true)
-                    ->color('success')
+                    ->color('warning')
                     ->defaultValue('1');
 
-                $form->add('meta/title', TextField::class)
-                    ->label($this->trans('shopgo.product.field.meta.title'))
-                    ->maxlength(255);
+                $form->add('publish_up', CalendarField::class)
+                    ->label($this->trans('shopgo.product.field.publish_up'));
 
-                $form->add('meta/description', TextareaField::class)
-                    ->label($this->trans('shopgo.product.field.meta.description'))
-                    ->rows(4);
-
-                $form->add('meta/keywords', TextField::class)
-                    ->label($this->trans('shopgo.product.field.meta.keywords'))
-                    ->maxlength(255);
+                $form->add('publish_down', CalendarField::class)
+                    ->label($this->trans('shopgo.product.field.publish_down'));
 
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'));

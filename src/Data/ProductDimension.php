@@ -33,13 +33,13 @@ class ProductDimension extends ValueObject
     }
 
     /**
-     * @param  float  $width
+     * @param  float|string  $width
      *
      * @return  static  Return self to support chaining.
      */
-    public function setWidth(float $width): static
+    public function setWidth(float|string $width): static
     {
-        $this->width = $width;
+        $this->width = (float) $width;
 
         return $this;
     }
@@ -53,13 +53,13 @@ class ProductDimension extends ValueObject
     }
 
     /**
-     * @param  float  $height
+     * @param  float|string  $height
      *
      * @return  static  Return self to support chaining.
      */
-    public function setHeight(float $height): static
+    public function setHeight(float|string $height): static
     {
-        $this->height = $height;
+        $this->height = (float) $height;
 
         return $this;
     }
@@ -73,13 +73,13 @@ class ProductDimension extends ValueObject
     }
 
     /**
-     * @param  float  $length
+     * @param  float|string  $length
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLength(float $length): static
+    public function setLength(float|string $length): static
     {
-        $this->length = $length;
+        $this->length = (float) $length;
 
         return $this;
     }
@@ -93,13 +93,13 @@ class ProductDimension extends ValueObject
     }
 
     /**
-     * @param  float  $weight
+     * @param  float|string  $weight
      *
      * @return  static  Return self to support chaining.
      */
-    public function setWeight(float $weight): static
+    public function setWeight(float|string $weight): static
     {
-        $this->weight = $weight;
+        $this->weight = (float) $weight;
 
         return $this;
     }
@@ -113,13 +113,13 @@ class ProductDimension extends ValueObject
     }
 
     /**
-     * @param  float  $unitWeight
+     * @param  float|string  $unitWeight
      *
      * @return  static  Return self to support chaining.
      */
-    public function setUnitWeight(float $unitWeight): static
+    public function setUnitWeight(float|string $unitWeight): static
     {
-        $this->unitWeight = $unitWeight;
+        $this->unitWeight = (float) $unitWeight;
 
         return $this;
     }

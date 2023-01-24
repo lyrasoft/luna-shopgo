@@ -11,14 +11,18 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Product;
 
+use App\Entity\ProductVariant;
 use App\Module\Admin\Product\Form\EditForm;
 use App\Repository\ProductRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
+use Unicorn\Repository\Event\PrepareSaveEvent;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\Event\AfterSaveEvent;
+use Windwalker\ORM\Event\BeforeSaveEvent;
 
 /**
  * The ProductController class.
@@ -33,6 +37,37 @@ class ProductController
         #[Autowire] ProductRepository $repository,
     ): mixed {
         $form = $app->make(EditForm::class);
+
+        $controller->prepareSave(
+            function (PrepareSaveEvent $event) use ($app) {
+                $data = &$event->getData();
+            }
+        );
+
+        $controller->beforeSave(
+            function (BeforeSaveEvent $event) use ($app) {
+                $data = &$event->getData();
+            }
+        );
+
+        $controller->afterSave(
+            function (AfterSaveEvent $event) use ($app) {
+                $orm = $event->getORM();
+                $data = $event->getData();
+                $entity = $event->getEntity();
+
+                $variantData = $app->input('item')['variant'];
+
+                $mainVariant = $orm->findOneOrCreate(
+                    ProductVariant::class,
+                    ['product_id' => $data['id'], 'primary' => 1]
+                );
+
+                $mainVariant = $orm->hydrateEntity($variantData, $mainVariant);
+
+                $orm->updateOne(ProductVariant::class, $mainVariant);
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

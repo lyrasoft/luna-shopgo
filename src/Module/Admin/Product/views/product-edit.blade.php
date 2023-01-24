@@ -47,49 +47,100 @@ use Windwalker\Form\Form;
         <x-title-bar :form="$form"></x-title-bar>
 
         <div class="row">
-            <div class="col-lg-8">
-                <x-tabs keepactive>
-                    <x-tab-button target="#info" active>
-                        @lang('shopgo.product.edit.tab.info')
-                    </x-tab-button>
-                    <x-tab-button target="#images">
-                        @lang('shopgo.product.edit.tab.images')
-                    </x-tab-button>
-                    <x-tab-button target="#attributes">
-                        @lang('shopgo.product.edit.tab.attributes')
-                    </x-tab-button>
-                    <x-tab-button target="#variants">
-                        @lang('shopgo.product.edit.tab.variants')
-                    </x-tab-button>
-                    <x-tab-button target="#discounts">
-                        @lang('shopgo.product.edit.tab.discounts')
-                    </x-tab-button>
-                </x-tabs>
+            <div class="col-lg-9">
 
-                <div class="pt-4">
-                    <x-tab-pane id="info" active>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <x-fieldset name="info1"
-                                    :form="$form"
-                                    class="mb-4"
-                                    is="div"
-                                >
-                                </x-fieldset>
-                            </div>
-                            <div class="col-lg-6">
-                                <x-fieldset name="info2"
-                                    :form="$form"
-                                    class="mb-4"
-                                    is="div"
-                                >
-                                </x-fieldset>
-                            </div>
+                <x-card>
+                    <x-slot name="header">
+                        <div class="card-header"
+                            style="background-color: inherit">
+                            <x-tabs keepactive variant="pills">
+                                <x-tab-button target="#info" active>
+                                    @lang('shopgo.product.edit.tab.info')
+                                </x-tab-button>
+                                <x-tab-button target="#about">
+                                    @lang('shopgo.product.edit.tab.about')
+                                </x-tab-button>
+                                <x-tab-button target="#images">
+                                    @lang('shopgo.product.edit.tab.images')
+                                </x-tab-button>
+                                <x-tab-button target="#attributes">
+                                    @lang('shopgo.product.edit.tab.attributes')
+                                </x-tab-button>
+                                <x-tab-button target="#variants">
+                                    @lang('shopgo.product.edit.tab.variants')
+                                </x-tab-button>
+                                <x-tab-button target="#discounts">
+                                    @lang('shopgo.product.edit.tab.discounts')
+                                </x-tab-button>
+                            </x-tabs>
                         </div>
-                    </x-tab-pane>
-                </div>
+                    </x-slot>
+
+                    <div class="tab-content">
+                        <x-tab-pane id="info" active>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <x-fieldset name="info1"
+                                        :form="$form"
+                                        class="mb-4"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                                <div class="col-lg-5">
+                                    <x-fieldset name="info2"
+                                        :form="$form"
+                                        class="mb-5"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                                <div class="col-lg-3">
+                                    <x-fieldset name="info3"
+                                        :form="$form"
+                                        class="mb-3"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                            </div>
+                        </x-tab-pane>
+                        <x-tab-pane id="about">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <x-fieldset name="about"
+                                        :form="$form"
+                                        class="mb-4"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                                <div class="col-lg-4">
+                                    <x-fieldset name="seo"
+                                        :form="$form"
+                                        class="mb-3"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                            </div>
+                        </x-tab-pane>
+                        <x-tab-pane id="images">
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <x-fieldset name="images"
+                                        :form="$form"
+                                        class="mb-4"
+                                        is="div"
+                                    >
+                                    </x-fieldset>
+                                </div>
+                            </div>
+                        </x-tab-pane>
+                    </div>
+                </x-card>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"
                     :form="$form"
                     class="mb-4"

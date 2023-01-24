@@ -13,6 +13,7 @@ namespace App\Module\Admin\Product;
 
 use App\Entity\Product;
 use App\Entity\ProductVariant;
+use App\Entity\ShopCategoryMap;
 use App\Module\Admin\Product\Form\EditForm;
 use App\Repository\ProductRepository;
 use Windwalker\Core\Application\AppContext;
@@ -60,8 +61,6 @@ class ProductEditView implements ViewModelInterface
         /** @var Product $item */
         $item = $this->repository->getItem($id);
 
-        $rememberedData = $this->repository->getState()->getAndForget('edit.data');
-
         $form = $this->formFactory
             ->create(EditForm::class)
             ->setNamespace('item')
@@ -71,6 +70,7 @@ class ProductEditView implements ViewModelInterface
             );
 
         if ($item) {
+            // Main Variant
             $mainVariant = $this->orm->findOne(
                 ProductVariant::class,
                 [
@@ -84,6 +84,19 @@ class ProductEditView implements ViewModelInterface
                     'variant' => $this->repository->getState()->getAndForget('edit.data')
                         ?: $this->orm->extractEntity($mainVariant)
                 ]
+            );
+
+            // Sub Categories
+            $subCategoryIds = $this->orm->select('category_id')
+                ->from(ShopCategoryMap::class, 'map')
+                ->where('map.target_id', $item->getId())
+                ->where('map.type', 'product')
+                ->where('primary', 0)
+                ->loadColumn()
+                ->dump();
+
+            $form->fill(
+                ['sub_categories' => $subCategoryIds]
             );
         }
 
