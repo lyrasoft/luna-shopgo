@@ -18,6 +18,7 @@ use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Utf8String;
 
 /**
  * ProductFeature Seeder
@@ -36,8 +37,8 @@ $seeder->import(
         foreach (range(1, 10) as $i) {
             $type = $faker->randomElement(
                 [
-                    ProductFeatureType::LIST(),
-                    ProductFeatureType::LIST(),
+                    ProductFeatureType::SELECT(),
+                    ProductFeatureType::SELECT(),
                     ProductFeatureType::COLOR(),
                 ]
             );
@@ -47,7 +48,7 @@ $seeder->import(
             foreach (range(1, random_int(5, 8)) as $o) {
                 $options[] = $option = new ListOption(
                     [
-                        'text' => $text = $faker->word(),
+                        'text' => $text = Utf8String::ucwords($faker->word()),
                         'value' => strtolower($text)
                     ]
                 );

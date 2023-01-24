@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Data\ListOptionCollection;
 use App\Enum\ProductFeatureType;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
@@ -65,7 +66,8 @@ class ProductFeature implements EntityInterface
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
-    protected array $options = [];
+    #[Cast(ListOptionCollection::class)]
+    protected ListOptionCollection $options;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -167,14 +169,14 @@ class ProductFeature implements EntityInterface
         return $this;
     }
 
-    public function getOptions(): array
+    public function getOptions(): ListOptionCollection
     {
         return $this->options;
     }
 
-    public function setOptions(array $options): static
+    public function setOptions(ListOptionCollection|array $options): static
     {
-        $this->options = $options;
+        $this->options = ListOptionCollection::wrap($options);
 
         return $this;
     }

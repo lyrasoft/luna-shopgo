@@ -28,7 +28,9 @@ return [
         ],
 
         'namespaces' => [
-            //
+            '@theme' => [
+                WINDWALKER_ROOT . '/views/unicorn'
+            ]
         ],
 
         'renderers' => [
@@ -74,6 +76,10 @@ return [
             'components' => [
                 'component' => XComponent::class,
                 'template' => XComponent::class,
+
+                'tabs' => '@theme::bootstrap.tabs',
+                'tab-button' => '@theme::bootstrap.tab-button',
+                'tab-pane' => '@theme::bootstrap.tab-pane',
             ]
         ],
 

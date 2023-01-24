@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Data\ListOptionCollection;
+use App\Data\ProductDimension;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -83,8 +85,8 @@ class ProductVariant implements EntityInterface
     protected float $price = 0.0;
 
     #[Column('dimension')]
-    #[Cast(JsonCast::class)]
-    protected array $dimension = [];
+    #[Cast(ProductDimension::class)]
+    protected ProductDimension $dimension;
 
     #[Column('stock_buyable')]
     #[Cast('bool', 'int')]
@@ -102,7 +104,8 @@ class ProductVariant implements EntityInterface
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
-    protected array $options = [];
+    #[Cast(ListOptionCollection::class)]
+    protected ListOptionCollection $options;
 
     #[Column('state')]
     #[Cast('int')]
@@ -313,14 +316,14 @@ class ProductVariant implements EntityInterface
         return $this;
     }
 
-    public function getDimension(): array
+    public function getDimension(): ProductDimension
     {
-        return $this->dimension;
+        return $this->dimension ??= ProductDimension::wrap([]);
     }
 
-    public function setDimension(array $dimension): static
+    public function setDimension(ProductDimension|array $dimension): static
     {
-        $this->dimension = $dimension;
+        $this->dimension = ProductDimension::wrap($dimension);
 
         return $this;
     }
@@ -373,14 +376,14 @@ class ProductVariant implements EntityInterface
         return $this;
     }
 
-    public function getOptions(): array
+    public function getOptions(): ListOptionCollection
     {
         return $this->options;
     }
 
-    public function setOptions(array $options): static
+    public function setOptions(array|ListOptionCollection $options): static
     {
-        $this->options = $options;
+        $this->options = ListOptionCollection::wrap($options);
 
         return $this;
     }

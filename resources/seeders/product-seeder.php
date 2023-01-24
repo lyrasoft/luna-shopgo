@@ -11,15 +11,23 @@ declare(strict_types=1);
 
 namespace App\Seeder;
 
+use App\Data\ListOption;
+use App\Data\ListOptionCollection;
 use App\Entity\Product;
+use App\Entity\ProductFeature;
+use App\Entity\ProductVariant;
 use App\Entity\ShopCategoryMap;
+use App\Service\VariantService;
 use Lyrasoft\Luna\Entity\Category;
 use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Str;
 use Windwalker\Utilities\Utf8String;
+
+use function Windwalker\uid;
 
 /**
  * Product Seeder
@@ -29,7 +37,7 @@ use Windwalker\Utilities\Utf8String;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
+    static function () use ($seeder, $orm, $db, &$sortGroup) {
         $faker = $seeder->faker('en_US');
 
         /** @var EntityMapper<Product> $mapper */
@@ -39,6 +47,8 @@ $seeder->import(
         $mapMapper = $orm->mapper(ShopCategoryMap::class);
 
         $categoryIds = $orm->findColumn(Category::class, 'id', ['type' => 'product'])->dump();
+
+        $features = $orm->findList(ProductFeature::class)->all();
 
         foreach (range(1, 100) as $i) {
             $item = $mapper->createEntity();
@@ -105,6 +115,93 @@ $seeder->import(
 
                 $mapMapper->createOne($map);
             }
+
+            // Main Variant
+            $variant = new ProductVariant();
+            $variant->setProductId($item->getId());
+            $variant->setTitle($item->getTitle());
+            $variant->setHash(uid());
+            $variant->setPrimary(true);
+            $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0'));
+            $variant->setQuantity(random_int(1, 30));
+            $variant->setSubtract(true);
+            $variant->setPrice(random_int(1, 40) * 100);
+            $variant->getDimension()
+                ->setWidth(random_int(20, 100))
+                ->setHeight(random_int(20, 100))
+                ->setLength(random_int(20, 100))
+                ->setWeight(random_int(20, 100));
+            $variant->setStockBuyable(true);
+            $variant->setStockText('');
+            $variant->setCover($faker->unsplashImage(800, 800));
+            $variant->setImages(
+                array_map(
+                    static fn ($image) => [
+                        'url' => $image,
+                        'uid' => uid(),
+                    ],
+                    $faker->unsplashImages(5, 800, 800)
+                )
+            );
+            $variant->setState(1);
+
+            $mainVariant = $orm->createOne(ProductVariant::class, $variant);
+
+            $mapper->updateWhere(
+                [
+                    'primary_variant_id' => $mainVariant->getId()
+                ],
+                ['id' => $item->getId()]
+            );
+
+            // Sub Variants
+            $currentFeatures = $faker->randomElements($features, 3);
+            /** @var array<ListOption[]> $variantGroups */
+            $variantGroups = $sortGroup($currentFeatures);
+
+            foreach ($variantGroups as $h => $options) {
+                $options = ListOptionCollection::wrap($options);
+                $variant = new ProductVariant();
+                $startDay = $item->getCreated()->modify($faker->randomElement(['+5 days', '+10 days', '+15 days']));
+                $haveStartDay = $faker->randomElement([1, 1, 0]);
+
+                $variant->setProductId($item->getId());
+                $variant->setTitle((string) $options->column('text')->implode(' / '));
+                $variant->setHash(VariantService::hashByOptions($options));
+                $variant->setPrimary(true);
+                $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0') . '-' . ($h + 1));
+                $variant->setQuantity(random_int(1, 30));
+                $variant->setSubtract(true);
+                $variant->setPrice($mainVariant->getPrice() + (random_int(-10, 10) * 100));
+                $variant->getDimension()
+                    ->setWidth(random_int(20, 100))
+                    ->setHeight(random_int(20, 100))
+                    ->setLength(random_int(20, 100))
+                    ->setWeight(random_int(20, 100));
+                $variant->setStockBuyable(true);
+                $variant->setStockText('');
+                $variant->setCover($faker->unsplashImage(800, 800));
+                $variant->setImages(
+                    array_map(
+                        static fn ($image) => [
+                            'url' => $image,
+                            'uid' => uid(),
+                        ],
+                        $faker->unsplashImages(3, 800, 800)
+                    )
+                );
+                $variant->setOptions($options);
+                $variant->setState(1);
+
+                if ($haveStartDay === 1) {
+                    $variant->setPublishUp($startDay);
+                    $variant->setPublishDown($startDay->modify('+25 days'));
+                }
+
+                $orm->createOne(ProductVariant::class, $variant);
+
+                $seeder->outCounting();
+            }
         }
     }
 );
@@ -115,3 +212,32 @@ $seeder->clear(
         $seeder->truncate(ShopCategoryMap::class);
     }
 );
+
+/**
+ * @param  array<ProductFeature>  $features
+ * @param  array<ProductFeature>  $parentGroup
+ *
+ * @return  array<ListOption>
+ */
+$sortGroup = static function (array $features, array $parentGroup = []) use (&$sortGroup, $seeder) {
+    $faker = $seeder->faker('en_US');
+
+    $feature = array_pop($features);
+    $currentOptions = $feature->getOptions();
+
+    $returnValue = [];
+
+    foreach ($faker->randomElements($currentOptions, 2) as $option) {
+        $group = $parentGroup;
+
+        $group[] = new ListOption($option);
+
+        if (count($features)) {
+            $returnValue[] = $sortGroup($features, $group);
+        } else {
+            $returnValue[] = [$group];
+        }
+    }
+
+    return array_merge(...$returnValue);
+};
