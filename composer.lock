@@ -3527,12 +3527,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/core.git",
-                "reference": "e2ab2b1b572998aa0d21e433858676584c204098"
+                "reference": "6a9392df3d5432ec70bec9cd98f6dcb29a38d370"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/core/zipball/e2ab2b1b572998aa0d21e433858676584c204098",
-                "reference": "e2ab2b1b572998aa0d21e433858676584c204098",
+                "url": "https://api.github.com/repos/windwalker-io/core/zipball/6a9392df3d5432ec70bec9cd98f6dcb29a38d370",
+                "reference": "6a9392df3d5432ec70bec9cd98f6dcb29a38d370",
                 "shasum": ""
             },
             "require": {
@@ -3600,7 +3600,7 @@
                 "issues": "https://github.com/windwalker-io/core/issues",
                 "source": "https://github.com/windwalker-io/core/tree/master"
             },
-            "time": "2023-01-24T15:16:51+00:00"
+            "time": "2023-01-24T15:23:24+00:00"
         },
         {
             "name": "windwalker/framework",
@@ -3608,12 +3608,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/framework.git",
-                "reference": "b4647bdf3fb95c8bf46f64475f3ab66f6a223ea8"
+                "reference": "3ded6610a385c9b1fd215313d60b2ab56d25580a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/framework/zipball/b4647bdf3fb95c8bf46f64475f3ab66f6a223ea8",
-                "reference": "b4647bdf3fb95c8bf46f64475f3ab66f6a223ea8",
+                "url": "https://api.github.com/repos/windwalker-io/framework/zipball/3ded6610a385c9b1fd215313d60b2ab56d25580a",
+                "reference": "3ded6610a385c9b1fd215313d60b2ab56d25580a",
                 "shasum": ""
             },
             "require": {
@@ -3836,7 +3836,7 @@
                 "issues": "https://github.com/windwalker-io/framework/issues",
                 "source": "https://github.com/windwalker-io/framework/tree/master"
             },
-            "time": "2023-01-24T04:01:33+00:00"
+            "time": "2023-01-24T17:43:54+00:00"
         },
         {
             "name": "windwalker/unicorn",
@@ -3844,12 +3844,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/unicorn.git",
-                "reference": "4f9ee081eff843fa22cd90bb3c806e229c652c1c"
+                "reference": "e3e2922dc96ac2c39e97c3baca60e1314c0711f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/4f9ee081eff843fa22cd90bb3c806e229c652c1c",
-                "reference": "4f9ee081eff843fa22cd90bb3c806e229c652c1c",
+                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/e3e2922dc96ac2c39e97c3baca60e1314c0711f6",
+                "reference": "e3e2922dc96ac2c39e97c3baca60e1314c0711f6",
                 "shasum": ""
             },
             "require": {
@@ -3907,7 +3907,7 @@
                 "issues": "https://github.com/windwalker-io/unicorn/issues",
                 "source": "https://github.com/windwalker-io/unicorn/tree/main"
             },
-            "time": "2023-01-24T04:02:57+00:00"
+            "time": "2023-01-24T17:36:09+00:00"
         }
     ],
     "packages-dev": [
@@ -4043,5 +4043,5 @@
     "platform-overrides": {
         "php": "8.0.5"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
