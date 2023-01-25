@@ -81,7 +81,7 @@ use Windwalker\Core\Router\SystemUri;
             </div>
         </div>
 
-        <div class="d-flex">
+        <div class="d-flex gap-2">
             <div class="form-group mb-4">
                 <label for="input-variant-inventory">庫存</label>
                 <input id="input-variant-inventory" type="number" class="form-control"
@@ -89,12 +89,14 @@ use Windwalker\Core\Router\SystemUri;
             </div>
             <div class="form-group mb-4">
                 <label for="input-variant-subtract" class="mr-2">減去庫存</label>
-                <div>
-{{--                    <phoenix-switch name="subtract" v-model="current.subtract" size="sm"--}}
-{{--                        true-value="1"--}}
-{{--                        false-value="0"--}}
-{{--                        color="success"--}}
-{{--                        shape="circle"></phoenix-switch>--}}
+                <div class="form-check form-switch">
+                    <input type="checkbox" id="input-variant-subtract"
+                        class="form-check-input"
+                        v-model="current.subtract"
+                        :true-value="true"
+                        :false-value="false"
+                        role="switch"
+                    />
                 </div>
             </div>
         </div>
