@@ -39,7 +39,7 @@ $mig->up(
                 $schema->varchar('title');
                 $schema->varchar('alias');
                 $schema->decimal('origin_price')->length('20,4');
-                $schema->integer('safe_quantity');
+                $schema->integer('safe_stock');
                 $schema->longtext('intro');
                 $schema->longtext('description');
                 $schema->json('meta')->nullable(true);
@@ -76,12 +76,12 @@ $mig->up(
                 $schema->varchar('jan');
                 $schema->varchar('isbn');
                 $schema->varchar('mpn');
-                $schema->integer('quantity');
+                $schema->integer('stock_quantity');
                 $schema->bool('subtract');
                 $schema->decimal('price')->length('20,4');
                 $schema->json('dimension')->nullable(true);
                 $schema->bool('stock_buyable');
-                $schema->varchar('stock_text');
+                $schema->varchar('out_of_stock_text');
                 $schema->varchar('cover');
                 $schema->json('images')->nullable(true);
                 $schema->json('options')->nullable(true);

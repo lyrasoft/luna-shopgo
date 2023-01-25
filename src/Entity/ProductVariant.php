@@ -74,8 +74,8 @@ class ProductVariant implements EntityInterface
     #[Column('mpn')]
     protected string $mpn = '';
 
-    #[Column('quantity')]
-    protected int $quantity = 0;
+    #[Column('stock_quantity')]
+    protected int $stockQuantity = 0;
 
     #[Column('subtract')]
     #[Cast('bool', 'int')]
@@ -89,12 +89,8 @@ class ProductVariant implements EntityInterface
     #[Cast(ProductDimension::class)]
     protected ProductDimension $dimension;
 
-    #[Column('stock_buyable')]
-    #[Cast('bool', 'int')]
-    protected bool $stockBuyable = false;
-
-    #[Column('stock_text')]
-    protected string $stockText = '';
+    #[Column('out_of_stock_text')]
+    protected string $outOfStockText = '';
 
     #[Column('cover')]
     protected string $cover = '';
@@ -281,14 +277,14 @@ class ProductVariant implements EntityInterface
         return $this;
     }
 
-    public function getQuantity(): int
+    public function getStockQuantity(): int
     {
-        return $this->quantity;
+        return $this->stockQuantity;
     }
 
-    public function setQuantity(int $quantity): static
+    public function setStockQuantity(int $stockQuantity): static
     {
-        $this->quantity = $quantity;
+        $this->stockQuantity = $stockQuantity;
 
         return $this;
     }
@@ -329,26 +325,14 @@ class ProductVariant implements EntityInterface
         return $this;
     }
 
-    public function isStockBuyable(): bool
+    public function getOutOfStockText(): string
     {
-        return $this->stockBuyable;
+        return $this->outOfStockText;
     }
 
-    public function setStockBuyable(bool $stockBuyable): static
+    public function setOutOfStockText(string $outOfStockText): static
     {
-        $this->stockBuyable = $stockBuyable;
-
-        return $this;
-    }
-
-    public function getStockText(): string
-    {
-        return $this->stockText;
-    }
-
-    public function setStockText(string $stockText): static
-    {
-        $this->stockText = $stockText;
+        $this->outOfStockText = $outOfStockText;
 
         return $this;
     }

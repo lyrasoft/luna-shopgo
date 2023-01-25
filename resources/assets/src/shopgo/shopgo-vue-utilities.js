@@ -14,7 +14,7 @@ window.ShopgoVueUtilities = class ShopgoVueUtilities {
    */
   static prepareVueItem(item, callback = null) {
     if (callback) {
-      item = callback(item);
+      item = callback(item) || item;
     }
 
     item.uid = item.uid || u.uid();

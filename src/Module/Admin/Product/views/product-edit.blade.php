@@ -49,35 +49,40 @@ use Windwalker\Form\Form;
         <div class="row">
             <div class="col-lg-9">
 
-                <x-card>
-                    <x-slot name="header">
-                        <div class="card-header"
-                            style="background-color: inherit">
-                            <x-tabs keepactive variant="pills">
-                                <x-tab-button target="#info" active>
-                                    @lang('shopgo.product.edit.tab.info')
-                                </x-tab-button>
-                                <x-tab-button target="#about">
-                                    @lang('shopgo.product.edit.tab.about')
-                                </x-tab-button>
-                                <x-tab-button target="#images">
-                                    @lang('shopgo.product.edit.tab.images')
-                                </x-tab-button>
-                                <x-tab-button target="#attributes">
-                                    @lang('shopgo.product.edit.tab.attributes')
-                                </x-tab-button>
-                                <x-tab-button target="#variants">
-                                    @lang('shopgo.product.edit.tab.variants')
-                                </x-tab-button>
-                                <x-tab-button target="#discounts">
-                                    @lang('shopgo.product.edit.tab.discounts')
-                                </x-tab-button>
-                            </x-tabs>
-                        </div>
-                    </x-slot>
+                <div class="card-header"
+                    style="background-color: inherit">
+                    <x-tabs keepactive variant="pills">
+                        {{-- Tab: Info --}}
+                        <x-tab-button target="#info" active>
+                            @lang('shopgo.product.edit.tab.info')
+                        </x-tab-button>
+                        {{-- Tab: About --}}
+                        <x-tab-button target="#about">
+                            @lang('shopgo.product.edit.tab.about')
+                        </x-tab-button>
+                        {{-- Tab: Images --}}
+                        <x-tab-button target="#images">
+                            @lang('shopgo.product.edit.tab.images')
+                        </x-tab-button>
+                        {{-- Tab: Attributes --}}
+                        <x-tab-button target="#attributes">
+                            @lang('shopgo.product.edit.tab.attributes')
+                        </x-tab-button>
+                        {{-- Tab: Variants --}}
+                        <x-tab-button target="#variants">
+                            @lang('shopgo.product.edit.tab.variants')
+                        </x-tab-button>
+                        {{-- Tab: Discounts --}}
+                        <x-tab-button target="#discounts">
+                            @lang('shopgo.product.edit.tab.discounts')
+                        </x-tab-button>
+                    </x-tabs>
+                </div>
 
-                    <div class="tab-content">
-                        <x-tab-pane id="info" active>
+                <div class="tab-content mt-4">
+                    {{-- Pane: Info --}}
+                    <x-tab-pane id="info" active>
+                        <x-card>
                             <div class="row">
                                 <div class="col-lg-4">
                                     <x-fieldset name="info1"
@@ -104,28 +109,34 @@ use Windwalker\Form\Form;
                                     </x-fieldset>
                                 </div>
                             </div>
-                        </x-tab-pane>
-                        <x-tab-pane id="about">
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <x-fieldset name="about"
-                                        :form="$form"
-                                        class="mb-4"
-                                        is="div"
-                                    >
-                                    </x-fieldset>
-                                </div>
-                                <div class="col-lg-4">
-                                    <x-fieldset name="seo"
-                                        :form="$form"
-                                        class="mb-3"
-                                        is="div"
-                                    >
-                                    </x-fieldset>
-                                </div>
+                        </x-card>
+                    </x-tab-pane>
+
+                    {{-- Pane: About --}}
+                    <x-tab-pane id="about">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <x-fieldset name="about"
+                                    :form="$form"
+                                    class="mb-4"
+                                    is="card"
+                                >
+                                </x-fieldset>
                             </div>
-                        </x-tab-pane>
-                        <x-tab-pane id="images">
+                            <div class="col-lg-4">
+                                <x-fieldset name="seo"
+                                    :form="$form"
+                                    class="mb-3"
+                                    is="card"
+                                >
+                                </x-fieldset>
+                            </div>
+                        </div>
+                    </x-tab-pane>
+
+                    {{-- Pane: Images --}}
+                    <x-tab-pane id="images">
+                        <x-card>
                             <div class="row">
                                 <div class="col-lg-10">
                                     <x-fieldset name="images"
@@ -136,9 +147,22 @@ use Windwalker\Form\Form;
                                     </x-fieldset>
                                 </div>
                             </div>
-                        </x-tab-pane>
-                    </div>
-                </x-card>
+                        </x-card>
+                    </x-tab-pane>
+
+                    {{-- Pane: Attributes --}}
+                    <x-tab-pane id="attributes">
+                    </x-tab-pane>
+
+                    {{-- Pane: Variants --}}
+                    <x-tab-pane id="variants">
+                        @include('product-variants-edit')
+                    </x-tab-pane>
+
+                    {{-- Pane: Discounts --}}
+                    <x-tab-pane id="discounts">
+                    </x-tab-pane>
+                </div>
             </div>
             <div class="col-lg-3">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"

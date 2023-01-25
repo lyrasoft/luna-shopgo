@@ -27,12 +27,17 @@ use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
 
+use function Windwalker\collect;
+
 /**
  * The ProductEditView class.
  */
 #[ViewModel(
     layout: 'product-edit',
-    js: 'product-edit.js'
+    js: [
+        'product-edit.js',
+        'product-variants-edit.js',
+    ]
 )]
 class ProductEditView implements ViewModelInterface
 {
@@ -69,6 +74,8 @@ class ProductEditView implements ViewModelInterface
                     ?: $this->orm->extractEntity($item)
             );
 
+        $variants = collect();
+
         if ($item) {
             // Main Variant
             $mainVariant = $this->orm->findOne(
@@ -86,6 +93,12 @@ class ProductEditView implements ViewModelInterface
                 ]
             );
 
+            // Variants
+            $variants = $this->orm->from(ProductVariant::class)
+                ->where('product_id', $item->getId())
+                ->where('primary', '!=', 1)
+                ->all(ProductVariant::class);
+
             // Sub Categories
             $subCategoryIds = $this->orm->select('category_id')
                 ->from(ShopCategoryMap::class, 'map')
@@ -102,7 +115,7 @@ class ProductEditView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item');
+        return compact('form', 'id', 'item', 'variants');
     }
 
     /**

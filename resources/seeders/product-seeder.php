@@ -63,7 +63,7 @@ $seeder->import(
             );
             $item->setAlias(SlugHelper::safe($item->getTitle()));
             $item->setOriginPrice((float) $faker->randomElement([500, 1000, 1500, 2000, 2500, 3000, 3500]));
-            $item->setSafeQuantity(random_int(5, 20));
+            $item->setSafeStock(random_int(5, 20));
             $item->setIntro($faker->paragraph(2));
             $item->setDescription($faker->paragraph(5));
             $item->setMeta(
@@ -123,7 +123,7 @@ $seeder->import(
             $variant->setHash('');
             $variant->setPrimary(true);
             $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0'));
-            $variant->setQuantity(random_int(1, 30));
+            $variant->setStockQuantity(random_int(1, 30));
             $variant->setSubtract(true);
             $variant->setPrice(random_int(1, 40) * 100);
             $variant->getDimension()
@@ -132,7 +132,7 @@ $seeder->import(
                 ->setLength(random_int(20, 100))
                 ->setWeight(random_int(20, 100));
             $variant->setStockBuyable(true);
-            $variant->setStockText('');
+            $variant->setOutOfStockText('');
             $variant->setCover($faker->unsplashImage(800, 800));
             $variant->setImages(
                 array_map(
@@ -170,7 +170,7 @@ $seeder->import(
                 $variant->setHash(VariantService::hashByOptions($options));
                 $variant->setPrimary(false);
                 $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0') . '-' . ($h + 1));
-                $variant->setQuantity(random_int(1, 30));
+                $variant->setStockQuantity(random_int(1, 30));
                 $variant->setSubtract(true);
                 $variant->setPrice($mainVariant->getPrice() + (random_int(-10, 10) * 100));
                 $variant->getDimension()
@@ -179,7 +179,7 @@ $seeder->import(
                     ->setLength(random_int(20, 100))
                     ->setWeight(random_int(20, 100));
                 $variant->setStockBuyable(true);
-                $variant->setStockText('');
+                $variant->setOutOfStockText('');
                 $variant->setCover($faker->unsplashImage(800, 800));
                 $variant->setImages(
                     array_map(

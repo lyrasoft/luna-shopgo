@@ -61,8 +61,8 @@ class Product implements EntityInterface
     #[Column('origin_price')]
     protected float $originPrice = 0.0;
 
-    #[Column('safe_quantity')]
-    protected int $safeQuantity = 0;
+    #[Column('safe_stock')]
+    protected int $safeStock = 0;
 
     #[Column('intro')]
     protected string $intro = '';
@@ -215,14 +215,14 @@ class Product implements EntityInterface
         return $this;
     }
 
-    public function getSafeQuantity(): int
+    public function getSafeStock(): int
     {
-        return $this->safeQuantity;
+        return $this->safeStock;
     }
 
-    public function setSafeQuantity(int $safeQuantity): static
+    public function setSafeStock(int $safeStock): static
     {
-        $this->safeQuantity = $safeQuantity;
+        $this->safeStock = $safeStock;
 
         return $this;
     }

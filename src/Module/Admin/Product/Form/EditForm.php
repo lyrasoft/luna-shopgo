@@ -70,8 +70,8 @@ class EditForm implements FieldDefinitionInterface
                     ->step('0.0001')
                     ->min(0);
 
-                $form->add('variant/quantity', NumberField::class)
-                    ->label($this->trans('shopgo.product.field.quantity'))
+                $form->add('variant/stock_quantity', NumberField::class)
+                    ->label($this->trans('shopgo.product.field.stock_quantity'))
                     ->min(0)
                     ->required(true);
 
@@ -81,11 +81,11 @@ class EditForm implements FieldDefinitionInterface
                     ->color('primary')
                     ->defaultValue('1');
 
-                $form->add('safe_quantity', NumberField::class)
-                    ->label($this->trans('shopgo.product.field.safe_quantity'))
+                $form->add('safe_stock', NumberField::class)
+                    ->label($this->trans('shopgo.product.field.safe_stock'))
                     ->min(0);
 
-                $form->add('stock_text', TextField::class)
+                $form->add('out_of_stock_text', TextField::class)
                     ->label($this->trans('shopgo.product.field.stock_text'));
             }
         );
