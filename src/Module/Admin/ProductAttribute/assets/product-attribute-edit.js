@@ -36,8 +36,10 @@ const app = createApp({
     const items = ShopgoVueUtilities.prepareVueItemList(
       u.data('options') || [],
       (item) => {
+        item.uid = item.uid = u.tid();
         return {
           data: item,
+          uid: item.uid,
           selected: false
         };
       }
@@ -74,8 +76,10 @@ const app = createApp({
             is_default: false
           },
           (data) => {
+            data.uid = data.uid = u.tid();
             return {
               data: data,
+              uid: data.uid,
               selected: false
             };
           }

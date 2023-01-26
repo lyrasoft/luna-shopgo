@@ -20,6 +20,8 @@ use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Utf8String;
 
+use function Windwalker\tid;
+
 /**
  * ProductFeature Seeder
  *
@@ -48,6 +50,7 @@ $seeder->import(
             foreach (range(1, random_int(5, 8)) as $o) {
                 $options[] = $option = new ListOption(
                     [
+                        'uid' => tid(),
                         'text' => $text = Utf8String::ucwords($faker->word()),
                         'value' => strtolower($text)
                     ]

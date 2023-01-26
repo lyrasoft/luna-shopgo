@@ -183,11 +183,6 @@ class ProductController
 
         $optionGroups = $variantService->sortOptionsGroup($featureOptionGroup);
 
-        $oldVariants = $orm->findList(
-            ProductVariant::class,
-            ['product_id' => $productId ?: 0, 'primary' => 0]
-        )->all();
-
         $variants = [];
 
         foreach ($optionGroups as $optionGroup) {
@@ -196,10 +191,10 @@ class ProductController
                 static fn ($a, $b) => strcmp($a['value'], $b['value'])
             );
 
-            $values = array_map(static fn ($option) => $option['value'], $optionGroup);
+            $uids = array_map(static fn ($option) => $option['uid'], $optionGroup);
             $texts = array_map(static fn ($option) => $option['text'], $optionGroup);
 
-            $hash = $variantService::hash($values);
+            $hash = $variantService::hash($uids);
 
             if (in_array($hash, $currentHashes, true)) {
                 continue;
@@ -215,7 +210,7 @@ class ProductController
             $variant->getDimension(); // Pre-create ValueObject
             $variant->setSubtract(true);
             $variant->setState(1);
-            $variant->setOptions($values);
+            $variant->setOptions($optionGroup);
 
             $variants[] = $variant;
         }

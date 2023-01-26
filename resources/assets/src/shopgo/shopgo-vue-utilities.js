@@ -17,7 +17,7 @@ window.ShopgoVueUtilities = class ShopgoVueUtilities {
       item = callback(item) || item;
     }
 
-    item.uid = item.uid || u.uid();
+    item.uid = item.uid || u.tid();
 
     return item;
   }

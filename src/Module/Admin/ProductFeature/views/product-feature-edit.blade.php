@@ -130,6 +130,8 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                     </div>
                                                 </div>
                                                 <div class="d-none">
+                                                    <input type="hidden" :name="`options[${item.uid}][uid]`"
+                                                        :value="item.data.uid" />
                                                     <input type="hidden" :name="`options[${item.uid}][text]`"
                                                         :value="item.data.text" />
                                                     <input type="hidden" :name="`options[${item.uid}][value]`"

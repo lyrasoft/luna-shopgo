@@ -18,6 +18,7 @@ use Windwalker\Data\ValueObject;
  */
 class ListOption extends ValueObject
 {
+    public string $uid = '';
     public string $value = '';
     public string $text = '';
     public string $color = '';
@@ -77,6 +78,26 @@ class ListOption extends ValueObject
     public function setColor(string $color): static
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUid(): string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param  string  $uid
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setUid(string $uid): static
+    {
+        $this->uid = $uid;
 
         return $this;
     }

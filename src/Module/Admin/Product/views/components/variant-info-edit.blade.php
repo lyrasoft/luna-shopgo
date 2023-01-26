@@ -177,14 +177,17 @@ use Windwalker\Core\Router\SystemUri;
         </div>
 
         <div class="variant-images mt-4" v-if="items.length <= 1">
-{{--            <vue-drag-uploader--}}
-{{--                :images="current.images"--}}
-{{--                :max-files="6"--}}
-{{--                @change="current.images = $event"--}}
-{{--                @uploading="loading.uploading = true"--}}
-{{--                @uploaded="loading.uploading = false"--}}
-{{--            >--}}
-{{--            </vue-drag-uploader>--}}
+            <vue-drag-uploader
+                :model-value="JSON.parse(JSON.stringify(current.images))"
+                @update:modelValue="current.images = JSON.parse(JSON.stringify($event))"
+                :max-files="6"
+                :url="getImageUploaderUrl()"
+                accept="image/*"
+                placeholder="Upload Images"
+                @uploading="stack.push(true)"
+                @uploaded="stack.pop()"
+            >
+            </vue-drag-uploader>
         </div>
 
         <div class="mt-4">
@@ -206,7 +209,7 @@ use Windwalker\Core\Router\SystemUri;
             name: 'VariantInfoEdit',
             template: u.selectOne('#c-variant-info-edit').innerHTML,
             components: {
-                VueDragUploader: async () => VueDragUploader
+                VueDragUploader: VueDragUploader
             },
             props: {
                 variants: Array,
@@ -226,7 +229,8 @@ use Windwalker\Core\Router\SystemUri;
                             // wrap: true,
                             monthSelect: false,
                         }
-                    )
+                    ),
+                    stack: u.stack('uploading')
                 });
 
                 watch(() => props.variants, () => {
@@ -236,6 +240,7 @@ use Windwalker\Core\Router\SystemUri;
                         stockQuantity: '',
                         publishUp: '',
                         publishDown: '',
+                        images: [],
                         dimension: {
                             width: '',
                             height: '',
@@ -259,6 +264,14 @@ use Windwalker\Core\Router\SystemUri;
                 watch(() => unsave, () => {
                     emit('unsavechange', unsave.value);
                 });
+
+                // window.addEventListener('beforeunload', (e) => {
+                //     if (unsave.value) {
+                //         e.preventDefault();
+                //         e.stopPropagation();
+                //         e.returnValue = 'Save Required';
+                //     }
+                // });
 
                 function save() {
                     if (!unsave.value) {
@@ -286,12 +299,22 @@ use Windwalker\Core\Router\SystemUri;
                     emit('cancel');
                 }
 
+                function getImageUploaderUrl() {
+                    return u.route('file_upload', { profile: 'image' });
+                }
+
+                function imagesChange(images) {
+                    console.log(images);
+                }
+
                 return {
                     ...toRefs(state),
                     unsave,
 
                     save,
                     cancelEdit,
+                    getImageUploaderUrl,
+                    imagesChange,
                 }
             }
         }

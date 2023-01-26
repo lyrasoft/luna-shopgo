@@ -13,6 +13,7 @@ u.$ui.flatpickr();
 const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick } = Vue;
 
 const priceInput = document.querySelector('#input-item-variant-price');
+const form = document.querySelector('#admin-form');
 
 const app = createApp(
   {
@@ -45,12 +46,19 @@ const app = createApp(
       });
 
       // Unsave
+      let formSubmitting = false;
       const saveRequired = computed(() => state.items.filter(item => item.unsave).length > 0);
 
       window.addEventListener('beforeunload', (e) => {
-        if (saveRequired.value) {
+        if (saveRequired.value && !formSubmitting) {
+          e.preventDefault();
+          e.stopPropagation();
           e.returnValue = 'Save Required';
         }
+      });
+
+      form.addEventListener('submit', () => {
+        formSubmitting = true;
       });
 
       const checkedItems = computed(() => {
@@ -128,8 +136,6 @@ const app = createApp(
 
         state.generate.edit = false;
         item.checked = true;
-
-        // this.$options.currentCopy = JSON.parse(JSON.stringify(item));
       }
 
       async function generateCombinations() {

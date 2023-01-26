@@ -57,15 +57,15 @@ use Windwalker\Core\Application\AppContext;
                     <div class="c-option-item__input-wrapper form-check">
 
                         {{-- Feature Input --}}
-                        <input :id="'input-option-' + option.value" type="checkbox"
-                            :value="option.id"
-                            :name="`options[${feature.id}][${option.id}]`"
+                        <input :id="'input-option-' + option.uid" type="checkbox"
+                            :value="option.uid"
+                            :name="`options[${feature.id}][${option.uid}]`"
                             class="form-check-input"
                             v-model="option.checked"
                             @change="optionCheckboxChanged(feature, option)" />
 
                         {{-- Feature Label --}}
-                        <label :for="'input-option-' + option.value" class="form-check-label d-flex align-items-center">
+                        <label :for="'input-option-' + option.uid" class="form-check-label d-flex align-items-center">
                             <span v-if="feature.type === 'color'"
                                 class="rounded me-2"
                                 style="width: 20px; height: 20px;"

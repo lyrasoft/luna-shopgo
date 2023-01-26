@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\ProductFeature;
 
+use App\Entity\ProductFeature;
 use App\Module\Admin\ProductFeature\Form\EditForm;
 use App\Repository\ProductFeatureRepository;
 use Unicorn\Controller\CrudController;
@@ -20,6 +21,7 @@ use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\Event\BeforeSaveEvent;
 
 /**
  * The ProductFeatureController class.
@@ -37,6 +39,18 @@ class ProductFeatureController
 
         $controller->prepareSave(
             function (PrepareSaveEvent $event) use ($app) {
+                $data = &$event->getData();
+
+                $options = $app->input('options');
+
+                if ($options !== null) {
+                    $data['options'] = array_values($options);
+                }
+            }
+        );
+
+        $controller->beforeSave(
+            function (BeforeSaveEvent $event) use ($app) {
                 $data = &$event->getData();
 
                 $options = $app->input('options');

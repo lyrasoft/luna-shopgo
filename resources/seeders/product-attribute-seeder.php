@@ -20,6 +20,8 @@ use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\StrNormalize;
 
+use function Windwalker\tid;
+
 /**
  * ProductAttribute Seeder
  *
@@ -52,6 +54,7 @@ $seeder->import(
                 foreach (range(1, random_int(5, 8)) as $o) {
                     $options[] = new ListOption(
                         [
+                            'uid' => tid(),
                             'text' => $text = $faker->word(),
                             'value' => strtolower($text)
                         ]

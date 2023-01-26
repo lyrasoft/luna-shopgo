@@ -47,9 +47,10 @@ $uniScript->data('product.variants.props', [
 ]);
 
 $uniScript->addRoute('@product_ajax');
+$uniScript->addRoute('@file_upload');
 ?>
-<product-variants-edit-app id="product-variants-edit-app">
-    <div class="row">
+<product-variants-edit-app id="product-variants-edit-app" data-novalidate>
+    <div class="row" >
         <div class="col-lg-6 l-product-variant__list">
             <div class="card c-variant-list">
                 <div class="card-header c-variant-list__toolbar d-flex">
