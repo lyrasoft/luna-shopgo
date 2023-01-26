@@ -8,38 +8,64 @@
 import '@main';
 import '@unicorn/vue/vue-drag-uploader.js';
 
-const { createApp, ref, toRefs, reactive, computed, watch } = Vue;
+u.$ui.flatpickr();
+
+const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick } = Vue;
+
+const priceInput = document.querySelector('#input-item-variant-price');
 
 const app = createApp(
   {
     name: 'ProductVariantsEditApp',
     components: {
       VariantListItem: variantListItem(),
-      VariantInfoEdit: variantInfoEdit()
+      VariantInfoEdit: variantInfoEdit(),
+      VariantGeneration: variantGeneration(),
     },
     props: {
+      product: Object,
       variants: Array
     },
     setup(props) {
       const state = reactive({
-        items: ShopgoVueUtilities.prepareVueItemList(
-          props.variants,
-          (item) => {
-            item.checked = false;
-            item.unsave = false;
-          }
-        ),
+        items: prepareItems(props.variants),
         generate: {
           edit: false,
         },
-        current: null,
-        saveRequired: false,
         lastCheckItemIndex: 0,
+      });
+
+      const mainPrice = ref(priceInput.value);
+
+      provide('product', props.product || {});
+      provide('mainPrice', mainPrice);
+
+      priceInput.addEventListener('change', () => {
+        mainPrice.value = parseFloat(priceInput.value);
+      });
+
+      // Unsave
+      const saveRequired = computed(() => state.items.filter(item => item.unsave).length > 0);
+
+      window.addEventListener('beforeunload', (e) => {
+        if (saveRequired.value) {
+          e.returnValue = 'Save Required';
+        }
       });
 
       const checkedItems = computed(() => {
         return state.items.filter((item) => item.checked);
       });
+
+      function prepareItems(items) {
+        return ShopgoVueUtilities.prepareVueItemList(
+          items,
+          (item) => {
+            item.checked = false;
+            item.unsave = false;
+          }
+        );
+      }
 
       function checkAll($event, value = null) {
         state.items.forEach(item => {
@@ -47,7 +73,16 @@ const app = createApp(
         });
       }
 
-      function multiCheck($event, i) {
+      async function multiCheck($event, i) {
+        if (!await confirmLeave()) {
+          $event.preventDefault();
+          $event.target.checked = false;
+          state.items[i].checked = false;
+          return;
+        }
+
+        state.items[i].checked = true;
+
         if (state.lastCheckItemIndex === null) {
           state.lastCheckItemIndex = i;
           return;
@@ -74,34 +109,97 @@ const app = createApp(
         return checkedItems.value.length;
       }
 
-      function editVariant(item) {
+      // Editing
+      const current = computed(() => {
+        if (checkedItems.value.length === 1) {
+          return checkedItems.value[0];
+        }
+
+        return {};
+      });
+      const variantEdit = ref(null);
+
+      async function editVariant(item) {
+        if (!await cancelEdit()) {
+          return;
+        }
+
         checkAll(null, false);
 
         state.generate.edit = false;
         item.checked = true;
-        state.current = item;
 
         // this.$options.currentCopy = JSON.parse(JSON.stringify(item));
       }
 
-      function generateCombinations() {
+      async function generateCombinations() {
+        if (!await cancelEdit()) {
+          return;
+        }
 
+        state.generate.edit = true;
       }
 
-      function deleteVariants() {
+      function generated(variants) {
+        state.items = state.items.concat(prepareItems(variants));
 
+        state.generate.edit = false;
       }
+
+      async function cancelEdit() {
+        if (variantEdit.value) {
+          if (variantEdit.value.unsave) {
+            if (await confirmLeave()) {
+              return false;
+            }
+          }
+
+          checkAll(null, false);
+        }
+
+        return true;
+      }
+
+      async function confirmLeave() {
+        if (variantEdit.value) {
+          if (variantEdit.value.unsave) {
+            const v = await u.confirm('尚未儲存，您確定要離開嗎？');
+
+            if (!v) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }
+
+      function deleteVariants(item = null) {
+        if (!item) {
+          state.items = state.items.filter(it => !it.checked);
+        } else {
+          state.items = state.items.filter(it => it.hash !== item.hash);
+        }
+      }
+
+      // Input
+      const itemsJSON = computed(() => JSON.stringify(state.items));
 
       return {
         ...toRefs(state),
         checkedItems,
+        variantEdit,
+        current,
+        itemsJSON,
 
         checkAll,
         multiCheck,
         editVariant,
         deleteVariants,
+        generated,
         generateCombinations,
         countChecked,
+        cancelEdit,
       }
     }
   },
@@ -113,85 +211,5 @@ await u.domready();
 
 app.use(ShopGoVuePlugin);
 app.component('draggable', vuedraggable);
+app.component('vue-drag-uploader', VueDragUploader);
 app.mount('product-variants-edit-app');
-
-function variantListItem() {
-  return {
-    name: 'VariantListItem',
-    template: u.selectOne('#c-variant-list-item').innerHTML,
-    props: {
-      item: Object,
-      i: Number,
-      active: Boolean,
-    },
-    setup(props, { emit }) {
-
-
-      function changeStock() {
-
-      }
-
-      function edit() {
-        emit('edit', props.item);
-      }
-
-      function remove() {
-
-      }
-
-      function multiCheck($event) {
-        emit('oncheck', $event, props.i);
-      }
-
-      return {
-        multiCheck,
-        changeStock,
-        edit,
-        remove,
-      }
-    }
-  }
-}
-
-function variantInfoEdit() {
-  return {
-    name: 'VariantInfoEdit',
-    template: u.selectOne('#c-variant-info-edit').innerHTML,
-    props: {
-      variants: Array,
-    },
-    setup(props) {
-      const state = reactive({
-        current: {},
-        items: []
-      });
-
-      watch(() => props.variants, () => {
-        state.current = {
-          price: '',
-          weight: '',
-        };
-        state.items = JSON.parse(JSON.stringify(props.variants));
-
-        if (state.items.length === 1) {
-          state.current = state.items[0];
-        }
-      }, { immediate: true });
-
-      function save() {
-
-      }
-
-      function cancelEdit() {
-
-      }
-
-      return {
-        ...toRefs(state),
-
-        save,
-        cancelEdit,
-      }
-    }
-  }
-}

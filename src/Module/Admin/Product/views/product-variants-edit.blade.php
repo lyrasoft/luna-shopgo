@@ -42,9 +42,11 @@ $vueScript->animate();
 
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('product.variants.props', [
+    'product' => $item,
     'variants' => $variants
 ]);
 
+$uniScript->addRoute('@product_ajax');
 ?>
 <product-variants-edit-app id="product-variants-edit-app">
     <div class="row">
@@ -92,26 +94,42 @@ $uniScript->data('product.variants.props', [
                     </div>
                     <div class="c-variant-list__scroll list-group list-group-flush"
                         style="overflow-y: scroll; height: 75vh; min-height: 400px">
-                        <variant-list-item
-                            v-for="(item, i) of items"
-                            :key="item.uid"
-                            :item="item"
-                            :i="i"
-                            :active="current?.id === item.id"
-                            @edit="editVariant"
-                            @oncheck="multiCheck"
-                        ></variant-list-item>
+                        <transition-group name="fade">
+                            <variant-list-item
+                                v-for="(item, i) of items"
+                                :key="item.uid"
+                                :item="item"
+                                :i="i"
+                                :active="current?.hash === item.hash"
+                                @edit="editVariant"
+                                @remove="deleteVariants(item)"
+                                @oncheck="multiCheck"
+                                style="animation-duration: .3s"
+                            ></variant-list-item>
+                        </transition-group>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-6 l-product-variant__manage">
             <variant-info-edit v-if="checkedItems.length"
+                ref="variantEdit"
                 :variants="checkedItems"
+                @cancel="cancelEdit"
             ></variant-info-edit>
+
+            <variant-generation v-if="generate.edit"
+                :items="items"
+                @generated="generated"
+                @cancel="generate.edit = false;"
+                class="">
+            </variant-generation>
         </div>
+
+        <textarea name="variants" class="d-none" :value="itemsJSON"></textarea>
     </div>
 </product-variants-edit-app>
 
 <x-components.variant-list-item></x-components.variant-list-item>
 <x-components.variant-info-edit></x-components.variant-info-edit>
+<x-components.variant-generation></x-components.variant-generation>

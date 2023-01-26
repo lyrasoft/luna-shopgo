@@ -24,4 +24,7 @@ $router->group('product')
         $router->any('product_edit', '/product/edit[/{id}]')
             ->controller(ProductController::class)
             ->view(ProductEditView::class);
+
+        $router->any('product_ajax', '/product/ajax[/{task}]')
+            ->controller(ProductController::class, 'ajax');
     });

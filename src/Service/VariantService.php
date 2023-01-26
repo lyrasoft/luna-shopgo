@@ -39,4 +39,31 @@ class VariantService
 
         return md5(implode(':', $values));
     }
+
+    /**
+     * @param  array  $featureOptGroups
+     * @param  array  $parentGroup
+     *
+     * @return  array<array<array{ text: string, value: string }>>
+     */
+    public function sortOptionsGroup(array $featureOptGroups, array $parentGroup = []): array
+    {
+        $currentOptions = array_pop($featureOptGroups);
+
+        $returnValue = [];
+
+        foreach ($currentOptions as $option) {
+            $group = $parentGroup;
+
+            $group[] = $option;
+
+            if (\count($featureOptGroups)) {
+                $returnValue[] = $this->sortOptionsGroup($featureOptGroups, $group);
+            } else {
+                $returnValue[] = [$group];
+            }
+        }
+
+        return array_merge(...$returnValue);
+    }
 }

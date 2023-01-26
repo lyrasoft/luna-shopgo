@@ -19,9 +19,10 @@ $defaultImage = $app->service(ImagePlaceholder::class)->placeholderSquare();
     :class="{ active }">
     <div class="list-group-item__wrapper d-flex align-items-center gap-2">
         <div class="c-variant-item__control d-flex flex-nowrap">
-            <input type="checkbox" v-model="item.checked"
+            <input type="checkbox"
                 class="form-check-input"
-                @click="multiCheck($event, item, i)" />
+                :checked="item.checked"
+                @click="multiCheck" />
         </div>
         <div class="c-variant-item__image">
             <img :src="item.cover || '{{ $defaultImage }}'"
@@ -31,23 +32,33 @@ $defaultImage = $app->service(ImagePlaceholder::class)->placeholderSquare();
             <div class="text-truncate" style="max-width: 100%">
                 @{{ item.title }}
             </div>
-            <div :class="[active ? 'text-light' : 'text-muted']">
-                <span :class="[active === item.id ? 'text-light' : 'text-muted']">
-                    #@{{ item.model }}
+            <div>
+                <span v-if="item.sku"
+                    style="opacity: .75">
+                    #@{{ item.sku }}
+                </span>
+
+                <span v-if="priceOffset !== 0"
+                    style="opacity: .75">
+                    @{{ $offsetFormat(priceOffset, '$') }}
+                </span>
+
+                <span v-if="item.unsave"
+                    class="badge bg-warning">
+                    Unsave
                 </span>
 
 {{--                <span v-if="item.default === '1'" class="badge badge-info">--}}
 {{--                    預設--}}
 {{--                </span>--}}
 
-                <span v-if="item.saving" class="badge badge-warning">
-                    更新中...
-                </span>
+{{--                <span v-if="item.saving" class="badge badge-warning">--}}
+{{--                    更新中...--}}
+{{--                </span>--}}
             </div>
         </div>
-        <div class="c-variant-item__inventory">
-            <input type="number" v-model="item.stockQuantity" class="form-control form-control-sm"
-                style="width: 75px;" @input="changeStock(item)" :disabled="item.saving" />
+        <div class="c-variant-item__inventory text-end">
+            @{{ $numberFormat(item.stockQuantity) }}
         </div>
         <div class="c-variant-item__actions d-flex flex-nowrap gap-1">
             <button type="button" class="btn btn-sm btn-light border-secondary"
@@ -61,4 +72,47 @@ $defaultImage = $app->service(ImagePlaceholder::class)->placeholderSquare();
         </div>
     </div>
 </div>
+</script>
+
+<script>
+    function variantListItem() {
+        const { ref, toRefs, reactive, computed, watch, inject } = Vue;
+
+        return {
+            name: 'VariantListItem',
+            template: u.selectOne('#c-variant-list-item').innerHTML,
+            props: {
+                item: Object,
+                i: Number,
+                active: Boolean,
+            },
+            setup(props, { emit }) {
+                function edit() {
+                    emit('edit', props.item);
+                }
+
+                function remove() {
+                    emit('remove', props.item);
+                }
+
+                function multiCheck($event) {
+                    emit('oncheck', $event, props.i);
+                }
+
+                const mainPrice = inject('mainPrice');
+
+                const priceOffset = computed(() => {
+                    return Number(props.item.price) - Number(mainPrice.value);
+                });
+
+                return {
+                    priceOffset,
+
+                    multiCheck,
+                    edit,
+                    remove,
+                }
+            }
+        }
+    }
 </script>

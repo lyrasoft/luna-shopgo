@@ -131,7 +131,6 @@ $seeder->import(
                 ->setHeight(random_int(20, 100))
                 ->setLength(random_int(20, 100))
                 ->setWeight(random_int(20, 100));
-            $variant->setStockBuyable(true);
             $variant->setOutOfStockText('');
             $variant->setCover($faker->unsplashImage(800, 800));
             $variant->setImages(
@@ -178,7 +177,6 @@ $seeder->import(
                     ->setHeight(random_int(20, 100))
                     ->setLength(random_int(20, 100))
                     ->setWeight(random_int(20, 100));
-                $variant->setStockBuyable(true);
                 $variant->setOutOfStockText('');
                 $variant->setCover($faker->unsplashImage(800, 800));
                 $variant->setImages(

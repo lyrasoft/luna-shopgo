@@ -28,12 +28,21 @@ use Windwalker\Core\Router\SystemUri;
 <script id="c-variant-info-edit" type="text-/x-template">
 <div class="c-variant-edit card">
     <div class="card-header d-flex align-items-center">
-        <div class="c-variant-edit__title">
-            商品組合編輯
+        <div class="c-variant-edit__title d-flex gap-2">
+            <div>
+                商品組合編輯
+            </div>
+            <div v-if="unsave">
+                <span class="badge bg-warning">
+                    Save Required
+                </span>
+            </div>
         </div>
         <div class="c-variant-edit__actions ms-auto">
             <button type="button" class="btn btn-primary btn-sm"
-                @click="save">
+                @click="save"
+                :disabled="!unsave"
+            >
                 <span class="fa fa-save"></span>
                 儲存
             </button>
@@ -58,37 +67,56 @@ use Windwalker\Core\Router\SystemUri;
 {{--        </div>--}}
 
         <div class="d-flex gap-2">
+{{--            <div class="form-group mb-4" v-if="items.length <= 1">--}}
+{{--                <label for="input-variant-model">型號</label>--}}
+{{--                <input id="input-variant-model" type="text" class="form-control"--}}
+{{--                    v-model="current.model" />--}}
+{{--            </div>--}}
             <div class="form-group mb-4" v-if="items.length <= 1">
-                <label for="input-variant-model">型號</label>
-                <input id="input-variant-model" type="text" class="form-control"
-                    v-model="current.model" />
-            </div>
-            <div class="form-group mb-4" v-if="items.length <= 1">
-                <label for="input-variant-sku">料號 (@{{ skuCount }})</label>
+                <label for="input-variant-sku" class="form-label">料號</label>
                 <textarea id="input-variant-sku" type="text" class="form-control"
                     v-model="current.sku" rows="1"></textarea>
             </div>
 
             <div class="form-group mb-4">
-                <label for="input-variant-price_offset">價格</label>
+                <label for="input-variant-price_offset" class="form-label">價格</label>
                 <input id="input-variant-price_offset" type="number" class="form-control"
-                    :value="current.price | number" @input="current.price_offset = $event.target.value" />
-            </div>
-            <div class="form-group mb-4">
-                <label for="input-variant-weight_offset">重量</label>
-                <input id="input-variant-weight_offset" type="number" class="form-control"
-                    :value="current.weight_offset | number" @input="current.weight_offset = $event.target.value" />
+                    v-model="current.price"
+                    />
             </div>
         </div>
 
         <div class="d-flex gap-2">
             <div class="form-group mb-4">
-                <label for="input-variant-inventory">庫存</label>
+                <label for="input-variant-length" class="form-label">Length</label>
+                <input id="input-variant-length" type="number" class="form-control"
+                    v-model="current.dimension.length" />
+            </div>
+            <div class="form-group mb-4">
+                <label for="input-variant-width" class="form-label">Width</label>
+                <input id="input-variant-width" type="number" class="form-control"
+                    v-model="current.dimension.width" />
+            </div>
+            <div class="form-group mb-4">
+                <label for="input-variant-height" class="form-label">Height</label>
+                <input id="input-variant-height" type="number" class="form-control"
+                    v-model="current.dimension.height" />
+            </div>
+            <div class="form-group mb-4">
+                <label for="input-variant-weight" class="form-label">重量</label>
+                <input id="input-variant-weight" type="number" class="form-control"
+                    v-model="current.dimension.weight" />
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <div class="form-group mb-4">
+                <label for="input-variant-inventory" class="form-label">庫存</label>
                 <input id="input-variant-inventory" type="number" class="form-control"
                     v-model="current.stockQuantity" min="0" />
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-subtract" class="mr-2">減去庫存</label>
+                <label for="input-variant-subtract" class="form-label">減去庫存</label>
                 <div class="form-check form-switch">
                     <input type="checkbox" id="input-variant-subtract"
                         class="form-check-input"
@@ -103,37 +131,54 @@ use Windwalker\Core\Router\SystemUri;
 
         <div class="d-flex gap-2">
             <div class="form-group mb-4">
-                <label for="input-variant-publish_up">起始日期</label>
-                <div class="input-group" vv-calendar>
-                    <input id="input-variant-publish_up" type="text" class="form-control"
-                        v-model="current.publishUp" />
-
-                    <span class="input-group-addon input-group-append">
-                        <span class="input-group-text">
+                <label for="input-variant-publish_up" class="form-label">起始日期</label>
+                <uni-flatpickr :options="flatpickrOptions">
+                    <div class="input-group">
+                        <input id="input-variant-publish_up" type="text" class="form-control"
+                            data-input
+                            v-model="current.publishUp" />
+                        <button type="button"
+                            class="btn btn-secondary"
+                            data-toggle
+                        >
                             <span class="fa fa-calendar"></span>
-                        </span>
-                    </span>
-                </div>
+                        </button>
+                        <button type="button"
+                            class="btn btn-secondary"
+                            data-clear
+                        >
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+                </uni-flatpickr>
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-publish_down">結束日期</label>
-                <div class="input-group" vv-calendar>
-                    <input id="input-variant-publish_down" type="text" class="form-control"
-                        v-model="current.publishDown" />
-
-                    <span class="input-group-addon input-group-append">
-                        <span class="input-group-text">
+                <label for="input-variant-publish_down" class="form-label">結束日期</label>
+                <uni-flatpickr :options="flatpickrOptions">
+                    <div class="input-group">
+                        <input id="input-variant-publish_down" type="text" class="form-control"
+                            data-input
+                            v-model="current.publishDown" />
+                        <button type="button"
+                            class="btn btn-secondary"
+                            data-toggle
+                        >
                             <span class="fa fa-calendar"></span>
-                        </span>
-                    </span>
-                </div>
+                        </button>
+                        <button type="button"
+                            class="btn btn-secondary"
+                            data-clear
+                        >
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+                </uni-flatpickr>
             </div>
         </div>
 
         <div class="variant-images mt-4" v-if="items.length <= 1">
 {{--            <vue-drag-uploader--}}
 {{--                :images="current.images"--}}
-{{--                :url="getVariantImageUploadUrl(current)"--}}
 {{--                :max-files="6"--}}
 {{--                @change="current.images = $event"--}}
 {{--                @uploading="loading.uploading = true"--}}
@@ -143,12 +188,112 @@ use Windwalker\Core\Router\SystemUri;
         </div>
 
         <div class="mt-4">
-            <button type="button" class="btn btn-primary btn-block"
-                @click="saveVariant(current)" :disabled="currentSaving">
+            <button type="button" class="btn btn-primary w-100"
+                @click="saveVariant(current)">
                 <span class="fa fa-save"></span>
-                @{{ currentSaving ? '儲存中' : '儲存' }}
+                儲存
             </button>
         </div>
     </div>
 </div>
+</script>
+
+<script>
+    function variantInfoEdit() {
+        const { ref, toRefs, reactive, computed, watch } = Vue;
+
+        return {
+            name: 'VariantInfoEdit',
+            template: u.selectOne('#c-variant-info-edit').innerHTML,
+            components: {
+                VueDragUploader: async () => VueDragUploader
+            },
+            props: {
+                variants: Array,
+            },
+            setup(props, { emit }) {
+                const state = reactive({
+                    current: {},
+                    items: [],
+                    originCopy: '',
+                    flatpickrOptions: JSON.stringify(
+                        {
+                            dateFormat: 'Y-m-d H:i:S',
+                            enableTime: true,
+                            enableSeconds: true,
+                            allowInput: true,
+                            time_24hr: true,
+                            // wrap: true,
+                            monthSelect: false,
+                        }
+                    )
+                });
+
+                watch(() => props.variants, () => {
+                    state.current = {
+                        sku: '',
+                        price: '',
+                        stockQuantity: '',
+                        publishUp: '',
+                        publishDown: '',
+                        dimension: {
+                            width: '',
+                            height: '',
+                            length: '',
+                            weight: '',
+                            unitWeight: '',
+                        }
+                    };
+                    state.items = props.variants;
+
+                    if (state.items.length === 1) {
+                        state.current = JSON.parse(JSON.stringify(state.items[0]));
+                    }
+
+                    state.originCopy = JSON.stringify(state.current);
+                }, { immediate: true });
+
+                const isMultiple = computed(() => state.items.length > 1);
+                const unsave = computed(() => state.originCopy !== JSON.stringify(state.current));
+
+                watch(() => unsave, () => {
+                    emit('unsavechange', unsave.value);
+                });
+
+                function save() {
+                    if (!unsave.value) {
+                        return;
+                    }
+
+                    if (!isMultiple.value) {
+                        state.items[0] = Object.assign(state.items[0], state.current);
+                        state.items[0].unsave = unsave.value;
+                    } else {
+                        for (const item of state.items) {
+                            ShopgoVueUtilities.mergeRecursive(
+                                item,
+                                state.current,
+                            );
+
+                            item.unsave = unsave.value;
+                        }
+                    }
+
+                    state.originCopy = JSON.stringify(state.current);
+                }
+
+                function cancelEdit() {
+                    emit('cancel');
+                }
+
+                return {
+                    ...toRefs(state),
+                    unsave,
+
+                    save,
+                    cancelEdit,
+                }
+            }
+        }
+    }
 </script>

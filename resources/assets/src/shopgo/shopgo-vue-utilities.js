@@ -31,11 +31,71 @@ window.ShopgoVueUtilities = class ShopgoVueUtilities {
   static prepareVueItemList(items, callback = null) {
     return items.map((item) => this.prepareVueItem(item, callback));
   }
-}
+
+  /**
+   * Merge recursive but ignore some values, Based on ChatGPT, modified by Simon.
+   *
+   * @template {[name: string]: any} T
+   * @param {T} obj1
+   * @param {object} obj2
+   * @param {any[]} ignoreValues
+   * @returns {T}
+   */
+  static mergeRecursive(obj1, obj2, ignoreValues = [null, undefined, '']) {
+    for (let p in obj2) {
+      try {
+        if (ignoreValues.includes(obj2[p])) {
+          continue;
+        }
+
+        // Property in destination object set; update its value.
+        if (obj2[p].constructor === Object) {
+          obj1[p] = this.mergeRecursive(obj1[p], obj2[p]);
+        } else {
+          obj1[p] = obj2[p];
+        }
+      } catch (e) {
+        // Property in destination object not set; create it and set its value.
+        obj1[p] = obj2[p];
+      }
+    }
+    return obj1;
+  }
+};
 
 window.ShopGoVuePlugin = function (app) {
   app.config.compilerOptions.whitespace = 'preserve';
-}
+
+  app.config.compilerOptions.isCustomElement = (tag) => {
+    return [
+      'uni-flatpickr'
+    ].includes(tag);
+  };
+
+  app.config.globalProperties.$numberFormat = (num, prefix = '') => {
+    const negative = num < 0;
+    let formatted = prefix + u.numberFormat(Math.abs(num));
+
+    if (negative) {
+      formatted = '-' + formatted;
+    }
+
+    return formatted;
+  };
+
+  app.config.globalProperties.$offsetFormat = (num, prefix = '') => {
+    const negative = num < 0;
+    let formatted = prefix + u.numberFormat(Math.abs(num));
+
+    if (negative) {
+      formatted = '-' + formatted;
+    } else {
+      formatted = '+' + formatted;
+    }
+
+    return formatted;
+  };
+};
 
 // Directive
 
