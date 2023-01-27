@@ -146,13 +146,6 @@ $seeder->import(
 
             $mainVariant = $orm->createOne(ProductVariant::class, $variant);
 
-            $mapper->updateWhere(
-                [
-                    'primary_variant_id' => $mainVariant->getId()
-                ],
-                ['id' => $item->getId()]
-            );
-
             // Sub Variants
             $currentFeatures = $faker->randomElements($features, 3);
             /** @var array<ListOption[]> $variantGroups */
@@ -200,6 +193,14 @@ $seeder->import(
 
                 $seeder->outCounting();
             }
+
+            $mapper->updateWhere(
+                [
+                    'variants' => count($variantGroups),
+                    'primary_variant_id' => $mainVariant->getId(),
+                ],
+                ['id' => $item->getId()]
+            );
         }
     }
 );

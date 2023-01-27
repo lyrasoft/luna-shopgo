@@ -61,10 +61,9 @@ class ProductController
         );
 
         $controller->afterSave(
-            function (AfterSaveEvent $event) use ($app) {
+            function (AfterSaveEvent $event) use ($repository, $app) {
                 $orm = $event->getORM();
                 $data = $event->getData();
-                $entity = $event->getEntity();
 
                 $variantData = $app->input('item')['variant'];
 
@@ -79,10 +78,16 @@ class ProductController
                 $orm->updateOne(ProductVariant::class, $mainVariant);
 
                 // Sub Variants
-                $this->saveSubVariants($app, $orm, (int) $data['id']);
+                $variants = $this->saveSubVariants($app, $orm, (int) $data['id']);
 
                 // Save Discounts
                 $this->saveDiscounts($app, $orm, (int) $data['id']);
+
+                // Save variant count
+                $data['variants'] = count($variants);
+                $data['primary_variant_id'] = $mainVariant->getId();
+
+                $repository->save($data);
             }
         );
 
@@ -105,7 +110,17 @@ class ProductController
         }
     }
 
-    protected function saveSubVariants(AppContext $app, ORM $orm, int $productId): void
+    /**
+     * @param  AppContext  $app
+     * @param  ORM         $orm
+     * @param  int         $productId
+     *
+     * @return  Collection<ProductVariant>
+     *
+     * @throws \JsonException
+     * @throws \Windwalker\DI\Exception\DefinitionException
+     */
+    protected function saveSubVariants(AppContext $app, ORM $orm, int $productId): Collection
     {
         $variants = $app->input('variants');
         $chronosService = $app->service(ChronosService::class);
@@ -134,6 +149,8 @@ class ProductController
             ['product_id' => $productId, 'primary' => 0],
             ['id']
         );
+
+        return $variants;
     }
 
     protected function saveDiscounts(AppContext $app, ORM $orm, int $productId): void

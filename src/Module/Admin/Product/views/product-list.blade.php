@@ -17,6 +17,7 @@ namespace App\View;
  */
 
 use App\Entity\Product;
+use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -31,6 +32,9 @@ use App\Module\Admin\Product\ProductListView;
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
+$imagePlaceholder = $app->service(ImagePlaceholder::class);
+
+$defaultImage = $imagePlaceholder->placeholderSquare();
 ?>
 
 @extends('admin.global.body-list')
@@ -67,6 +71,10 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             <x-sort field="product.state">
                                 @lang('unicorn.field.state')
                             </x-sort>
+                        </th>
+
+                        <th class="text-nowrap">
+                            @lang('shopgo.product.field.cover')
                         </th>
 
                         {{-- Title --}}
@@ -125,6 +133,10 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                     :id="$entity->getId()"
                                     :value="$item->state"
                                 ></x-state-dropdown>
+                            </td>
+
+                            <td>
+                                <img src="{{ '' }}" alt="cover">
                             </td>
 
                             {{-- Title --}}
