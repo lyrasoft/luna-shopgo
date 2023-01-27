@@ -136,7 +136,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </td>
 
                             <td>
-                                <img src="{{ '' }}" alt="cover">
+                                <img style="height: 45px;" src="{{ $item->variant->cover }}" alt="cover">
                             </td>
 
                             {{-- Title --}}

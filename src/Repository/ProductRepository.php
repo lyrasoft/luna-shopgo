@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductVariant;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -23,6 +24,8 @@ use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\ORM\SelectorQuery;
+
+use function Windwalker\Query\val;
 
 /**
  * The ProductRepository class.
@@ -37,7 +40,15 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
     {
         $selector = $this->createSelector();
 
-        $selector->from(Product::class);
+        $selector->from(Product::class)
+         ->leftJoin(
+             ProductVariant::class,
+             'variant',
+             [
+                 ['variant.product_id', 'product.id'],
+                 ['variant.primary', val(1)]
+             ]
+         );
 
         return $selector;
     }
