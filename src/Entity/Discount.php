@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
+use App\Enum\DiscountApplyTo;
+use App\Enum\DiscountCombine;
+use App\Enum\DiscountMethod;
+use App\Enum\DiscountType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Unicorn\Enum\BasicState;
@@ -22,13 +25,11 @@ use Windwalker\ORM\Attributes\CastNullable;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CreatedTime;
 use Windwalker\ORM\Attributes\CurrentTime;
-use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
-use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * The Discount class.
@@ -48,7 +49,8 @@ class Discount implements EntityInterface
     protected string $kind = '';
 
     #[Column('type')]
-    protected string $type = '';
+    #[Cast(DiscountType::class)]
+    protected DiscountType $type;
 
     #[Column('subtype')]
     protected string $subtype = '';
@@ -89,26 +91,27 @@ class Discount implements EntityInterface
     protected bool $hide = false;
 
     #[Column('min_price')]
-    protected float $minPrice = 0.0;
+    protected ?float $minPrice = null;
 
     #[Column('quantity')]
-    protected int $quantity = 0;
+    protected ?int $quantity = null;
 
     #[Column('times_per_user')]
-    protected int $timesPerUser = 0;
+    protected ?int $timesPerUser = null;
 
     #[Column('first_buy')]
-    protected int $firstBuy = 0;
+    protected ?int $firstBuy = null;
 
     #[Column('after_registered')]
-    protected int $afterRegistered = 0;
+    protected ?int $afterRegistered = null;
 
     #[Column('can_rollback')]
     #[Cast('bool', 'int')]
     protected bool $canRollback = false;
 
     #[Column('combine')]
-    protected string $combine = '';
+    #[Cast(DiscountCombine::class)]
+    protected DiscountCombine $combine;
 
     #[Column('combine_targets')]
     #[Cast(JsonCast::class)]
@@ -134,21 +137,26 @@ class Discount implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $applyProducts = [];
 
+    #[Column('min_product_quantity')]
+    protected ?int $minProductQuantity = null;
+
     #[Column('min_cart_items')]
-    protected int $minCartItems = 0;
+    protected ?int $minCartItems = null;
 
     #[Column('min_cart_price')]
-    protected float $minCartPrice = 0.0;
+    protected ?float $minCartPrice = null;
 
     #[Column('free_shipping')]
     #[Cast('bool', 'int')]
     protected bool $freeShipping = false;
 
     #[Column('method')]
-    protected string $method = '';
+    #[Cast(DiscountMethod::class)]
+    protected DiscountMethod $method;
 
     #[Column('apply_to')]
-    protected string $applyTo = '';
+    #[Cast(DiscountApplyTo::class)]
+    protected DiscountApplyTo $applyTo;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -171,12 +179,6 @@ class Discount implements EntityInterface
     #[Column('params')]
     #[Cast(JsonCast::class)]
     protected array $params = [];
-
-    #[EntitySetup]
-    public static function setup(EntityMetadata $metadata): void
-    {
-        //
-    }
 
     public function getId(): ?int
     {
@@ -214,14 +216,14 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): DiscountType
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(string|DiscountType $type): static
     {
-        $this->type = $type;
+        $this->type = DiscountType::wrap($type);
 
         return $this;
     }
@@ -267,7 +269,7 @@ class Discount implements EntityInterface
         return $this->publishUp;
     }
 
-    public function setPublishUp(DateTimeInterface|string|null $publishUp): static
+    public function setPublishUp(\DateTimeInterface|string|null $publishUp): static
     {
         $this->publishUp = Chronos::wrapOrNull($publishUp);
 
@@ -279,7 +281,7 @@ class Discount implements EntityInterface
         return $this->publishDown;
     }
 
-    public function setPublishDown(DateTimeInterface|string|null $publishDown): static
+    public function setPublishDown(\DateTimeInterface|string|null $publishDown): static
     {
         $this->publishDown = Chronos::wrapOrNull($publishDown);
 
@@ -358,62 +360,62 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getMinPrice(): float
+    public function getMinPrice(): ?float
     {
         return $this->minPrice;
     }
 
-    public function setMinPrice(float $minPrice): static
+    public function setMinPrice(?float $minPrice): static
     {
-        $this->minPrice = $minPrice;
+        $this->minPrice = $minPrice ?: null;
 
         return $this;
     }
 
-    public function getQuantity(): int
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    public function setQuantity(int $quantity): static
+    public function setQuantity(?int $quantity): static
     {
-        $this->quantity = $quantity;
+        $this->quantity = $quantity ?: null;
 
         return $this;
     }
 
-    public function getTimesPerUser(): int
+    public function getTimesPerUser(): ?int
     {
         return $this->timesPerUser;
     }
 
-    public function setTimesPerUser(int $timesPerUser): static
+    public function setTimesPerUser(?int $timesPerUser): static
     {
-        $this->timesPerUser = $timesPerUser;
+        $this->timesPerUser = $timesPerUser ?: null;
 
         return $this;
     }
 
-    public function getFirstBuy(): int
+    public function getFirstBuy(): ?int
     {
         return $this->firstBuy;
     }
 
-    public function setFirstBuy(int $firstBuy): static
+    public function setFirstBuy(?int $firstBuy): static
     {
-        $this->firstBuy = $firstBuy;
+        $this->firstBuy = $firstBuy ?: null;
 
         return $this;
     }
 
-    public function getAfterRegistered(): int
+    public function getAfterRegistered(): ?int
     {
         return $this->afterRegistered;
     }
 
-    public function setAfterRegistered(int $afterRegistered): static
+    public function setAfterRegistered(?int $afterRegistered): static
     {
-        $this->afterRegistered = $afterRegistered;
+        $this->afterRegistered = $afterRegistered ?: null;
 
         return $this;
     }
@@ -430,14 +432,14 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getCombine(): string
+    public function getCombine(): DiscountCombine
     {
         return $this->combine;
     }
 
-    public function setCombine(string $combine): static
+    public function setCombine(string|DiscountCombine $combine): static
     {
-        $this->combine = $combine;
+        $this->combine = DiscountCombine::wrap($combine);
 
         return $this;
     }
@@ -514,26 +516,38 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getMinCartItems(): int
+    public function getMinProductQuantity(): ?int
     {
-        return $this->minCartItems;
+        return $this->minProductQuantity;
     }
 
-    public function setMinCartItems(int $minCartItems): static
+    public function setMinProductQuantity(?int $minProductQuantity): static
     {
-        $this->minCartItems = $minCartItems;
+        $this->minProductQuantity = $minProductQuantity ?: null;
 
         return $this;
     }
 
-    public function getMinCartPrice(): float
+    public function getMinCartItems(): ?int
+    {
+        return $this->minCartItems;
+    }
+
+    public function setMinCartItems(?int $minCartItems): static
+    {
+        $this->minCartItems = $minCartItems ?: null;
+
+        return $this;
+    }
+
+    public function getMinCartPrice(): ?float
     {
         return $this->minCartPrice;
     }
 
-    public function setMinCartPrice(float $minCartPrice): static
+    public function setMinCartPrice(?float $minCartPrice): static
     {
-        $this->minCartPrice = $minCartPrice;
+        $this->minCartPrice = $minCartPrice ?: null;
 
         return $this;
     }
@@ -550,26 +564,26 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getMethod(): string
+    public function getMethod(): DiscountMethod
     {
         return $this->method;
     }
 
-    public function setMethod(string $method): static
+    public function setMethod(string|DiscountMethod $method): static
     {
-        $this->method = $method;
+        $this->method = DiscountMethod::wrap($method);
 
         return $this;
     }
 
-    public function getApplyTo(): string
+    public function getApplyTo(): DiscountApplyTo
     {
         return $this->applyTo;
     }
 
-    public function setApplyTo(string $applyTo): static
+    public function setApplyTo(string|DiscountApplyTo $applyTo): static
     {
-        $this->applyTo = $applyTo;
+        $this->applyTo = DiscountApplyTo::wrap($applyTo);
 
         return $this;
     }
@@ -579,7 +593,7 @@ class Discount implements EntityInterface
         return $this->created;
     }
 
-    public function setCreated(DateTimeInterface|string|null $created): static
+    public function setCreated(\DateTimeInterface|string|null $created): static
     {
         $this->created = Chronos::wrapOrNull($created);
 
@@ -591,7 +605,7 @@ class Discount implements EntityInterface
         return $this->modified;
     }
 
-    public function setModified(DateTimeInterface|string|null $modified): static
+    public function setModified(\DateTimeInterface|string|null $modified): static
     {
         $this->modified = Chronos::wrapOrNull($modified);
 

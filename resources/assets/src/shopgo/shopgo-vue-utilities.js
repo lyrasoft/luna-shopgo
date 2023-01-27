@@ -72,6 +72,10 @@ window.ShopGoVuePlugin = function (app) {
     ].includes(tag);
   };
 
+  app.config.globalProperties.$lang = (id, ...args) => {
+    return u.__(id, ...args);
+  };
+
   app.config.globalProperties.$numberFormat = (num, prefix = '') => {
     const negative = num < 0;
     let formatted = prefix + u.numberFormat(Math.abs(num));
@@ -95,6 +99,32 @@ window.ShopGoVuePlugin = function (app) {
 
     return formatted;
   };
+
+  app.config.globalProperties.$priceOffset = (num, method) => {
+    const negative = num < 0;
+
+    if (method === 'fixed') {
+      return '=' + u.numberFormat(Math.abs(num));
+    }
+
+    if (method === 'offset') {
+      if (negative) {
+        return '-' + u.numberFormat(Math.abs(num));
+      }
+
+      return '+' + u.numberFormat(Math.abs(num));
+    }
+
+    if (method === 'percentage') {
+      if (num > 100) {
+        num = 100;
+      }
+
+      return num + '%';
+    }
+
+    return num;
+  };
 };
 
 // Directive
@@ -115,5 +145,22 @@ window.ShopGoVuePlugin.Colorpicker = {
   unmounted(el) {
     const sp = Spectrum.getInstance(el);
     sp.destroy();
+  }
+};
+
+// Tooltip
+window.ShopGoVuePlugin.Tooltip = {
+  async mounted(el, { value }) {
+    const inc = u.$ui.bootstrap.tooltip(el, value);
+  },
+  updated(el, { value }) {
+    const inc = u.$ui.bootstrap.tooltip(el, value);
+
+    inc.update();
+  },
+  beforeUnmount(el) {
+    const inc = u.$ui.bootstrap.tooltip(el, value);
+
+    inc.dispose();
   }
 };

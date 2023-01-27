@@ -10,6 +10,9 @@ import '@unicorn/vue/vue-drag-uploader.js';
 
 u.$ui.flatpickr();
 
+// A workaround to wait all dependencies ready
+await u.domready();
+
 const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick } = Vue;
 
 const priceInput = document.querySelector('#input-item-variant-price');
@@ -47,7 +50,8 @@ const app = createApp(
 
       // Unsave
       let formSubmitting = false;
-      const saveRequired = computed(() => state.items.filter(item => item.unsave).length > 0);
+      const initialHash = u.md5(JSON.stringify(state.items));
+      const saveRequired = computed(() => u.md5(itemsJSON.value) !== initialHash);
 
       window.addEventListener('beforeunload', (e) => {
         if (saveRequired.value && !formSubmitting) {
@@ -212,10 +216,6 @@ const app = createApp(
   u.data('product.variants.props')
 );
 
-// A workaround to wait all dependencies ready
-await u.domready();
-
 app.use(ShopGoVuePlugin);
 app.component('draggable', vuedraggable);
-app.component('vue-drag-uploader', VueDragUploader);
 app.mount('product-variants-edit-app');

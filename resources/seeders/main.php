@@ -29,5 +29,6 @@ return [
     __DIR__ . '/product-attribute-seeder.php',
     __DIR__ . '/product-tab-seeder.php',
     __DIR__ . '/product-seeder.php',
+    __DIR__ . '/discount-seeder.php',
     __DIR__ . '/address-seeder.php',
 ];

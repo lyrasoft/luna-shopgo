@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Product;
 
-use App\Entity\Product;
+use App\Entity\Discount;
 use App\Entity\ProductFeature;
 use App\Entity\ProductVariant;
+use App\Enum\DiscountType;
 use App\Module\Admin\Product\Form\EditForm;
 use App\Repository\ProductRepository;
 use App\Service\VariantService;
@@ -23,6 +24,7 @@ use Unicorn\Repository\Event\PrepareSaveEvent;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Attributes\JsonApi;
+use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
@@ -77,20 +79,10 @@ class ProductController
                 $orm->updateOne(ProductVariant::class, $mainVariant);
 
                 // Sub Variants
-                $variants = $app->input('variants');
+                $this->saveSubVariants($app, $orm, (int) $data['id']);
 
-                $variants = collect(
-                    json_decode($variants, true, 512, JSON_THROW_ON_ERROR)
-                );
-
-                $variants = $variants->map(fn ($variant) => $orm->toEntity(ProductVariant::class, $variant));
-
-                $orm->sync(
-                    ProductVariant::class,
-                    $variants,
-                    ['product_id' => $data['id'], 'primary' => 0],
-                    ['id']
-                );
+                // Save Discounts
+                $this->saveDiscounts($app, $orm, (int) $data['id']);
             }
         );
 
@@ -105,11 +97,74 @@ class ProductController
 
             case 'save2copy':
                 $controller->rememberForClone($app, $repository);
+
                 return $nav->self($nav::WITHOUT_VARS)->var('new', 1);
 
             default:
                 return $uri;
         }
+    }
+
+    protected function saveSubVariants(AppContext $app, ORM $orm, int $productId): void
+    {
+        $variants = $app->input('variants');
+        $chronosService = $app->service(ChronosService::class);
+
+        $variants = collect(
+            json_decode($variants, true, 512, JSON_THROW_ON_ERROR)
+        );
+
+        $variants = $variants->map(function ($variant) use ($chronosService, $orm) {
+            $variant = $orm->toEntity(ProductVariant::class, $variant);
+
+            $variant->setPublishUp(
+                $chronosService->toServerFormat($variant->getPublishUp())
+            );
+
+            $variant->setPublishDown(
+                $chronosService->toServerFormat($variant->getPublishDown())
+            );
+
+            return $variant;
+        });
+
+        $orm->sync(
+            ProductVariant::class,
+            $variants,
+            ['product_id' => $productId, 'primary' => 0],
+            ['id']
+        );
+    }
+
+    protected function saveDiscounts(AppContext $app, ORM $orm, int $productId): void
+    {
+        $discounts = $app->input('discounts');
+        $chronosService = $app->service(ChronosService::class);
+
+        $discounts = collect(
+            json_decode($discounts, true, 512, JSON_THROW_ON_ERROR)
+        );
+
+        $discounts = $discounts->map(function ($discount) use ($chronosService, $orm) {
+            $discount = $orm->toEntity(Discount::class, $discount);
+
+            $discount->setPublishUp(
+                $chronosService->toServerFormat($discount->getPublishUp())
+            );
+
+            $discount->setPublishDown(
+                $chronosService->toServerFormat($discount->getPublishDown())
+            );
+
+            return $discount;
+        });
+
+        $orm->sync(
+            Discount::class,
+            $discounts,
+            ['product_id' => $productId, 'type' => DiscountType::PRODUCT()],
+            ['id']
+        );
     }
 
     public function delete(
@@ -167,8 +222,8 @@ class ProductController
     }
 
     /**
-     * @param  AppContext      $app
-     * @param  ORM             $orm
+     * @param  AppContext  $app
+     * @param  ORM  $orm
      * @param  VariantService  $variantService
      *
      * @return  array<ProductVariant>
@@ -179,7 +234,7 @@ class ProductController
         $featureOptionGroup = $app->input('options') ?? [];
         $currentHashes = (array) ($app->input('currentHashes') ?? []);
 
-        $featureOptionGroup = array_filter($featureOptionGroup, static fn ($options) => $options !== []);
+        $featureOptionGroup = array_filter($featureOptionGroup, static fn($options) => $options !== []);
 
         $optionGroups = $variantService->sortOptionsGroup($featureOptionGroup);
 
@@ -188,11 +243,11 @@ class ProductController
         foreach ($optionGroups as $optionGroup) {
             usort(
                 $optionGroup,
-                static fn ($a, $b) => strcmp($a['value'], $b['value'])
+                static fn($a, $b) => strcmp($a['value'], $b['value'])
             );
 
-            $uids = array_map(static fn ($option) => $option['uid'], $optionGroup);
-            $texts = array_map(static fn ($option) => $option['text'], $optionGroup);
+            $uids = array_map(static fn($option) => $option['uid'], $optionGroup);
+            $texts = array_map(static fn($option) => $option['text'], $optionGroup);
 
             $hash = $variantService::hash($uids);
 

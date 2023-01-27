@@ -280,7 +280,7 @@ use Windwalker\Core\Router\SystemUri;
 
                     if (!isMultiple.value) {
                         state.items[0] = Object.assign(state.items[0], state.current);
-                        state.items[0].unsave = unsave.value;
+                        state.items[0].unsave = true;
                     } else {
                         for (const item of state.items) {
                             ShopgoVueUtilities.mergeRecursive(
@@ -288,7 +288,7 @@ use Windwalker\Core\Router\SystemUri;
                                 state.current,
                             );
 
-                            item.unsave = unsave.value;
+                            item.unsave = true;
                         }
                     }
 

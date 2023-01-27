@@ -161,6 +161,7 @@ use Windwalker\Form\Form;
 
                     {{-- Pane: Discounts --}}
                     <x-tab-pane id="discounts">
+                        @include('product-discounts-edit')
                     </x-tab-pane>
                 </div>
             </div>

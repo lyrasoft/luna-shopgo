@@ -37,7 +37,6 @@ $app->service(ShopGoScript::class)->vueUtilities();
 
 $vueScript = $app->service(VueScript::class);
 $vueScript->vue();
-$vueScript->draggable();
 $vueScript->animate();
 
 $uniScript = $app->service(UnicornScript::class);
@@ -99,6 +98,7 @@ $uniScript->addRoute('@file_upload');
                             <variant-list-item
                                 v-for="(item, i) of items"
                                 :key="item.uid"
+                                :data-id="item.id"
                                 :item="item"
                                 :i="i"
                                 :active="current?.hash === item.hash"

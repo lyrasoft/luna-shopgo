@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Product;
 
+use App\Entity\Discount;
 use App\Entity\Product;
 use App\Entity\ProductVariant;
 use App\Entity\ShopCategoryMap;
+use App\Enum\DiscountType;
 use App\Module\Admin\Product\Form\EditForm;
 use App\Repository\ProductRepository;
 use Windwalker\Core\Application\AppContext;
@@ -37,6 +39,7 @@ use function Windwalker\collect;
     js: [
         'product-edit.js',
         'product-variants-edit.js',
+        'product-discounts-edit.js',
     ]
 )]
 class ProductEditView implements ViewModelInterface
@@ -75,6 +78,7 @@ class ProductEditView implements ViewModelInterface
             );
 
         $variants = collect();
+        $discounts = collect();
 
         if ($item) {
             // Main Variant
@@ -99,6 +103,13 @@ class ProductEditView implements ViewModelInterface
                 ->where('primary', '!=', 1)
                 ->all(ProductVariant::class);
 
+            // Discounts
+            $discounts = $this->orm->from(Discount::class)
+                ->where('product_id', $item->getId())
+                ->where('type', DiscountType::PRODUCT())
+                ->order('ordering', 'ASC')
+                ->all(Discount::class);
+
             // Sub Categories
             $subCategoryIds = $this->orm->select('category_id')
                 ->from(ShopCategoryMap::class, 'map')
@@ -115,7 +126,7 @@ class ProductEditView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item', 'variants');
+        return compact('form', 'id', 'item', 'variants', 'discounts');
     }
 
     /**
