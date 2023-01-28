@@ -217,8 +217,8 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                     <x-order-control
                                         :enabled="$vm->reorderEnabled($ordering)"
                                         :row="$i"
-                                        :id="$entity->getId()"
-                                        :value="$item->ordering"
+                                        :id="$entity->category_map->id"
+                                        :value="$entity->category_map->ordering"
                                     ></x-order-control>
                                 </td>
                             @endif
