@@ -38,6 +38,7 @@ $app->service(ShopGoScript::class)->vueUtilities();
 $vueScript = $app->service(VueScript::class);
 $vueScript->vue();
 $vueScript->animate();
+$asset->js('@unicorn/vue/vue-drag-uploader.js');
 
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('product.variants.props', [

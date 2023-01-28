@@ -78,8 +78,7 @@ return [
                 'template' => XComponent::class,
 
                 'tabs' => '@theme::bootstrap.tabs',
-                'tab-button' => '@theme::bootstrap.tab-button',
-                'tab-pane' => '@theme::bootstrap.tab-pane',
+                'tab' => '@theme::bootstrap.tab',
             ]
         ],
 

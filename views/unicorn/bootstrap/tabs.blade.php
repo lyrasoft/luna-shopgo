@@ -33,29 +33,80 @@ use function Windwalker\uid;
 
 $props = $attributes->props(
     'variant',
-    'keepactive'
+    'keepactive',
+    'nav-target',
+    'nav-attrs'
 );
 
 $id ??= 'c-tab-' . uid();
 $variant ??= 'tabs';
 $keepactive ??= null;
+$navTarget ??= null;
+$navAttrs ??= '';
 
 if ($keepactive !== null) {
     if (!is_string($keepactive)) {
-        $keepactive = '';
+        $keepactive = '#admin-form';
     }
-
-    $keepactive = $keepactive ?: '#admin-form';
 
     $app->service(BootstrapScript::class)->keepTab($keepactive);
 }
 
+$attributes = $attributes->class('d-flex flex-column gap-4');
 $attributes['id'] = $id;
 
 ?>
 
 <div {!! $attributes !!}>
-    <div id="{{ $id }}__buttons" class="nav nav-{{ $variant }}">
+    <div class="tab-content">
         {!! $slot ?? '' !!}
     </div>
 </div>
+
+@push('script')
+    <script>
+        (async () => {
+          await System.import('@main');
+
+          const tabContent = u.selectOne('#{{ $id }}');
+          const navTarget = '{{ $navTarget }}';
+          const navAttrs = JSON.parse('{!! $navAttrs !!}');
+
+          const tabs = tabContent.querySelectorAll('[data-role=tab-pane]');
+          const nav = u.html(`<div></div>`);
+
+          for (const p in navAttrs) {
+            nav.setAttribute(p, navAttrs[p]);
+          }
+
+          if (!nav.id) {
+            nav.id = '{{ $id }}-nav'
+          }
+
+          nav.classList.add('nav', 'nav-{{ $variant }}');
+
+          tabs.forEach((tab) => {
+            const buttonAttrs = JSON.parse(tab.getAttribute('button-attrs'));
+            const item = u.html(`<div class="nav-item">
+    <a class="nav-link ${tab.dataset.active ? 'active' : ''}" href="javascript://"
+        data-bs-toggle="tab" data-bs-target="#${tab.id}">
+        ${tab.dataset.title}
+    </a>
+</div>
+`);
+
+            for (const p in buttonAttrs) {
+              item.setAttribute(p, buttonAttrs[p]);
+            }
+
+            nav.appendChild(item);
+          });
+
+          if (navTarget) {
+            document.querySelector(navTarget)?.appendChild(nav);
+          } else {
+            tabContent.before(nav);
+          }
+        })();
+    </script>
+@endpush

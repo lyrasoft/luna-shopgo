@@ -49,39 +49,19 @@ use Windwalker\Form\Form;
         <div class="row">
             <div class="col-lg-9">
 
-                <div class="card-header"
+                <div id="edit-nav" class="card-header"
                     style="background-color: inherit">
-                    <x-tabs keepactive variant="pills">
-                        {{-- Tab: Info --}}
-                        <x-tab-button target="#info" active>
-                            @lang('shopgo.product.edit.tab.info')
-                        </x-tab-button>
-                        {{-- Tab: About --}}
-                        <x-tab-button target="#about">
-                            @lang('shopgo.product.edit.tab.about')
-                        </x-tab-button>
-                        {{-- Tab: Images --}}
-                        <x-tab-button target="#images">
-                            @lang('shopgo.product.edit.tab.images')
-                        </x-tab-button>
-                        {{-- Tab: Attributes --}}
-                        <x-tab-button target="#attributes">
-                            @lang('shopgo.product.edit.tab.attributes')
-                        </x-tab-button>
-                        {{-- Tab: Variants --}}
-                        <x-tab-button target="#variants">
-                            @lang('shopgo.product.edit.tab.variants')
-                        </x-tab-button>
-                        {{-- Tab: Discounts --}}
-                        <x-tab-button target="#discounts">
-                            @lang('shopgo.product.edit.tab.discounts')
-                        </x-tab-button>
-                    </x-tabs>
+                    {{-- Tab Buttons Here--}}
                 </div>
 
-                <div class="tab-content mt-4">
+                <x-tabs keepactive variant="pills"
+                    nav-target="#edit-nav"
+                    :nav-attrs="json_encode(['class' => 'mb-4'])"
+                >
                     {{-- Pane: Info --}}
-                    <x-tab-pane id="info" active>
+                    <x-tab name="info" active
+                        :title="$lang('shopgo.product.edit.tab.info')"
+                    >
                         <x-card>
                             <div class="row">
                                 <div class="col-lg-4">
@@ -110,10 +90,11 @@ use Windwalker\Form\Form;
                                 </div>
                             </div>
                         </x-card>
-                    </x-tab-pane>
+                    </x-tab>
 
                     {{-- Pane: About --}}
-                    <x-tab-pane id="about">
+                    <x-tab name="about"
+                        :title="$lang('shopgo.product.edit.tab.about')">
                         <div class="row">
                             <div class="col-lg-8">
                                 <x-fieldset name="about"
@@ -132,10 +113,11 @@ use Windwalker\Form\Form;
                                 </x-fieldset>
                             </div>
                         </div>
-                    </x-tab-pane>
+                    </x-tab>
 
                     {{-- Pane: Images --}}
-                    <x-tab-pane id="images">
+                    <x-tab name="images"
+                        :title="$lang('shopgo.product.edit.tab.images')">
                         <x-card>
                             <div class="row">
                                 <div class="col-lg-10">
@@ -148,22 +130,25 @@ use Windwalker\Form\Form;
                                 </div>
                             </div>
                         </x-card>
-                    </x-tab-pane>
+                    </x-tab>
 
                     {{-- Pane: Attributes --}}
-                    <x-tab-pane id="attributes">
-                    </x-tab-pane>
+                    <x-tab name="attributes"
+                        :title="$lang('shopgo.product.edit.tab.attributes')">
+                    </x-tab>
 
                     {{-- Pane: Variants --}}
-                    <x-tab-pane id="variants">
+                    <x-tab name="variants"
+                        :title="$lang('shopgo.product.edit.tab.variants')">
                         @include('product-variants-edit')
-                    </x-tab-pane>
+                    </x-tab>
 
                     {{-- Pane: Discounts --}}
-                    <x-tab-pane id="discounts">
+                    <x-tab name="discounts"
+                        :title="$lang('shopgo.product.edit.tab.discounts')">
                         @include('product-discounts-edit')
-                    </x-tab-pane>
-                </div>
+                    </x-tab>
+                </x-tabs>
             </div>
             <div class="col-lg-3">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"

@@ -6,7 +6,6 @@
  */
 
 import '@main';
-import '@unicorn/vue/vue-drag-uploader.js';
 
 u.$ui.flatpickr();
 

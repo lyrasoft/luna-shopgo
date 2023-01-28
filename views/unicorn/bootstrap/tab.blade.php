@@ -32,26 +32,29 @@ use function Windwalker\uid;
 
 $props = $attributes->props(
     'active',
-    'href',
-    'target'
+    'title',
+    'name',
 );
 
-$id ??= 'c-tab-button-' . uid();
-$href ??= 'javascript://';
+$name ??= '';
 $active = $props->active !== null;
+$title ??= '';
 
-$attributes['id'] = $id;
+$attributes['id'] = $name;
+$attributes['data-role'] = 'tab-pane';
+$attributes['data-title'] = $title;
 
-$attributes = $attributes->class('nav-item');
+if ($active) {
+    $attributes['data-active'] = 1;
+}
+
+$attributes = $attributes->class('tab-pane fade');
+
+if ($active) {
+    $attributes = $attributes->class('show active');
+}
 ?>
 
 <div {!! $attributes !!}>
-    <a id="{{ $id }}__link" class="nav-link {{ $active ? 'active' : '' }}"
-        href="{{ $href }}"
-        @if ($target)
-            data-bs-toggle="tab" data-bs-target="{{ $target }}"
-        @endif
-    >
-        {!! $slot ?? '' !!}
-    </a>
+    {!! $slot ?? '' !!}
 </div>
