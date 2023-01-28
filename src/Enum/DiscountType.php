@@ -62,11 +62,11 @@ class DiscountType extends EnumSingleton implements EnumTranslatableInterface
                 'special'
             ],
             static::GLOBAL => [
-                'auto',
+                'basic',
                 'code'
             ],
             static::COUPON => [
-                'code'
+                'basic'
             ],
         };
     }

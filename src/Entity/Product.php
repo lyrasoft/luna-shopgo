@@ -15,6 +15,7 @@ use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\Luna\Attributes\Slugify;
+use Lyrasoft\Luna\Data\MetaData;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -72,7 +73,8 @@ class Product implements EntityInterface
 
     #[Column('meta')]
     #[Cast(JsonCast::class)]
-    protected array $meta = [];
+    #[Cast(MetaData::class)]
+    protected MetaData $meta;
 
     #[Column('can_attach')]
     #[Cast('bool', 'int')]
@@ -251,19 +253,19 @@ class Product implements EntityInterface
         return $this;
     }
 
-    public function getMeta(): array
+    public function getMeta(): MetaData
     {
         return $this->meta;
     }
 
-    public function setMeta(array $meta): static
+    public function setMeta(MetaData|array $meta): static
     {
-        $this->meta = $meta;
+        $this->meta = MetaData::wrap($meta);
 
         return $this;
     }
 
-    public function isCanAttach(): bool
+    public function canAttach(): bool
     {
         return $this->canAttach;
     }

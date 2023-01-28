@@ -31,7 +31,7 @@ $mig->up(
                 $schema->primary('id');
                 $schema->integer('product_id');
                 $schema->varchar('type');
-                $schema->varchar('subtype')->comment('auto,discount,code,special');
+                $schema->varchar('subtype')->comment('basic,discount,code,special');
                 $schema->varchar('title');
                 $schema->decimal('price')->length('20,4')->defaultValue(null)->defaultValue(null);
                 $schema->datetime('publish_up');

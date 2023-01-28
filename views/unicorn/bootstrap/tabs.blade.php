@@ -68,9 +68,9 @@ $attributes['id'] = $id;
         (async () => {
           await System.import('@main');
 
-          const tabContent = u.selectOne('#{{ $id }}');
+          const tabContent = u.selectOne('#{{ $id }} .tab-content');
           const navTarget = '{{ $navTarget }}';
-          const navAttrs = JSON.parse('{!! $navAttrs !!}');
+          const navAttrs = JSON.parse('{!! $navAttrs ?: '{}' !!}');
 
           const tabs = tabContent.querySelectorAll('[data-role=tab-pane]');
           const nav = u.html(`<div></div>`);
@@ -84,8 +84,10 @@ $attributes['id'] = $id;
           }
 
           nav.classList.add('nav', 'nav-{{ $variant }}');
+          let hasActive = false;
 
           tabs.forEach((tab) => {
+            hasActive = tab.dataset.active || hasActive;
             const buttonAttrs = JSON.parse(tab.getAttribute('button-attrs'));
             const item = u.html(`<div class="nav-item">
     <a class="nav-link ${tab.dataset.active ? 'active' : ''}" href="javascript://"
@@ -101,6 +103,11 @@ $attributes['id'] = $id;
 
             nav.appendChild(item);
           });
+
+          if (!hasActive) {
+              nav.querySelector('[data-bs-toggle=tab]')?.classList?.add('active');
+              tabContent.querySelector('[data-role=tab-pane]')?.classList?.add('active', 'show');
+          }
 
           if (navTarget) {
             document.querySelector(navTarget)?.appendChild(nav);

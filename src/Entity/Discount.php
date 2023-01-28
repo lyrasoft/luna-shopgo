@@ -45,9 +45,6 @@ class Discount implements EntityInterface
     #[Column('product_id')]
     protected int $productId = 0;
 
-    #[Column('kind')]
-    protected string $kind = '';
-
     #[Column('type')]
     #[Cast(DiscountType::class)]
     protected DiscountType $type;
@@ -200,18 +197,6 @@ class Discount implements EntityInterface
     public function setProductId(int $productId): static
     {
         $this->productId = $productId;
-
-        return $this;
-    }
-
-    public function getKind(): string
-    {
-        return $this->kind;
-    }
-
-    public function setKind(string $kind): static
-    {
-        $this->kind = $kind;
 
         return $this;
     }
