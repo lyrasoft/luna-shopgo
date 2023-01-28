@@ -11,6 +11,14 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Discount\Form;
 
+use App\Enum\DiscountApplyTo;
+use App\Enum\DiscountCombine;
+use App\Enum\DiscountMethod;
+use App\Field\DiscountModalField;
+use App\Field\PaymentModalField;
+use App\Field\ProductModalField;
+use App\Field\ShippingModalField;
+use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\ButtonRadioField;
 use Unicorn\Field\SwitcherField;
@@ -46,10 +54,6 @@ class EditForm implements FieldDefinitionInterface
             ->addFilter('trim')
             ->required(true);
 
-        $form->add('alias', TextField::class)
-            ->label($this->trans('unicorn.field.alias'))
-            ->addFilter('trim');
-
         $form->fieldset(
             'basic',
             function (Form $form) {
@@ -84,51 +88,81 @@ class EditForm implements FieldDefinitionInterface
             'conditions',
             function (Form $form) {
                 $form->add('quantity', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.quantity'));
+                    ->label($this->trans('shopgo.discount.field.quantity'))
+                    ->min(0)
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_price', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.min_price'))
-                    ->step('0.0001');
+                    ->step('0.0001')
+                    ->min(0)
+                    ->description($this->trans('shopgo.discount.field.min_price.desc'))
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_cart_items', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.min_cart_items'));
+                    ->label($this->trans('shopgo.discount.field.min_cart_items'))
+                    ->min(0)
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_cart_price', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.min_cart_price'))
-                    ->step('0.0001');
+                    ->step('0.0001')
+                    ->min(0)
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('times_per_user', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.times_per_user'));
+                    ->label($this->trans('shopgo.discount.field.times_per_user'))
+                    ->min(0)
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('first_buy', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.first_buy'));
+                    ->label($this->trans('shopgo.discount.field.first_buy'))
+                    ->min(0)
+                    ->description($this->trans('shopgo.discount.field.first_buy.desc'))
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('after_registered', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.after_registered'));
+                    ->label($this->trans('shopgo.discount.field.after_registered'))
+                    ->min(0)
+                    ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
-                $form->add('can_rollback', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.can_rollback'));
+                $form->add('can_rollback', SwitcherField::class)
+                    ->label($this->trans('shopgo.discount.field.can_rollback'))
+                    ->circle(true)
+                    ->color('primary')
+                    ->defaultValue('1');
             }
         );
 
         $form->fieldset(
-            'specific',
+            'specifies',
             function (Form $form) {
-                $form->add('categories', TextareaField::class)
+                $form->add('users', UserModalField::class)
+                    ->label($this->trans('shopgo.discount.field.users'))
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.users.help'));
+
+                $form->add('categories', CategoryModalField::class)
                     ->label($this->trans('shopgo.discount.field.categories'))
-                    ->rows(7);
+                    ->categoryType('product')
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.categories.help'));
 
-                $form->add('prodcuts', TextareaField::class)
+                $form->add('prodcuts', ProductModalField::class)
                     ->label($this->trans('shopgo.discount.field.prodcuts'))
-                    ->rows(7);
+                    ->hasImage(true)
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.products.help'));
 
-                $form->add('payments', TextareaField::class)
+                $form->add('payments', PaymentModalField::class)
                     ->label($this->trans('shopgo.discount.field.payments'))
-                    ->rows(7);
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.payments.help'));
 
-                $form->add('shippings', TextareaField::class)
+                $form->add('shippings', ShippingModalField::class)
                     ->label($this->trans('shopgo.discount.field.shippings'))
-                    ->rows(7);
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.shippings.help'));
             }
         );
 
@@ -136,34 +170,61 @@ class EditForm implements FieldDefinitionInterface
             'combine',
             function (Form $form) {
 
-                $form->add('combine', TextField::class)
-                    ->label($this->trans('shopgo.discount.field.combine'));
+                $form->add('combine', ListField::class)
+                    ->label($this->trans('shopgo.discount.field.combine'))
+                    ->registerFromEnums(DiscountCombine::class, $this->lang)
+                    ->help(
+                        <<<HTML
+                        <div>{$this->trans('shopgo.discount.field.combine.help')}</div>
+                        <ul>
+                            <li>{$this->trans('shopgo.discount.field.combine.help.option.open')}</li>
+                            <li>{$this->trans('shopgo.discount.field.combine.help.option.stop')}</li>
+                            <li>{$this->trans('shopgo.discount.field.combine.help.option.includes')}</li>
+                            <li>{$this->trans('shopgo.discount.field.combine.help.option.excludes')}</li>
+                        </ul>
+                        HTML
+                    );
 
-                $form->add('combine_targets', TextareaField::class)
+                $form->add('combine_targets', DiscountModalField::class)
                     ->label($this->trans('shopgo.discount.field.combine_targets'))
-                    ->rows(7);
+                    ->multiple(true);
             }
         );
 
         $form->fieldset(
             'pricing',
             function (Form $form) {
-                $form->add('price', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.price'))
-                    ->step('0.0001');
-
-                $form->add('apply_products', TextareaField::class)
-                    ->label($this->trans('shopgo.discount.field.apply_products'))
-                    ->rows(7);
-
                 $form->add('free_shipping', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.free_shipping'));
 
-                $form->add('method', TextField::class)
-                    ->label($this->trans('shopgo.discount.field.method'));
+                $form->add('method', ListField::class)
+                    ->label($this->trans('shopgo.discount.field.method'))
+                    ->registerFromEnums(DiscountMethod::class, $this->lang);
 
-                $form->add('apply_to', TextField::class)
-                    ->label($this->trans('shopgo.discount.field.apply_to'));
+                $form->add('price', NumberField::class)
+                    ->label($this->trans('shopgo.discount.field.price'))
+                    ->step('0.0001')
+                    ->help($this->trans('shopgo.discount.field.price.help'));
+
+                $form->add('apply_to', ListField::class)
+                    ->label($this->trans('shopgo.discount.field.apply_to'))
+                    ->registerFromEnums(DiscountApplyTo::class, $this->lang)
+                    ->help(
+                        <<<HTML
+                        <div>{$this->trans('shopgo.discount.field.apply_to.help')}</div>
+                        <ul>
+                            <li>{$this->trans('shopgo.discount.field.apply_to.help.option.order')}</li>
+                            <li>{$this->trans('shopgo.discount.field.apply_to.help.option.products')}</li>
+                            <li>{$this->trans('shopgo.discount.field.apply_to.help.option.matched')}</li>
+                        </ul>
+                        HTML
+                    );
+
+                $form->add('apply_products', ProductModalField::class)
+                    ->label($this->trans('shopgo.discount.field.apply_products'))
+                    ->hasImage(true)
+                    ->multiple(true)
+                    ->set('showon', ['apply_to' => DiscountApplyTo::PRODUCTS()]);
             }
         );
 

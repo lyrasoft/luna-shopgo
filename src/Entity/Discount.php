@@ -114,6 +114,10 @@ class Discount implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $combineTargets = [];
 
+    #[Column('users')]
+    #[Cast(JsonCast::class)]
+    protected array $users = [];
+
     #[Column('categories')]
     #[Cast(JsonCast::class)]
     protected array $categories = [];
@@ -629,6 +633,18 @@ class Discount implements EntityInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
+
+        return $this;
+    }
+
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
+
+    public function setUsers(array $users): static
+    {
+        $this->users = $users;
 
         return $this;
     }

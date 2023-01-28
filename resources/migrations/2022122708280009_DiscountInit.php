@@ -50,6 +50,7 @@ $mig->up(
                 $schema->bool('can_rollback');
                 $schema->char('combine')->length(8)->comment('DiscountCombine: open,stop,includes,excludes');
                 $schema->json('combine_targets')->nullable(true)->defaultValue(null);
+                $schema->json('users')->nullable(true)->defaultValue(null);
                 $schema->json('categories')->nullable(true)->defaultValue(null);
                 $schema->json('prodcuts')->nullable(true)->defaultValue(null);
                 $schema->json('payments')->nullable(true)->defaultValue(null);

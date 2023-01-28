@@ -79,8 +79,8 @@ use Windwalker\Core\Router\SystemUri;
             </div>
 
             <div class="form-group mb-4">
-                <label for="input-variant-price_offset" class="form-label">價格</label>
-                <input id="input-variant-price_offset" type="number" class="form-control"
+                <label for="input-variant-price" class="form-label">價格</label>
+                <input id="input-variant-price" type="number" class="form-control"
                     v-model="current.price"
                     />
             </div>

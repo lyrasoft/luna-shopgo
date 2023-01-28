@@ -107,7 +107,7 @@ window.ShopGoVuePlugin = function (app) {
       return '=' + u.numberFormat(Math.abs(num));
     }
 
-    if (method === 'offset') {
+    if (method === 'offsets') {
       if (negative) {
         return '-' + u.numberFormat(Math.abs(num));
       }

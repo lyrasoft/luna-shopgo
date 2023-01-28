@@ -128,7 +128,7 @@ $uniScript->data('product.discounts.props', [
                                             style="width: 100px;">
                                             @{{ item.subtype === 'discount' ? item.minProductQuantity : '-' }}
                                         </div>
-                                        <div class="c-discount-item__price-offset text-end flex-fill"
+                                        <div class="c-discount-item__price text-end flex-fill"
                                             style="width: 100px">
                                             @{{ $priceOffset(item.price, '$') }}
                                         </div>
@@ -271,7 +271,7 @@ $uniScript->data('product.discounts.props', [
                             <select id="input-discount-method" class="form-select"
                                 v-model="current.method">
                                 <option value="percentage">百分比</option>
-                                <option value="offset">金額調整</option>
+                                <option value="offsets">金額調整</option>
                                 <option value="fixed">指定金額</option>
                             </select>
                         </div>

@@ -55,23 +55,23 @@ $uniScript->addRoute('@discount_ajax');
             <div class="col-lg-8">
                 <x-tabs variant="pills" keepactive>
                     <x-tab name="basic" :title="$lang('shopgo.discount.edit.tab.basic')">
-                        <x-fieldset :form="$form" name="basic" is="card">
+                        <x-fieldset :form="$form" name="basic" is="card" horizon="3:9">
                         </x-fieldset>
                     </x-tab>
                     <x-tab name="conditions" :title="$lang('shopgo.discount.edit.tab.conditions')">
-                        <x-fieldset :form="$form" name="conditions" is="card">
+                        <x-fieldset :form="$form" name="conditions" is="card" horizon="3:9">
                         </x-fieldset>
                     </x-tab>
-                    <x-tab name="specific" :title="$lang('shopgo.discount.edit.tab.specific')">
-                        <x-fieldset :form="$form" name="specific" is="card">
+                    <x-tab name="specifies" :title="$lang('shopgo.discount.edit.tab.specifies')">
+                        <x-fieldset :form="$form" name="specifies" is="card" horizon="3:9">
                         </x-fieldset>
                     </x-tab>
                     <x-tab name="combine" :title="$lang('shopgo.discount.edit.tab.combine')">
-                        <x-fieldset :form="$form" name="combine" is="card">
+                        <x-fieldset :form="$form" name="combine" is="card" horizon="3:9">
                         </x-fieldset>
                     </x-tab>
                     <x-tab name="pricing" :title="$lang('shopgo.discount.edit.tab.pricing')">
-                        <x-fieldset :form="$form" name="pricing" is="card">
+                        <x-fieldset :form="$form" name="pricing" is="card" horizon="3:9">
                         </x-fieldset>
                     </x-tab>
                 </x-tabs>

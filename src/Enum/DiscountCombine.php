@@ -23,6 +23,7 @@ use Windwalker\Utilities\Contract\LanguageInterface;
  * @method static $this OPEN()
  * @method static $this STOP()
  * @method static $this INCLUDES()
+ * @method static $this EXCLUDES()
  */
 class DiscountCombine extends EnumSingleton implements EnumTranslatableInterface
 {
@@ -31,6 +32,7 @@ class DiscountCombine extends EnumSingleton implements EnumTranslatableInterface
     public const OPEN = 'open';
     public const STOP = 'stop';
     public const INCLUDES = 'includes';
+    public const EXCLUDES = 'excludes';
 
     /**
      * Unable to directly new this object.

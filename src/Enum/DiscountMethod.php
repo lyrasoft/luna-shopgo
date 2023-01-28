@@ -20,7 +20,7 @@ use Windwalker\Utilities\Contract\LanguageInterface;
 /**
  * The DiscountMethod enum class.
  *
- * @method static $this OFFSET()
+ * @method static $this OFFSETS()
  * @method static $this FIXED()
  * @method static $this PERCENTAGE()
  */
@@ -28,7 +28,7 @@ class DiscountMethod extends EnumSingleton implements EnumTranslatableInterface
 {
     use EnumTranslatableTrait;
 
-    public const OFFSET = 'offset';
+    public const OFFSETS = 'offsets';
 
     public const FIXED = 'fixed';
 
