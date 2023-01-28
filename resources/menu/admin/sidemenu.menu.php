@@ -99,3 +99,6 @@ $menu->link($lang('unicorn.title.grid', title: $lang('luna.payment.title')))
 $menu->link($lang('unicorn.title.grid', title: $lang('luna.shipping.title')))
     ->to($nav->to('shipping_list'))
     ->icon('fa-solid fa-truck');
+
+$menu->link($lang('luna.config.title', $lang('shopgo.config.type.shop')))
+    ->to($nav->to('config_shopgo_shop'));

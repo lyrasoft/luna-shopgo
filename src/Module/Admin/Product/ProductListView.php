@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Product;
 
+use App\Entity\ShopCategoryMap;
 use App\Module\Admin\Product\Form\GridForm;
 use App\Repository\ProductRepository;
+use App\Traits\CurrencyAwareTrait;
+use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -22,6 +25,8 @@ use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+
+use function Windwalker\Query\val;
 
 /**
  * The ProductListView class.
@@ -36,6 +41,7 @@ use Windwalker\ORM\ORM;
 class ProductListView implements ViewModelInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     public function __construct(
         protected ORM $orm,
@@ -48,7 +54,7 @@ class ProductListView implements ViewModelInterface
     /**
      * Prepare view data.
      *
-     * @param  AppContext  $app   The request app context.
+     * @param  AppContext  $app  The request app context.
      * @param  View        $view  The view object.
      *
      * @return  array
@@ -58,17 +64,32 @@ class ProductListView implements ViewModelInterface
         $state = $this->repository->getState();
 
         // Prepare Items
-        $page     = $state->rememberFromRequest('page');
-        $limit    = $state->rememberFromRequest('limit');
-        $filter   = (array) $state->rememberFromRequest('filter');
-        $search   = (array) $state->rememberFromRequest('search');
-        $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering();
+        $page = $state->rememberFromRequest('page');
+        $limit = $state->rememberFromRequest('limit');
+        $filter = (array) $state->rememberFromRequest('filter');
+        $search = (array) $state->rememberFromRequest('search');
+
+        $hasCategoryFilter = (bool) $filterCategoryId = ($filter['category_id'] ?? null);
+
+        $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering($hasCategoryFilter);
 
         $items = $this->repository->getListSelector()
             ->setFilters($filter)
             ->searchTextFor(
                 $search['*'] ?? '',
                 $this->getSearchFields()
+            )
+            ->tapIf(
+                $hasCategoryFilter,
+                fn(ListSelector $selector) => $selector->leftJoin(
+                    ShopCategoryMap::class,
+                    'category_map',
+                    [
+                        ['category_map.target_id', '=', 'product.id'],
+                        ['category_map.type', '=', val('product')],
+                        ['category_map.category_id', '=', val($filterCategoryId)],
+                    ]
+                )
             )
             ->ordering($ordering)
             ->page($page)
@@ -84,7 +105,14 @@ class ProductListView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('items', 'pagination', 'form', 'showFilters', 'ordering');
+        return compact(
+            'items',
+            'pagination',
+            'form',
+            'showFilters',
+            'ordering',
+            'hasCategoryFilter'
+        );
     }
 
     public function prepareItem(Collection $item): object
@@ -95,11 +123,17 @@ class ProductListView implements ViewModelInterface
     /**
      * Get default ordering.
      *
+     * @param  bool  $hasCategoryFilter
+     *
      * @return  string
      */
-    public function getDefaultOrdering(): string
+    public function getDefaultOrdering(bool $hasCategoryFilter): string
     {
-        return 'product.id DESC';
+        if (!$hasCategoryFilter) {
+            return 'product.id DESC';
+        }
+
+        return 'category_map.ordering ASC';
     }
 
     /**
@@ -113,6 +147,7 @@ class ProductListView implements ViewModelInterface
             'product.id',
             'product.title',
             'product.alias',
+            'product.search_index',
         ];
     }
 
@@ -125,7 +160,7 @@ class ProductListView implements ViewModelInterface
      */
     public function reorderEnabled(string $ordering): bool
     {
-        return $ordering === 'product.ordering ASC';
+        return $ordering === 'category_map.ordering ASC';
     }
 
     /**

@@ -34,32 +34,57 @@ $seeder->import(
         /** @var EntityMapper<Currency> $mapper */
         $mapper = $orm->mapper(Currency::class);
 
-        $languages = $orm->findList(Language::class, ['state' => 1]);
-        $userIds = $orm->findColumn(User::class, 'id')->dump();
+        $item = $mapper->createEntity();
 
-        /** @var Language $language */
-        foreach ($languages as $language) {
-            $item = $mapper->createEntity();
+        // USD
+        $item->setTitle('USD');
+        $item->setCode('USD');
+        $item->setSign('$');
+        $item->setSignPosition(SignPosition::START());
+        $item->setDecimalPlace(2);
+        $item->setDecimalPoint('.');
+        $item->setNumSeparator(',');
+        $item->setExchangeRate(1);
+        $item->setSpace(false);
+        $item->setState(1);
 
-            $item->setTitle($language->getTitleNative());
-            $item->setCode($language->getCode());
-            $item->setSign($faker->sentence(1));
-            $item->setSignPosition($faker->randomElement(SignPosition::values()));
-            $item->setDecimalPlace(random_int(1, 3));
-            $item->setDecimalPoint('.');
-            $item->setNumSeparator(',');
-            $item->setExchangeRate((float) random_int(1, 30));
-            $item->setSpace((bool) $faker->optional(0.5, 0)->passthrough(1));
-            $item->setState($faker->optional(0.7, 0)->passthrough(1));
-            $item->setCreated($faker->dateTimeThisYear());
-            $item->setModified($item->getCreated()->modify('+10days'));
-            $item->setCreatedBy((int) $faker->randomElement($userIds));
-            $item->setParams([]);
+        $mapper->createOne($item);
 
-            $mapper->createOne($item);
+        $seeder->outCounting();
 
-            $seeder->outCounting();
-        }
+        // TWD
+        $item = $mapper->createEntity();
+
+        $item->setTitle('TWD');
+        $item->setCode('TWD');
+        $item->setSign('$');
+        $item->setSignPosition(SignPosition::START());
+        $item->setDecimalPlace(0);
+        $item->setDecimalPoint('.');
+        $item->setNumSeparator(',');
+        $item->setExchangeRate(35);
+        $item->setSpace(false);
+        $item->setState(1);
+
+        $mapper->createOne($item);
+
+        // EUR
+        $item = $mapper->createEntity();
+
+        $item->setTitle('EUR');
+        $item->setCode('EUR');
+        $item->setSign('€');
+        $item->setSignPosition(SignPosition::END());
+        $item->setDecimalPlace(0);
+        $item->setDecimalPoint(',');
+        $item->setNumSeparator('.');
+        $item->setExchangeRate(0.92);
+        $item->setSpace(false);
+        $item->setState(1);
+
+        $mapper->createOne($item);
+
+        $seeder->outCounting();
     }
 );
 

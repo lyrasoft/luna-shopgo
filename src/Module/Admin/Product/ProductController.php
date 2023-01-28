@@ -14,6 +14,7 @@ namespace App\Module\Admin\Product;
 use App\Entity\Discount;
 use App\Entity\ProductFeature;
 use App\Entity\ProductVariant;
+use App\Entity\ShopCategoryMap;
 use App\Enum\DiscountType;
 use App\Module\Admin\Product\Form\EditForm;
 use App\Repository\ProductRepository;
@@ -65,6 +66,34 @@ class ProductController
                 $orm = $event->getORM();
                 $data = $event->getData();
 
+                // Save Categories
+                $map = new ShopCategoryMap();
+                $map->setType('product');
+                $map->setTargetId((int) $data['id']);
+                $map->setCategoryId($data['category_id']);
+                $map->setPrimary(true);
+
+                $maps[] = $map;
+
+                $categories = $app->input('item')['sub_categories'];
+
+                foreach ($categories as $categoryId) {
+                    $map = new ShopCategoryMap();
+                    $map->setType('product');
+                    $map->setTargetId((int) $data['id']);
+                    $map->setCategoryId((int) $categoryId);
+                    $map->setPrimary(false);
+
+                    $maps[] = $map;
+                }
+
+                $orm->sync(
+                    ShopCategoryMap::class,
+                    $maps,
+                    ['type' => 'product', 'target_id' => $data['id']],
+                    ['type', 'category_id']
+                );
+
                 $variantData = $app->input('item')['variant'];
 
                 // MainVariant
@@ -83,7 +112,7 @@ class ProductController
                 // Save Discounts
                 $this->saveDiscounts($app, $orm, (int) $data['id']);
 
-                // Save variant count
+                // Save variant info
                 $data['variants'] = count($variants);
                 $data['primary_variant_id'] = $mainVariant->getId();
 

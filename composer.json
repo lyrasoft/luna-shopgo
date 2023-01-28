@@ -29,7 +29,8 @@
         "asika/cross-env": "^1.0",
         "myclabs/php-enum": "^1.8",
         "thl/pinyin": "^1.2",
-        "swoole/ide-helper": "^5.0"
+        "swoole/ide-helper": "^5.0",
+        "brick/math": "^0.11.0"
     },
     "require-dev": {
         "psr/http-server-handler": "^1.0",

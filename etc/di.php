@@ -35,7 +35,9 @@ return Arr::mergeRecursive(
             //
         ],
         'bindings' => [
-            //
+            \App\Service\CurrencyService::class,
+            \App\Service\LocationService::class,
+            \App\Service\VariantService::class,
         ],
         'aliases' => [
             //

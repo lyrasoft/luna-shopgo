@@ -147,7 +147,7 @@ $seeder->import(
             $mainVariant = $orm->createOne(ProductVariant::class, $variant);
 
             // Sub Variants
-            $currentFeatures = $faker->randomElements($features, 3);
+            $currentFeatures = $faker->randomElements($features, random_int(0, 4));
             /** @var array<ListOption[]> $variantGroups */
             $variantGroups = $sortGroup($currentFeatures);
 
@@ -222,6 +222,11 @@ $sortGroup = static function (array $features, array $parentGroup = []) use (&$s
     $faker = $seeder->faker('en_US');
 
     $feature = array_pop($features);
+
+    if (!$feature) {
+        return [];
+    }
+
     $currentOptions = $feature->getOptions();
 
     $returnValue = [];

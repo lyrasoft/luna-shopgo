@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Cart\Price\PriceObject;
 use App\Enum\SignPosition;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
@@ -101,6 +102,42 @@ class Currency implements EntityInterface
     #[Column('params')]
     #[Cast(JsonCast::class)]
     protected array $params = [];
+
+    public function formatPrice(float|PriceObject $num, bool $addCode = false): string
+    {
+        if ($num instanceof  PriceObject) {
+            return $num->format($this, $addCode);
+        }
+
+        $negative = $num < 0;
+
+        $num = (float) abs($num);
+
+        $formatted = number_format(
+            $num,
+            $this->getDecimalPlace(),
+            $this->getDecimalPoint(),
+            $this->getNumSeparator(),
+        );
+
+        $space = $this->hasSpace() ? ' ' : '';
+
+        if ($this->getSignPosition() === SignPosition::START()) {
+            $formatted = $this->getSign() . $space . $formatted;
+        } else {
+            $formatted .= $space . $this->getSign();
+        }
+
+        if ($negative) {
+            return '-' . $formatted;
+        }
+
+        if ($addCode) {
+            $formatted = $this->getCode() . ' ' . $formatted;
+        }
+
+        return $formatted;
+    }
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -231,7 +268,7 @@ class Currency implements EntityInterface
         return $this;
     }
 
-    public function isSpace(): bool
+    public function hasSpace(): bool
     {
         return $this->space;
     }
