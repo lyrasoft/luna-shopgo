@@ -39,52 +39,7 @@ class ShopgoShopForm implements FieldDefinitionInterface
         $form->fieldset(
             'basic',
             function (Form $form) {
-                $debug = WINDWALKER_DEBUG;
-
-                $form->add('currency_main', CurrencyListField::class)
-                    ->label($this->trans('shopgo.config.shop.field.main.currency'));
-
-                $form->add('payment_no_maxlength', NumberField::class)
-                    ->label($this->trans('shopgo.config.shop.field.payment.no.maxlength'))
-                    ->defaultValue('20');
-
-                $form->add('order_no_prefix', TextField::class)
-                    ->label($this->trans('shopgo.config.shop.field.order.no.prefix'))
-                    ->defaultValue('S')
-                    ->disabled(!$debug);
-
-                $form->add('invoice_no_prefix', TextField::class)
-                    ->label($this->trans('shopgo.config.shop.field.invoice.no.prefix'))
-                    ->defaultValue('INV')
-                    ->disabled(!$debug);
-
-                $form->add('order_no_mode', ListField::class)
-                    ->label($this->trans('shopgo.config.shop.field.order.no.mode'))
-                    ->registerFromEnums(OrderNoMode::class, $this->lang)
-                    ->disabled(!$debug);
-
-                $form->add('order_hash_offsets', NumberField::class)
-                    ->label($this->trans('shopgo.config.shop.field.order.hash.offsets'))
-                    ->disabled(!$debug)
-                    ->set('showon', ['order_no_mode' => OrderNoMode::SEQUENCE_HASHES]);
-
-                $form->add('order_hash_seed', TextField::class)
-                    ->label($this->trans('shopgo.config.shop.field.order.hash.seed'))
-                    ->disabled(!$debug)
-                    ->set(
-                        'showon',
-                        [
-                            'order_no_mode' => [
-                                OrderNoMode::SEQUENCE_HASHES,
-                                OrderNoMode::RANDOM_HASHES,
-                            ],
-                        ]
-                    );
-
-                $form->add('sequence_day_format', TextField::class)
-                    ->label($this->trans('shopgo.config.shop.field.sequence.day.format'))
-                    ->disabled(!$debug)
-                    ->set('showon', ['order_no_mode' => OrderNoMode::DAILY_SEQUENCE]);
+                //
             }
         );
     }

@@ -31,7 +31,7 @@ class OrderHistoryService
 
     public function createHistoryByOrderId(
         int $orderId,
-        OrderState|int|null $state,
+        OrderState|null $state,
         OrderHistoryType $type,
         string $message = '',
         bool $notify = false

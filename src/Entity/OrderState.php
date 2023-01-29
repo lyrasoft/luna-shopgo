@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Service\OrderStateService;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Lyrasoft\Luna\Attributes\Slugify;
 use Windwalker\ORM\Attributes\Cast;
@@ -258,10 +259,6 @@ class OrderState implements EntityInterface
 
     public function getContrastColor(int $sep = 200): string
     {
-        [$r, $g, $b] = sscanf($this->getColor(), '#%02x%02x%02x');
-
-        $luma = $r * 0.2126 + $g * 0.7152 + $b * 0.0722;
-
-        return $luma > $sep ? 'black' : 'white';
+        return OrderStateService::colorToContrast($this->getColor(), $sep);
     }
 }

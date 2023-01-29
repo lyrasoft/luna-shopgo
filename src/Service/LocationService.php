@@ -29,6 +29,41 @@ class LocationService
     {
     }
 
+    /**
+     * @param  Location  $location
+     *
+     * @return  array<Location|null>
+     *
+     * @throws \ReflectionException
+     */
+    public function getPathFromLocation(Location $location): array
+    {
+        $path = $this->getEntityMapper()->getPath($location);
+
+        $country = null;
+        $state = null;
+        $city = null;
+
+        foreach ($path as $loc) {
+            if ($loc->getType() === LocationType::COUNTRY()) {
+                $country = $loc;
+                continue;
+            }
+
+            if ($loc->getType() === LocationType::STATE()) {
+                $state = $loc;
+                continue;
+            }
+
+            if ($loc->getType() === LocationType::CITY()) {
+                $city = $loc;
+                continue;
+            }
+        }
+
+        return [$country, $state, $city];
+    }
+
     public function getOrCreateContinent(string $title): Location
     {
         return $this->once(

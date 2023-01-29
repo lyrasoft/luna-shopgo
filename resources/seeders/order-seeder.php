@@ -14,6 +14,7 @@ namespace App\Seeder;
 use App\Cart\CartItem;
 use App\Cart\CartService;
 use App\Entity\Address;
+use App\Entity\Location;
 use App\Entity\Order;
 use App\Entity\OrderHistory;
 use App\Entity\OrderItem;
@@ -25,7 +26,9 @@ use App\Entity\ProductVariant;
 use App\Entity\Shipping;
 use App\Enum\InvoiceType;
 use App\Service\CheckoutService;
+use App\Service\LocationService;
 use App\Service\OrderStateService;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\User;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
@@ -41,10 +44,16 @@ use Windwalker\ORM\ORM;
  */
 $seeder->import(
     static function (
+        ShopGoPackage $shopGo,
         CheckoutService $checkoutService,
         CartService $cartService,
-        OrderStateService $orderStateService
-    ) use ($seeder, $orm, $db) {
+        OrderStateService $orderStateService,
+        LocationService $locationService,
+    ) use (
+        $seeder,
+        $orm,
+        $db
+    ) {
         $faker = $seeder->faker('en_US');
 
         /** @var EntityMapper<Order> $mapper */
@@ -56,6 +65,9 @@ $seeder->import(
         $payments = $orm->findList(Payment::class)->all()->dump();
         $shippings = $orm->findList(Shipping::class)->all()->dump();
         $variantGroups = $orm->findList(ProductVariant::class)->all()->groupBy('productId');
+
+        $useFullName = $shopGo->useFullName();
+        $useFullAddress = $shopGo->useFullAddress();
 
         $users = $orm->findList(User::class)->all()->dump();
 
@@ -107,15 +119,24 @@ $seeder->import(
             /** @var Address $paymentAddress */
             $paymentAddress = $faker->randomElement($addresses);
 
+            $location = $orm->mustFindOne(Location::class, $paymentAddress->getLocationId());
+            [$country, $state, $city] = $locationService->getPathFromLocation($location);
+
             $item->setPaymentId($payment->getId());
 
             $paymentData = $item->getPaymentData()
                 ->setName($user->getName())
+                ->setEmail($user->getEmail())
+                ->setAddress1($paymentAddress->getAddress1())
+                ->setAddress2($paymentAddress->getAddress2())
                 ->setAddressId($paymentAddress->getId())
-                ->setPhone($faker->phoneNumber())
-                ->setMobile('09' . random_int(10000000, 99999999))
-                ->setCompany($faker->company())
-                ->setVat((string) random_int(10000000, 99999999));
+                ->setCountry($country?->getTitle() ?: '')
+                ->setState($state?->getTitle() ?: '')
+                ->setCity($city?->getTitle() ?: '')
+                ->setPhone($paymentAddress->getPhone())
+                ->setMobile($paymentAddress->getMobile())
+                ->setCompany($paymentAddress->getCompany())
+                ->setVat($paymentAddress->getVat());
 
             // Shipping
 
@@ -124,13 +145,26 @@ $seeder->import(
             /** @var Address $shippingAddress */
             $shippingAddress = $faker->randomElement($addresses);
 
+            $location = $orm->mustFindOne(Location::class, $shippingAddress->getLocationId());
+            [$country, $state, $city] = $locationService->getPathFromLocation($location);
+
             $item->setShippingId($shipping->getId());
 
+            $firstName = $shippingAddress->getFirstname();
+            $lastName = $shippingAddress->getLastname();
+
             $item->getShippingData()
-                ->setName($faker->name())
+                ->setName($firstName . ' ' . $lastName)
+                ->setFirstName($firstName)
+                ->setLastName($lastName)
                 ->setAddressId($shippingAddress->getId())
-                ->setPhone($faker->phoneNumber())
-                ->setMobile('09' . random_int(10000000, 99999999))
+                ->setAddress1($shippingAddress->getAddress1())
+                ->setAddress2($shippingAddress->getAddress2())
+                ->setCountry($country?->getTitle() ?: '')
+                ->setState($state?->getTitle() ?: '')
+                ->setCity($city?->getTitle() ?: '')
+                ->setPhone($shippingAddress->getPhone())
+                ->setMobile($shippingAddress->getMobile())
                 ->setNote($faker->sentence());
 
             // Invoice

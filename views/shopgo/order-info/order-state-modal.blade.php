@@ -23,11 +23,12 @@ use Windwalker\Core\Router\SystemUri;
 
 /**
  * @var \App\Entity\Order $order
+ * @var \App\Entity\OrderState[] $states
  */
 
-$route ??= 'order_list'
+$route ??= 'order_list';
 
-$states = $app->service(\App\Service\OrderStateService::class)->getOrderStates();
+$states = $app->service(\App\Service\OrderStateService::class)->getOrderStates()->keyBy('id');
 ?>
 
 <div class="modal fade" id="order-state-modal-{{ $order->getId() }}" tabindex="-1" role="dialog"
@@ -48,11 +49,10 @@ $states = $app->service(\App\Service\OrderStateService::class)->getOrderStates()
                 <form id="state-form" method="post" action="{{ $nav->to($route) }}">
                     <div class="form-group mb-4">
                         <label for="input-order-state" class="form-label">狀態</label>
-                        <select id="input-order-state" name="state" class="form-select"
-                            @attr('disabled', !$canChange ? true : null)>
+                        <select id="input-order-state" name="state" class="form-select">
                             <option value="">- 不變更 -</option>
                             @foreach ($states as $state)
-                                <option value="{{ $state->getValue() }}">
+                                <option value="{{ $state->getId() }}">
                                     {{ $state->getTitle() }}
                                 </option>
                             @endforeach

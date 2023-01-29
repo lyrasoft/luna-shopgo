@@ -13,6 +13,7 @@ namespace App\Service;
 
 use App\Entity\Order;
 use App\Enum\OrderNoMode;
+use App\ShopGoPackage;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Config\ShopConfig;
 use Lyrasoft\Toolkit\Encode\BaseConvert;
@@ -30,15 +31,15 @@ class OrderService
     public function __construct(
         protected ApplicationInterface $app,
         protected ORM $orm,
-        protected ShopConfig $shopConfig,
+        protected ShopGoPackage $shopGo,
     ) {
     }
 
     public function createOrderNo(int $id): string
     {
-        $prefix = (string) $this->shopConfig->get('order_no_prefix');
+        $prefix = (string) $this->shopGo->config('order_no.prefix');
         $mode = OrderNoMode::wrap(
-            $this->shopConfig->get('order_no_mode') ?: OrderNoMode::INCREMENT_ID()
+            $this->shopGo->config('order_no.mode') ?: OrderNoMode::INCREMENT_ID()
         );
 
         if ($mode === OrderNoMode::INCREMENT_ID()) {
@@ -49,7 +50,7 @@ class OrderService
 
         if ($mode === OrderNoMode::DAILY_SEQUENCE()) {
             $sequenceService = $this->app->service(SequenceService::class);
-            $format = $this->shopConfig->get('sequence_day_format') ?: 'Ymd';
+            $format = $this->shopGo->config('order_no.sequence_day_format') ?: 'Ymd';
             $prefix .= now($format);
 
             $availableLength = $this->getAvailableNoLength($prefix);
@@ -58,8 +59,8 @@ class OrderService
         }
 
         if ($mode === OrderNoMode::SEQUENCE_HASHES()) {
-            $offsets = (int) $this->shopConfig->get('order_hash_offsets');
-            $seed = $this->shopConfig->get('order_hash_seed') ?: BaseConvert::BASE62;
+            $offsets = (int) $this->shopGo->config('order_no.hash_offsets');
+            $seed = $this->shopGo->config('order_no.hash_seed') ?: BaseConvert::BASE62;
             $hash = BaseConvert::encode($id + $offsets, $seed);
 
             return $prefix . $hash;
@@ -67,7 +68,7 @@ class OrderService
 
         if ($mode === OrderNoMode::RANDOM_HASHES()) {
             $uid = bin2hex(random_bytes(6));
-            $seed = $this->shopConfig->get('order_hash_seed') ?: BaseConvert::BASE62;
+            $seed = $this->shopGo->config('order_no.hash_seed') ?: BaseConvert::BASE62;
 
             do {
                 $no = $prefix . BaseConvert::encode(base_convert($uid, 16, 10), $seed);
@@ -106,7 +107,7 @@ class OrderService
      */
     protected function getAvailableNoLength(string $prefix): int
     {
-        $maxlength = (int) $this->shopConfig->get('payment_no_maxlength') ?: 20;
+        $maxlength = (int) $this->shopGo->config('payment_no.maxlength') ?: 20;
 
         $t = static::getCurrentTimeBase62();
 

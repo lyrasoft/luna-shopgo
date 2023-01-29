@@ -291,20 +291,22 @@ $alert = $item->getParams()['alert'] ?? [];
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header fw-bold">
-                            訂單歷史訊息
-                        </div>
-
-                        <div class="card-body">
-                            <div class="d-flex justify-content-end mb-3">
-                                <a href="javascript://" class="btn btn-info"
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                訂單歷史訊息
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <a href="javascript://" class="btn btn-sm btn-info"
+                                    style="width: 150px"
                                     data-bs-toggle="modal"
                                     data-bs-target="#order-state-modal-{{ $item->getId() }}"
                                 >
                                     變更狀態
                                 </a>
                             </div>
+                        </div>
 
+                        <div class="card-body">
                             <x-order-histories :histories="$histories"></x-order-histories>
                         </div>
                     </div>

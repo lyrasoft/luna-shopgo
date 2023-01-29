@@ -17,6 +17,7 @@ namespace App\View;
  */
 
 use App\Entity\OrderHistory;
+use App\Entity\OrderState;
 use App\Enum\OrderHistoryType;
 use App\Service\OrderStateService;
 use Windwalker\Core\Application\AppContext;
@@ -30,15 +31,11 @@ use Windwalker\Core\Router\SystemUri;
  * @var OrderHistory $history
  */
 
-$states = $app->service(OrderStateService::class)->getOrderStates()->groupBy('id');
 ?>
 
 {!! $slot ?? '' !!}
 
 @foreach($histories as $history)
-    <?php
-        $state = $states[$history->getStateId()];
-    ?>
     <div class="list-group-item order-history">
         <div class="order-history__info d-flex text-muted mb-2">
             <div class="order-history__info-item mr-2">
@@ -65,13 +62,14 @@ $states = $app->service(OrderStateService::class)->getOrderStates()->groupBy('id
 
             @if ($history->getStateId())
                 將此訂單改為
-                <span class="badge bg-{{ $history->getState()->getColor() }}">
-                    {{ $history->getState()->trans($lang) }}
+                <span class="badge"
+                    style="{{ OrderStateService::colorToCSS($history->getStateColor()) }}">
+                    {{ $history->getStateText() }}
                 </span>
             @endif
 
             @if (trim($history->getMessage()) !== '')
-                @if ($history->getState())
+                @if ($history->getStateId())
                     並留言:
                 @else
                     留言:

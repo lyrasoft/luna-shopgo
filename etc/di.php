@@ -27,6 +27,7 @@ return Arr::mergeRecursive(
             \Lyrasoft\Sequence\SequencePackage::class,
         ],
         'bindings' => [
+            \App\ShopGoPackage::class,
             \App\Service\CurrencyService::class,
             \App\Service\LocationService::class,
             \App\Service\VariantService::class,
@@ -35,9 +36,8 @@ return Arr::mergeRecursive(
             \App\Service\OrderService::class,
             \App\Service\OrderStateService::class,
             \App\Cart\CartService::class,
-            ShopConfig::class => static function (Container $container) {
-                return $container->get(ConfigService::class)->getConfig('shopgo_shop');
-            }
+            ShopConfig::class => static fn(Container $container) => $container->get(ConfigService::class)
+                ->getConfig('shopgo_shop')
         ],
         'aliases' => [
             //

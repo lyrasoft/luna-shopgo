@@ -13,7 +13,9 @@ namespace App\Service;
 
 use App\Cart\Price\PriceObject;
 use App\Entity\Currency;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Services\ConfigService;
+use Windwalker\Core\Runtime\Config;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -25,7 +27,7 @@ class CurrencyService
 {
     use InstanceCacheTrait;
 
-    public function __construct(protected ORM $orm, protected ConfigService $configService)
+    public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo)
     {
     }
 
@@ -55,10 +57,18 @@ class CurrencyService
         return $this->once(
             'main.currency',
             function () {
-                $mainCurrencyId = (int) $this->getConfig()->get('currency_main');
+                $mainCurrency = $this->shopGo->config('currency.main');
 
                 $mainCurrency = $this->getCurrencies()
-                    ->findFirst(fn(Currency $currency) => $currency->getId() === $mainCurrencyId);
+                    ->findFirst(
+                        function (Currency $currency) use ($mainCurrency) {
+                            if (is_string($mainCurrency)) {
+                                return $currency->getCode() === $mainCurrency;
+                            }
+
+                            return $currency->getId() === $mainCurrency;
+                        }
+                    );
 
                 if (!$mainCurrency) {
                     throw new \RuntimeException('Main Currency not found.');
@@ -101,10 +111,5 @@ class CurrencyService
                 ->where('state', 1)
                 ->all(Currency::class)
         );
-    }
-
-    public function getConfig(): Collection
-    {
-        return $this->configService->getConfig('shopgo_shop');
     }
 }

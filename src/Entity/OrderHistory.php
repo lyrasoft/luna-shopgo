@@ -180,11 +180,17 @@ class OrderHistory implements EntityInterface
         return $this;
     }
 
-    public function setState(OrderState $state): static
+    public function setState(OrderState|null $state): static
     {
-        $this->setStateId((int) $state->getId());
-        $this->setStateText($state->getTitle());
-        $this->setStateColor($state->getColor());
+        if (!$state) {
+            $this->setStateId(0);
+            $this->setStateText('');
+            $this->setStateColor('');
+        } else {
+            $this->setStateId((int) $state->getId());
+            $this->setStateText($state->getTitle());
+            $this->setStateColor($state->getColor());
+        }
 
         return $this;
     }
