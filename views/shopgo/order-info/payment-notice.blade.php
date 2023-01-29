@@ -1,9 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\View;
-
 /**
  * Global variables
  * --------------------------------------------------------------
@@ -16,6 +12,8 @@ namespace App\View;
  * @var $lang      LangService     The language translation service.
  */
 
+declare(strict_types=1);
+
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -23,12 +21,21 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
+/**
+ * @var \App\Entity\Order $order
+ */
 ?>
 
-<div class="row">
-    <div class="col-lg-7">
-        <x-fieldset :form="$form" name="basic"
-            is="card"
-        ></x-fieldset>
-    </div>
-</div>
+@if ($order->getPayment()->equals(\App\Enum\OrderPayment::ATM()))
+    <p>
+        您的繳款方式為 {{ $order->getPayment()->trans($lang) }}。
+    </p>
+
+    <?php
+    $expiry = \Windwalker\chronos('+6days');
+    ?>
+
+    <p>
+        提醒您，請在 7 日內完成付款，屆時訂單將自動取消無法付款。若有任何問題請聯繫客服。
+    </p>
+@endif

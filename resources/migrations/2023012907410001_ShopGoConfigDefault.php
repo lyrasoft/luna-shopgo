@@ -39,7 +39,7 @@ $mig->up(
                 'currency_main' => 1,
                 'payment_no_maxlength' => '20',
                 'order_no_prefix' => 'S',
-                'order_no_mode' => OrderNoMode::DAILY_SEQUENCE(),
+                'order_no_mode' => OrderNoMode::INCREMENT_ID(),
                 'order_hash_offsets' => 100000,
                 'sequence_day_format' => 'ymd',
                 'order_hash_seed' => str_shuffle(BaseConvert::BASE62),

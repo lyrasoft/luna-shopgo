@@ -48,6 +48,12 @@ class OrderHistory implements EntityInterface
     #[Column('state_id')]
     protected int $stateId = 0;
 
+    #[Column('state_color')]
+    protected string $stateColor = '';
+
+    #[Column('state_text')]
+    protected string $stateText = '';
+
     #[Column('notify')]
     #[Cast('bool', 'int')]
     protected bool $notify = false;
@@ -174,13 +180,51 @@ class OrderHistory implements EntityInterface
         return $this;
     }
 
-    public function setState(OrderState|int|null $state): static
+    public function setState(OrderState $state): static
     {
-        if ($state instanceof OrderState) {
-            $state = $state->getId();
-        }
+        $this->setStateId((int) $state->getId());
+        $this->setStateText($state->getTitle());
+        $this->setStateColor($state->getColor());
 
-        $this->setStateId((int) $state);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateColor(): string
+    {
+        return $this->stateColor;
+    }
+
+    /**
+     * @param  string  $stateColor
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStateColor(string $stateColor): static
+    {
+        $this->stateColor = $stateColor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateText(): string
+    {
+        return $this->stateText;
+    }
+
+    /**
+     * @param  string  $stateText
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStateText(string $stateText): static
+    {
+        $this->stateText = $stateText;
 
         return $this;
     }

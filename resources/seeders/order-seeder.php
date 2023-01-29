@@ -63,6 +63,8 @@ $seeder->import(
             /** @var User $user */
             $user = $faker->randomElement($users);
 
+            // Prepare Product / Variants
+
             /** @var Product[] $products */
             $chosenProducts = $faker->randomElements($products, random_int(3, 5));
             $productVariants = [];
@@ -90,18 +92,22 @@ $seeder->import(
                 $cartItems[] = $cartItem;
             }
 
+            // Create Cart Data
             $cartData = $cartService->createCartDataFromItems($cartItems);
 
+            // Start Create Order
             $item = $mapper->createEntity();
 
             $item->setUserId($user->getId());
+
+            // Payment
 
             /** @var Payment $payment */
             $payment = $faker->randomElement($payments);
             /** @var Address $paymentAddress */
             $paymentAddress = $faker->randomElement($addresses);
 
-            $item->setPayment($payment->getId());
+            $item->setPaymentId($payment->getId());
 
             $paymentData = $item->getPaymentData()
                 ->setName($user->getName())
@@ -111,12 +117,14 @@ $seeder->import(
                 ->setCompany($faker->company())
                 ->setVat((string) random_int(10000000, 99999999));
 
+            // Shipping
+
             /** @var Shipping $shipping */
             $shipping = $faker->randomElement($shippings);
             /** @var Address $shippingAddress */
             $shippingAddress = $faker->randomElement($addresses);
 
-            $item->setShipping($shipping->getId());
+            $item->setShippingId($shipping->getId());
 
             $item->getShippingData()
                 ->setName($faker->name())
@@ -138,7 +146,13 @@ $seeder->import(
                     ->setMobile($paymentData->getMobile());
             }
 
-            $order = $checkoutService->createOrder($item, $cartData, $user);
+            // Create Order
+            $order = $checkoutService->createOrder($item, $cartData);
+
+            // A workaround to prevent relations create twice.
+            $order = $orm->findOne(Order::class, $order->getId());
+
+            // Use State
 
             /** @var OrderState $state */
             $state = $faker->randomElement($states);

@@ -151,7 +151,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             {{-- Color --}}
                             <td>
-                                <span class="badge" style="background-color: {{ $entity->getColor() }}">
+                                <span class="badge" style="background-color: {{ $entity->getColor() }}; color: {{ $entity->getContrastColor() }}">
                                     {{ $entity->getColor() }}
                                 </span>
                             </td>

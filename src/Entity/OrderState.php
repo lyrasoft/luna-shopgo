@@ -255,4 +255,13 @@ class OrderState implements EntityInterface
 
         return $this;
     }
+
+    public function getContrastColor(int $sep = 200): string
+    {
+        [$r, $g, $b] = sscanf($this->getColor(), '#%02x%02x%02x');
+
+        $luma = $r * 0.2126 + $g * 0.7152 + $b * 0.0722;
+
+        return $luma > $sep ? 'black' : 'white';
+    }
 }

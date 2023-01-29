@@ -80,6 +80,9 @@ $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.tab.title')
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.discount.title')))
     ->to($nav->to('discount_list'));
 
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.order.title')))
+    ->to($nav->to('order_list'));
+
 // Currency
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
     ->to($nav->to('currency_list'));

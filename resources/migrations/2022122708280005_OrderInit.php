@@ -43,12 +43,12 @@ $mig->up(
                 $schema->varchar('invoice_no');
                 $schema->json('invoice_data')->nullable(true);
                 $schema->integer('state_id');
-                $schema->varchar('payment');
+                $schema->varchar('payment_id');
                 $schema->varchar('payment_no');
                 $schema->json('payment_data')->nullable(true);
                 $schema->json('payment_args')->nullable(true);
                 $schema->json('payment_info')->nullable(true);
-                $schema->varchar('shipping');
+                $schema->varchar('shipping_id');
                 $schema->varchar('shipping_no');
                 $schema->varchar('shipping_status');
                 $schema->json('shipping_data')->nullable(true);
@@ -70,7 +70,7 @@ $mig->up(
                 $schema->json('params')->nullable(true);
 
                 $schema->addIndex('user_id');
-                $schema->addIndex('no');
+                $schema->addUniqueKey('no');
                 $schema->addIndex('state_id');
                 // $schema->addIndex('invoice_data');
                 $schema->addIndex('payment_no');
@@ -136,6 +136,8 @@ $mig->up(
                 $schema->integer('order_id');
                 $schema->char('type')->comment('OrderHistoryType: member,admin,system');
                 $schema->integer('state_id');
+                $schema->varchar('state_text');
+                $schema->varchar('state_color');
                 $schema->bool('notify');
                 $schema->longtext('message');
                 $schema->datetime('created');

@@ -13,9 +13,7 @@ namespace App\Module\Admin\Config\Form;
 
 use App\Enum\OrderNoMode;
 use App\Field\CurrencyListField;
-use Unicorn\Field\ButtonRadioField;
 use Windwalker\Core\Language\TranslatorTrait;
-use Windwalker\Form\Field\HiddenField;
 use Windwalker\Form\Field\ListField;
 use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\TextField;
@@ -67,15 +65,26 @@ class ShopgoShopForm implements FieldDefinitionInterface
 
                 $form->add('order_hash_offsets', NumberField::class)
                     ->label($this->trans('shopgo.config.shop.field.order.hash.offsets'))
-                    ->disabled(!$debug);
+                    ->disabled(!$debug)
+                    ->set('showon', ['order_no_mode' => OrderNoMode::SEQUENCE_HASHES]);
 
                 $form->add('order_hash_seed', TextField::class)
                     ->label($this->trans('shopgo.config.shop.field.order.hash.seed'))
-                    ->disabled(!$debug);
+                    ->disabled(!$debug)
+                    ->set(
+                        'showon',
+                        [
+                            'order_no_mode' => [
+                                OrderNoMode::SEQUENCE_HASHES,
+                                OrderNoMode::RANDOM_HASHES,
+                            ],
+                        ]
+                    );
 
                 $form->add('sequence_day_format', TextField::class)
                     ->label($this->trans('shopgo.config.shop.field.sequence.day.format'))
-                    ->disabled(!$debug);
+                    ->disabled(!$debug)
+                    ->set('showon', ['order_no_mode' => OrderNoMode::DAILY_SEQUENCE]);
             }
         );
     }

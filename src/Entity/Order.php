@@ -86,8 +86,8 @@ class Order implements EntityInterface
      *
      * @var string
      */
-    #[Column('payment')]
-    protected string $payment = '';
+    #[Column('payment_id')]
+    protected string $paymentId = '';
 
     #[Column('payment_no')]
     protected string $paymentNo = '';
@@ -126,8 +126,8 @@ class Order implements EntityInterface
      *
      * @var string
      */
-    #[Column('shipping')]
-    protected string $shipping = '';
+    #[Column('shipping_id')]
+    protected string $shippingId = '';
 
     #[Column('shipping_no')]
     protected string $shippingNo = '';
@@ -236,6 +236,22 @@ class Order implements EntityInterface
     protected ?OrderState $state = null;
 
     #[
+        ManyToOne,
+        TargetTo(Payment::class, payment_id: 'id'),
+        OnUpdate(Action::IGNORE),
+        OnDelete(Action::IGNORE)
+    ]
+    protected ?Payment $payment = null;
+
+    #[
+        ManyToOne,
+        TargetTo(Shipping::class, shipping_id: 'id'),
+        OnUpdate(Action::IGNORE),
+        OnDelete(Action::IGNORE)
+    ]
+    protected ?Shipping $shipping = null;
+
+    #[
         OneToMany,
         TargetTo(OrderTotal::class, id: 'order_id'),
         OnUpdate(Action::CASCADE),
@@ -255,6 +271,54 @@ class Order implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
+    }
+
+    /**
+     * @return Payment|null
+     */
+    public function getPayment(): ?Payment
+    {
+        return $this->payment ??= $this->loadRelation('payment');
+    }
+
+    /**
+     * @param  Payment|string|int  $payment
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPayment(Payment|string|int $payment): static
+    {
+        if ($payment instanceof Payment) {
+            $payment = $payment->getId();
+        }
+
+        $this->paymentId = $payment;
+
+        return $this;
+    }
+
+    /**
+     * @return Shipping|null
+     */
+    public function getShipping(): ?Shipping
+    {
+        return $this->shipping ??= $this->loadRelation('shipping');
+    }
+
+    /**
+     * @param  Shipping|string|int  $shipping
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setShipping(Shipping|string|int $shipping): static
+    {
+        if ($shipping instanceof Shipping) {
+            $shipping = $shipping->getId();
+        }
+
+        $this->shippingId = (string) $shipping;
+
+        return $this;
     }
 
     /**
@@ -429,14 +493,14 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getPayment(): string
+    public function getPaymentId(): string
     {
-        return $this->payment;
+        return $this->paymentId;
     }
 
-    public function setPayment(string|int $payment): static
+    public function setPaymentId(string|int $paymentId): static
     {
-        $this->payment = (string) $payment;
+        $this->paymentId = (string) $paymentId;
 
         return $this;
     }
@@ -489,14 +553,14 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getShipping(): string
+    public function getShippingId(): string
     {
-        return $this->shipping;
+        return $this->shippingId;
     }
 
-    public function setShipping(string|int $shipping): static
+    public function setShippingId(string|int $shippingId): static
     {
-        $this->shipping = (string) $shipping;
+        $this->shippingId = (string) $shippingId;
 
         return $this;
     }

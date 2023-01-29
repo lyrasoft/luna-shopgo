@@ -11,18 +11,12 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Dashboard;
 
-use Brick\Math\BigNumber;
-use Lyrasoft\Toolkit\Encode\BaseConvert;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
-use Windwalker\Core\Crypt\PseudoCrypt;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\ORM\ORM;
-
-use function Windwalker\tid;
-use function Windwalker\uid;
 
 /**
  * The DashboardView class.
@@ -54,16 +48,6 @@ class DashboardView implements ViewModelInterface
     public function prepare(AppContext $app, View $view): array
     {
         $view->setTitle($this->trans('unicorn.title.dashboard'));
-
-        $t = (string) time();
-        $hex = BaseConvert::encode($t, BaseConvert::BASE62);
-
-        $pc = new PseudoCrypt();
-        show(
-            $t,
-            $hex,
-            3
-        );
 
         return [];
     }

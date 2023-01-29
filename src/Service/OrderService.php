@@ -54,7 +54,7 @@ class OrderService
 
             $availableLength = $this->getAvailableNoLength($prefix);
 
-            return $prefix . $sequenceService->getNextSerialAndPadZero('order_no', (string) $id, $availableLength);
+            return $prefix . $sequenceService->getNextSerialAndPadZero('order_no', $prefix, $availableLength);
         }
 
         if ($mode === OrderNoMode::SEQUENCE_HASHES()) {

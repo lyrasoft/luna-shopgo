@@ -16,6 +16,9 @@ use App\Cart\Price\PriceSet;
 use App\Entity\ProductVariant;
 use App\Entity\Traits\ProductVariantTrait;
 use Windwalker\Core\Router\Navigator;
+use Windwalker\Utilities\TypeCast;
+
+use function Windwalker\collect;
 
 /**
  * The CartService class.
@@ -44,6 +47,8 @@ class CartService
 
         $grandTotal = $total->clone('grand_total', '訂單總計');
 
+        $items = TypeCast::toArray($items);
+
         foreach ($items as $item) {
             $total = $total->plus($item->getPriceSet()['base_total']);
             $grandTotal = $grandTotal->plus($item->getPriceSet()['final_total']);
@@ -58,6 +63,7 @@ class CartService
                 ->setPriceSet($variant->getPriceSet());
         }
 
+        $cartData->setItems(collect($items));
         $totals->set($total);
         // $totals = $this->computeProductsTotals($totals, $items);
 

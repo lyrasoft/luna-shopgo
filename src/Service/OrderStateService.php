@@ -14,6 +14,10 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\OrderState;
 
+use Windwalker\Data\Collection;
+use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
+
 use function Windwalker\chronos;
 
 /**
@@ -21,6 +25,27 @@ use function Windwalker\chronos;
  */
 class OrderStateService
 {
+    use InstanceCacheTrait;
+
+    public function __construct(protected ORM $orm)
+    {
+    }
+
+    /**
+     * @return  Collection<OrderState>
+     */
+    public function getOrderStates(): Collection
+    {
+        return $this->cacheStorage['states']
+            ??= $this->orm->findList(OrderState::class)->all();
+    }
+
+    public function getDefaultState(): OrderState
+    {
+        return $this->getOrderStates()
+            ->findFirst(fn (OrderState $state) => $state->isDefault());
+    }
+
     public function mutateOrderByState(
         Order $order,
         OrderState $state,
