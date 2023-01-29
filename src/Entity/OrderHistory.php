@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\OrderHistoryType;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Windwalker\Core\DateTime\Chronos;
@@ -41,10 +42,11 @@ class OrderHistory implements EntityInterface
     protected int $orderId = 0;
 
     #[Column('type')]
-    protected string $type = '';
+    #[Cast(OrderHistoryType::class)]
+    protected OrderHistoryType $type;
 
-    #[Column('state')]
-    protected string $state = '';
+    #[Column('state_id')]
+    protected int $stateId = 0;
 
     #[Column('notify')]
     #[Cast('bool', 'int')]
@@ -92,26 +94,14 @@ class OrderHistory implements EntityInterface
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): OrderHistoryType
     {
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(OrderHistoryType|string $type): static
     {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getState(): string
-    {
-        return $this->state;
-    }
-
-    public function setState(string $state): static
-    {
-        $this->state = $state;
+        $this->type = OrderHistoryType::wrap($type);
 
         return $this;
     }
@@ -160,6 +150,37 @@ class OrderHistory implements EntityInterface
     public function setCreatedBy(int $createdBy): static
     {
         $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStateId(): int
+    {
+        return $this->stateId;
+    }
+
+    /**
+     * @param  int  $stateId
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStateId(int $stateId): static
+    {
+        $this->stateId = $stateId;
+
+        return $this;
+    }
+
+    public function setState(OrderState|int|null $state): static
+    {
+        if ($state instanceof OrderState) {
+            $state = $state->getId();
+        }
+
+        $this->setStateId((int) $state);
 
         return $this;
     }

@@ -318,6 +318,11 @@ class PriceObject implements \JsonSerializable
             $function = $allow[strtolower($name)];
 
             return $this->cloneInstance(function (PriceObject $new) use ($function, $args) {
+                $args = array_map(
+                    static fn($arg) => $arg instanceof PriceObject ? $arg->getPrice() : $arg,
+                    $args
+                );
+
                 $new->price = $new->price->$function(...$args);
             });
         }

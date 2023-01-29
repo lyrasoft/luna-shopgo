@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace App\Seeder;
 
 use App\Entity\Discount;
+use App\Entity\DiscountUsage;
+use App\Entity\Order;
 use App\Entity\Product;
 use App\Enum\DiscountCombine;
 use App\Enum\DiscountMethod;
@@ -171,6 +173,6 @@ $seeder->import(
 
 $seeder->clear(
     static function () use ($seeder, $orm, $db) {
-        //
+        $seeder->truncate(Discount::class, DiscountUsage::class);
     }
 );

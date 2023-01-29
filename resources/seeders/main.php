@@ -21,7 +21,6 @@ return [
     __DIR__ . '/page-seeder.php',
     // __DIR__ . '/menu-seeder.php',
     __DIR__ . '/widget-seeder.php',
-    __DIR__ . '/currency-seeder.php',
     __DIR__ . '/payment-seeder.php',
     __DIR__ . '/shipping-seeder.php',
     __DIR__ . '/manufacturer-seeder.php',
@@ -31,5 +30,5 @@ return [
     __DIR__ . '/product-seeder.php',
     __DIR__ . '/discount-seeder.php',
     __DIR__ . '/address-seeder.php',
-    __DIR__ . '/shopgo-config-seeder.php',
+    __DIR__ . '/order-seeder.php',
 ];

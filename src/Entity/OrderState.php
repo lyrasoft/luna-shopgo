@@ -148,7 +148,7 @@ class OrderState implements EntityInterface
         return $this;
     }
 
-    public function isNotice(): bool
+    public function shouldNotice(): bool
     {
         return $this->notice;
     }
@@ -160,7 +160,7 @@ class OrderState implements EntityInterface
         return $this;
     }
 
-    public function isAttachInvoice(): bool
+    public function shouldAttachInvoice(): bool
     {
         return $this->attachInvoice;
     }

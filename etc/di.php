@@ -9,35 +9,35 @@
 
 declare(strict_types=1);
 
-use Windwalker\Console\CommandWrapper;
-use Windwalker\Core\Attributes\Controller;
-use Windwalker\Core\Attributes\Csrf;
-use Windwalker\Core\Attributes\Json;
-use Windwalker\Core\Attributes\JsonApi;
-use Windwalker\Core\Attributes\Module;
-use Windwalker\Core\Attributes\Ref;
-use Windwalker\Core\Attributes\ViewModel;
-use Windwalker\DI\Attributes\AttributeType;
-use Windwalker\DI\Attributes\Autowire;
-use Windwalker\DI\Attributes\Decorator;
-use Windwalker\DI\Attributes\Inject;
-use Windwalker\DI\Attributes\Service;
-use Windwalker\DI\Attributes\Setup;
+use Lyrasoft\Luna\Services\ConfigService;
+use Lyrasoft\ShopGo\Config\ShopConfig;
+use Windwalker\Data\Collection;
+use Windwalker\DI\Container;
 use Windwalker\Utilities\Arr;
 
 use function Windwalker\include_arrays;
 
+class_alias(Collection::class, ShopConfig::class);
+
 return Arr::mergeRecursive(
-    // Load with namespace,
+// Load with namespace,
     [
         'factories' => include_arrays(__DIR__ . '/di/*.php'),
         'providers' => [
-            //
+            \Lyrasoft\Sequence\SequencePackage::class,
         ],
         'bindings' => [
             \App\Service\CurrencyService::class,
             \App\Service\LocationService::class,
             \App\Service\VariantService::class,
+            \App\Service\OrderHistoryService::class,
+            \App\Service\CheckoutService::class,
+            \App\Service\OrderService::class,
+            \App\Service\OrderStateService::class,
+            \App\Cart\CartService::class,
+            ShopConfig::class => static function (Container $container) {
+                return $container->get(ConfigService::class)->getConfig('shopgo_shop');
+            }
         ],
         'aliases' => [
             //
@@ -47,6 +47,6 @@ return Arr::mergeRecursive(
         ],
         'attributes' => [
             //
-        ]
+        ],
     ]
 );

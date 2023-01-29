@@ -11,10 +11,17 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeInterface;
+use App\Data\InvoiceData;
+use App\Data\PaymentData;
+use App\Data\PaymentInfo;
+use App\Data\ShippingData;
+use App\Data\ShippingHistoryCollection;
+use App\Data\ShippingInfo;
+use App\Enum\InvoiceType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\Data\Collection;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\CastNullable;
@@ -22,12 +29,19 @@ use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CreatedTime;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\ManyToOne;
+use Windwalker\ORM\Attributes\OnDelete;
+use Windwalker\ORM\Attributes\OneToMany;
+use Windwalker\ORM\Attributes\OnUpdate;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Attributes\TargetTo;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\Action;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The Order class.
@@ -53,36 +67,65 @@ class Order implements EntityInterface
     protected float $rewards = 0.0;
 
     #[Column('invoice_type')]
-    protected string $invoiceType = '';
+    #[Cast(InvoiceType::class)]
+    protected InvoiceType $invoiceType;
 
     #[Column('invoice_no')]
     protected string $invoiceNo = '';
 
     #[Column('invoice_data')]
     #[Cast(JsonCast::class)]
-    protected array $invoiceData = [];
+    #[Cast(InvoiceData::class)]
+    protected InvoiceData $invoiceData;
 
-    #[Column('state')]
-    protected string $state = '';
+    #[Column('state_id')]
+    protected int $stateId = 0;
 
+    /**
+     * Payment ID or key name.
+     *
+     * @var string
+     */
     #[Column('payment')]
     protected string $payment = '';
 
     #[Column('payment_no')]
     protected string $paymentNo = '';
 
+    /**
+     * User payment data
+     *
+     * @var PaymentData
+     */
     #[Column('payment_data')]
     #[Cast(JsonCast::class)]
-    protected array $paymentData = [];
+    #[Cast(PaymentData::class)]
+    protected PaymentData $paymentData;
 
+    /**
+     * The payment API arguments
+     *
+     * @var array
+     */
     #[Column('payment_args')]
     #[Cast(JsonCast::class)]
     protected array $paymentArgs = [];
 
+    /**
+     * The pay info that payment gateway returned to site.
+     *
+     * @var PaymentInfo
+     */
     #[Column('payment_info')]
     #[Cast(JsonCast::class)]
-    protected array $paymentInfo = [];
+    #[Cast(PaymentInfo::class)]
+    protected PaymentInfo $paymentInfo;
 
+    /**
+     * Shipping ID or key name.
+     *
+     * @var string
+     */
     #[Column('shipping')]
     protected string $shipping = '';
 
@@ -92,21 +135,44 @@ class Order implements EntityInterface
     #[Column('shipping_status')]
     protected string $shippingStatus = '';
 
+    /**
+     * User shipping data.
+     *
+     * @var ShippingData
+     */
     #[Column('shipping_data')]
     #[Cast(JsonCast::class)]
-    protected array $shippingData = [];
+    #[Cast(ShippingData::class)]
+    protected ShippingData $shippingData;
 
+    /**
+     * The arguments sent to shipping API.
+     *
+     * @var array
+     */
     #[Column('shipping_args')]
     #[Cast(JsonCast::class)]
     protected array $shippingArgs = [];
 
+    /**
+     * Thr shipping info returned from shipping services.
+     *
+     * @var ShippingInfo
+     */
     #[Column('shipping_info')]
     #[Cast(JsonCast::class)]
-    protected array $shippingInfo = [];
+    #[Cast(ShippingInfo::class)]
+    protected ShippingInfo $shippingInfo;
 
+    /**
+     * The shipping histories
+     *
+     * @var ShippingHistoryCollection
+     */
     #[Column('shipping_history')]
     #[Cast(JsonCast::class)]
-    protected array $shippingHistory = [];
+    #[Cast(ShippingHistoryCollection::class)]
+    protected ShippingHistoryCollection $shippingHistory;
 
     #[Column('note')]
     protected string $note = '';
@@ -161,10 +227,98 @@ class Order implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
+    #[
+        ManyToOne,
+        TargetTo(OrderState::class, state_id: 'id'),
+        OnUpdate(Action::IGNORE),
+        OnDelete(Action::IGNORE)
+    ]
+    protected ?OrderState $state = null;
+
+    #[
+        OneToMany,
+        TargetTo(OrderTotal::class, id: 'order_id'),
+        OnUpdate(Action::CASCADE),
+        OnDelete(Action::CASCADE)
+    ]
+    protected ?RelationCollection $totals = null;
+
+    #[
+        OneToMany,
+        TargetTo(OrderItem::class, id: 'order_id'),
+        OnUpdate(Action::CASCADE),
+        OnDelete(Action::CASCADE)
+    ]
+    protected RelationCollection|null $orderItems = null;
+
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
         //
+    }
+
+    /**
+     * @return RelationCollection
+     */
+    public function getTotals(): RelationCollection
+    {
+        return $this->totals ??= $this->loadCollection('totals');
+    }
+
+    /**
+     * @param  RelationCollection|null  $totals
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setTotals(?RelationCollection $totals): static
+    {
+        $this->totals = $totals;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection
+     */
+    public function getOrderItems(): RelationCollection
+    {
+        return $this->orderItems ??= $this->loadCollection('orderItems');
+    }
+
+    /**
+     * @param  Collection|null  $orderItems
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOrderItems(?Collection $orderItems): static
+    {
+        $this->orderItems = $orderItems;
+
+        return $this;
+    }
+
+    /**
+     * @return OrderState
+     */
+    public function getState(): OrderState
+    {
+        return $this->state ??= $this->loadRelation('state');
+    }
+
+    /**
+     * @param  OrderState|int  $state
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setState(OrderState|int $state): static
+    {
+        if ($state instanceof OrderState) {
+            $state = $state->getId();
+        }
+
+        $this->stateId = $state;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -227,14 +381,14 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getInvoiceType(): string
+    public function getInvoiceType(): InvoiceType
     {
         return $this->invoiceType;
     }
 
-    public function setInvoiceType(string $invoiceType): static
+    public function setInvoiceType(string|InvoiceType $invoiceType): static
     {
-        $this->invoiceType = $invoiceType;
+        $this->invoiceType = InvoiceType::wrap($invoiceType);
 
         return $this;
     }
@@ -251,26 +405,26 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getInvoiceData(): array
+    public function getInvoiceData(): InvoiceData
     {
-        return $this->invoiceData;
+        return $this->invoiceData ??= new InvoiceData();
     }
 
-    public function setInvoiceData(array $invoiceData): static
+    public function setInvoiceData(InvoiceData|array $invoiceData): static
     {
-        $this->invoiceData = $invoiceData;
+        $this->invoiceData = InvoiceData::wrap($invoiceData);
 
         return $this;
     }
 
-    public function getState(): string
+    public function getStateId(): int
     {
-        return $this->state;
+        return $this->stateId;
     }
 
-    public function setState(string $state): static
+    public function setStateId(int $stateId): static
     {
-        $this->state = $state;
+        $this->stateId = $stateId;
 
         return $this;
     }
@@ -280,9 +434,9 @@ class Order implements EntityInterface
         return $this->payment;
     }
 
-    public function setPayment(string $payment): static
+    public function setPayment(string|int $payment): static
     {
-        $this->payment = $payment;
+        $this->payment = (string) $payment;
 
         return $this;
     }
@@ -299,19 +453,19 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getPaymentData(): array
+    public function getPaymentData(): PaymentData
     {
-        return $this->paymentData;
+        return $this->paymentData ??= new PaymentData();
     }
 
-    public function setPaymentData(array $paymentData): static
+    public function setPaymentData(PaymentData|array $paymentData): static
     {
-        $this->paymentData = $paymentData;
+        $this->paymentData = PaymentData::wrap($paymentData);
 
         return $this;
     }
 
-    public function getPaymentArgs(): array
+    public function &getPaymentArgs(): array
     {
         return $this->paymentArgs;
     }
@@ -323,14 +477,14 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getPaymentInfo(): array
+    public function getPaymentInfo(): PaymentInfo
     {
-        return $this->paymentInfo;
+        return $this->paymentInfo ??= new PaymentInfo();
     }
 
-    public function setPaymentInfo(array $paymentInfo): static
+    public function setPaymentInfo(PaymentInfo|array $paymentInfo): static
     {
-        $this->paymentInfo = $paymentInfo;
+        $this->paymentInfo = PaymentInfo::wrap($paymentInfo);
 
         return $this;
     }
@@ -340,9 +494,9 @@ class Order implements EntityInterface
         return $this->shipping;
     }
 
-    public function setShipping(string $shipping): static
+    public function setShipping(string|int $shipping): static
     {
-        $this->shipping = $shipping;
+        $this->shipping = (string) $shipping;
 
         return $this;
     }
@@ -371,19 +525,19 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getShippingData(): array
+    public function getShippingData(): ShippingData
     {
-        return $this->shippingData;
+        return $this->shippingData ??= new ShippingData();
     }
 
-    public function setShippingData(array $shippingData): static
+    public function setShippingData(ShippingData|array $shippingData): static
     {
-        $this->shippingData = $shippingData;
+        $this->shippingData = ShippingData::wrap($shippingData);
 
         return $this;
     }
 
-    public function getShippingArgs(): array
+    public function &getShippingArgs(): array
     {
         return $this->shippingArgs;
     }
@@ -395,26 +549,26 @@ class Order implements EntityInterface
         return $this;
     }
 
-    public function getShippingInfo(): array
+    public function getShippingInfo(): ShippingInfo
     {
-        return $this->shippingInfo;
+        return $this->shippingInfo ??= new ShippingInfo();
     }
 
-    public function setShippingInfo(array $shippingInfo): static
+    public function setShippingInfo(ShippingInfo $shippingInfo): static
     {
-        $this->shippingInfo = $shippingInfo;
+        $this->shippingInfo = ShippingInfo::wrap($shippingInfo);
 
         return $this;
     }
 
-    public function getShippingHistory(): array
+    public function getShippingHistory(): ShippingHistoryCollection
     {
-        return $this->shippingHistory;
+        return $this->shippingHistory ??= new ShippingHistoryCollection();
     }
 
-    public function setShippingHistory(array $shippingHistory): static
+    public function setShippingHistory(ShippingHistoryCollection|array $shippingHistory): static
     {
-        $this->shippingHistory = $shippingHistory;
+        $this->shippingHistory = ShippingHistoryCollection::wrap($shippingHistory);
 
         return $this;
     }
@@ -436,7 +590,7 @@ class Order implements EntityInterface
         return $this->paidAt;
     }
 
-    public function setPaidAt(DateTimeInterface|string|null $paidAt): static
+    public function setPaidAt(\DateTimeInterface|string|null $paidAt): static
     {
         $this->paidAt = Chronos::wrapOrNull($paidAt);
 
@@ -448,7 +602,7 @@ class Order implements EntityInterface
         return $this->shippedAt;
     }
 
-    public function setShippedAt(DateTimeInterface|string|null $shippedAt): static
+    public function setShippedAt(\DateTimeInterface|string|null $shippedAt): static
     {
         $this->shippedAt = Chronos::wrapOrNull($shippedAt);
 
@@ -460,7 +614,7 @@ class Order implements EntityInterface
         return $this->returnedAt;
     }
 
-    public function setReturnedAt(DateTimeInterface|string|null $returnedAt): static
+    public function setReturnedAt(\DateTimeInterface|string|null $returnedAt): static
     {
         $this->returnedAt = Chronos::wrapOrNull($returnedAt);
 
@@ -472,7 +626,7 @@ class Order implements EntityInterface
         return $this->doneAt;
     }
 
-    public function setDoneAt(DateTimeInterface|string|null $doneAt): static
+    public function setDoneAt(\DateTimeInterface|string|null $doneAt): static
     {
         $this->doneAt = Chronos::wrapOrNull($doneAt);
 
@@ -484,7 +638,7 @@ class Order implements EntityInterface
         return $this->cancelledAt;
     }
 
-    public function setCancelledAt(DateTimeInterface|string|null $cancelledAt): static
+    public function setCancelledAt(\DateTimeInterface|string|null $cancelledAt): static
     {
         $this->cancelledAt = Chronos::wrapOrNull($cancelledAt);
 
@@ -496,7 +650,7 @@ class Order implements EntityInterface
         return $this->rollbackAt;
     }
 
-    public function setRollbackAt(DateTimeInterface|string|null $rollbackAt): static
+    public function setRollbackAt(\DateTimeInterface|string|null $rollbackAt): static
     {
         $this->rollbackAt = Chronos::wrapOrNull($rollbackAt);
 
@@ -508,7 +662,7 @@ class Order implements EntityInterface
         return $this->expiryOn;
     }
 
-    public function setExpiryOn(DateTimeInterface|string|null $expiryOn): static
+    public function setExpiryOn(\DateTimeInterface|string|null $expiryOn): static
     {
         $this->expiryOn = Chronos::wrapOrNull($expiryOn);
 
@@ -520,7 +674,7 @@ class Order implements EntityInterface
         return $this->created;
     }
 
-    public function setCreated(DateTimeInterface|string|null $created): static
+    public function setCreated(\DateTimeInterface|string|null $created): static
     {
         $this->created = Chronos::wrapOrNull($created);
 
@@ -532,7 +686,7 @@ class Order implements EntityInterface
         return $this->modified;
     }
 
-    public function setModified(DateTimeInterface|string|null $modified): static
+    public function setModified(\DateTimeInterface|string|null $modified): static
     {
         $this->modified = Chronos::wrapOrNull($modified);
 

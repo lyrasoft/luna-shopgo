@@ -13,6 +13,7 @@ namespace App\Entity;
 
 use App\Data\ListOptionCollection;
 use App\Data\ProductDimension;
+use App\Entity\Traits\ProductVariantTrait;
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -39,6 +40,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 class ProductVariant implements EntityInterface
 {
     use EntityTrait;
+    use ProductVariantTrait;
 
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
@@ -467,5 +469,10 @@ class ProductVariant implements EntityInterface
         $this->params = $params;
 
         return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product ?? null;
     }
 }

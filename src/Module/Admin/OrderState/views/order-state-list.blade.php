@@ -133,7 +133,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                         {{ $item->title }}
                                     </a>
 
-                                    @if ($entity->isNotice())
+                                    @if ($entity->shouldNotice())
                                         <i class="fa fa-envelope"
                                             data-bs-toggle="tooltip"
                                             title="@lang('shopgo.order.state.tooltip.notice')"
@@ -157,7 +157,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isAttachInvoice())
+                                @if ($entity->shouldAttachInvoice())
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -

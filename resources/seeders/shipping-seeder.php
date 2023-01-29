@@ -33,6 +33,8 @@ $seeder->import(
         /** @var EntityMapper<Shipping> $mapper */
         $mapper = $orm->mapper(Shipping::class);
 
+        $faker = $faker->unique();
+
         foreach (range(1, 5) as $i) {
             $item = $mapper->createEntity();
 

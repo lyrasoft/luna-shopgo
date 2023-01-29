@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Seeder;
 
+use App\Entity\Order;
 use App\Entity\OrderState;
 use App\Entity\Payment;
 use Unicorn\Utilities\SlugHelper;
@@ -36,6 +37,8 @@ $seeder->import(
 
         $state = $orm->findOne(OrderState::class, ['alias' => 'handling']);
 
+        $faker = $faker->unique();
+
         foreach (range(1, 5) as $i) {
             $item = $mapper->createEntity();
 
@@ -56,6 +59,6 @@ $seeder->import(
 
 $seeder->clear(
     static function () use ($seeder, $orm, $db) {
-        //
+        $seeder->truncate(Payment::class);
     }
 );

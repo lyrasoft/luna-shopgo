@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Data\ListOptionCollection;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -74,15 +75,16 @@ class OrderItem implements EntityInterface
     #[Column('price_unit')]
     protected float $priceUnit = 0.0;
 
-    #[Column('origin_price_unit')]
-    protected float $originPriceUnit = 0.0;
+    #[Column('base_price_unit')]
+    protected float $basePriceUnit = 0.0;
 
     #[Column('total')]
     protected float $total = 0.0;
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
-    protected array $options = [];
+    #[Cast(ListOptionCollection::class)]
+    protected ListOptionCollection $options;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
@@ -262,14 +264,14 @@ class OrderItem implements EntityInterface
         return $this;
     }
 
-    public function getOriginPriceUnit(): float
+    public function getBasePriceUnit(): float
     {
-        return $this->originPriceUnit;
+        return $this->basePriceUnit;
     }
 
-    public function setOriginPriceUnit(float $originPriceUnit): static
+    public function setBasePriceUnit(float $basePriceUnit): static
     {
-        $this->originPriceUnit = $originPriceUnit;
+        $this->basePriceUnit = $basePriceUnit;
 
         return $this;
     }
@@ -286,14 +288,14 @@ class OrderItem implements EntityInterface
         return $this;
     }
 
-    public function getOptions(): array
+    public function getOptions(): ListOptionCollection
     {
-        return $this->options;
+        return $this->options ??= new ListOptionCollection();
     }
 
-    public function setOptions(array $options): static
+    public function setOptions(ListOptionCollection|array $options): static
     {
-        $this->options = $options;
+        $this->options = ListOptionCollection::wrap($options);
 
         return $this;
     }

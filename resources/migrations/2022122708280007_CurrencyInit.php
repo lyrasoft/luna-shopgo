@@ -12,9 +12,12 @@ declare(strict_types=1);
 namespace App\Migration;
 
 use App\Entity\Currency;
+use App\Enum\SignPosition;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
+use Windwalker\ORM\EntityMapper;
+use Windwalker\ORM\ORM;
 
 /**
  * Migration UP: 2022122708280007_CurrencyInit.
@@ -23,7 +26,7 @@ use Windwalker\Database\Schema\Schema;
  * @var ConsoleApplication $app
  */
 $mig->up(
-    static function () use ($mig) {
+    static function (ORM $orm) use ($mig) {
         $mig->createTable(
             Currency::class,
             function (Schema $schema) {
@@ -49,6 +52,64 @@ $mig->up(
                 $schema->addIndex('code_num');
             }
         );
+
+        // Prepare Default Currencies
+        /** @var EntityMapper<Currency> $mapper */
+        $mapper = $orm->mapper(Currency::class);
+
+        $item = $mapper->createEntity();
+
+        // USD
+        $item->setTitle('USD');
+        $item->setCode('USD');
+        $item->setSign('$');
+        $item->setSignPosition(SignPosition::START());
+        $item->setDecimalPlace(2);
+        $item->setDecimalPoint('.');
+        $item->setNumSeparator(',');
+        $item->setExchangeRate(1);
+        $item->setSpace(false);
+        $item->setState(1);
+
+        $mapper->createOne($item);
+
+        $mig->outCounting();
+
+        // TWD
+        $item = $mapper->createEntity();
+
+        $item->setTitle('TWD');
+        $item->setCode('TWD');
+        $item->setSign('$');
+        $item->setSignPosition(SignPosition::START());
+        $item->setDecimalPlace(0);
+        $item->setDecimalPoint('.');
+        $item->setNumSeparator(',');
+        $item->setExchangeRate(35);
+        $item->setSpace(false);
+        $item->setState(1);
+
+        $mapper->createOne($item);
+
+        $mig->outCounting();
+
+        // EUR
+        $item = $mapper->createEntity();
+
+        $item->setTitle('EUR');
+        $item->setCode('EUR');
+        $item->setSign('€');
+        $item->setSignPosition(SignPosition::END());
+        $item->setDecimalPlace(0);
+        $item->setDecimalPoint(',');
+        $item->setNumSeparator('.');
+        $item->setExchangeRate(0.92);
+        $item->setSpace(false);
+        $item->setState(1);
+
+        $mapper->createOne($item);
+
+        $mig->outCounting();
     }
 );
 

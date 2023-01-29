@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c47fea628fbe7303bb49851aeaaef734",
+    "content-hash": "2e01f8cede36590db3ca5889184ef459",
     "packages": [
         {
             "name": "asika/cross-env",
@@ -901,6 +901,50 @@
                 "source": "https://github.com/lyrasoft/luna/tree/2.0.61"
             },
             "time": "2023-01-09T06:23:45+00:00"
+        },
+        {
+            "name": "lyrasoft/sequence",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lyrasoft/luna-sequence.git",
+                "reference": "30b476cbbc6050a3dc10c1ed69f3f5619a20b469"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lyrasoft/luna-sequence/zipball/30b476cbbc6050a3dc10c1ed69f3f5619a20b469",
+                "reference": "30b476cbbc6050a3dc10c1ed69f3f5619a20b469",
+                "shasum": ""
+            },
+            "type": "windwalker-package",
+            "extra": {
+                "windwalker": {
+                    "packages": [
+                        "Lyrasoft\\Sequence\\SequencePackage"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lyrasoft\\Sequence\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Asika",
+                    "email": "asika32764@gmail.com"
+                }
+            ],
+            "description": "LYRASOFT sequence package.",
+            "support": {
+                "issues": "https://github.com/lyrasoft/luna-sequence/issues",
+                "source": "https://github.com/lyrasoft/luna-sequence/tree/1.0.0"
+            },
+            "time": "2022-03-03T08:26:59+00:00"
         },
         {
             "name": "lyrasoft/toolkit",
