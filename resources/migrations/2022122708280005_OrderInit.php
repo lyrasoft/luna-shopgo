@@ -43,6 +43,7 @@ $mig->up(
                 $schema->varchar('invoice_no');
                 $schema->json('invoice_data')->nullable(true);
                 $schema->integer('state_id');
+                $schema->varchar('state_text');
                 $schema->varchar('payment_id');
                 $schema->varchar('payment_no');
                 $schema->json('payment_data')->nullable(true);
@@ -63,6 +64,7 @@ $mig->up(
                 $schema->datetime('cancelled_at');
                 $schema->datetime('rollback_at');
                 $schema->datetime('expiry_on');
+                $schema->longtext('search_index');
                 $schema->datetime('created');
                 $schema->datetime('modified');
                 $schema->integer('created_by');
@@ -152,7 +154,6 @@ $mig->up(
             function (Schema $schema) {
                 $schema->primary('id');
                 $schema->varchar('title');
-                $schema->varchar('alias');
                 $schema->bool('default');
                 $schema->varchar('color');
                 $schema->varchar('image');
@@ -164,8 +165,9 @@ $mig->up(
                 $schema->bool('done');
                 $schema->bool('cancel');
                 $schema->bool('rollback');
+                $schema->integer('ordering');
 
-                $schema->addIndex('alias');
+                $schema->addIndex('ordering');
             }
         );
 
@@ -174,7 +176,9 @@ $mig->up(
             ->read()
             ->jsonDecode();
 
-        foreach ($states as $state) {
+        foreach ($states as $i => $state) {
+            $state['ordering'] = $i + 1;
+
             $orm->createOne(OrderState::class, $state);
 
             $mig->outCounting();

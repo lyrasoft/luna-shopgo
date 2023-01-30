@@ -11,14 +11,15 @@ declare(strict_types=1);
 
 namespace App\Data;
 
+use App\Data\Contract\AddressAwareInterface;
 use Windwalker\Data\ValueObject;
 
 /**
  * The PaymentData class.
  */
-class ShippingData extends ValueObject
+class ShippingData extends ValueObject implements AddressAwareInterface
 {
-    use PaymentShippingDataTrait;
+    use AddressAwaitTrait;
 
     public string $note = '';
 

@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace App\Data;
 
 /**
- * Trait PaymentShippingDataTrait
+ * Trait AddressingDataTrait
  */
-trait PaymentShippingDataTrait
+trait AddressAwaitTrait
 {
-    public string $name = '';
+    public string $fullName = '';
     public string $firstName = '';
     public string $lastName = '';
     public string $email = '';
@@ -35,19 +35,23 @@ trait PaymentShippingDataTrait
     /**
      * @return string
      */
-    public function getName(): string
+    public function getFullName(): string
     {
-        return $this->name;
+        if ($this->fullName) {
+            return $this->fullName;
+        }
+
+        return trim($this->firstName . ' ' . $this->lastName);
     }
 
     /**
-     * @param  string  $name
+     * @param  string  $fullName
      *
      * @return  static  Return self to support chaining.
      */
-    public function setName(string $name): static
+    public function setFullName(string $fullName): static
     {
-        $this->name = $name;
+        $this->fullName = $fullName;
 
         return $this;
     }

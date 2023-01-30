@@ -73,32 +73,65 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             @lang('shopgo.order.state.field.color')
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.attach_invoice')
+                        <th class="text-center" data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.notice')">
+                            <i class="fa fa-envelope"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.shipped')
+                        <th class="text-center" data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.attach_invoice')">
+                            <i class="fa fa-file-invoice"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.paid')
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.shipped')">
+                            <i class="fa fa-truck-fast"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.returned')
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.paid')">
+                            <i class="fa fa-money-check-dollar"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.done')
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.returned')">
+                            <i class="fa fa-square-caret-left"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.cancel')
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.done')">
+                            <i class="fa fa-thumbs-up"></i>
                         </th>
 
-                        <th class="text-center">
-                            @lang('shopgo.order.state.field.rollback')
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.cancel')">
+                            <i class="fa fa-times"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.rollback')">
+                            <i class="fa fa-rotate-left"></i>
+                        </th>
+
+                        {{-- ORDERING --}}
+                        <th style="width: 5%" class="text-nowrap">
+                            <div class="d-flex w-100 justify-content-end">
+                                <x-sort
+                                    asc="order_state.ordering ASC"
+                                    desc="order_state.ordering DESC"
+                                >
+                                    @lang('unicorn.field.ordering')
+                                </x-sort>
+                                @if($vm->reorderEnabled($ordering))
+                                    <x-save-order class="ml-2 ms-2"></x-save-order>
+                                @endif
+                            </div>
                         </th>
 
                         {{-- Delete --}}
@@ -133,13 +166,6 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                         {{ $item->title }}
                                     </a>
 
-                                    @if ($entity->shouldNotice())
-                                        <i class="fa fa-envelope"
-                                            data-bs-toggle="tooltip"
-                                            title="@lang('shopgo.order.state.tooltip.notice')"
-                                        ></i>
-                                    @endif
-
                                     @if ($entity->isDefault())
                                         <i class="fa fa-star"
                                             data-bs-toggle="tooltip"
@@ -158,6 +184,14 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             <td class="text-center">
                                 @if ($entity->shouldAttachInvoice())
+                                    <i class="fa fa-check text-success"></i>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->shouldNotice())
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -210,6 +244,16 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                 @else
                                     -
                                 @endif
+                            </td>
+
+                            {{-- Ordering --}}
+                            <td class="text-end">
+                                <x-order-control
+                                    :enabled="$vm->reorderEnabled($ordering)"
+                                    :row="$i"
+                                    :id="$entity->getId()"
+                                    :value="$item->ordering"
+                                ></x-order-control>
                             </td>
 
                             {{-- Delete --}}

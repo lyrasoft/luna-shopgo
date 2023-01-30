@@ -47,21 +47,21 @@ use Windwalker\Core\Router\SystemUri;
                 <div class="order-history__info-item ms-2">
                     <span class="fa fa-envelope"
                         data-bs-toggle="tooltip"
-                        title="發信通知使用者"></span>
+                        title="@lang('shopgo.order.history.action.notify')"></span>
                 </div>
             @endif
         </div>
         <div class="order-history__title">
             {{ $history->getType()->trans($lang) }}
 
-            @if (!$history->getType()->equals(OrderHistoryType::SYSTEM()))
+            @if ($history->getType() !== OrderHistoryType::SYSTEM())
                 <a href="{{ $nav->to('user_edit', ['id' => $history->getCreatedBy()]) }}">
                     {{ $history->user->name }}
                 </a>
             @endif
 
             @if ($history->getStateId())
-                將此訂單改為
+                @lang('shopgo.order.history.action.changed.to')
                 <span class="badge"
                     style="{{ OrderStateService::colorToCSS($history->getStateColor()) }}">
                     {{ $history->getStateText() }}
@@ -70,9 +70,9 @@ use Windwalker\Core\Router\SystemUri;
 
             @if (trim($history->getMessage()) !== '')
                 @if ($history->getStateId())
-                    並留言:
+                    @lang('shopgo.order.history.action.and.comments')
                 @else
-                    留言:
+                    @lang('shopgo.order.history.action.comments')
                 @endif
             @endif
         </div>

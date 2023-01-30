@@ -14,6 +14,10 @@
 
 declare(strict_types=1);
 
+namespace App\View;
+
+use App\Data\ShippingHistory;
+use App\Entity\Order;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -22,13 +26,11 @@ use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
 /**
- * @var \App\Entity\Order $order
+ * @var Order             $order
+ * @var ShippingHistory[] $histories
  */
 
-?>
-
-<?php
-$histories = $order->getShippingHistory();
+$histories = $order->getShippingHistory()->dump();
 
 $histories = array_reverse($histories);
 ?>
@@ -56,10 +58,10 @@ $histories = array_reverse($histories);
                 <ul>
                     @foreach ($histories as $history)
                         <li>
-                            {{ $chronos->toLocalFormat($history['time'], 'Y/m/d H:i') }}
+                            {{ $chronos->toLocalFormat($history->getTime(), 'Y/m/d H:i') }}
                             -
-                            {{ $history['text'] }}
-                            ({{ $history['status'] }})
+                            {{ $history->getStatusText() }}
+                            ({{ $history->getStatusCode() }})
                         </li>
                     @endforeach
                 </ul>

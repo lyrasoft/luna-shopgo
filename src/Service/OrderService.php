@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Order;
+use App\Entity\OrderHistory;
+use App\Entity\OrderState;
+use App\Enum\OrderHistoryType;
 use App\Enum\OrderNoMode;
 use App\ShopGoPackage;
 use Lyrasoft\Sequence\Service\SequenceService;
@@ -32,7 +35,29 @@ class OrderService
         protected ApplicationInterface $app,
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
+        protected OrderStateService $orderStateService,
     ) {
+    }
+
+    public function transition(
+        Order|int $order,
+        OrderState|int $to,
+        OrderHistoryType $type,
+        string $message = '',
+        bool $notify = false
+    ): ?OrderHistory {
+        if (!$order instanceof Order) {
+            $order = $this->orm->findOne(Order::class, $order);
+        }
+
+        if (!$to instanceof OrderState) {
+            $to = $this->orm->findOne(OrderState::class, $to);
+        }
+
+        $order = $this->orderStateService->changeState(
+            $order,
+            $to
+        );
     }
 
     public function createOrderNo(int $id): string

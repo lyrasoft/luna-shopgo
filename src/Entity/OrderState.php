@@ -37,10 +37,6 @@ class OrderState implements EntityInterface
     #[Column('title')]
     protected string $title = '';
 
-    #[Column('alias')]
-    #[Slugify]
-    protected string $alias = '';
-
     #[Column('default')]
     #[Cast('bool', 'int')]
     protected bool $default = false;
@@ -82,6 +78,9 @@ class OrderState implements EntityInterface
     #[Column('rollback')]
     #[Cast('bool', 'int')]
     protected bool $rollback = false;
+
+    #[Column('ordering')]
+    protected int $ordering = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -245,20 +244,33 @@ class OrderState implements EntityInterface
         return $this;
     }
 
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    public function setAlias(string $alias): static
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
     public function getContrastColor(int $sep = 200): string
     {
         return OrderStateService::colorToContrast($this->getColor(), $sep);
+    }
+
+    public function getColorCSS(int $sep = 200): string
+    {
+        return OrderStateService::colorToCSS($this->getColor(), $sep);
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrdering(): int
+    {
+        return $this->ordering;
+    }
+
+    /**
+     * @param  int  $ordering
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOrdering(int $ordering): static
+    {
+        $this->ordering = $ordering;
+
+        return $this;
     }
 }

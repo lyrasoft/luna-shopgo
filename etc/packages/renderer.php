@@ -24,7 +24,8 @@ return [
         'enabled' => true,
 
         'paths' => [
-            __DIR__ . '/../../views'
+            __DIR__ . '/../../views',
+            __DIR__ . '/../../views/shopgo'
         ],
 
         'namespaces' => [

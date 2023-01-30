@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Order\Form;
 
+use App\Field\OrderStateListField;
 use Unicorn\Enum\BasicState;
+use Unicorn\Field\CalendarField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\ListField;
 use Windwalker\Form\Field\SearchField;
@@ -47,10 +49,17 @@ class GridForm implements FieldDefinitionInterface
         $form->ns(
             'filter',
             function (Form $form) {
-                $form->add('order.state', ListField::class)
+                $form->add('order.state', OrderStateListField::class)
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
-                    ->registerOptions(BasicState::getTransItems($this->lang))
+                    ->onchange('this.form.submit()');
+
+                $form->add('start_date', CalendarField::class)
+                    ->label($this->trans('shopgo.order.filter.start.date'))
+                    ->onchange('this.form.submit()');
+
+                $form->add('end_date', CalendarField::class)
+                    ->label($this->trans('shopgo.order.filter.end.date'))
                     ->onchange('this.form.submit()');
             }
         );
@@ -58,10 +67,7 @@ class GridForm implements FieldDefinitionInterface
         $form->ns(
             'batch',
             function (Form $form) {
-                $form->add('state', ListField::class)
-                    ->label($this->trans('unicorn.field.state'))
-                    ->option($this->trans('unicorn.select.no.change'), '')
-                    ->registerOptions(BasicState::getTransItems($this->lang));
+                //
             }
         );
     }

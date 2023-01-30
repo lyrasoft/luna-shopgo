@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App\View;
+
 /**
  * Global variables
  * --------------------------------------------------------------
@@ -12,8 +16,9 @@
  * @var $lang      LangService     The language translation service.
  */
 
-declare(strict_types=1);
-
+use App\Entity\Order;
+use App\Entity\OrderState;
+use App\Service\OrderStateService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -22,23 +27,24 @@ use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
 /**
- * @var \App\Entity\Order $order
- * @var \App\Entity\OrderState[] $states
+ * @var Order        $order
+ * @var OrderState[] $states
  */
 
 $route ??= 'order_list';
+$id ??= 'state-change-modal';
 
-$states = $app->service(\App\Service\OrderStateService::class)->getOrderStates()->keyBy('id');
+$states = $app->service(OrderStateService::class)->getOrderStates()->keyBy('id');
 ?>
 
-<div class="modal fade" id="order-state-modal-{{ $order->getId() }}" tabindex="-1" role="dialog"
+<div class="modal fade" id="{{ $id }}" tabindex="-1" role="dialog"
     aria-labelledby="order-state-modal-label"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="order-state-modal-label">
-                    調整狀態
+                    @lang('shopgo.order.change.state.modal.title')
                 </h4>
                 <button type="button" class="close btn-close" data-bs-dismiss="modal" data-dismiss="modal"
                     aria-label="Close">
@@ -48,9 +54,13 @@ $states = $app->service(\App\Service\OrderStateService::class)->getOrderStates()
             <div class="modal-body">
                 <form id="state-form" method="post" action="{{ $nav->to($route) }}">
                     <div class="form-group mb-4">
-                        <label for="input-order-state" class="form-label">狀態</label>
+                        <label for="input-order-state" class="form-label">
+                            @lang('shopgo.order.field.state')
+                        </label>
                         <select id="input-order-state" name="state" class="form-select">
-                            <option value="">- 不變更 -</option>
+                            <option value="">
+                                @lang('unicorn.select.no.change')
+                            </option>
                             @foreach ($states as $state)
                                 <option value="{{ $state->getId() }}">
                                     {{ $state->getTitle() }}
@@ -61,20 +71,22 @@ $states = $app->service(\App\Service\OrderStateService::class)->getOrderStates()
 
                     <div class="form-group mb-4 form-check">
                         <input id="input-order-notify" type="checkbox" value="1" name="notify"
-                        class="form-check-input" />
+                            class="form-check-input" />
                         <label for="input-order-notify" class="form-label">
-                            發送通知
+                            @lang('shopgo.order.history.action.notify')
                         </label>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label for="inout-order-message" class="form-label">備註</label>
+                        <label for="inout-order-message" class="form-label">
+                            @lang('shopgo.order.change.state.note')
+                        </label>
                         <textarea name="message" id="inout-order-message" class="form-control" rows="7"></textarea>
                     </div>
 
                     <div>
                         <button type="submit" class="btn btn-primary w-100" data-dos>
-                            送出
+                            @lang('shopgo.order.change.state.button.submit')
                         </button>
                     </div>
 

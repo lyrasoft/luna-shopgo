@@ -11,14 +11,19 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\Order;
 
+use App\Enum\OrderHistoryType;
+use App\Enum\OrderState;
 use App\Module\Admin\Order\Form\EditForm;
 use App\Repository\OrderRepository;
+use App\Service\OrderService;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\DI\Attributes\Service;
 
 /**
  * The OrderController class.
@@ -74,6 +79,11 @@ class OrderController
         GridController $controller
     ): mixed {
         $task = $app->input('task');
+
+        if ($task === 'transition') {
+            return $app->call([$this, 'transition']);
+        }
+
         $data = match ($task) {
             'publish' => ['state' => 1],
             'unpublish' => ['state' => 0],
@@ -81,6 +91,27 @@ class OrderController
         };
 
         return $app->call([$controller, 'batch'], compact('repository', 'data'));
+    }
+
+    public function transition(
+        AppContext $app,
+        #[Service]
+        OrderService $orderService,
+        Navigator $nav
+    ): RouteUri {
+        [$id, $state, $notify, $message] = $app->input('id', 'state', 'notify', 'message')
+            ->values()
+            ->dump();
+
+        $orderService->transition(
+            (int) $id,
+            $state,
+            OrderHistoryType::ADMIN(),
+            $message,
+            (bool) $notify
+        );
+
+        return $nav->back();
     }
 
     public function copy(

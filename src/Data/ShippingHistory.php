@@ -27,7 +27,7 @@ class ShippingHistory extends ValueObject
     public string $note = '';
 
     #[CastNullable(Chronos::class)]
-    public ?Chronos $created;
+    public ?Chronos $time;
 
     /**
      * @return string
@@ -92,19 +92,19 @@ class ShippingHistory extends ValueObject
     /**
      * @return Chronos|null
      */
-    public function getCreated(): ?Chronos
+    public function getTime(): ?Chronos
     {
-        return $this->created;
+        return $this->time;
     }
 
     /**
-     * @param  Chronos|null  $created
+     * @param  Chronos|null  $time
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCreated(?Chronos $created): static
+    public function setTime(?Chronos $time): static
     {
-        $this->created = $created;
+        $this->time = $time;
 
         return $this;
     }

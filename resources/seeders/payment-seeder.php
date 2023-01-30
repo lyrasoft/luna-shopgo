@@ -35,7 +35,8 @@ $seeder->import(
         /** @var EntityMapper<Payment> $mapper */
         $mapper = $orm->mapper(Payment::class);
 
-        $state = $orm->findOne(OrderState::class, ['alias' => 'handling']);
+        $handlingStateId = 5;
+        $state = $orm->findOne(OrderState::class, $handlingStateId);
 
         $faker = $faker->unique();
 

@@ -35,6 +35,8 @@ use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
 
+use function Windwalker\chronos;
+
 /**
  * Order Seeder
  *
@@ -66,8 +68,10 @@ $seeder->import(
         $shippings = $orm->findList(Shipping::class)->all()->dump();
         $variantGroups = $orm->findList(ProductVariant::class)->all()->groupBy('productId');
 
-        $useFullName = $shopGo->useFullName();
-        $useFullAddress = $shopGo->useFullAddress();
+        // $useFullName = $shopGo->useFullName();
+        // $useFullAddress = $shopGo->useFullAddress();
+
+        $created = chronos('-2months');
 
         $users = $orm->findList(User::class)->all()->dump();
 
@@ -125,7 +129,7 @@ $seeder->import(
             $item->setPaymentId($payment->getId());
 
             $paymentData = $item->getPaymentData()
-                ->setName($user->getName())
+                ->setFullName($user->getName())
                 ->setEmail($user->getEmail())
                 ->setAddress1($paymentAddress->getAddress1())
                 ->setAddress2($paymentAddress->getAddress2())
@@ -154,7 +158,7 @@ $seeder->import(
             $lastName = $shippingAddress->getLastname();
 
             $item->getShippingData()
-                ->setName($firstName . ' ' . $lastName)
+                ->setFullName($firstName . ' ' . $lastName)
                 ->setFirstName($firstName)
                 ->setLastName($lastName)
                 ->setAddressId($shippingAddress->getId())
@@ -179,6 +183,11 @@ $seeder->import(
                     ->setVat($paymentData->getVat())
                     ->setMobile($paymentData->getMobile());
             }
+
+            // Date
+            $hrOffsets = random_int(8, 36);
+            $created = $created->modify("+{$hrOffsets}hours");
+            $item->setCreated($created);
 
             // Create Order
             $order = $checkoutService->createOrder($item, $cartData);

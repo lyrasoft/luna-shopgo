@@ -15,6 +15,7 @@ use App\Cart\Price\PriceObject;
 use App\Cart\Price\PriceSet;
 use App\Entity\ProductVariant;
 use App\Entity\Traits\ProductVariantTrait;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Utilities\TypeCast;
 
@@ -25,6 +26,8 @@ use function Windwalker\collect;
  */
 class CartService
 {
+    use TranslatorTrait;
+
     public function __construct(protected Navigator $nav)
     {
     }
@@ -42,10 +45,10 @@ class CartService
         $total = PriceObject::create(
             'total',
             '0',
-            '商品小計'
+            $this->trans('shopgo.order.total.total')
         );
 
-        $grandTotal = $total->clone('grand_total', '訂單總計');
+        $grandTotal = $total->clone('grand_total', $this->trans('shopgo.order.total.grand.total'));
 
         $items = TypeCast::toArray($items);
 
@@ -69,7 +72,7 @@ class CartService
 
         $totals->set(
             PriceObject::create('shipping_fee', '0')
-                ->withLabel('運費')
+                ->withLabel($this->trans('shopgo.order.total.shipping.fee'))
         );
 
         $totals->set($grandTotal);

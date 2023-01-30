@@ -129,7 +129,7 @@ class OrderEditView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.edit', title: 'Order')
+                $this->trans('unicorn.title.edit', title: $this->trans('shopgo.order.title'))
             );
     }
 

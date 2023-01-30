@@ -99,7 +99,7 @@ class OrderStateListView implements ViewModelInterface
      */
     public function getDefaultOrdering(): string
     {
-        return 'order_state.id DESC';
+        return 'order_state.ordering ASC';
     }
 
     /**
@@ -112,7 +112,6 @@ class OrderStateListView implements ViewModelInterface
         return [
             'order_state.id',
             'order_state.title',
-            'order_state.alias',
         ];
     }
 

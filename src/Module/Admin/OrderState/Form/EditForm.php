@@ -41,10 +41,6 @@ class EditForm implements FieldDefinitionInterface
             ->label('Title')
             ->addFilter('trim');
 
-        $form->add('alias', TextField::class)
-            ->label('Alias')
-            ->addFilter('trim');
-
         $form->fieldset(
             'basic',
             function (Form $form) {

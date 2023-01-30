@@ -36,13 +36,21 @@ class OrderStateWorkflow extends AbstractWorkflow
     {
         $states = $this->orderStateService->getOrderStates();
 
-        /** @var OrderState[] $states */
-        foreach ($states as $state) {
-            $workflow->addState(
-                (string) $state->getId(),
-                $state->getTitle(),
-                true
-            );
-        }
+        // /** @var OrderState[] $states */
+        // foreach ($states as $state) {
+        //     $workflow->addState(
+        //         (string) $state->getId(),
+        //         $state->getTitle(),
+        //         true
+        //     );
+        // }
+
+        // $workflow->onAfterChanged(
+        //     [],
+        //     [],
+        //     function () {
+        //         //
+        //     }
+        // );
     }
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\OrderState;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -23,6 +24,7 @@ use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\ORM\SelectorQuery;
+use Windwalker\Query\Query;
 
 /**
  * The OrderRepository class.
@@ -37,7 +39,26 @@ class OrderRepository implements ManageRepositoryInterface, ListRepositoryInterf
     {
         $selector = $this->createSelector();
 
-        $selector->from(Order::class);
+        $selector->from(Order::class)
+            ->leftJoin(OrderState::class);
+
+        $selector->addFilterHandler(
+            'start_date',
+            function (Query $query, string $field, mixed $value) {
+                if ((string) $value !== '') {
+                    $query->where('order.created', '>=', $value);
+                }
+            }
+        );
+
+        $selector->addFilterHandler(
+            'end_date',
+            function (Query $query, string $field, mixed $value) {
+                if ((string) $value !== '') {
+                    $query->where('order.created', '<=', $value);
+                }
+            }
+        );
 
         return $selector;
     }

@@ -14,6 +14,7 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\OrderState;
 
+use App\Enum\OrderHistoryType;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -31,13 +32,34 @@ class OrderStateService
     {
     }
 
+    public function changeState(Order $order, OrderState $to): Order
+    {
+        if ($order->getState()->getId() === $to->getId()) {
+            return $order;
+        }
+
+        $this->orm->getDb()->transaction(
+            function () use ($to, $order) {
+                $order->setState($to);
+
+                $this->mutateOrderByState($order, $to);
+
+                $this->orm->updateOne(Order::class, $order);
+            }
+        );
+
+        return $order;
+    }
+
     /**
      * @return  Collection<OrderState>
      */
     public function getOrderStates(): Collection
     {
         return $this->cacheStorage['states']
-            ??= $this->orm->findList(OrderState::class)->all();
+            ??= $this->orm->from(OrderState::class)
+                ->order('ordering', 'ASC')
+                ->all(OrderState::class);
     }
 
     public function getDefaultState(): OrderState

@@ -22,8 +22,8 @@ use App\Entity\OrderTotal;
 use App\Entity\Product;
 use App\Entity\ProductVariant;
 use App\Enum\OrderHistoryType;
-use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Sequence\Service\SequenceService;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
@@ -33,6 +33,7 @@ use Windwalker\Utilities\Cache\InstanceCacheTrait;
 class CheckoutService
 {
     use InstanceCacheTrait;
+    use TranslatorTrait;
 
     public function __construct(
         protected ORM $orm,
@@ -57,7 +58,7 @@ class CheckoutService
         $order->setTotal($cartData->getTotals()['grand_total']->getPrice()->toFloat());
 
         // Todo: Get state from shipping/payment
-        $state = $this->orm->findOne(OrderState::class, ['default' => 1]);
+        $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);
         $order->setState($state);
 
         // Todo: calc shipping fee
@@ -87,7 +88,7 @@ class CheckoutService
         $order = $this->createOrder($order, $cartData);
 
         // Todo: Notify user
-        // $this->mailer->createMessage('工具兔ToolsTool 訂單已成立，感謝您的訂購！')
+        // $this->mailer->createMessage('訂單已成立，感謝您的訂購！')
         //     ->to($order->getEmail())
         //     ->renderBody(
         //         'mail.order.new-order',
@@ -113,10 +114,10 @@ class CheckoutService
      */
     protected function createNewHistory(Order $order): OrderHistory
     {
-        $msg = '訂單建立。';
+        $msg = $this->trans('shopgo.order.history.new.message');
 
         if (trim($order->getNote())) {
-            $msg .= '備註: ' . $order->getNote();
+            $msg .= $this->trans('shopgo.order.history.new.note', note: $order->getNote());
         }
 
         return $this->orderHistoryService->createHistory(

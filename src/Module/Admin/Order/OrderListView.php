@@ -13,6 +13,7 @@ namespace App\Module\Admin\Order;
 
 use App\Module\Admin\Order\Form\GridForm;
 use App\Repository\OrderRepository;
+use App\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -36,6 +37,7 @@ use Windwalker\ORM\ORM;
 class OrderListView implements ViewModelInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     public function __construct(
         protected ORM $orm,
@@ -111,8 +113,16 @@ class OrderListView implements ViewModelInterface
     {
         return [
             'order.id',
-            'order.title',
-            'order.alias',
+            'order.no',
+            'order.invoice_no',
+            'order.payment_no',
+            'order.shipping_no',
+            'order.note',
+            'order.search_index',
+            'order.state_text',
+            'user.name',
+            'user.email',
+            'user.username',
         ];
     }
 
@@ -158,7 +168,7 @@ class OrderListView implements ViewModelInterface
     {
         $view->getHtmlFrame()
             ->setTitle(
-                $this->trans('unicorn.title.grid', title: 'Order')
+                $this->trans('unicorn.title.grid', title: $this->trans('shopgo.order.title'))
             );
     }
 }

@@ -35,6 +35,7 @@ return Arr::mergeRecursive(
             \App\Service\CheckoutService::class,
             \App\Service\OrderService::class,
             \App\Service\OrderStateService::class,
+            \App\Service\AddressService::class,
             \App\Cart\CartService::class,
             ShopConfig::class => static fn(Container $container) => $container->get(ConfigService::class)
                 ->getConfig('shopgo_shop')

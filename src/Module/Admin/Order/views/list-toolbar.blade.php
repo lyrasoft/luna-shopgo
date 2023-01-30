@@ -32,33 +32,6 @@ use Windwalker\Form\Form;
 ?>
 
 <div x-title="toolbar" x-data="{ form: $store.grid.form, grid: $store.grid }" class="l-toolbar">
-    {{-- Create --}}
-    <a class="btn btn-primary btn-sm uni-btn-new"
-        href="{{ $nav->to('order_edit')->var('new', 1) }}"
-        style="min-width: 150px"
-    >
-        <i class="fa fa-plus"></i>
-        @lang('unicorn.toolbar.new')
-    </a>
-
-    {{-- Duplicate --}}
-    <button type="button" class="btn btn-info btn-sm uni-btn-duplicate"
-        @click="grid.form.post()"
-    >
-        <i class="fa fa-clone"></i>
-        @lang('unicorn.toolbar.duplicate')
-    </button>
-
-    {{-- Change State --}}
-    <x-state-dropdown color-on="text"
-        button-style="width: 100%"
-        use-states
-        batch
-        :workflow="[$workflow]"
-        class="uni-btn-state"
-    >
-        @lang('unicorn.toolbar.state.change')
-    </x-state-dropdown>
 
     @if ($form?->countFields(null, 'batch'))
         {{-- Batch --}}
@@ -73,10 +46,12 @@ use Windwalker\Form\Form;
     @endif
 
     {{-- Delete --}}
-    <button type="button" class="btn btn-outline-danger btn-sm uni-btn-delete"
-        @click="grid.deleteList()"
-    >
-        <i class="fa fa-trash"></i>
-        @lang('unicorn.toolbar.delete')
-    </button>
+    @can('superuser')
+        <button type="button" class="btn btn-outline-danger btn-sm uni-btn-delete"
+            @click="grid.deleteList()"
+        >
+            <i class="fa fa-trash"></i>
+            @lang('unicorn.toolbar.delete')
+        </button>
+    @endcan
 </div>

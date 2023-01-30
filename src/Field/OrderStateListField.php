@@ -13,6 +13,7 @@ namespace App\Field;
 
 use App\Entity\OrderState;
 use Unicorn\Field\SqlListField;
+use Windwalker\Query\Query;
 
 /**
  * The OrderStateListField class.
@@ -20,6 +21,13 @@ use Unicorn\Field\SqlListField;
 class OrderStateListField extends SqlListField
 {
     protected ?string $table = OrderState::class;
+
+    protected function prepareQuery(Query $query): void
+    {
+        parent::prepareQuery($query);
+
+        $query->order('ordering', 'ASC');
+    }
 
     /**
      * getAccessors

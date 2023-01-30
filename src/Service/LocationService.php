@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Data\Contract\AddressAwareInterface;
+use App\Data\PaymentData;
+use App\Data\ShippingData;
 use App\Entity\Location;
 use App\Enum\LocationType;
 use Windwalker\ORM\Nested\Position;
@@ -27,6 +30,13 @@ class LocationService
 
     public function __construct(protected ORM $orm)
     {
+    }
+
+    public function formatAddress(AddressAwareInterface $addressData, bool $withName = false): string
+    {
+        $location = $this->getLocation($addressData->getLocationId());
+
+        return AddressService::formatByLocation($addressData, $location, $withName);
     }
 
     /**
@@ -110,6 +120,12 @@ class LocationService
     public function getRoot(): Location
     {
         return $this->cacheStorage['root'] ??= $this->getEntityMapper()->getRoot();
+    }
+
+    public function getLocation(int $id): ?Location
+    {
+        return $this->cacheStorage['location.' . $id]
+            ??= $this->orm->findOne(Location::class, $id);
     }
 
     /**

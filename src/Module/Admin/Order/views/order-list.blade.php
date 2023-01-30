@@ -17,6 +17,7 @@ namespace App\View;
  */
 
 use App\Entity\Order;
+use App\Entity\OrderState;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -25,12 +26,16 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 use App\Module\Admin\Order\OrderListView;
+use Windwalker\ORM\ORM;
 
 /**
  * @var Order $entity
+ * @var ?OrderState $state
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
+
+$orm = $app->service(ORM::class);
 ?>
 
 @extends('admin.global.body-list')
@@ -64,7 +69,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                         {{-- State --}}
                         <th style="width: 5%" class="text-nowrap">
-                            <x-sort field="order.state">
+                            <x-sort field="order.state_id">
                                 @lang('unicorn.field.state')
                             </x-sort>
                         </th>
@@ -76,19 +81,61 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </x-sort>
                         </th>
 
-                        {{-- Ordering --}}
-                        <th style="width: 10%" class="text-nowrap">
-                            <div class="d-flex w-100 justify-content-end">
-                                <x-sort
-                                    asc="order.ordering ASC"
-                                    desc="order.ordering DESC"
-                                >
-                                    @lang('unicorn.field.ordering')
-                                </x-sort>
-                                @if($vm->reorderEnabled($ordering))
-                                    <x-save-order class="ml-2 ms-2"></x-save-order>
-                                @endif
-                            </div>
+                        {{-- User --}}
+                        <th class="text-nowrap">
+                            <x-sort field="order.user_id">
+                                @lang('shopgo.order.field.user')
+                            </x-sort>
+                        </th>
+
+                        {{-- Total --}}
+                        <th class="text-nowrap text-end">
+                            <x-sort field="order.total">
+                                @lang('shopgo.order.field.total')
+                            </x-sort>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.paid')">
+                            <i class="fa fa-money-check-dollar"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.shipped')">
+                            <i class="fa fa-truck-fast"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.done')">
+                            <i class="fa fa-thumbs-up"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.cancel')">
+                            <i class="fa fa-times"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.returned')">
+                            <i class="fa fa-square-caret-left"></i>
+                        </th>
+
+                        <th class="text-center"
+                            data-bs-toggle="tooltip"
+                            title="@lang('shopgo.order.state.field.rollback')">
+                            <i class="fa fa-rotate-left"></i>
+                        </th>
+
+                        {{-- Created --}}
+                        <th class="text-nowrap">
+                            <x-sort field="order.created">
+                                @lang('unicorn.field.created')
+                            </x-sort>
                         </th>
 
                         {{-- Delete --}}
@@ -109,6 +156,12 @@ $workflow = $app->service(BasicStateWorkflow::class);
                     @foreach($items as $i => $item)
                             <?php
                             $entity = $vm->prepareItem($item);
+
+                            if ($item->order_state?->id) {
+                                $state = $orm->toEntity(OrderState::class, $item->order_state);
+                            } else {
+                                $state = null;
+                            }
                             ?>
                         <tr>
                             {{-- Checkbox --}}
@@ -118,13 +171,10 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             {{-- State --}}
                             <td>
-                                <x-state-dropdown color-on="text"
-                                    button-style="width: 100%"
-                                    use-states
-                                    :workflow="$workflow"
-                                    :id="$entity->getId()"
-                                    :value="$item->state"
-                                ></x-state-dropdown>
+                                <span class="badge px-3 py-2"
+                                    style="{{ $state?->getColorCSS() ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
+                                    {{ $state?->getTitle() ?: $entity->getStateText() }}
+                                </span>
                             </td>
 
                             {{-- Title --}}
@@ -136,16 +186,91 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                 </div>
                             </td>
 
-                            {{-- Ordering --}}
-                            <td class="text-end text-right">
-                                <x-order-control
-                                    :enabled="$vm->reorderEnabled($ordering)"
-                                    :row="$i"
-                                    :id="$entity->getId()"
-                                    :value="$item->ordering"
-                                ></x-order-control>
+                            {{-- User --}}
+                            <td class="text-nowrap">
+                                {{ $entity->getPaymentData()->getFullName() }}
                             </td>
 
+                            {{-- Total --}}
+                            <td class="text-end">
+                                {{ $vm->formatPrice($entity->getTotal()) }}
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getPaidAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getPaidAt()) }}">
+                                        <i class="fa fa-clock text-info"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getShippedAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getShippedAt()) }}">
+                                        <i class="fa fa-clock text-info"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getDoneAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getDoneAt()) }}">
+                                        <i class="fa fa-clock text-success"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getCancelledAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getCancelledAt()) }}">
+                                        <i class="fa fa-clock text-secondary"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getReturnedAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getReturnedAt()) }}">
+                                        <i class="fa fa-clock text-danger"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->getRollbackAt())
+                                    <div data-bs-toggle="tooltip"
+                                        title="{{ $chronos->toLocalFormat($entity->getRollbackAt()) }}">
+                                        <i class="fa fa-clock text-warning"></i>
+                                    </div>
+                                @else
+                                    -
+                                @endif
+                            </td>
+
+                            {{-- Created --}}
+                            <td>
+                                <div data-bs-toggle="tooltip"
+                                    title="{{ $chronos->toLocalFormat($entity->getCreated()) }}">
+                                    {{ $chronos->toLocalFormat($entity->getCreated(), 'Y-m-d') }}
+                                </div>
+                            </td>
+
+                            @can('superuser')
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
@@ -155,6 +280,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
+                            @endcan
 
                             {{-- ID --}}
                             <td class="text-end">

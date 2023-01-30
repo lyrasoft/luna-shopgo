@@ -18,10 +18,12 @@ use App\Data\ShippingData;
 use App\Data\ShippingHistoryCollection;
 use App\Data\ShippingInfo;
 use App\Enum\InvoiceType;
+use App\Workflow\OrderStateWorkflow;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\Data\Collection;
+use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\CastNullable;
@@ -39,9 +41,12 @@ use Windwalker\ORM\Attributes\TargetTo;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
+
+use function Windwalker\collect;
 
 /**
  * The Order class.
@@ -80,6 +85,9 @@ class Order implements EntityInterface
 
     #[Column('state_id')]
     protected int $stateId = 0;
+
+    #[Column('state_text')]
+    protected string $stateText = '';
 
     /**
      * Payment ID or key name.
@@ -205,6 +213,9 @@ class Order implements EntityInterface
     #[CastNullable(Chronos::class)]
     protected ?Chronos $expiryOn = null;
 
+    #[Column('search_index')]
+    protected string $searchIndex = '';
+
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
@@ -268,9 +279,39 @@ class Order implements EntityInterface
     protected RelationCollection|null $orderItems = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata): void
+    public static function setup(EntityMetadata $metadata, #[Autowire] OrderStateWorkflow $workflow): void
     {
-        //
+        // $workflow->listen($metadata);
+    }
+
+    #[BeforeSaveEvent]
+    public static function beforeSave(BeforeSaveEvent $event): void
+    {
+        $data = &$event->getData();
+        $orm = $event->getORM();
+
+        if ($data['state_id']) {
+            $state = $orm->findOne(OrderState::class, $data['state_id']);
+
+            $data['state_text'] = $state?->getTitle() ?: '';
+        } else {
+            $data['state_text'] = '';
+        }
+
+        $searchIndex = collect();
+
+        $entity = $orm->toEntity(static::class, $data);
+        $paymentData = $entity->getPaymentData();
+        $shippingData = $entity->getShippingData();
+        $invoiceData = $entity->getInvoiceData();
+
+        $searchIndex = $searchIndex->merge(
+            array_values($paymentData->dump()),
+            array_values($shippingData->dump()),
+            array_values($invoiceData->dump()),
+        );
+
+        $data['search_index'] = $searchIndex->filter()->implode('|');
     }
 
     /**
@@ -370,17 +411,19 @@ class Order implements EntityInterface
     }
 
     /**
-     * @param  OrderState|int  $state
+     * @param  OrderState|null  $state
      *
      * @return  static  Return self to support chaining.
      */
-    public function setState(OrderState|int $state): static
+    public function setState(OrderState|null $state): static
     {
-        if ($state instanceof OrderState) {
-            $state = $state->getId();
+        if ($state) {
+            $this->stateId = $state->getId();
+            $this->stateText = $state->getTitle();
+        } else {
+            $this->stateId = 0;
+            $this->stateText = '';
         }
-
-        $this->stateId = $state;
 
         return $this;
     }
@@ -789,6 +832,46 @@ class Order implements EntityInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStateText(): string
+    {
+        return $this->stateText;
+    }
+
+    /**
+     * @param  string  $stateText
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStateText(string $stateText): static
+    {
+        $this->stateText = $stateText;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchIndex(): string
+    {
+        return $this->searchIndex;
+    }
+
+    /**
+     * @param  string  $searchIndex
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSearchIndex(string $searchIndex): static
+    {
+        $this->searchIndex = $searchIndex;
 
         return $this;
     }
