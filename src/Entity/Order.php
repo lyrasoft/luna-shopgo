@@ -281,7 +281,7 @@ class Order implements EntityInterface
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata, #[Autowire] OrderStateWorkflow $workflow): void
     {
-        // $workflow->listen($metadata);
+        $workflow->listen($metadata);
     }
 
     #[BeforeSaveEvent]

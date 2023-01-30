@@ -3626,12 +3626,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/core.git",
-                "reference": "6a9392df3d5432ec70bec9cd98f6dcb29a38d370"
+                "reference": "5cfc01e538722adae0e7feaa91a07d737c818d9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/core/zipball/6a9392df3d5432ec70bec9cd98f6dcb29a38d370",
-                "reference": "6a9392df3d5432ec70bec9cd98f6dcb29a38d370",
+                "url": "https://api.github.com/repos/windwalker-io/core/zipball/5cfc01e538722adae0e7feaa91a07d737c818d9f",
+                "reference": "5cfc01e538722adae0e7feaa91a07d737c818d9f",
                 "shasum": ""
             },
             "require": {
@@ -3699,7 +3699,7 @@
                 "issues": "https://github.com/windwalker-io/core/issues",
                 "source": "https://github.com/windwalker-io/core/tree/master"
             },
-            "time": "2023-01-24T15:23:24+00:00"
+            "time": "2023-01-27T07:45:10+00:00"
         },
         {
             "name": "windwalker/framework",
@@ -3707,12 +3707,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/framework.git",
-                "reference": "3ded6610a385c9b1fd215313d60b2ab56d25580a"
+                "reference": "5708f2883c9fa81113ef6de727e40e386b54acc1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/framework/zipball/3ded6610a385c9b1fd215313d60b2ab56d25580a",
-                "reference": "3ded6610a385c9b1fd215313d60b2ab56d25580a",
+                "url": "https://api.github.com/repos/windwalker-io/framework/zipball/5708f2883c9fa81113ef6de727e40e386b54acc1",
+                "reference": "5708f2883c9fa81113ef6de727e40e386b54acc1",
                 "shasum": ""
             },
             "require": {
@@ -3804,7 +3804,7 @@
                 "reactivex/rxphp": "^2.0",
                 "roave/security-advisories": "dev-master",
                 "squizlabs/php_codesniffer": "^3.0",
-                "swoole/ide-helper": "^4.4",
+                "swoole/ide-helper": "^4.0||^5.0",
                 "symfony/css-selector": "^5.0||^6.0",
                 "symfony/dom-crawler": "^5.0||^6.0",
                 "symfony/options-resolver": "^5.0||^6.0",
@@ -3935,7 +3935,7 @@
                 "issues": "https://github.com/windwalker-io/framework/issues",
                 "source": "https://github.com/windwalker-io/framework/tree/master"
             },
-            "time": "2023-01-24T17:43:54+00:00"
+            "time": "2023-01-30T18:19:00+00:00"
         },
         {
             "name": "windwalker/unicorn",
@@ -3943,12 +3943,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/windwalker-io/unicorn.git",
-                "reference": "e3e2922dc96ac2c39e97c3baca60e1314c0711f6"
+                "reference": "01fc4632044da79dfc0448f3e854a9478c8b7b60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/e3e2922dc96ac2c39e97c3baca60e1314c0711f6",
-                "reference": "e3e2922dc96ac2c39e97c3baca60e1314c0711f6",
+                "url": "https://api.github.com/repos/windwalker-io/unicorn/zipball/01fc4632044da79dfc0448f3e854a9478c8b7b60",
+                "reference": "01fc4632044da79dfc0448f3e854a9478c8b7b60",
                 "shasum": ""
             },
             "require": {
@@ -4006,7 +4006,7 @@
                 "issues": "https://github.com/windwalker-io/unicorn/issues",
                 "source": "https://github.com/windwalker-io/unicorn/tree/main"
             },
-            "time": "2023-01-24T17:36:09+00:00"
+            "time": "2023-01-26T19:42:14+00:00"
         }
     ],
     "packages-dev": [
@@ -4142,5 +4142,5 @@
     "platform-overrides": {
         "php": "8.0.5"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
