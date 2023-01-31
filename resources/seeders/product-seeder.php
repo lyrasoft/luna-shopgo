@@ -18,6 +18,7 @@ use App\Entity\ProductFeature;
 use App\Entity\ProductVariant;
 use App\Entity\ShopCategoryMap;
 use App\Service\VariantService;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\Category;
 use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
@@ -37,8 +38,8 @@ use function Windwalker\uid;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db, &$sortGroup) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db, &$sortGroup) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<Product> $mapper */
         $mapper = $orm->mapper(Product::class);

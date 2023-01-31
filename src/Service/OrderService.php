@@ -36,6 +36,7 @@ class OrderService
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
         protected OrderStateService $orderStateService,
+        protected OrderHistoryService $orderHistoryService,
     ) {
     }
 
@@ -57,6 +58,14 @@ class OrderService
         $order = $this->orderStateService->changeState(
             $order,
             $to
+        );
+
+        return $this->orderHistoryService->createHistoryAndNotify(
+            $order,
+            $to,
+            $type,
+            $message,
+            $notify,
         );
     }
 

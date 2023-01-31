@@ -99,13 +99,13 @@ class OrderController
         OrderService $orderService,
         Navigator $nav
     ): RouteUri {
-        [$id, $state, $notify, $message] = $app->input('id', 'state', 'notify', 'message')
+        [$id, $stateId, $notify, $message] = $app->input('id', 'state', 'notify', 'message')
             ->values()
             ->dump();
 
         $orderService->transition(
             (int) $id,
-            $state,
+            (int) $stateId,
             OrderHistoryType::ADMIN(),
             $message,
             (bool) $notify

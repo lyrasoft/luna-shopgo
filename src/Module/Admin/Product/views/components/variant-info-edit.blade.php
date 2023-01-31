@@ -30,11 +30,11 @@ use Windwalker\Core\Router\SystemUri;
     <div class="card-header d-flex align-items-center">
         <div class="c-variant-edit__title d-flex gap-2">
             <div>
-                商品組合編輯
+                @lang('shopgo.product.variant.edit.title')
             </div>
             <div v-if="unsave">
                 <span class="badge bg-warning">
-                    Save Required
+                    @lang('shopgo.product.text.save.required')
                 </span>
             </div>
         </div>
@@ -44,18 +44,18 @@ use Windwalker\Core\Router\SystemUri;
                 :disabled="!unsave"
             >
                 <span class="fa fa-save"></span>
-                儲存
+                @lang('shopgo.product.button.save')
             </button>
             <button type="button" class="btn btn-outline-secondary btn-sm"
                 @click="cancelEdit">
                 <span class="fa fa-times"></span>
-                取消
+                @lang('shopgo.product.button.cancel')
             </button>
         </div>
     </div>
     <div class="card-body">
         <div class="c-variant-edit__title mb-4">
-            <span class="lead">@{{ items.length <= 1 ? current.title : '編輯多個項目' }}</span>
+            <span class="lead">@{{ items.length <= 1 ? current.title : '@lang('shopgo.product.variant.edit.multiple')' }}</span>
         </div>
 
 {{--        <div class="d-flex mb-2 align-items-center" v-if="items.length <= 1">--}}
@@ -73,13 +73,17 @@ use Windwalker\Core\Router\SystemUri;
 {{--                    v-model="current.model" />--}}
 {{--            </div>--}}
             <div class="form-group mb-4" v-if="items.length <= 1">
-                <label for="input-variant-sku" class="form-label">料號</label>
+                <label for="input-variant-sku" class="form-label">
+                    @lang('shopgo.product.field.sku')
+                </label>
                 <textarea id="input-variant-sku" type="text" class="form-control"
                     v-model="current.sku" rows="1"></textarea>
             </div>
 
             <div class="form-group mb-4">
-                <label for="input-variant-price" class="form-label">價格</label>
+                <label for="input-variant-price" class="form-label">
+                    @lang('shopgo.product.field.price')
+                </label>
                 <input id="input-variant-price" type="number" class="form-control"
                     v-model="current.price"
                     />
@@ -88,22 +92,30 @@ use Windwalker\Core\Router\SystemUri;
 
         <div class="d-flex gap-2">
             <div class="form-group mb-4">
-                <label for="input-variant-length" class="form-label">Length</label>
+                <label for="input-variant-length" class="form-label">
+                    @lang('shopgo.product.field.length')
+                </label>
                 <input id="input-variant-length" type="number" class="form-control"
                     v-model="current.dimension.length" />
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-width" class="form-label">Width</label>
+                <label for="input-variant-width" class="form-label">
+                    @lang('shopgo.product.field.width')
+                </label>
                 <input id="input-variant-width" type="number" class="form-control"
                     v-model="current.dimension.width" />
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-height" class="form-label">Height</label>
+                <label for="input-variant-height" class="form-label">
+                    @lang('shopgo.product.field.height')
+                </label>
                 <input id="input-variant-height" type="number" class="form-control"
                     v-model="current.dimension.height" />
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-weight" class="form-label">重量</label>
+                <label for="input-variant-weight" class="form-label">
+                    @lang('shopgo.product.field.weight')
+                </label>
                 <input id="input-variant-weight" type="number" class="form-control"
                     v-model="current.dimension.weight" />
             </div>
@@ -111,12 +123,16 @@ use Windwalker\Core\Router\SystemUri;
 
         <div class="d-flex gap-2">
             <div class="form-group mb-4">
-                <label for="input-variant-inventory" class="form-label">庫存</label>
+                <label for="input-variant-inventory" class="form-label">
+                    @lang('shopgo.product.field.stock.quantity')
+                </label>
                 <input id="input-variant-inventory" type="number" class="form-control"
                     v-model="current.stockQuantity" min="0" />
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-subtract" class="form-label">減去庫存</label>
+                <label for="input-variant-subtract" class="form-label">
+                    @lang('shopgo.product.field.subtract')
+                </label>
                 <div class="form-check form-switch">
                     <input type="checkbox" id="input-variant-subtract"
                         class="form-check-input"
@@ -131,7 +147,9 @@ use Windwalker\Core\Router\SystemUri;
 
         <div class="d-flex gap-2">
             <div class="form-group mb-4">
-                <label for="input-variant-publish_up" class="form-label">起始日期</label>
+                <label for="input-variant-publish_up" class="form-label">
+                    @lang('shopgo.product.field.publish_up')
+                </label>
                 <uni-flatpickr :options="flatpickrOptions">
                     <div class="input-group">
                         <input id="input-variant-publish_up" type="text" class="form-control"
@@ -153,7 +171,9 @@ use Windwalker\Core\Router\SystemUri;
                 </uni-flatpickr>
             </div>
             <div class="form-group mb-4">
-                <label for="input-variant-publish_down" class="form-label">結束日期</label>
+                <label for="input-variant-publish_down" class="form-label">
+                    @lang('shopgo.product.field.publish.down')
+                </label>
                 <uni-flatpickr :options="flatpickrOptions">
                     <div class="input-group">
                         <input id="input-variant-publish_down" type="text" class="form-control"
@@ -194,7 +214,7 @@ use Windwalker\Core\Router\SystemUri;
             <button type="button" class="btn btn-primary w-100"
                 @click="saveVariant(current)">
                 <span class="fa fa-save"></span>
-                儲存
+                @lang('shopgo.product.button.save')
             </button>
         </div>
     </div>

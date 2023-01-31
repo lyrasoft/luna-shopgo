@@ -26,6 +26,9 @@ u.$ui.disableIfStackNotEmpty();
 // Keep Alive
 u.$ui.keepAlive(location.href);
 
+// A workaround to wait all dependencies ready
+await u.domready();
+
 // App
 const $typeSelect = document.querySelector('#input-item-type');
 const { ref, onMounted, computed, createApp, toRefs, reactive } = Vue;
@@ -119,9 +122,6 @@ const app = createApp({
     };
   }
 });
-
-// A workaround to wait all dependencies ready
-await u.domready();
 
 app.use(ShopGoVuePlugin);
 app.component('draggable', vuedraggable);

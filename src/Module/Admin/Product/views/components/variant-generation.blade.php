@@ -17,18 +17,18 @@ use Windwalker\Core\Application\AppContext;
 <div class="c-variant-generate card sticky-top">
     <div class="card-header d-flex">
         <div class="c-variant-generate__title">
-            產生商品組合 (@{{ combinationCount || 0 }})
+            @lang('shopgo.product.variant.generation.title') (@{{ combinationCount || 0 }})
         </div>
         <div class="c-variant-generate__actions ms-auto">
             <button type="button" class="btn btn-primary btn-sm"
                 @click="saveGenerate(current)" :disabled="loading.generating">
                 <span class="fa fa-save"></span>
-                @{{ loading.generating ? '儲存中' : '建立組合' }}
+                @{{ loading.generating ? '@lang('shopgo.product.text.saving')' : '@lang('shopgo.product.variant.generation.button.submit')' }}
             </button>
             <button type="button" class="btn btn-outline-secondary btn-sm"
                 @click="cancel" :disabled="loading.generating">
                 <span class="fa fa-times"></span>
-                取消
+                @lang('shopgo.product.button.cancel')
             </button>
         </div>
     </div>
@@ -84,12 +84,12 @@ use Windwalker\Core\Application\AppContext;
             <button type="button" class="btn btn-primary btn-sm w-100"
                 @click="saveGenerate(current)" :disabled="loading.generating">
                 <span class="fa fa-save"></span>
-                @{{ loading.generating ? '儲存中' : '建立組合' }}
+                @{{ loading.generating ? '@lang('shopgo.product.text.saving')' : '@lang('shopgo.product.variant.generation.button.submit')' }}
             </button>
         </div>
     </div>
     <div v-else class="text-center card-body">
-        載入中...
+        @lang('shopgo.product.text.loading')
     </div>
 </div>
 </script>

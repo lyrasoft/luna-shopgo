@@ -17,6 +17,10 @@ return [
             'main' => 'USD'
         ],
 
+        'fixtures' => [
+            'locale' => 'zh_TW',
+        ],
+
         'address' => [
             'use_fullname' => false,
             'use_fulladdress' => false,

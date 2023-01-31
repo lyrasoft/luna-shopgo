@@ -18,6 +18,7 @@ use App\Entity\Product;
 use App\Enum\DiscountCombine;
 use App\Enum\DiscountMethod;
 use App\Enum\DiscountType;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\User\Password;
 use Windwalker\Core\Seed\Seeder;
@@ -35,8 +36,8 @@ use function Windwalker\chronos;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<Discount> $mapper */
         $mapper = $orm->mapper(Discount::class);

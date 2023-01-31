@@ -14,6 +14,7 @@ namespace App\Seeder;
 use App\Entity\Order;
 use App\Entity\OrderState;
 use App\Entity\Payment;
+use App\ShopGoPackage;
 use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
@@ -29,8 +30,8 @@ use Windwalker\Utilities\Utf8String;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<Payment> $mapper */
         $mapper = $orm->mapper(Payment::class);

@@ -16,6 +16,7 @@ use App\Entity\OrderHistory;
 use App\Entity\OrderTotal;
 use App\Entity\OrderItem;
 use App\Entity\Order;
+use App\ShopGoPackage;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
@@ -30,7 +31,7 @@ use function Windwalker\fs;
  * @var ConsoleApplication $app
  */
 $mig->up(
-    static function (ORM $orm) use ($mig) {
+    static function (ORM $orm, ShopGoPackage $shopGo) use ($mig) {
         $mig->createTable(
             Order::class,
             function (Schema $schema) {
@@ -154,6 +155,7 @@ $mig->up(
             function (Schema $schema) {
                 $schema->primary('id');
                 $schema->varchar('title');
+                $schema->varchar('alias');
                 $schema->bool('default');
                 $schema->varchar('color');
                 $schema->varchar('image');
@@ -168,6 +170,7 @@ $mig->up(
                 $schema->integer('ordering');
 
                 $schema->addIndex('ordering');
+                $schema->addIndex('alias');
             }
         );
 
@@ -176,8 +179,16 @@ $mig->up(
             ->read()
             ->jsonDecode();
 
+        $locale = $shopGo->config('fixtures.locale') ?: 'en_US';
+
         foreach ($states as $i => $state) {
             $state['ordering'] = $i + 1;
+
+            $localeTitle = 'title:' . $locale;
+
+            if (isset($state[$localeTitle])) {
+                $state['title'] = $state[$localeTitle];
+            }
 
             $orm->createOne(OrderState::class, $state);
 

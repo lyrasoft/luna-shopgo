@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace App\Seeder;
 
 use App\Entity\Manufacturer;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\Tag;
 use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\Entity\User;
@@ -31,8 +32,8 @@ use Windwalker\Utilities\Utf8String;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<Manufacturer> $mapper */
         $mapper = $orm->mapper(Manufacturer::class);

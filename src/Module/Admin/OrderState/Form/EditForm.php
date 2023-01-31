@@ -38,8 +38,11 @@ class EditForm implements FieldDefinitionInterface
     public function define(Form $form): void
     {
         $form->add('title', TextField::class)
-            ->label('Title')
+            ->label($this->trans('unicorn.field.title'))
             ->addFilter('trim');
+
+        $form->add('alias', TextField::class)
+            ->label($this->trans('unicorn.field.alias'));
 
         $form->fieldset(
             'basic',

@@ -55,15 +55,15 @@ $alert = $item->getParams()['alert'] ?? [];
         action="{{ $nav->to('order_edit') }}"
         method="POST" enctype="multipart/form-data">
 
-        @if ($alert)
-            @foreach ($alert as $msg)
-                <div class="alert alert-warning">
-                    {{ $msg }}
-                </div>
-            @endforeach
-        @endif
+        <div class="d-flex flex-column gap-4">
+            @if ($alert)
+                @foreach ($alert as $msg)
+                    <div class="alert alert-warning">
+                        {{ $msg }}
+                    </div>
+                @endforeach
+            @endif
 
-        <div class="mb-4">
             <div class="row">
                 <div class="col-md-4">
                     <x-order-info.col1 :order="$item"></x-order-info.col1>
@@ -75,43 +75,45 @@ $alert = $item->getParams()['alert'] ?? [];
                     <x-order-info.col3 :order="$item"></x-order-info.col3>
                 </div>
             </div>
-        </div>
 
-        {{-- Order Items--}}
-        <x-order-info.order-items
-            :order="$item"
-            :order-items="$orderItems"
-            :totals="$totals"
-        ></x-order-info.order-items>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            @lang('shopgo.order.field.histories')
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <a href="javascript://" class="btn btn-sm btn-info"
-                                style="width: 150px"
-                                data-bs-toggle="modal"
-                                data-bs-target="#state-change-modal"
-                            >
-                                @lang('shopgo.order.button.change.state')
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <x-order-histories :histories="$histories"></x-order-histories>
-                    </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <x-order-info.payment-data :order="$item"></x-order-info.payment-data>
+                </div>
+                <div class="col-md-6">
+                    <x-order-info.shipping-data :order="$item"></x-order-info.shipping-data>
                 </div>
             </div>
-            <div class="col-md-4">
-                <x-order-info.payment-data :order="$item"></x-order-info.payment-data>
-            </div>
-            <div class="col-md-4">
-                <x-order-info.shipping-data :order="$item"></x-order-info.shipping-data>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                @lang('shopgo.order.field.histories')
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <a href="javascript://" class="btn btn-sm btn-info"
+                                    style="width: 150px"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#state-change-modal"
+                                >
+                                    @lang('shopgo.order.button.change.state')
+                                </a>
+                            </div>
+                        </div>
+
+                        <x-order-histories :histories="$histories" class="list-group-flush"></x-order-histories>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    {{-- Order Items--}}
+                    <x-order-info.order-items
+                        :order="$item"
+                        :order-items="$orderItems"
+                        :totals="$totals"
+                    ></x-order-info.order-items>
+                </div>
             </div>
         </div>
 

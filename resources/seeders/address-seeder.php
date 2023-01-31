@@ -14,6 +14,7 @@ namespace App\Seeder;
 use App\Entity\Address;
 use App\Entity\Location;
 use App\Enum\LocationType;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\User;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
@@ -28,8 +29,8 @@ use Windwalker\ORM\ORM;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<Address> $mapper */
         $mapper = $orm->mapper(Address::class);

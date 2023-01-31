@@ -45,7 +45,7 @@ $defaultImage = $app->service(ImagePlaceholder::class)->placeholderSquare();
 
                 <span v-if="item.unsave"
                     class="badge bg-warning">
-                    Unsave
+                    @lang('shopgo.product.text.save.required')
                 </span>
 
 {{--                <span v-if="item.default === '1'" class="badge badge-info">--}}

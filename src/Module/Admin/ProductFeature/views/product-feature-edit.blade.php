@@ -67,17 +67,19 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                         <div class="col-lg-6">
                             <div class="card c-feature-option-list">
                                 <div class="card-header d-flex align-items-center">
-                                    <h3 class="m-0">選項</h3>
+                                    <h3 class="m-0">
+                                        @lang('shopgo.product.feature.options.title')
+                                    </h3>
                                     <div class="c-list-top-toolbar ms-auto">
                                         <button type="button" class="btn btn-sm btn-primary"
                                             @click="addNewItem()">
                                             <span class="fa fa-plus"></span>
-                                            新增
+                                            @lang('shopgo.product.feature.button.new')
                                         </button>
                                         <button type="button" class="btn btn-sm btn-outline-danger"
                                             @click="removeItems()" :disabled="selected.length === 0">
                                             <span class="fa fa-trash"></span>
-                                            刪除
+                                            @lang('shopgo.product.feature.button.delete')
                                         </button>
                                     </div>
                                 </div>
@@ -107,7 +109,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                                     </div>
                                                     <div class="c-option-control__title flex-grow-1">
                                                         <div class="h5 m-0">
-                                                            @{{ item.data.text || '-未命名-' }}
+                                                            @{{ item.data.text || '@lang('shopgo.product.feature.text.unnamed')' }}
                                                         </div>
                                                     </div>
                                                     <div
@@ -148,21 +150,21 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                         <div class="col-lg-6 l-feature-option-item">
                             <div class="card c-option-edit">
                                 <div class="card-header">
-                                    內容
+                                    @lang('shopgo.product.feature.option.data.title')
                                 </div>
                                 <div class="card-body">
                                     <div v-if="current" class="c-option-edit__form">
                                         <div class="form-group mb-4">
-                                            <label for="input-option-title" class="form-label">
-                                                標題
+                                            <label for="input-option-text" class="form-label">
+                                                @lang('shopgo.product.feature.option.text')
                                             </label>
-                                            <input id="input-option-title" type="text" class="form-control"
+                                            <input id="input-option-text" type="text" class="form-control"
                                                 v-model="current.data.text" />
                                         </div>
 
                                         <div class="form-group mb-4">
                                             <label for="input-option-value" class="form-label">
-                                                內容
+                                                @lang('shopgo.product.feature.option.value')
                                             </label>
                                             <input id="input-option-value" type="text" class="form-control"
                                                 v-model="current.data.value" />
@@ -170,7 +172,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
 
                                         <div class="form-group mb-4" v-if="type === 'color'">
                                             <label for="input-option-value" class="form-label">
-                                                顏色
+                                                @lang('shopgo.product.feature.option.color')
                                             </label>
                                             <div>
                                                 <input id="input-option-color" type="text"
@@ -184,7 +186,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                     <div v-else>
                                         <div class="card bg-light">
                                             <div class="card-body text-center">
-                                                請選擇一個項目
+                                                @lang('shopgo.product.feature.option.no.select')
                                             </div>
                                         </div>
                                     </div>

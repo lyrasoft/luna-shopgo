@@ -14,6 +14,7 @@ namespace App\Seeder;
 use App\Data\ListOption;
 use App\Entity\ProductFeature;
 use App\Enum\ProductFeatureType;
+use App\ShopGoPackage;
 use Windwalker\Core\Seed\Seeder;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
@@ -30,8 +31,8 @@ use function Windwalker\tid;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<ProductFeature> $mapper */
         $mapper = $orm->mapper(ProductFeature::class);

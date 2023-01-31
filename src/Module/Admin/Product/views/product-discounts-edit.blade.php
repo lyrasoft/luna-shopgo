@@ -60,13 +60,13 @@ $uniScript->data('product.discounts.props', [
                             v-if="countChecked() > 0"
                             @click="deleteItems()">
                             <span class="fa fa-trash"></span>
-                            刪除
+                            @lang('shopgo.product.button.delete')
                         </button>
 
                         <button type="button" class="btn btn-sm btn-primary"
                             @click="newItem()">
                             <span class="fa fa-plus"></span>
-                            新增折扣/特價
+                            @lang('shopgo.product.discount.button.new')
                         </button>
                     </div>
                 </div>
@@ -80,19 +80,19 @@ $uniScript->data('product.discounts.props', [
                                 :indeterminate.prop="countChecked() > 0 && countChecked() < items.length" />
                         </div>
                         <div class="flex-fill" style="">
-                            類型
+                            @lang('shopgo.product.discount.field.type')
                         </div>
                         <div class="text-end" style="width: 100px;">
-                            起始數量
+                            @lang('shopgo.discount.field.min.product.quantity')
                         </div>
                         <div class="text-end" style="width: 100px;">
-                            價格調整
+                            @lang('shopgo.product.discount.field.price.offsets')
                         </div>
                         <div class="" style="width: 75px;">
-                            時間限制
+                            @lang('shopgo.product.discount.field.time')
                         </div>
                         <div class="" style="width: 75px;">
-                            操作
+                            @lang('shopgo.product.discount.actions')
                         </div>
                     </div>
 
@@ -120,7 +120,7 @@ $uniScript->data('product.discounts.props', [
                                             @{{ $lang('shopgo.discount.subtype.' + item.subtype) }}
                                             <div v-if="item.unsave">
                                                 <span class="badge bg-warning">
-                                                    Unsave
+                                                    @lang('shopgo.product.text.save.required')
                                                 </span>
                                             </div>
                                         </div>
@@ -166,38 +166,46 @@ $uniScript->data('product.discounts.props', [
             <div v-if="current.uid" class="c-discount-edit card">
                 <div class="card-header d-flex">
                     <div class="c-discount-edit__title">
-                        折扣/特價 編輯
+                        @lang('shopgo.product.discount.edit.title')
                     </div>
                     <div class="c-discount-edit__actions ms-auto">
                         <button type="button" class="btn btn-primary btn-sm"
                             style="width: 150px;"
                             @click="saveItem(current)" :disabled="!currentEditUnsave">
                             <span class="fa fa-save"></span>
-                            儲存
+                            @lang('shopgo.product.button.save')
                         </button>
                         <button type="button" class="btn btn-outline-secondary btn-sm"
                             @click="cancelEdit()">
                             <span class="fa fa-times"></span>
-                            取消
+                            @lang('shopgo.product.button.cancel')
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex gap-2">
                         <div class="form-group mb-4">
-                            <label for="input-discount-subtype" class="form-label">模式</label>
+                            <label for="input-discount-subtype" class="form-label">
+                                @lang('shopgo.product.discount.field.mode')
+                            </label>
                             <select id="input-discount-subtype" class="form-select"
                                 style="min-width: 100px;"
                                 v-model="current.subtype">
-                                <option value="discount">折扣</option>
-                                <option value="special">特價</option>
+                                <option value="discount">
+                                    @lang('shopgo.discount.subtype.discount')
+                                </option>
+                                <option value="special">
+                                    @lang('shopgo.discount.subtype.special')
+                                </option>
                             </select>
                         </div>
 
                         <transition name="fade">
                             <div class="form-group mb-4" v-if="current.subtype === 'discount'"
                                 style="animation-duration: .3s">
-                                <label for="input-discount-quantity" class="form-label">起始數量</label>
+                                <label for="input-discount-quantity" class="form-label">
+                                    @lang('shopgo.discount.field.min.product.quantity')
+                                </label>
                                 <input id="input-discount-quantity" type="number" class="form-control"
                                     v-model="current.minProductQuantity" min="0" />
                             </div>
@@ -206,7 +214,9 @@ $uniScript->data('product.discounts.props', [
 
                     <div class="d-flex gap-2">
                         <div class="form-group mb-4">
-                            <label for="input-discount-start_date" class="form-label">起始日期</label>
+                            <label for="input-discount-start_date" class="form-label">
+                                @lang('shopgo.discount.field.publish.up')
+                            </label>
                             <uni-flatpickr :options="flatpickrOptions">
                                 <div class="input-group" data-calendar>
                                     <input id="input-discount-start_date" type="text" class="form-control"
@@ -230,7 +240,9 @@ $uniScript->data('product.discounts.props', [
                             </uni-flatpickr>
                         </div>
                         <div class="form-group mb-4">
-                            <label for="input-discount-end_date" class="form-label">結束日期</label>
+                            <label for="input-discount-end_date" class="form-label">
+                                @lang('shopgo.discount.field.publish.down')
+                            </label>
                             <uni-flatpickr :options="flatpickrOptions">
                                 <div class="input-group" data-calendar>
                                     <input id="input-discount-end_date" type="text" class="form-control"
@@ -257,7 +269,9 @@ $uniScript->data('product.discounts.props', [
 
                     <div class="d-flex gap-2">
                         <div class="form-group mb-4">
-                            <label for="input-discount-price" class="form-label">價格調整</label>
+                            <label for="input-discount-price" class="form-label">
+                                @lang('shopgo.product.discount.field.price.offsets')
+                            </label>
                             <div class="input-group">
                                 <input id="input-discount-price" type="number" class="form-control"
                                     :value="current.price" @input="current.price = $event.target.value" />
@@ -267,12 +281,20 @@ $uniScript->data('product.discounts.props', [
                             </div>
                         </div>
                         <div class="form-group mb-4">
-                            <label for="input-discount-method" class="form-label">調整模式</label>
+                            <label for="input-discount-method" class="form-label">
+                                @lang('shopgo.discount.field.method')
+                            </label>
                             <select id="input-discount-method" class="form-select"
                                 v-model="current.method">
-                                <option value="percentage">百分比</option>
-                                <option value="offsets">金額調整</option>
-                                <option value="fixed">指定金額</option>
+                                <option value="percentage">
+                                    @lang('shopgo.discount.method.percentage')
+                                </option>
+                                <option value="offsets">
+                                    @lang('shopgo.discount.method.offsets')
+                                </option>
+                                <option value="fixed">
+                                    @lang('shopgo.discount.method.fixed')
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -281,7 +303,7 @@ $uniScript->data('product.discounts.props', [
                         <button type="button" class="btn btn-primary w-100"
                             @click="saveItem(current)" :disabled="!currentEditUnsave">
                             <span class="fa fa-save"></span>
-                            儲存
+                            @lang('shopgo.product.button.save')
                         </button>
                     </div>
                 </div>

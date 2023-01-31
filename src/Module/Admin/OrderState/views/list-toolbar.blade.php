@@ -44,27 +44,6 @@ use Windwalker\Core\Router\SystemUri;
         @lang('unicorn.toolbar.duplicate')
     </button>
 
-    {{-- Change State --}}
-    <x-state-dropdown color-on="text"
-        button-style="width: 100%"
-        use-states
-        batch
-        :workflow="[$workflow]"
-        class="uni-btn-state"
-    >
-        @lang('unicorn.toolbar.state.change')
-    </x-state-dropdown>
-
-    {{-- Batch --}}
-    <button type="button" class="btn btn-dark btn-sm uni-btn-batch"
-        @click="grid.validateChecked(null, function () {
-            (new bootstrap.Modal('#batch-modal')).show();
-        })"
-    >
-        <i class="fa fa-sliders"></i>
-        @lang('unicorn.toolbar.batch')
-    </button>
-
     {{-- Delete --}}
     <button type="button" class="btn btn-outline-danger btn-sm uni-btn-delete"
         @click="grid.deleteList()"

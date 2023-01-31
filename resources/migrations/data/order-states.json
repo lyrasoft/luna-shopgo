@@ -1,6 +1,7 @@
 [
     {
-        "title": "已取消",
+        "title": "Cancelled",
+        "title:zh_TW": "已取消",
         "alias": "cancelled",
         "default": 0,
         "color": "#777777",
@@ -15,7 +16,8 @@
         "rollback": 1
     },
     {
-        "title": "待取貨",
+        "title": "Delivered",
+        "title:zh_TW": "待取貨",
         "alias": "delivered",
         "default": 0,
         "color": "#777777",
@@ -30,7 +32,8 @@
         "rollback": 0
     },
     {
-        "title": "已過期",
+        "title": "Expired",
+        "title:zh_TW": "已過期",
         "alias": "expired",
         "default": 0,
         "color": "#d9534f",
@@ -45,7 +48,8 @@
         "rollback": 0
     },
     {
-        "title": "失敗",
+        "title": "Fail",
+        "title:zh_TW": "失敗",
         "alias": "fail",
         "default": 0,
         "color": "#d9534f",
@@ -60,7 +64,8 @@
         "rollback": 1
     },
     {
-        "title": "處理中",
+        "title": "Handling",
+        "title:zh_TW": "處理中",
         "alias": "handling",
         "default": 0,
         "color": "#5bc0de",
@@ -75,7 +80,8 @@
         "rollback": 0
     },
     {
-        "title": "待出貨",
+        "title": "Pending Shipped",
+        "title:zh_TW": "待出貨",
         "alias": "pending_shipped",
         "default": 0,
         "color": "#777777",
@@ -90,7 +96,8 @@
         "rollback": 0
     },
     {
-        "title": "揀貨中",
+        "title": "Pickup",
+        "title:zh_TW": "揀貨中",
         "alias": "picking",
         "default": 0,
         "color": "#777777",
@@ -105,7 +112,8 @@
         "rollback": 0
     },
     {
-        "title": "已取貨",
+        "title": "Received",
+        "title:zh_TW": "已取貨",
         "alias": "received",
         "default": 0,
         "color": "#5cb85c",
@@ -120,7 +128,8 @@
         "rollback": 0
     },
     {
-        "title": "已退款",
+        "title": "Refund",
+        "title:zh_TW": "已退款",
         "alias": "refunded",
         "default": 0,
         "color": "#337ab7",
@@ -135,7 +144,8 @@
         "rollback": 1
     },
     {
-        "title": "已拒絕",
+        "title": "Rejected",
+        "title:zh_TW": "已拒絕",
         "alias": "rejected",
         "default": 0,
         "color": "#d9534f",
@@ -150,7 +160,8 @@
         "rollback": 1
     },
     {
-        "title": "已退貨",
+        "title": "Returned",
+        "title:zh_TW": "已退貨",
         "alias": "returned",
         "default": 0,
         "color": "#337ab7",
@@ -165,7 +176,8 @@
         "rollback": 1
     },
     {
-        "title": "退貨申請中",
+        "title": "Return Request",
+        "title:zh_TW": "退貨申請中",
         "alias": "return_request",
         "default": 0,
         "color": "#777777",
@@ -180,7 +192,8 @@
         "rollback": 0
     },
     {
-        "title": "已出貨",
+        "title": "Shipped",
+        "title:zh_TW": "已出貨",
         "alias": "shipped",
         "default": 0,
         "color": "#337ab7",
@@ -195,7 +208,8 @@
         "rollback": 0
     },
     {
-        "title": "理貨中",
+        "title": "Tallying",
+        "title:zh_TW": "理貨中",
         "alias": "tallying",
         "default": 0,
         "color": "#777777",
@@ -210,7 +224,8 @@
         "rollback": 0
     },
     {
-        "title": "未付款",
+        "title": "Unpaid",
+        "title:zh_TW": "未付款",
         "alias": "unpaid",
         "default": 1,
         "color": "#f0ad4e",
@@ -225,7 +240,8 @@
         "rollback": 0
     },
     {
-        "title": "未取貨",
+        "title": "Unpick",
+        "title:zh_TW": "未取貨",
         "alias": "unpick",
         "default": 0,
         "color": "#337ab7",

@@ -171,7 +171,7 @@ $orm = $app->service(ORM::class);
 
                             {{-- State --}}
                             <td>
-                                <span class="badge px-3 py-2"
+                                <span class="badge px-3 py-2 w-100"
                                     style="{{ $state?->getColorCSS() ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
                                     {{ $state?->getTitle() ?: $entity->getStateText() }}
                                 </span>

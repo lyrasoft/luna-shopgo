@@ -13,6 +13,7 @@ namespace App\Seeder;
 
 use App\Entity\ProductTab;
 use App\Entity\ShopCategoryMap;
+use App\ShopGoPackage;
 use Lyrasoft\Luna\Entity\Article;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\Entity\Page;
@@ -30,8 +31,8 @@ use Windwalker\ORM\ORM;
  * @var DatabaseAdapter $db
  */
 $seeder->import(
-    static function () use ($seeder, $orm, $db) {
-        $faker = $seeder->faker('en_US');
+    static function (ShopGoPackage $shopGo) use ($seeder, $orm, $db) {
+        $faker = $seeder->faker($shopGo->config('fixtures.locale') ?: 'en_US');
 
         /** @var EntityMapper<ProductTab> $mapper */
         $mapper = $orm->mapper(ProductTab::class);
