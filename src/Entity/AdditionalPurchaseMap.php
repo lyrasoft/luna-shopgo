@@ -11,25 +11,23 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
-use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
- * The AdditionalPurchasis class.
+ * The AdditionalPurchaseMap class.
  */
-#[Table('additional_purchases', 'additional_purchasis')]
-class AdditionalPurchasis implements EntityInterface
+#[Table('additional_purchase_maps', 'additional_purchase_map')]
+class AdditionalPurchaseMap implements EntityInterface
 {
     use EntityTrait;
 
-    #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    #[Column('additional_purchase_id')]
+    protected int $additionalPurchaseId = 0;
 
     #[Column('attach_product_id')]
     protected int $attachProductId = 0;
@@ -40,23 +38,20 @@ class AdditionalPurchasis implements EntityInterface
     #[Column('primary_product_id')]
     protected int $primaryProductId = 0;
 
-    #[Column('price')]
-    protected float $price = 0.0;
-
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
         //
     }
 
-    public function getId(): ?int
+    public function getAdditionalPurchaseId(): int
     {
-        return $this->id;
+        return $this->additionalPurchaseId;
     }
 
-    public function setId(?int $id): static
+    public function setAdditionalPurchaseId(int $additionalPurchaseId): static
     {
-        $this->id = $id;
+        $this->additionalPurchaseId = $additionalPurchaseId;
 
         return $this;
     }
@@ -93,18 +88,6 @@ class AdditionalPurchasis implements EntityInterface
     public function setPrimaryProductId(int $primaryProductId): static
     {
         $this->primaryProductId = $primaryProductId;
-
-        return $this;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }

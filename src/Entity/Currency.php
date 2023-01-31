@@ -351,4 +351,15 @@ class Currency implements EntityInterface
 
         return $this;
     }
+
+    public function getInputStep(): string
+    {
+        $place = $this->getDecimalPlace();
+
+        if ($place === 0) {
+            return '1';
+        }
+
+        return '0.' . str_repeat('0', $place - 1) . '1';
+    }
 }

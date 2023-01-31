@@ -30,5 +30,6 @@ return [
     __DIR__ . '/product-seeder.php',
     __DIR__ . '/discount-seeder.php',
     __DIR__ . '/address-seeder.php',
+    __DIR__ . '/additional-purchase-seeder.php',
     __DIR__ . '/order-seeder.php',
 ];

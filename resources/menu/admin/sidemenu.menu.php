@@ -65,6 +65,9 @@ $menu->link($lang('shopgo.product.category.title'))
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.title')))
     ->to($nav->to('product_list'));
 
+$menu->link($lang('unicorn.title.grid', title: $lang('shopgo.additional.purchase.title')))
+    ->to($nav->to('additional_purchase_list'));
+
 $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.feature.title')))
     ->to($nav->to('product_feature_list'));
 

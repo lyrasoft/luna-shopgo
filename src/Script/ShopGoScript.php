@@ -21,7 +21,7 @@ class ShopGoScript extends AbstractScript
     public function vueUtilities(): void
     {
         if ($this->available()) {
-            $this->js('js/shopgo/shopgo-vue-utilities.js');
+            $this->js('@shopgo/shopgo-vue-utilities.js');
         }
     }
 }
