@@ -49,8 +49,7 @@ class ProductVariantListField extends SqlListField
     {
         parent::prepareQuery($query);
 
-        $query->where('product_id', $this->getProductId())
-            ->where('primary', 0);
+        $query->where('product_id', $this->getProductId());
     }
 
     public function createItemOption(object $item): DOMElement

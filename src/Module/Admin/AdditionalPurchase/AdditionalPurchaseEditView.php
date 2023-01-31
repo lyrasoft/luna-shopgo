@@ -69,15 +69,17 @@ class AdditionalPurchaseEditView implements ViewModelInterface
 
         $productId = $currentItem['attach_product_id'] ?? 0;
 
+        $product = $this->orm->findOne(Product::class, $productId);
+
         $form = $this->formFactory
-            ->create(EditForm::class, productId: $productId)
+            ->create(EditForm::class, product: $product)
             ->setNamespace('item');
 
         if ($item) {
             $productIds = $this->orm->findColumn(
                 AdditionalPurchaseMap::class,
-                'primary_product_id',
-                ['attach_variant_id' => $item->getAttachVariantId()]
+                'target_product_id',
+                ['additional_purchase_id' => $item->getId()]
             )->dump();
 
             $form->fill(['products' => $productIds]);

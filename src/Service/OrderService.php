@@ -42,7 +42,7 @@ class OrderService
 
     public function transition(
         Order|int $order,
-        OrderState|int $to,
+        OrderState|string|int $to,
         OrderHistoryType $type,
         string $message = '',
         bool $notify = false
@@ -51,21 +51,27 @@ class OrderService
             $order = $this->orm->findOne(Order::class, $order);
         }
 
-        if (!$to instanceof OrderState) {
+        if (is_int($to)) {
             $to = $this->orm->findOne(OrderState::class, $to);
+        } elseif (is_string($to)) {
+            $to = $this->orm->findOne(OrderState::class, ['alias' => $to]);
         }
 
-        $order = $this->orderStateService->changeState(
-            $order,
-            $to
-        );
+        return $this->orm->getDb()->transaction(
+            function () use ($notify, $message, $type, $to, $order) {
+                $order = $this->orderStateService->changeState(
+                    $order,
+                    $to
+                );
 
-        return $this->orderHistoryService->createHistoryAndNotify(
-            $order,
-            $to,
-            $type,
-            $message,
-            $notify,
+                return $this->orderHistoryService->createHistoryAndNotify(
+                    $order,
+                    $to,
+                    $type,
+                    $message,
+                    $notify,
+                );
+            }
         );
     }
 

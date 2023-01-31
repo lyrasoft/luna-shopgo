@@ -38,15 +38,11 @@ class OrderStateService
             return $order;
         }
 
-        $this->orm->getDb()->transaction(
-            function () use ($to, $order) {
-                $order->setState($to);
+        $order->setState($to);
 
-                $this->mutateOrderByState($order, $to);
+        $this->mutateOrderByState($order, $to);
 
-                $this->orm->updateOne(Order::class, $order);
-            }
-        );
+        $this->orm->updateOne(Order::class, $order);
 
         return $order;
     }

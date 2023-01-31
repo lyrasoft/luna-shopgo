@@ -35,8 +35,8 @@ class AdditionalPurchaseMap implements EntityInterface
     #[Column('attach_variant_id')]
     protected int $attachVariantId = 0;
 
-    #[Column('primary_product_id')]
-    protected int $primaryProductId = 0;
+    #[Column('target_product_id')]
+    protected int $targetProductId = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -80,14 +80,14 @@ class AdditionalPurchaseMap implements EntityInterface
         return $this;
     }
 
-    public function getPrimaryProductId(): int
+    public function getTargetProductId(): int
     {
-        return $this->primaryProductId;
+        return $this->targetProductId;
     }
 
-    public function setPrimaryProductId(int $primaryProductId): static
+    public function setTargetProductId(int $targetProductId): static
     {
-        $this->primaryProductId = $primaryProductId;
+        $this->targetProductId = $targetProductId;
 
         return $this;
     }

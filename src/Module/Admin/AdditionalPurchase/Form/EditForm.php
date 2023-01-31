@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\AdditionalPurchase\Form;
 
+use App\Entity\Product;
 use App\Field\ProductModalField;
 use App\Field\ProductVariantListField;
 use App\Traits\CurrencyAwareTrait;
@@ -20,10 +21,12 @@ use Unicorn\Field\LayoutField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
+use Windwalker\Form\Field\ListField;
 use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
+use Windwalker\Query\Query;
 
 /**
  * The EditForm class.
@@ -33,7 +36,7 @@ class EditForm implements FieldDefinitionInterface
     use TranslatorTrait;
     use CurrencyAwareTrait;
 
-    public function __construct(protected int $productId)
+    public function __construct(protected ?Product $product)
     {
     }
 
@@ -55,17 +58,33 @@ class EditForm implements FieldDefinitionInterface
             'basic',
             function (Form $form) {
                 $form->add('attach_product_id', ProductModalField::class)
-                    ->label($this->trans('shopgo.additional.purchase.attach.product'))
+                    ->label($this->trans('shopgo.additional.purchase.field.attach.product'))
                     ->required(true);
+
+                $variants = $this->product?->getVariants() ?? 0;
 
                 $form->add('attach_variant_id', ProductVariantListField::class)
                     ->label($this->trans('shopgo.additional.purchase.field.attach_variant_id'))
-                    ->option($this->trans('unicorn.select.placeholder'), '')
-                    ->setProductId($this->productId)
-                    ->addClass('has-tom-select');
+                    // ->option($this->trans('unicorn.select.placeholder'), '')
+                    ->setProductId($this->product?->getId() ?: 0)
+                    ->configureQuery(
+                        function (Query $query) use ($variants) {
+                            if ($variants > 0) {
+                                $query->where('primary', 0);
+                            } else {
+                                $query->where('primary', 1);
+                            }
+                        }
+                    )
+                    ->tapIf(
+                        $variants === 0,
+                        fn (ListField $field) => $field->addWrapperClass('d-none')
+                    )
+                    ->addClass('has-tom-select')
+                    ->required(true);
 
                 $form->add('products', ProductModalField::class)
-                    ->label($this->trans('shopgo.additional.purchase.field.products'))
+                    ->label($this->trans('shopgo.additional.purchase.field.target.products'))
                     ->hasImage(true)
                     ->multiple(true);
             }

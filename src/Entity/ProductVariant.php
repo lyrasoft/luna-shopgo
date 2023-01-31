@@ -255,7 +255,7 @@ class ProductVariant implements EntityInterface
         return $this;
     }
 
-    public function isbn(): string
+    public function getIsbn(): string
     {
         return $this->isbn;
     }
@@ -474,5 +474,20 @@ class ProductVariant implements EntityInterface
     public function getProduct(): ?Product
     {
         return $this->product ?? null;
+    }
+
+    public function getSearchIndex(): string
+    {
+        $indexes = [
+            $this->getHash(),
+            $this->getSku(),
+            $this->getUpc(),
+            $this->getEan(),
+            $this->getJan(),
+            $this->getIsbn(),
+            $this->getMpn(),
+        ];
+
+        return implode('|', array_filter($indexes));
     }
 }

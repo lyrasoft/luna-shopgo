@@ -54,7 +54,7 @@ class AdditionalPurchaseRepository implements ManageRepositoryInterface, ListRep
                 'additional_purchase.attach_product_id',
                 'product.id',
             )
-            ->selectRaw('IFNULL(map.count, 0) AS primary_product_counts')
+            ->selectRaw('IFNULL(map.count, 0) AS target_product_counts')
             ->leftJoin(
                 fn(Query $query) => $query->select('additional_purchase_id')
                     ->selectRaw('COUNT(*) AS count')

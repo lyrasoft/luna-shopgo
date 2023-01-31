@@ -82,7 +82,7 @@ $seeder->import(
                     $map->setAdditionalPurchaseId($ap->getId());
                     $map->setAttachProductId($attachmentProduct->getId());
                     $map->setAttachVariantId($variant->getId());
-                    $map->setPrimaryProductId($chosenPrimaryProduct->getId());
+                    $map->setTargetProductId($chosenPrimaryProduct->getId());
 
                     $orm->createOne(AdditionalPurchaseMap::class, $map);
 

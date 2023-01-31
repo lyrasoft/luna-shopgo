@@ -49,50 +49,15 @@ class ProductController
     ): mixed {
         $form = $app->make(EditForm::class);
 
-        $controller->prepareSave(
-            function (PrepareSaveEvent $event) use ($app) {
-                $data = &$event->getData();
-            }
-        );
-
-        $controller->beforeSave(
-            function (BeforeSaveEvent $event) use ($app) {
-                $data = &$event->getData();
-            }
-        );
-
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($repository, $app) {
                 $orm = $event->getORM();
                 $data = $event->getData();
 
                 // Save Categories
-                $map = new ShopCategoryMap();
-                $map->setType('product');
-                $map->setTargetId((int) $data['id']);
-                $map->setCategoryId($data['category_id']);
-                $map->setPrimary(true);
+                $this->saveCategories($app, $orm, $data);
 
-                $maps[] = $map;
-
-                $categories = $app->input('item')['sub_categories'];
-
-                foreach ($categories as $categoryId) {
-                    $map = new ShopCategoryMap();
-                    $map->setType('product');
-                    $map->setTargetId((int) $data['id']);
-                    $map->setCategoryId((int) $categoryId);
-                    $map->setPrimary(false);
-
-                    $maps[] = $map;
-                }
-
-                $orm->sync(
-                    ShopCategoryMap::class,
-                    $maps,
-                    ['type' => 'product', 'target_id' => $data['id']],
-                    ['type', 'category_id']
-                );
+                $searchIndexes = [];
 
                 $variantData = $app->input('item')['variant'];
 
@@ -104,10 +69,16 @@ class ProductController
 
                 $mainVariant = $orm->hydrateEntity($variantData, $mainVariant);
 
+                $searchIndexes[] = $mainVariant->getSearchIndex();
+
                 $orm->updateOne(ProductVariant::class, $mainVariant);
 
                 // Sub Variants
                 $variants = $this->saveSubVariants($app, $orm, (int) $data['id']);
+
+                foreach ($variants as $variant) {
+                    $searchIndexes[] = $variant->getSearchIndex();
+                }
 
                 // Save Discounts
                 $this->saveDiscounts($app, $orm, (int) $data['id']);
@@ -115,6 +86,7 @@ class ProductController
                 // Save variant info
                 $data['variants'] = count($variants);
                 $data['primary_variant_id'] = $mainVariant->getId();
+                $data['search_index'] = implode('|', array_filter($searchIndexes));
 
                 $repository->save($data);
             }
@@ -142,6 +114,47 @@ class ProductController
     /**
      * @param  AppContext  $app
      * @param  ORM         $orm
+     * @param  array       $data
+     *
+     * @return  array<ShopCategoryMap>
+     */
+    protected function saveCategories(AppContext $app, ORM $orm, array $data): array
+    {
+        // Primary
+        $map = new ShopCategoryMap();
+        $map->setType('product');
+        $map->setTargetId((int) $data['id']);
+        $map->setCategoryId($data['category_id']);
+        $map->setPrimary(true);
+
+        $maps[] = $map;
+
+        // Sub
+        $categories = $app->input('item')['sub_categories'];
+
+        foreach ($categories as $categoryId) {
+            $map = new ShopCategoryMap();
+            $map->setType('product');
+            $map->setTargetId((int) $data['id']);
+            $map->setCategoryId((int) $categoryId);
+            $map->setPrimary(false);
+
+            $maps[] = $map;
+        }
+
+        $orm->sync(
+            ShopCategoryMap::class,
+            $maps,
+            ['type' => 'product', 'target_id' => $data['id']],
+            ['type', 'category_id']
+        );
+
+        return $maps;
+    }
+
+    /**
+     * @param  AppContext  $app
+     * @param  ORM         $orm
      * @param  int         $productId
      *
      * @return  Collection<ProductVariant>
@@ -151,7 +164,7 @@ class ProductController
      */
     protected function saveSubVariants(AppContext $app, ORM $orm, int $productId): Collection
     {
-        $variants = $app->input('variants');
+        $variants = $app->input('variants') ?: throw new \RuntimeException('No variants data');
         $chronosService = $app->service(ChronosService::class);
 
         $variants = collect(

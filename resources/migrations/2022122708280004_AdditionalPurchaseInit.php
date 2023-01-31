@@ -13,7 +13,6 @@ namespace App\Migration;
 
 use App\Entity\AdditionalPurchase;
 use App\Entity\AdditionalPurchaseMap;
-use App\Entity\AdditionalPurchasis;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
@@ -53,12 +52,12 @@ $mig->up(
                 $schema->integer('additional_purchase_id');
                 $schema->integer('attach_product_id');
                 $schema->integer('attach_variant_id');
-                $schema->integer('primary_product_id');
+                $schema->integer('target_product_id');
 
                 $schema->addIndex('additional_purchase_id');
                 $schema->addIndex('attach_product_id');
                 $schema->addIndex('attach_variant_id');
-                $schema->addIndex('primary_product_id');
+                $schema->addIndex('target_product_id');
             }
         );
     }

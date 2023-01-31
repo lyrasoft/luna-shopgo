@@ -11,14 +11,17 @@ declare(strict_types=1);
 
 namespace App\Module\Admin\AdditionalPurchase;
 
+use App\Entity\Product;
 use App\Module\Admin\AdditionalPurchase\Form\EditForm;
 use App\Repository\AdditionalPurchaseRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\ORM;
 
 /**
  * The AdditionalPurchaseController class.
@@ -30,6 +33,8 @@ class AdditionalPurchaseController
         AppContext $app,
         CrudController $controller,
         Navigator $nav,
+        FormFactory $formFactory,
+        ORM $orm,
         #[Autowire] AdditionalPurchaseRepository $repository,
     ): mixed {
         $task = $app->input('task');
@@ -40,7 +45,10 @@ class AdditionalPurchaseController
             return $nav->back();
         }
 
-        $form = $app->make(EditForm::class);
+        $productId = $app->input('item')['attach_product_id'] ?? 0;
+        $product = $orm->findOne(Product::class, $productId);
+
+        $form = $formFactory->create(EditForm::class, product: $product);
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

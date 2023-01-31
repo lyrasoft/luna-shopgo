@@ -145,7 +145,11 @@ $seeder->import(
             );
             $variant->setState(1);
 
+            $searchIndexes = [];
+
             $mainVariant = $orm->createOne(ProductVariant::class, $variant);
+
+            $searchIndexes[] = $mainVariant->getSearchIndex();
 
             // Sub Variants
             $currentFeatures = $faker->randomElements($features, random_int(0, 4));
@@ -192,6 +196,8 @@ $seeder->import(
 
                 $orm->createOne(ProductVariant::class, $variant);
 
+                $searchIndexes[] = $variant->getSearchIndex();
+
                 $seeder->outCounting();
             }
 
@@ -199,6 +205,7 @@ $seeder->import(
                 [
                     'variants' => count($variantGroups),
                     'primary_variant_id' => $mainVariant->getId(),
+                    'search_index' => implode('|', array_filter($searchIndexes)),
                 ],
                 ['id' => $item->getId()]
             );

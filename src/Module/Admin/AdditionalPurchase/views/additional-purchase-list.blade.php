@@ -97,7 +97,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                         {{-- Count --}}
                         <th class="text-nowrap text-end">
                             <x-sort field="map.count">
-                                @lang('shopgo.additional.purchase.field.count')
+                                @lang('shopgo.additional.purchase.field.targets.count')
                             </x-sort>
                         </th>
 
@@ -185,7 +185,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             {{-- Count --}}
                             <td class="text-end">
                                 <span class="badge bg-primary">
-                                    {{ $item->primary_product_counts ?: 0 }}
+                                    {{ $item->target_product_counts ?: 0 }}
                                 </span>
                             </td>
 

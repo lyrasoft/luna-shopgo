@@ -88,6 +88,13 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </x-sort>
                         </th>
 
+                        {{-- Model --}}
+                        <th class="text-nowrap">
+                            <x-sort field="product.model">
+                                @lang('shopgo.product.field.model')
+                            </x-sort>
+                        </th>
+
                         {{-- Price --}}
                         <th class="text-nowrap text-end">
                             <x-sort field="variant.price">
@@ -181,6 +188,20 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                         {{ $item->category?->title }}
                                     </span>
                                 </div>
+
+                                @if ($item->variant->sku)
+                                    <div class="mt-1 small text-muted"
+                                        data-bs-toggle="tooltip"
+                                        title="@lang('shopgo.product.field.sku')"
+                                    >
+                                        #{{ $item->variant->sku }}
+                                    </div>
+                                @endif
+                            </td>
+
+                            {{-- Model --}}
+                            <td>
+                                {{ $entity->getModel() ?: '=' }}
                             </td>
 
                             {{-- Price --}}

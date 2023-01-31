@@ -41,14 +41,6 @@ use Windwalker\Form\Form;
         @lang('unicorn.toolbar.new')
     </a>
 
-    {{-- Duplicate --}}
-    <button type="button" class="btn btn-info btn-sm uni-btn-duplicate"
-        @click="grid.form.post()"
-    >
-        <i class="fa fa-clone"></i>
-        @lang('unicorn.toolbar.duplicate')
-    </button>
-
     {{-- Change State --}}
     <x-state-dropdown color-on="text"
         button-style="width: 100%"
