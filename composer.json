@@ -1,0 +1,22 @@
+{
+    "name": "lyrasoft/luna-shopgo",
+    "description": "Luna ShopGo package",
+    "type": "luna-package",
+    "require": {
+        "brick/math": "^0.11.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lyrasoft\\ShopGo\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Simon Asika",
+            "email": "asika32764@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta"
+}
+
