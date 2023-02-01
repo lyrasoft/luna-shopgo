@@ -64,7 +64,7 @@ class EditForm implements FieldDefinitionInterface
                 $variants = $this->product?->getVariants() ?? 0;
 
                 $form->add('attach_variant_id', ProductVariantListField::class)
-                    ->label($this->trans('shopgo.additional.purchase.field.attach_variant_id'))
+                    ->label($this->trans('shopgo.additional.purchase.field.attach_variant'))
                     // ->option($this->trans('unicorn.select.placeholder'), '')
                     ->setProductId($this->product?->getId() ?: 0)
                     ->configureQuery(
