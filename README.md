@@ -22,7 +22,7 @@ Then copy files to project
 php windwalker pkg:install lyrasoft/shopgo -t routes -t migrations -t seeders
 ```
 
-Seeders
+### Seeders
 
 Add these files to `resources/seeders/main.php`
 
@@ -62,7 +62,71 @@ Add these types to `category-seeder.php`
         ];
 ```
 
-Languages
+### Global Settings
+
+Open `/etc/packages/shopgo.php`, you can configure there settings:
+
+```php
+<?php
+// ...
+
+return [
+    'shopgo' => [
+        // ...
+
+        'currency' => [
+            'main' => 'USD' // Can be ID or code
+        ],
+
+        'fixtures' => [
+            // The migration/seeder faker locale
+            'locale' => 'en_US',
+        ],
+
+        'address' => [
+            // Use fullname or firstname/lastname
+            'use_fullname' => false,
+            'use_fulladdress' => false,
+        ],
+
+        'order_no' => [
+            // Order No mode, cab be:
+            // INCREMENT_ID: S0000000123
+            // DAILY_SEQUENCE: S20230105000123
+            // SEQUENCE_HASHES: SfY5Sv8fhJ
+            // RANDOM_HASHES: Skf8q2FgHJ38kl (longer)
+            'mode' => OrderNoMode::INCREMENT_ID(),
+            'prefix' => 'S',
+            'hash_offsets' => 100000, // Add offset to hash seed to make no un-guessable
+            'sequence_day_format' => 'Ymd',
+            // Base62
+            // If you want to update this, run:
+            // `php -r "echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');"`
+            'hash_seed' => 'E7G5FHBK9NTifV8tZban2ASvQLeRyYwMWqdhDXs61OuPg0Iploc3kUj4rCJmxz'
+        ],
+
+        'payment_no' => [
+            // This is the max length of payment No.
+            // For intance, Ecpay's limit is 20
+            'maxlength' => 20,
+        ],
+
+        'invoice_no' => [
+            'prefix' => 'INV'
+        ],
+    ]
+];
+
+```
+
+After you configure the base settings, you should not change it after site release.
+And then you can run migtaiotns/seeders, all orders No and faker locale will use this setting.
+
+```shell
+php windwalker mig:reset -fs
+```
+
+### Language Files
 
 Add this line to admin & front middleware if you don't want to override languages:
 
@@ -81,14 +145,99 @@ php windwalker pkg:install lyrasoft/shopgo -t lang
 Edit `resources/menu/admin/sidemenu.menu.php`
 
 ```php
-// Category
-$menu->link('作品分類')
-    ->to($nav->to('category_list', ['type' => 'portfolio']))
-    ->icon('fal fa-sitemap');
+$menu->link('商城管理', '#')
+    ->icon('fal fa-shop');
 
-// Portfolio
-$menu->link('作品管理')
-    ->to($nav->to('portfolio_list'))
-    ->icon('fal fa-images');
+$menu->registerChildren(
+    function (MenuBuilder $menu) use ($nav, $lang) {
+        $menu->link($lang('shopgo.product.category.title'))
+            ->to($nav->to('category_list', ['type' => 'product']))
+            ->icon('fal fa-sitemap');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.title')))
+            ->to($nav->to('product_list'))
+            ->icon('fal fa-box-open');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.additional.purchase.title')))
+            ->to($nav->to('additional_purchase_list'))
+            ->icon('fal fa-cart-plus');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.feature.title')))
+            ->to($nav->to('product_feature_list'))
+            ->icon('fal fa-object-ungroup');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.group.title')))
+            ->to($nav->to('product_attribute_group_list'))
+            ->icon('fal fa-object-group');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.attribute.title')))
+            ->to($nav->to('product_attribute_list'))
+            ->icon('fal fa-rectangle-list');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.product.tab.title')))
+            ->to($nav->to('product_tab_list'))
+            ->icon('fal fa-pager');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.manufacturer.title')))
+            ->to($nav->to('manufacturer_list'))
+            ->icon('fal fa-building');
+    }
+);
+
+$menu->link('優惠', '#')
+    ->icon('fal fa-cart-arrow-down');
+
+$menu->registerChildren(
+    function (MenuBuilder $menu) use ($nav, $lang) {
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.discount.title')))
+            ->to($nav->to('discount_list'))
+            ->icon('fal fa-percent');
+    }
+);
+
+$menu->link('訂單', '#')
+    ->icon('fal fa-file-invoice-dollar');
+
+$menu->registerChildren(
+    function (MenuBuilder $menu) use ($nav, $lang) {
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.order.title')))
+            ->to($nav->to('order_list'))
+            ->icon('fal fa-file-invoice-dollar');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('luna.order_state.title')))
+            ->to($nav->to('order_state_list'))
+            ->icon('fal fa-list');
+    }
+);
+
+$menu->link('商城設定', '#')
+    ->icon('fal fa-cogs');
+
+$menu->registerChildren(
+    function (MenuBuilder $menu) use ($nav, $lang) {
+        $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
+            ->to($nav->to('currency_list'))
+            ->icon('fal fa-sterling-sign');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
+            ->to($nav->to('location_list'))
+            ->icon('fa-solid fa-marker')
+            ->icon('fal fa-earth-asia');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('luna.payment.title')))
+            ->to($nav->to('payment_list'))
+            ->icon('fa-solid fa-dollar')
+            ->icon('fal fa-cash-register');
+
+        $menu->link($lang('unicorn.title.grid', title: $lang('luna.shipping.title')))
+            ->to($nav->to('shipping_list'))
+            ->icon('fal fa-truck');
+
+        $menu->link($lang('luna.config.title', $lang('shopgo.config.type.shop')))
+            ->to($nav->to('config_shopgo_shop'))
+            ->icon('fal fa-gear');
+    }
+);
+
 ```
 
