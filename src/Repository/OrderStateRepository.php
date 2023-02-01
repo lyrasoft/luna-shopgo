@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Entity\OrderState;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;

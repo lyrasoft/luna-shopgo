@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Payment;
+namespace Lyrasoft\ShopGo\Module\Admin\Payment;
 
-use Lyraoft\ShopGo\Module\Admin\Payment\Form\GridForm;
-use Lyraoft\ShopGo\Repository\PaymentRepository;
+use Lyrasoft\ShopGo\Module\Admin\Payment\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

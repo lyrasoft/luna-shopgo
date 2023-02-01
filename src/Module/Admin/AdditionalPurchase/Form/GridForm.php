@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
 
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\Language\TranslatorTrait;

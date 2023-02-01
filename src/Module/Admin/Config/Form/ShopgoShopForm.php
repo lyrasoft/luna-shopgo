@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Config\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Config\Form;
 
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\FieldDefinitionInterface;

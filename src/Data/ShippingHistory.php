@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Data;
+namespace Lyrasoft\ShopGo\Data;
 
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\Data\ValueObject;

@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
 
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Field\ProductModalField;
-use Lyraoft\ShopGo\Field\ProductVariantListField;
-use Lyraoft\ShopGo\Traits\CurrencyAwareTrait;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Field\ProductModalField;
+use Lyrasoft\ShopGo\Field\ProductVariantListField;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\SwitcherField;

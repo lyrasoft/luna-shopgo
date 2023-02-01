@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
-use Lyraoft\ShopGo\Data\ListOptionCollection;
-use Lyraoft\ShopGo\Enum\ProductFeatureType;
+use Lyrasoft\ShopGo\Data\ListOptionCollection;
+use Lyrasoft\ShopGo\Enum\ProductFeatureType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Unicorn\Enum\BasicState;

@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
-use Lyraoft\ShopGo\Service\OrderStateService;
+use Lyrasoft\ShopGo\Service\OrderStateService;
 use Lyrasoft\Luna\Attributes\Slugify;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;

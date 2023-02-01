@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Workflow;
+namespace Lyrasoft\ShopGo\Workflow;
 
-use Lyraoft\ShopGo\Service\OrderStateService;
+use Lyrasoft\ShopGo\Service\OrderStateService;
 use Unicorn\Attributes\StateMachine;
 use Unicorn\Workflow\AbstractWorkflow;
 use Unicorn\Workflow\WorkflowController;

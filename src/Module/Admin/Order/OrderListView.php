@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Order;
+namespace Lyrasoft\ShopGo\Module\Admin\Order;
 
-use Lyraoft\ShopGo\Module\Admin\Order\Form\GridForm;
-use Lyraoft\ShopGo\Repository\OrderRepository;
-use Lyraoft\ShopGo\Traits\CurrencyAwareTrait;
+use Lyrasoft\ShopGo\Module\Admin\Order\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\OrderRepository;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

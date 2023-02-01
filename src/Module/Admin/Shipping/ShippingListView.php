@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Shipping;
+namespace Lyrasoft\ShopGo\Module\Admin\Shipping;
 
-use Lyraoft\ShopGo\Module\Admin\Shipping\Form\GridForm;
-use Lyraoft\ShopGo\Repository\ShippingRepository;
+use Lyrasoft\ShopGo\Module\Admin\Shipping\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\ShippingRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

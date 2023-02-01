@@ -9,16 +9,16 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
-use Lyraoft\ShopGo\Data\InvoiceData;
-use Lyraoft\ShopGo\Data\PaymentData;
-use Lyraoft\ShopGo\Data\PaymentInfo;
-use Lyraoft\ShopGo\Data\ShippingData;
-use Lyraoft\ShopGo\Data\ShippingHistoryCollection;
-use Lyraoft\ShopGo\Data\ShippingInfo;
-use Lyraoft\ShopGo\Enum\InvoiceType;
-use Lyraoft\ShopGo\Workflow\OrderStateWorkflow;
+use Lyrasoft\ShopGo\Data\InvoiceData;
+use Lyrasoft\ShopGo\Data\PaymentData;
+use Lyrasoft\ShopGo\Data\PaymentInfo;
+use Lyrasoft\ShopGo\Data\ShippingData;
+use Lyrasoft\ShopGo\Data\ShippingHistoryCollection;
+use Lyrasoft\ShopGo\Data\ShippingInfo;
+use Lyrasoft\ShopGo\Enum\InvoiceType;
+use Lyrasoft\ShopGo\Workflow\OrderStateWorkflow;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Windwalker\Core\DateTime\Chronos;

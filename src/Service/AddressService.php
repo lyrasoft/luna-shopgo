@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Data\Contract\AddressAwareInterface;
-use Lyraoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Entity\Location;
 use Windwalker\Utilities\SimpleTemplate;
 
 /**

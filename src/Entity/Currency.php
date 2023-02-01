@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Enum\SignPosition;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Enum\SignPosition;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\Luna\Entity\User;

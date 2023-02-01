@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\Discount;
-use Lyraoft\ShopGo\Enum\DiscountType;
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Enum\DiscountType;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;

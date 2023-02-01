@@ -1,9 +1,10 @@
 {
-    "name": "lyrasoft/luna-shopgo",
+    "name": "lyrasoft/shopgo",
     "description": "Luna ShopGo package",
     "type": "luna-package",
     "require": {
-        "brick/math": "^0.11.0"
+        "brick/math": "^0.11.0",
+        "lyrasoft/sequence": "^1.0"
     },
     "license": "MIT",
     "autoload": {
@@ -17,6 +18,15 @@
             "email": "asika32764@gmail.com"
         }
     ],
+    "extra": {
+        "windwalker":{
+            "packages": [
+                "Lyrasoft\\ShopGo\\ShopGoPackage"
+            ],
+            "modules": [
+                "src/Module"
+            ]
+        }
+    },
     "minimum-stability": "beta"
 }
-

@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Data\ListOption;
-use Lyraoft\ShopGo\Data\ListOptionCollection;
+use Lyrasoft\ShopGo\Data\ListOption;
+use Lyrasoft\ShopGo\Data\ListOptionCollection;
 
 /**
  * The VariantService class.

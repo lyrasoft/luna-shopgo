@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Data;
+namespace Lyrasoft\ShopGo\Data;
 
-use Lyraoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
 use Windwalker\Data\ValueObject;
 
 /**

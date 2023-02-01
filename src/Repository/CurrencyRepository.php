@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\Luna\Entity\User;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;

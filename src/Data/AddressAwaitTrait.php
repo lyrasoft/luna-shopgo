@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Data;
+namespace Lyrasoft\ShopGo\Data;
 
 /**
  * Trait AddressingDataTrait

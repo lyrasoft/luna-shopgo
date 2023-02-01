@@ -9,15 +9,15 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Product;
+namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
-use Lyraoft\ShopGo\Entity\Discount;
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Entity\ProductVariant;
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
-use Lyraoft\ShopGo\Enum\DiscountType;
-use Lyraoft\ShopGo\Module\Admin\Product\Form\EditForm;
-use Lyraoft\ShopGo\Repository\ProductRepository;
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Enum\DiscountType;
+use Lyrasoft\ShopGo\Module\Admin\Product\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\ProductRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

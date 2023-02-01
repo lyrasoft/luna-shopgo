@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Entity\Currency;
-use Lyraoft\ShopGo\ShopGoPackage;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;

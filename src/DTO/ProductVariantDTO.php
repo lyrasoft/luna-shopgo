@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\DTO;
+namespace Lyrasoft\ShopGo\DTO;
 
 use Windwalker\Data\AbstractDTO;
 

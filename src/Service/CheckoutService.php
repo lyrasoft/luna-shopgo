@@ -9,19 +9,19 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Cart\CartData;
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Cart\Price\PriceSet;
-use Lyraoft\ShopGo\Entity\Order;
-use Lyraoft\ShopGo\Entity\OrderHistory;
-use Lyraoft\ShopGo\Entity\OrderItem;
-use Lyraoft\ShopGo\Entity\OrderState;
-use Lyraoft\ShopGo\Entity\OrderTotal;
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Entity\ProductVariant;
-use Lyraoft\ShopGo\Enum\OrderHistoryType;
+use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderHistory;
+use Lyrasoft\ShopGo\Entity\OrderItem;
+use Lyrasoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Entity\OrderTotal;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Enum\OrderHistoryType;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;

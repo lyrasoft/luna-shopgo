@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductAttribute\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductAttribute\Form;
 
-use Lyraoft\ShopGo\Enum\ProductAttributeType;
+use Lyrasoft\ShopGo\Enum\ProductAttributeType;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;

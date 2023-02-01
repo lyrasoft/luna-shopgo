@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Data\Contract\AddressAwareInterface;
-use Lyraoft\ShopGo\Entity\Location;
-use Lyraoft\ShopGo\Enum\LocationType;
+use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Enum\LocationType;
 use Windwalker\ORM\Nested\Position;
 use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;

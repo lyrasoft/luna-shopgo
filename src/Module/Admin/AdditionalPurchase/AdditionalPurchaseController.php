@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\AdditionalPurchase;
+namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase;
 
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Module\Admin\AdditionalPurchase\Form\EditForm;
-use Lyraoft\ShopGo\Repository\AdditionalPurchaseRepository;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\AdditionalPurchaseRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;

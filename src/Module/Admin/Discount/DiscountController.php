@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Discount;
+namespace Lyrasoft\ShopGo\Module\Admin\Discount;
 
-use Lyraoft\ShopGo\Entity\Discount;
-use Lyraoft\ShopGo\Module\Admin\Discount\Form\EditForm;
-use Lyraoft\ShopGo\Repository\DiscountRepository;
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Module\Admin\Discount\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\DiscountRepository;
 use Lyrasoft\Luna\User\Password;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;

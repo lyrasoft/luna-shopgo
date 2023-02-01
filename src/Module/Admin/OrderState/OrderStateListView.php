@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\OrderState;
+namespace Lyrasoft\ShopGo\Module\Admin\OrderState;
 
-use Lyraoft\ShopGo\Module\Admin\OrderState\Form\GridForm;
-use Lyraoft\ShopGo\Repository\OrderStateRepository;
+use Lyrasoft\ShopGo\Module\Admin\OrderState\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\OrderStateRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Location\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Location\Form;
 
-use Lyraoft\ShopGo\Entity\Location;
-use Lyraoft\ShopGo\Enum\LocationType;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Enum\LocationType;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;

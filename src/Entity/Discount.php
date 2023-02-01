@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
-use Lyraoft\ShopGo\Enum\DiscountApplyTo;
-use Lyraoft\ShopGo\Enum\DiscountCombine;
-use Lyraoft\ShopGo\Enum\DiscountMethod;
-use Lyraoft\ShopGo\Enum\DiscountType;
+use Lyrasoft\ShopGo\Enum\DiscountApplyTo;
+use Lyrasoft\ShopGo\Enum\DiscountCombine;
+use Lyrasoft\ShopGo\Enum\DiscountMethod;
+use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
 use Unicorn\Enum\BasicState;

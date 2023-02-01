@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Location;
+namespace Lyrasoft\ShopGo\Module\Admin\Location;
 
-use Lyraoft\ShopGo\Entity\Location;
-use Lyraoft\ShopGo\Module\Admin\Location\Form\GridForm;
-use Lyraoft\ShopGo\Repository\LocationRepository;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Module\Admin\Location\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\LocationRepository;
 use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;

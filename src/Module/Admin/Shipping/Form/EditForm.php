@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Shipping\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Shipping\Form;
 
-use Lyraoft\ShopGo\Field\LocationModalField;
-use Lyraoft\ShopGo\Field\PaymentModalField;
+use Lyrasoft\ShopGo\Field\LocationModalField;
+use Lyrasoft\ShopGo\Field\PaymentModalField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;

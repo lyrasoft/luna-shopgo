@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Field;
+namespace Lyrasoft\ShopGo\Field;
 
-use Lyraoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Unicorn\Field\SqlListField;
 use Windwalker\DOM\DOMElement;
 use Windwalker\Query\Query;

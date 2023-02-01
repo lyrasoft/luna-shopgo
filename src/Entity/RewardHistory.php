@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
 use Lyrasoft\Luna\Attributes\Author;

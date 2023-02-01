@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Cart\Price;
+namespace Lyrasoft\ShopGo\Cart\Price;
 
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
-use Lyraoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Entity\Currency;
 
 /**
  * The PriceObject class.

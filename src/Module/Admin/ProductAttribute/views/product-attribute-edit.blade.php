@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        \Lyraoft\ShopGo\Module\Admin\ProductAttribute\ProductAttributeEditView  The view model object.
+ * @var  $vm        \Lyrasoft\ShopGo\Module\Admin\ProductAttribute\ProductAttributeEditView  The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,9 +16,9 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use Lyraoft\ShopGo\Entity\ProductAttribute;
-use Lyraoft\ShopGo\Module\Admin\ProductAttribute\ProductAttributeEditView;
-use Lyraoft\ShopGo\Script\ShopGoScript;
+use Lyrasoft\ShopGo\Entity\ProductAttribute;
+use Lyrasoft\ShopGo\Module\Admin\ProductAttribute\ProductAttributeEditView;
+use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
 use Windwalker\Core\Application\AppContext;

@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Enum;
+namespace Lyrasoft\ShopGo\Enum;
 
 use App\Enum\T;
 use Windwalker\Utilities\Contract\LanguageInterface;

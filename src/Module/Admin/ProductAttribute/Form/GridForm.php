@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductAttribute\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductAttribute\Form;
 
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Unicorn\Enum\BasicState;

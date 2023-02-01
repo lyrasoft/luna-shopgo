@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\AdditionalPurchase;
-use Lyraoft\ShopGo\Entity\AdditionalPurchaseMap;
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;

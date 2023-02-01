@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductAttributeGroup\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductAttributeGroup\Form;
 
-use Lyraoft\ShopGo\Field\CategoryFlatListField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
+use Unicorn\Field\CategoryFlatListField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
@@ -52,7 +52,7 @@ class EditForm implements FieldDefinitionInterface
             'basic',
             function (Form $form) {
                 $form->add('categories', CategoryFlatListField::class)
-                    ->label($this->trans('shpogo.product.attribute.group.field.category'))
+                    ->label($this->trans('shopgo.product.attribute.group.field.category'))
                     ->categoryType('product')
                     ->multiple(true);
             }

@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Entity\Order;
-use Lyraoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderState;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;

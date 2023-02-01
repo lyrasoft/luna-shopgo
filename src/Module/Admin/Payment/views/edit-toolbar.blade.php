@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $view      \Lyraoft\ShopGo\Module\Admin\Payment\PaymentEditView  The view modal object.
+ * @var  $view      \Lyrasoft\ShopGo\Module\Admin\Payment\PaymentEditView  The view modal object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,7 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use Lyraoft\ShopGo\Module\Admin\Payment\PaymentEditView;
+use Lyrasoft\ShopGo\Module\Admin\Payment\PaymentEditView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;

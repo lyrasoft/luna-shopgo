@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductAttribute;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductAttribute;
 
-use Lyraoft\ShopGo\Entity\ProductAttribute;
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
-use Lyraoft\ShopGo\Module\Admin\ProductAttribute\Form\EditForm;
-use Lyraoft\ShopGo\Repository\ProductAttributeRepository;
+use Lyrasoft\ShopGo\Entity\ProductAttribute;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Module\Admin\ProductAttribute\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\ProductAttributeRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

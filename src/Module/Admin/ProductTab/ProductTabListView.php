@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductTab;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductTab;
 
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
-use Lyraoft\ShopGo\Module\Admin\ProductTab\Form\GridForm;
-use Lyraoft\ShopGo\Repository\ProductTabRepository;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Module\Admin\ProductTab\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\ProductTabRepository;
 use Lyrasoft\Luna\Entity\Category;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;

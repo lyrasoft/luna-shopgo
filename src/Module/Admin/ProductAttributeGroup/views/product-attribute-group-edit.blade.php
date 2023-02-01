@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        \Lyraoft\ShopGo\Module\Admin\ProductAttributeGroup\ProductAttributeGroupEditView  The view model object.
+ * @var  $vm        \Lyrasoft\ShopGo\Module\Admin\ProductAttributeGroup\ProductAttributeGroupEditView  The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -17,7 +17,7 @@ namespace App\View;
  */
 
 use App\Entity\ProductAttributeGroup;
-use Lyraoft\ShopGo\Module\Admin\ProductAttributeGroup\ProductAttributeGroupEditView;
+use Lyrasoft\ShopGo\Module\Admin\ProductAttributeGroup\ProductAttributeGroupEditView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -48,7 +48,7 @@ use Windwalker\Form\Form;
 
         <div class="row">
             <div class="col-lg-7">
-                <x-card :title="$lang('shpogo.product.attribute.group.field.category')">
+                <x-card :title="$lang('shopgo.product.attribute.group.field.category')">
                     <x-field :field="$form['categories']" no-label></x-field>
                 </x-card>
             </div>

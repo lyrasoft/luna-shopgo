@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Field;
+namespace Lyrasoft\ShopGo\Field;
 
-use Lyraoft\ShopGo\Entity\Payment;
+use Lyrasoft\ShopGo\Entity\Payment;
 use Unicorn\Field\ModalField;
 
 /**

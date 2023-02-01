@@ -9,13 +9,13 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductTab\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductTab\Form;
 
-use Lyraoft\ShopGo\Field\CategoryFlatListField;
 use Lyrasoft\Luna\Field\ArticleModalField;
 use Lyrasoft\Luna\Field\PageModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
+use Unicorn\Field\CategoryFlatListField;
 use Unicorn\Field\SwitcherField;
 use Unicorn\Field\TinymceEditorField;
 use Windwalker\Core\Language\TranslatorTrait;

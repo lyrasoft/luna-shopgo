@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductFeature;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductFeature;
 
-use Lyraoft\ShopGo\Module\Admin\ProductFeature\Form\EditForm;
-use Lyraoft\ShopGo\Repository\ProductFeatureRepository;
+use Lyrasoft\ShopGo\Module\Admin\ProductFeature\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\ProductFeatureRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Unicorn\Repository\Event\PrepareSaveEvent;

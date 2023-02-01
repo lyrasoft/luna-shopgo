@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Data\Contract;
+namespace Lyrasoft\ShopGo\Data\Contract;
 
 /**
  * Interface AddressAwareInterface

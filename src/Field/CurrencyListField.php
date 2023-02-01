@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Field;
+namespace Lyrasoft\ShopGo\Field;
 
-use Lyraoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Entity\Currency;
 use Unicorn\Field\SqlListField;
 use Windwalker\DOM\DOMElement;
 

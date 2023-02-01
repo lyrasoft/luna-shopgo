@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\Repository\CategoryRepository;
 use Unicorn\Attributes\Repository;

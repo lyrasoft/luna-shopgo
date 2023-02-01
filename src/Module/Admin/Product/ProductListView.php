@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Product;
+namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
-use Lyraoft\ShopGo\Module\Admin\Product\Form\GridForm;
-use Lyraoft\ShopGo\Repository\ProductRepository;
-use Lyraoft\ShopGo\Traits\CurrencyAwareTrait;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Module\Admin\Product\Form\GridForm;
+use Lyrasoft\ShopGo\Repository\ProductRepository;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;

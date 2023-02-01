@@ -16,9 +16,9 @@ namespace App\view;
  * @var $lang      LangService     The language translation service.
  */
 
-use Lyraoft\ShopGo\Entity\Product;
-use Lyraoft\ShopGo\Entity\ProductVariant;
-use Lyraoft\ShopGo\Script\ShopGoScript;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
 use Windwalker\Core\Application\AppContext;

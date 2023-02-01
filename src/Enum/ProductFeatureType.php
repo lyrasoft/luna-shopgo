@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Enum;
+namespace Lyrasoft\ShopGo\Enum;
 
 use Windwalker\Utilities\Attributes\Enum\Color;
 use Windwalker\Utilities\Attributes\Enum\Icon;

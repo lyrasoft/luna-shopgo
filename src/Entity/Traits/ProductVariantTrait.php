@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity\Traits;
+namespace Lyrasoft\ShopGo\Entity\Traits;
 
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Cart\Price\PriceSet;
-use Lyraoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Discount;
 use Windwalker\Data\Collection;
 
 use function Windwalker\collect;

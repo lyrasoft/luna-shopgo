@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Script;
+namespace Lyrasoft\ShopGo\Script;
 
 use Windwalker\Core\Asset\AbstractScript;
 

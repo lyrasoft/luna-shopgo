@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Cart;
+namespace Lyrasoft\ShopGo\Cart;
 
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Cart\Price\PriceSet;
-use Lyraoft\ShopGo\Entity\ProductVariant;
-use Lyraoft\ShopGo\Entity\Traits\ProductVariantTrait;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\Traits\ProductVariantTrait;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Utilities\TypeCast;

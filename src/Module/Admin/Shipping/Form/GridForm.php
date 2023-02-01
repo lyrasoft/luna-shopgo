@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Shipping\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Shipping\Form;
 
-use Lyraoft\ShopGo\Field\LocationModalField;
+use Lyrasoft\ShopGo\Field\LocationModalField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\Language\TranslatorTrait;

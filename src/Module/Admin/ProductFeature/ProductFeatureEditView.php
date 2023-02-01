@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\ProductFeature;
+namespace Lyrasoft\ShopGo\Module\Admin\ProductFeature;
 
-use Lyraoft\ShopGo\Entity\ProductFeature;
-use Lyraoft\ShopGo\Module\Admin\ProductFeature\Form\EditForm;
-use Lyraoft\ShopGo\Repository\ProductFeatureRepository;
+use Lyrasoft\ShopGo\Entity\ProductFeature;
+use Lyrasoft\ShopGo\Module\Admin\ProductFeature\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\ProductFeatureRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;

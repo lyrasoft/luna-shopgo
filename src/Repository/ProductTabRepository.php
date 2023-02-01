@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\ProductTab;
-use Lyraoft\ShopGo\Entity\ShopCategoryMap;
+use Lyrasoft\ShopGo\Entity\ProductTab;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\Luna\Entity\Article;
 use Lyrasoft\Luna\Entity\Page;
 use Unicorn\Attributes\ConfigureAction;

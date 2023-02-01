@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Entity;
+namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
-use Lyraoft\ShopGo\Enum\OrderHistoryType;
+use Lyrasoft\ShopGo\Enum\OrderHistoryType;
 use Lyrasoft\Luna\Attributes\Author;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;

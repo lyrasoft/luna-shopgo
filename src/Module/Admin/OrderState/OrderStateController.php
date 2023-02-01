@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\OrderState;
+namespace Lyrasoft\ShopGo\Module\Admin\OrderState;
 
-use Lyraoft\ShopGo\Module\Admin\OrderState\Form\EditForm;
-use Lyraoft\ShopGo\Repository\OrderStateRepository;
+use Lyrasoft\ShopGo\Module\Admin\OrderState\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\OrderStateRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;

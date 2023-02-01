@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Cart\Price;
+namespace Lyrasoft\ShopGo\Cart\Price;
 
 use Traversable;
 

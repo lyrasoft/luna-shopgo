@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        \Lyraoft\ShopGo\Module\Admin\Order\OrderEditView  The view model object.
+ * @var  $vm        \Lyrasoft\ShopGo\Module\Admin\Order\OrderEditView  The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,10 +16,10 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use Lyraoft\ShopGo\Cart\Price\PriceSet;
-use Lyraoft\ShopGo\Entity\Order;
-use Lyraoft\ShopGo\Entity\OrderItem;
-use Lyraoft\ShopGo\Module\Admin\Order\OrderEditView;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderItem;
+use Lyrasoft\ShopGo\Module\Admin\Order\OrderEditView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -37,7 +37,7 @@ use Windwalker\Form\Form;
 
 $alert = $item->getParams()['alert'] ?? [];
 
-$workflow = $app->service(\Lyraoft\ShopGo\Workflow\OrderStateWorkflow::class);
+$workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
 
 $alert = $item->getParams()['alert'] ?? [];
 ?>

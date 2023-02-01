@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Manufacturer;
+namespace Lyrasoft\ShopGo\Module\Admin\Manufacturer;
 
-use Lyraoft\ShopGo\Entity\Manufacturer;
-use Lyraoft\ShopGo\Module\Admin\Manufacturer\Form\EditForm;
-use Lyraoft\ShopGo\Repository\ManufacturerRepository;
+use Lyrasoft\ShopGo\Entity\Manufacturer;
+use Lyrasoft\ShopGo\Module\Admin\Manufacturer\Form\EditForm;
+use Lyrasoft\ShopGo\Repository\ManufacturerRepository;
 use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\Locale\LanguageAssocTrait;
 use Lyrasoft\Luna\Locale\LocaleAwareTrait;

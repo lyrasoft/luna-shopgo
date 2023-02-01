@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Manufacturer\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Manufacturer\Form;
 
-use Lyraoft\ShopGo\Entity\Manufacturer;
+use Lyrasoft\ShopGo\Entity\Manufacturer;
 use Lyrasoft\Luna\Field\LocaleSwitchField;
 use Lyrasoft\Luna\Field\TagListField;
 use Lyrasoft\Luna\Field\UserModalField;

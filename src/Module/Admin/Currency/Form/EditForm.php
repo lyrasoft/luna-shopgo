@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Currency\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Currency\Form;
 
-use Lyraoft\ShopGo\Enum\SignPosition;
+use Lyrasoft\ShopGo\Enum\SignPosition;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\SwitcherField;

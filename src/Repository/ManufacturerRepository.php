@@ -9,9 +9,9 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Repository;
+namespace Lyrasoft\ShopGo\Repository;
 
-use Lyraoft\ShopGo\Entity\Manufacturer;
+use Lyrasoft\ShopGo\Entity\Manufacturer;
 use Lyrasoft\Luna\Entity\Language;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\Locale\LocaleAwareTrait;

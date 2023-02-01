@@ -9,11 +9,11 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Traits;
+namespace Lyrasoft\ShopGo\Traits;
 
-use Lyraoft\ShopGo\Cart\Price\PriceObject;
-use Lyraoft\ShopGo\Entity\Currency;
-use Lyraoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Service\CurrencyService;
 use Windwalker\DI\Attributes\Inject;
 
 /**

@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Cart;
+namespace Lyrasoft\ShopGo\Cart;
 
-use Lyraoft\ShopGo\Cart\Price\PriceSet;
-use Lyraoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Discount;
 use Windwalker\Data\Collection;
 use Windwalker\Data\ValueObject;
 

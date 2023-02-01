@@ -9,15 +9,15 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Module\Admin\Discount\Form;
+namespace Lyrasoft\ShopGo\Module\Admin\Discount\Form;
 
-use Lyraoft\ShopGo\Enum\DiscountApplyTo;
-use Lyraoft\ShopGo\Enum\DiscountCombine;
-use Lyraoft\ShopGo\Enum\DiscountMethod;
-use Lyraoft\ShopGo\Field\DiscountModalField;
-use Lyraoft\ShopGo\Field\PaymentModalField;
-use Lyraoft\ShopGo\Field\ProductModalField;
-use Lyraoft\ShopGo\Field\ShippingModalField;
+use Lyrasoft\ShopGo\Enum\DiscountApplyTo;
+use Lyrasoft\ShopGo\Enum\DiscountCombine;
+use Lyrasoft\ShopGo\Enum\DiscountMethod;
+use Lyrasoft\ShopGo\Field\DiscountModalField;
+use Lyrasoft\ShopGo\Field\PaymentModalField;
+use Lyrasoft\ShopGo\Field\ProductModalField;
+use Lyrasoft\ShopGo\Field\ShippingModalField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;

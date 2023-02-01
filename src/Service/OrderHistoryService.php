@@ -9,13 +9,13 @@
 
 declare(strict_types=1);
 
-namespace Lyraoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Service;
 
-use Lyraoft\ShopGo\Entity\Order;
-use Lyraoft\ShopGo\Entity\OrderHistory;
-use Lyraoft\ShopGo\Entity\OrderState;
-use Lyraoft\ShopGo\Enum\OrderHistoryType;
-use Lyraoft\ShopGo\Repository\OrderHistoryRepository;
+use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderHistory;
+use Lyrasoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Enum\OrderHistoryType;
+use Lyrasoft\ShopGo\Repository\OrderHistoryRepository;
 use Windwalker\DI\Attributes\Autowire;
 
 /**

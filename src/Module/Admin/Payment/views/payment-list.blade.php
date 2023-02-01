@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $vm        \Lyraoft\ShopGo\Module\Admin\Payment\PaymentListView The view model object.
+ * @var  $vm        \Lyrasoft\ShopGo\Module\Admin\Payment\PaymentListView The view model object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,8 +16,8 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
-use Lyraoft\ShopGo\Module\Admin\Payment\PaymentListView;
-use Lyraoft\ShopGo\Entity\Payment;
+use Lyrasoft\ShopGo\Module\Admin\Payment\PaymentListView;
+use Lyrasoft\ShopGo\Entity\Payment;
 use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
