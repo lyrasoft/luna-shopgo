@@ -27,8 +27,6 @@ use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
-use function App\Service\str_starts_with;
-
 /**
  * The CheckoutService class.
  */

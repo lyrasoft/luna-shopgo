@@ -8,6 +8,14 @@ Install from composer
 composer require lyrasoft/shopgo
 ```
 
+You must register `SequencePackage` to `stc/di.php` first:
+
+```php
+        'providers' => [
+            \Lyrasoft\Sequence\SequencePackage::class,
+        ],
+```
+
 Then copy files to project
 
 ```shell
