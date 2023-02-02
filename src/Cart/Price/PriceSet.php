@@ -3,8 +3,8 @@
 /**
  * Part of 372 project.
  *
- * @copyright  Copyright (C) 2017 ${ORGANIZATION}.
- * @license    __LICENSE__
+ * @copyright  Copyright (C) 2017 LYRASOFT.
+ * @license    MIT
  */
 
 declare(strict_types=1);
@@ -26,7 +26,7 @@ use Traversable;
  * @method PriceObject power(string $name, string | PriceObject $price)
  * @method PriceObject powermod(string $name, string | PriceObject $price, int | PriceObject $modulus)
  *
- * @since  __DEPLOY_VERSION__
+ * @since  0.1.1
  */
 class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
 {
@@ -120,7 +120,7 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
      *
      * @return  PriceSet
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.1
      */
     public function remove(string $name): self
     {

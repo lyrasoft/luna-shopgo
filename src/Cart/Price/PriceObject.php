@@ -3,8 +3,8 @@
 /**
  * Part of 372 project.
  *
- * @copyright  Copyright (C) 2017 ${ORGANIZATION}.
- * @license    __LICENSE__
+ * @copyright  Copyright (C) 2017 LYRASOFT.
+ * @license    MIT
  */
 
 declare(strict_types=1);
@@ -38,7 +38,7 @@ use Lyrasoft\ShopGo\Entity\Currency;
  * @method bool        gte(string | PriceObject $price)
  * @method bool        isZero()
  *
- * @since  __DEPLOY_VERSION__
+ * @since  0.1.1
  */
 class PriceObject implements \JsonSerializable
 {
@@ -189,7 +189,7 @@ class PriceObject implements \JsonSerializable
      *
      * @return  mixed|null
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.1
      */
     public function getParamValue(string $name): mixed
     {
@@ -204,7 +204,7 @@ class PriceObject implements \JsonSerializable
      *
      * @return  static
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.1
      */
     public function withParamValue(string $name, mixed $value): static
     {
@@ -218,7 +218,7 @@ class PriceObject implements \JsonSerializable
      *
      * @return  array
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.1
      */
     public function getParams(): array
     {
@@ -232,7 +232,7 @@ class PriceObject implements \JsonSerializable
      *
      * @return  PriceObject
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.1
      */
     public function widthParams(array $params): static
     {

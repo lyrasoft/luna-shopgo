@@ -37,6 +37,8 @@ HELP;
      */
     protected function doExecute()
     {
+        $this->compileAssets();
+
         $currentVersion = trim(file_get_contents(__DIR__ . '/../VERSION'));
         $targetVersion = $this->getArgument(0);
 
@@ -161,16 +163,9 @@ HELP;
         $this->exec('git push origin master');
     }
 
-    /**
-     * compileAssets
-     *
-     * @return  void
-     *
-     * @since  __DEPLOY_VERSION__
-     */
-    protected function compileAssets()
+    protected function compileAssets(): void
     {
-        $this->exec('yarn build:prod');
+        $this->exec('yarn --cwd ./assets build:prod');
     }
 
     /**
