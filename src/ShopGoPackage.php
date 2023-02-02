@@ -76,6 +76,14 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
             ],
             Container::MERGE_OVERRIDE
         );
+
+        // Assets
+        $container->mergeParameters(
+            'asset.import_map.imports',
+            [
+                '@shopgo/' => 'vendor/lyrasoft/shopgo/dist/',
+            ]
+        );
     }
 
     public function install(PackageInstaller $installer): void
