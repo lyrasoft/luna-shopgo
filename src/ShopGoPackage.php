@@ -21,6 +21,7 @@ use Lyrasoft\ShopGo\Service\LocationService;
 use Lyrasoft\ShopGo\Service\OrderHistoryService;
 use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Service\OrderStateService;
+use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Package\AbstractPackage;
@@ -53,15 +54,16 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
         class_alias(Collection::class, ShopConfig::class);
 
         $container->share(self::class, $this);
-        $container->prepareSharedObject(CurrencyService::class);
-        $container->prepareSharedObject(LocationService::class);
-        $container->prepareSharedObject(VariantService::class);
-        $container->prepareSharedObject(OrderHistoryService::class);
-        $container->prepareSharedObject(CheckoutService::class);
-        $container->prepareSharedObject(OrderService::class);
-        $container->prepareSharedObject(OrderStateService::class);
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);
+        $container->prepareSharedObject(CheckoutService::class);
+        $container->prepareSharedObject(CurrencyService::class);
+        $container->prepareSharedObject(LocationService::class);
+        $container->prepareSharedObject(OrderHistoryService::class);
+        $container->prepareSharedObject(OrderService::class);
+        $container->prepareSharedObject(OrderStateService::class);
+        $container->prepareSharedObject(ProductAttributeService::class);
+        $container->prepareSharedObject(VariantService::class);
         $container->bindShared(
             ShopConfig::class,
             static fn(Container $container) => $container->get(ConfigService::class)

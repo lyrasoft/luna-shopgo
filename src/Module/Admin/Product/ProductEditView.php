@@ -13,11 +13,13 @@ namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductAttributeMap;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Module\Admin\Product\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ProductRepository;
+use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -49,6 +51,7 @@ class ProductEditView implements ViewModelInterface
         protected ORM $orm,
         protected FormFactory $formFactory,
         protected Navigator $nav,
+        protected ProductAttributeService $productAttributeService,
         #[Autowire] protected ProductRepository $repository
     ) {
     }
@@ -78,6 +81,7 @@ class ProductEditView implements ViewModelInterface
 
         $variants = collect();
         $discounts = collect();
+        $attrFieldsets = [];
 
         if ($item) {
             // Main Variant
@@ -121,11 +125,29 @@ class ProductEditView implements ViewModelInterface
             $form->fill(
                 ['sub_categories' => $subCategoryIds]
             );
+
+            // Attributes
+            $form = $this->productAttributeService->prepareEditForm($item, $form, $attrFieldsets);
+
+            $attrMaps = $this->orm->findList(
+                ProductAttributeMap::class,
+                ['product_id' => $item->getId()]
+            )
+                ->all();
+
+            $attrValues = [];
+
+            /** @var ProductAttributeMap $attrMap */
+            foreach ($attrMaps as $attrMap) {
+                $attrValues[$attrMap->getKey()] = $attrMap->getValue();
+            }
+
+            $form->fill(['attrs' => $attrValues]);
         }
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item', 'variants', 'discounts');
+        return compact('form', 'id', 'item', 'variants', 'discounts', 'attrFieldsets');
     }
 
     /**

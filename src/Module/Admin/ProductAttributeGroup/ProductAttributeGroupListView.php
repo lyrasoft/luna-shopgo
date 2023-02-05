@@ -127,7 +127,7 @@ class ProductAttributeGroupListView implements ViewModelInterface
      *
      * @return  string
      */
-    public function getDefaultOrdering(): string
+    public static function getDefaultOrdering(): string
     {
         return 'category.lft ASC';
     }
@@ -137,7 +137,7 @@ class ProductAttributeGroupListView implements ViewModelInterface
      *
      * @return  string[]
      */
-    public function getSearchFields(): array
+    public static function getSearchFields(): array
     {
         return [
             'category.id',

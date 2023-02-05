@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
+use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Lyrasoft\ShopGo\Enum\ProductAttributeType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -65,7 +66,8 @@ class ProductAttribute implements EntityInterface
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
-    protected array $options = [];
+    #[Cast(ListOptionCollection::class)]
+    protected ListOptionCollection $options;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -155,14 +157,14 @@ class ProductAttribute implements EntityInterface
         return $this;
     }
 
-    public function getOptions(): array
+    public function getOptions(): ListOptionCollection
     {
-        return $this->options;
+        return $this->options ??= new ListOptionCollection();
     }
 
-    public function setOptions(array $options): static
+    public function setOptions(ListOptionCollection|array $options): static
     {
-        $this->options = $options;
+        $this->options = ListOptionCollection::wrap($options);
 
         return $this;
     }

@@ -135,6 +135,7 @@ use Windwalker\Form\Form;
                     {{-- Pane: Attributes --}}
                     <x-tab name="attributes"
                         :title="$lang('shopgo.product.edit.tab.attributes')">
+                        @include('product-attributes-edit')
                     </x-tab>
 
                     {{-- Pane: Variants --}}

@@ -365,7 +365,7 @@ class ProductVariant implements EntityInterface
 
     public function getOptions(): ListOptionCollection
     {
-        return $this->options;
+        return $this->options ??= new ListOptionCollection();
     }
 
     public function setOptions(array|ListOptionCollection $options): static

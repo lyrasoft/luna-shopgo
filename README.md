@@ -55,7 +55,7 @@ Add these types to `category-seeder.php`
                 'max_level' => 2,
                 'number' => 30,
             ],
-            'attribute_group' => [
+            'attribute' => [
                 'max_level' => 1,
                 'number' => 10,
             ],
