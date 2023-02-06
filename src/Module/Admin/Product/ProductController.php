@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
+use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\ProductFeature;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
@@ -273,9 +274,23 @@ class ProductController
 
     public function getFeatureOptions(ORM $orm): Collection
     {
-        return $orm->from(ProductFeature::class)
+        $features = $orm->from(ProductFeature::class)
             ->where('state', 1)
             ->all(ProductFeature::class);
+
+        /** @var ProductFeature $feature */
+        foreach ($features as $feature) {
+            /** @var ListOptionCollection $options */
+            $options = $feature->getOptions();
+
+            foreach ($options as $i => $option) {
+                $option->setParentId($feature->getId());
+
+                $options[$i] = $option;
+            }
+        }
+
+        return $features;
     }
 
     /**

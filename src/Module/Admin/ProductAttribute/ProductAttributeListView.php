@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Admin\ProductAttribute;
 
 use Lyrasoft\ShopGo\Module\Admin\ProductAttribute\Form\GridForm;
 use Lyrasoft\ShopGo\Repository\ProductAttributeRepository;
+use Unicorn\Html\State\StateButton;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -162,5 +163,26 @@ class ProductAttributeListView implements ViewModelInterface
             ->setTitle(
                 $this->trans('unicorn.title.grid', title: $this->trans('shopgo.product.attribute.title'))
             );
+    }
+
+    public function createDisplayButton(): StateButton
+    {
+        $button = StateButton::create();
+
+        $button->addState(1)
+            ->task('undisplay')
+            ->title($this->trans('shopgo.product.attribute.display.state.yes'))
+            ->icon('fa fa-eye')
+            ->color('primary')
+            ->description($this->trans('shopgo.product.attribute.display.state.yes.desc'));
+
+        $button->addState(0)
+            ->task('display')
+            ->title($this->trans('shopgo.product.attribute.display.state.no'))
+            ->icon('fa fa-eye-slash')
+            ->color('secondary')
+            ->description($this->trans('shopgo.product.attribute.display.state.no.desc'));
+
+        return $button;
     }
 }

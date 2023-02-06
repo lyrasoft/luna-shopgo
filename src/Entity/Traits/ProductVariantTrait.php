@@ -47,6 +47,13 @@ trait ProductVariantTrait
 
             $this->priceSet->set(
                 new PriceObject(
+                    'base',
+                    (string) $this->getPrice()
+                )
+            );
+
+            $this->priceSet->set(
+                new PriceObject(
                     'final',
                     (string) $this->getPrice()
                 )

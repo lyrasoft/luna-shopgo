@@ -15,9 +15,11 @@ use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\ShopGo\Data\ListOption;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductAttribute;
+use Lyrasoft\ShopGo\Entity\ProductAttributeMap;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\ShopGo\Enum\ProductAttributeType;
 use Unicorn\Field\SwitcherField;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Data\Collection;
 use Windwalker\Form\Field\ListField;
 use Windwalker\Form\Field\TextField;
@@ -30,8 +32,35 @@ use Windwalker\Query\Query;
  */
 class ProductAttributeService
 {
+    use TranslatorTrait;
+
     public function __construct(protected ORM $orm)
     {
+    }
+
+    /**
+     * @param  Product  $product
+     *
+     * @return  array{ 0: Collection, 1: Collection }
+     */
+    public function getAttributesAndGroupsWithValues(Product $product): array
+    {
+        $groups = $this->getGroupsByProductCategoryId($product->getCategoryId());
+        $groupIds = $groups->column('id')
+            ->prepend(0)
+            ->unique()
+            ->dump();
+
+        $attributes = $this->getAttributesOfGroups($groupIds);
+
+        /** @var ProductAttributeMap[] $maps */
+        $maps = $this->getProductAttributeValues($product->getId())->keyBy('attributeId');
+
+        foreach ($attributes as $attribute) {
+            $attribute->setValue($maps[$attribute->getId()]?->getValue() ?? '');
+        }
+
+        return [$attributes, $groups];
     }
 
     /**
@@ -78,11 +107,15 @@ class ProductAttributeService
                 ->register(
                     function (Form $form) use ($attributes) {
                         foreach ($attributes as $attribute) {
-                            match ($attribute->getType()) {
+                            $field = match ($attribute->getType()) {
                                 ProductAttributeType::BOOL() => $this->prepareFieldBool($form, $attribute),
                                 ProductAttributeType::TEXT() => $this->prepareFieldText($form, $attribute),
                                 ProductAttributeType::SELECT() => $this->prepareFieldSelect($form, $attribute),
                             };
+
+                            if (!$attribute->shouldDisplay()) {
+                                $field->set('no_display', true);
+                            }
                         }
                     }
                 );
@@ -135,6 +168,33 @@ class ProductAttributeService
             ->where('state', 1)
             ->order('ordering', 'ASC')
             ->all(ProductAttribute::class);
+    }
+
+    /**
+     * @param  int  $productId
+     *
+     * @return  Collection<ProductAttributeMap>
+     */
+    public function getProductAttributeValues(int $productId): Collection
+    {
+        return $this->orm->findList(
+            ProductAttributeMap::class,
+            ['product_id' => $productId]
+        )
+            ->all();
+    }
+
+    public function renderValue(ProductAttribute $attribute): string
+    {
+        $value = $attribute->getValue();
+
+        return match ($attribute->getType()) {
+            ProductAttributeType::BOOL() => $value
+                ? $this->trans('unicorn.core.yes')
+                : $this->trans('unicorn.core.no'),
+            ProductAttributeType::TEXT() => $value,
+            ProductAttributeType::SELECT() => $value,
+        };
     }
 
     protected function prepareFieldBool(Form $form, ProductAttribute $attribute): SwitcherField

@@ -16,6 +16,8 @@ use Windwalker\Utilities\TypeCast;
 
 /**
  * The ListOptionCollection class.
+ *
+ * @template-extends \IteratorAggregate<int, ListOption>
  */
 class ListOptionCollection extends Collection
 {

@@ -11,11 +11,16 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\Luna\LunaPackage;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\ShopGo\ShopGoPackage;
+use Windwalker\Core\Application\AppContext;
+use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\Http\AppRequest;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
+use Windwalker\Session\Session;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 /**
@@ -25,8 +30,11 @@ class CurrencyService
 {
     use InstanceCacheTrait;
 
-    public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo)
-    {
+    public function __construct(
+        protected ORM $orm,
+        protected ShopGoPackage $shopGo,
+        protected ApplicationInterface $app,
+    ) {
     }
 
     public function format(
@@ -36,7 +44,7 @@ class CurrencyService
     ): string {
         if (!$currency instanceof Currency) {
             if ($currency === null) {
-                $currency = $this->getMainCurrency();
+                $currency = $this->getCurrentCurrency();
             } else {
                 $currency = $this->findCurrencyBy($currency);
             }
@@ -48,6 +56,29 @@ class CurrencyService
     public static function formatByCurrency(float $num, Currency $currency, bool $addCode = false): string
     {
         return $currency->formatPrice($num, $addCode);
+    }
+
+    public function getCurrentCurrency(): Currency
+    {
+        if ($this->app->getClientType() === 'console') {
+            return $this->getMainCurrency();
+        }
+
+        $luna = $this->app->service(LunaPackage::class);
+
+        if ($luna->isAdmin()) {
+            return $this->getMainCurrency();
+        }
+
+        $session = $this->app->service(Session::class);
+
+        $currencyId = $session->get('currency');
+
+        if (!$currencyId) {
+            return $this->getMainCurrency();
+        }
+
+        return $this->findCurrencyBy($currencyId);
     }
 
     public function getMainCurrency(): Currency
@@ -81,15 +112,11 @@ class CurrencyService
     {
         $currencies = $this->getCurrencies();
 
-        if (is_string($condition)) {
+        if (is_numeric($condition)) {
+            $currency = $currencies->findFirst(fn(Currency $currency) => $currency->getId() === (int) $condition);
+        } else {
             $currency = $currencies->findFirst(fn(Currency $currency) => $currency->getCode() === $condition);
-
-            if ($currency) {
-                return $currency;
-            }
         }
-
-        $currency = $currencies->findFirst(fn(Currency $currency) => $currency->getId() === (int) $condition);
 
         if (!$currency) {
             throw new \RuntimeException('Currency not found.');

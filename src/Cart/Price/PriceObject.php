@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Cart\Price;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\Exception\MathException;
 use Brick\Math\RoundingMode;
 use Lyrasoft\ShopGo\Entity\Currency;
 
@@ -315,10 +316,7 @@ class PriceObject implements \JsonSerializable
             $function = $allow[strtolower($name)];
 
             return $this->cloneInstance(function (PriceObject $new) use ($function, $args) {
-                $args = array_map(
-                    static fn($arg) => $arg instanceof PriceObject ? $arg->getPrice() : $arg,
-                    $args
-                );
+                $args = static::priceObjectsToStrings($args);
 
                 $new->price = $new->price->$function(...$args);
             });
@@ -337,10 +335,20 @@ class PriceObject implements \JsonSerializable
         if (isset($compares[strtolower($name)])) {
             $function = $compares[strtolower($name)];
 
+            $args = static::priceObjectsToStrings($args);
+
             return $this->price->$function(...$args);
         }
 
         throw new \BadMethodCallException('Method: ' . $name . ' no found in ' . static::class);
+    }
+
+    protected static function priceObjectsToStrings(array $items): array
+    {
+        return array_map(
+            static fn($arg) => $arg instanceof PriceObject ? $arg->getPrice() : $arg,
+            $items
+        );
     }
 
     /**
@@ -390,13 +398,14 @@ class PriceObject implements \JsonSerializable
     /**
      * Method to set property price
      *
-     * @param  string  $price
+     * @param  string|float  $price
      *
      * @return  static  Return self to support chaining.
+     * @throws MathException
      */
-    public function setPrice(string $price): static
+    public function setPrice(string|float $price): static
     {
-        $this->price = BigDecimal::of($price);
+        $this->price = BigDecimal::of((string) $price);
 
         return $this;
     }

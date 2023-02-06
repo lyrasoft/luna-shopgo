@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\ProductTab;
 
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\ShopGo\Module\Admin\ProductTab\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ProductTabRepository;
 use Unicorn\Controller\CrudController;
@@ -19,6 +20,7 @@ use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\Event\AfterSaveEvent;
 
 /**
  * The ProductTabController class.
@@ -33,6 +35,32 @@ class ProductTabController
         #[Autowire] ProductTabRepository $repository,
     ): mixed {
         $form = $app->make(EditForm::class);
+
+        $controller->afterSave(
+            function (AfterSaveEvent $event) use ($app) {
+                $orm = $event->getORM();
+                $data = $event->getData();
+                $categories = $app->input('item')['categories'] ?? [];
+
+                $maps = [];
+
+                foreach ($categories as $categoryId) {
+                    $map = new ShopCategoryMap();
+                    $map->setTargetId((int) $data['id']);
+                    $map->setCategoryId((int) $categoryId);
+                    $map->setType('tab');
+
+                    $maps[] = $map;
+                }
+
+                $orm->sync(
+                    ShopCategoryMap::class,
+                    $maps,
+                    ['type' => 'tab', 'target_id' => $data['id']],
+                    ['type', 'category_id']
+                );
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

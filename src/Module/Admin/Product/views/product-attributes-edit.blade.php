@@ -24,6 +24,8 @@ use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 use Windwalker\Form\Form;
 
+use function Windwalker\DOM\h;
+
 /**
  * @var $attrFieldsets string[]
  * @var $form          Form
@@ -40,6 +42,16 @@ use Windwalker\Form\Form;
 
                     if (!$fieldset) {
                         continue;
+                    }
+
+                    foreach ($form->getFields($attrFieldset) as $field) {
+                        if ($field->get('no_display')) {
+                            $label = $field->getLabel();
+                            $label->appendText(' ');
+                            $label->appendChild(
+                                h('span', ['class' => 'fa fa-eye-slash small text-muted'])
+                            );
+                        }
                     }
                     ?>
                 <div>

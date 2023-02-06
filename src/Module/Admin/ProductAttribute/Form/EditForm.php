@@ -69,6 +69,13 @@ class EditForm implements FieldDefinitionInterface
                     ->color('success')
                     ->defaultValue('1');
 
+                $form->add('display', SwitcherField::class)
+                    ->label($this->trans('shopgo.product.attribute.field.display'))
+                    ->circle(true)
+                    ->color('primary')
+                    ->defaultValue('1')
+                    ->description($this->trans('shopgo.product.attribute.field.display.desc'));
+
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'))
                     ->disabled(true);

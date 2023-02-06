@@ -10,14 +10,6 @@
 namespace PHPSTORM_META {
     registerArgumentsSet(
         'shopgo_shop_config_args',
-        "currency_main",
-        'order_no_prefix',
-        'order_no_mode',
-        'order_hash_offsets',
-        'order_hash_seed',
-        'sequence_day_format',
-        'invoice_no_prefix',
-        'payment_no_maxlength',
     );
 
     expectedArguments(
@@ -30,5 +22,11 @@ namespace PHPSTORM_META {
         \Lyrasoft\ShopGo\Config\ShopConfig::getDeep(),
         0,
         argumentsSet('shopgo_shop_config_args')
+    );
+
+    // PriceSet
+    registerArgumentsSet(
+        'price_sets',
+        "currency_main",
     );
 }

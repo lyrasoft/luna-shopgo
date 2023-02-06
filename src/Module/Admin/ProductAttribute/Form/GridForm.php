@@ -68,6 +68,12 @@ class GridForm implements FieldDefinitionInterface
                 $form->add('category_id', CategoryModalField::class)
                     ->label($this->trans('shopgo.product.attribute.field.group'))
                     ->categoryType('attribute');
+
+                $form->add('display', ListField::class)
+                    ->label($this->trans('shopgo.product.attribute.field.display'))
+                    ->option($this->trans('unicorn.select.no.change'))
+                    ->option($this->trans('shopgo.product.attribute.display.state.yes'), '1')
+                    ->option($this->trans('shopgo.product.attribute.display.state.no'), '0');
             }
         );
     }

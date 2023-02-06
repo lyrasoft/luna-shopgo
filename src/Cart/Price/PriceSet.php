@@ -16,6 +16,15 @@ use Traversable;
 /**
  * The PriceSet class.
  *
+ * @template-implements array{
+ *     origin: PriceObject,
+ *     base: PriceObject,
+ *     final: PriceObject,
+ *     total: PriceObject,
+ *     grand_total: PriceObject,
+ *     shipping_fee: PriceObject,
+ *     }
+ *
  * @method PriceObject plus(string $name, string | PriceObject $price)
  * @method PriceObject minus(string $name, string | PriceObject $price)
  * @method PriceObject divide(string $name, string | PriceObject $price, int $scale = null)

@@ -34,6 +34,8 @@ use Windwalker\Data\Collection;
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
+
+$displayButton = $vm->createDisplayButton();
 ?>
 
 @extends('admin.global.body-list')
@@ -134,14 +136,20 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             {{-- State --}}
-                            <td>
+                            <td class="text-nowrap">
                                 <x-state-dropdown color-on="text"
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
                                     :id="$entity->getId()"
                                     :value="$item->state"
+                                    no-title
                                 ></x-state-dropdown>
+
+                                <x-state-button :states="$displayButton"
+                                    :value="$item->display"
+                                    :id="$item->id"
+                                ></x-state-button>
                             </td>
 
                             {{-- Group --}}

@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\ProductAttributeGroup\Form;
 
+use App\Enum\AttributePosition;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\CategoryFlatListField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Form\Field\CheckboxesField;
 use Windwalker\Form\Field\HiddenField;
+use Windwalker\Form\Field\ListField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
@@ -69,6 +72,19 @@ class EditForm implements FieldDefinitionInterface
                     ->circle(true)
                     ->color('success')
                     ->defaultValue(1);
+
+                // Position
+                $form->add('params/position', ListField::class)
+                    ->label($this->trans('shopgo.product.attribute.group.field.position'))
+                    ->option('intro', 'intro')
+                    ->option('attributes', 'attributes')
+                    ->multiple(true)
+                    ->addClass('has-tom-select')
+                    ->defaultValue(
+                        [
+                            'attributes'
+                        ]
+                    );
 
                 // Created
                 $form->add('created', CalendarField::class)

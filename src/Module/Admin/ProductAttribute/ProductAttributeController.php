@@ -124,6 +124,8 @@ class ProductAttributeController
         $data = match ($task) {
             'publish' => ['state' => 1],
             'unpublish' => ['state' => 0],
+            'display' => ['display' => 1],
+            'undisplay' => ['display' => 0],
             default => null
         };
 

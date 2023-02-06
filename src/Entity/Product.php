@@ -18,6 +18,8 @@ use Lyrasoft\Luna\Attributes\Slugify;
 use Lyrasoft\Luna\Data\MetaData;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\CastNullable;
@@ -131,6 +133,11 @@ class Product implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
+    }
+
+    public function makeLink(Navigator $nav): RouteUri
+    {
+        return $nav->to('product_item')->id($this->getId())->alias($this->getAlias());
     }
 
     public function getId(): ?int

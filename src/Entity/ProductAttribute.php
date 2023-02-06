@@ -56,6 +56,10 @@ class ProductAttribute implements EntityInterface
     #[Column('key')]
     protected string $key = '';
 
+    #[Column('display')]
+    #[Cast('bool', 'int')]
+    protected bool $display = false;
+
     #[Column('ordering')]
     protected int $ordering = 0;
 
@@ -90,6 +94,8 @@ class ProductAttribute implements EntityInterface
     #[Column('params')]
     #[Cast(JsonCast::class)]
     protected array $params = [];
+
+    protected string $value = '';
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -249,6 +255,46 @@ class ProductAttribute implements EntityInterface
     public function setCategoryId(int $categoryId): static
     {
         $this->categoryId = $categoryId;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldDisplay(): bool
+    {
+        return $this->display;
+    }
+
+    /**
+     * @param  bool  $display
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setDisplay(bool $display): static
+    {
+        $this->display = $display;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param  string  $value
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setValue(string $value): static
+    {
+        $this->value = $value;
 
         return $this;
     }

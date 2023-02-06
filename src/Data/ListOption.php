@@ -18,6 +18,7 @@ use Windwalker\Data\ValueObject;
  */
 class ListOption extends ValueObject
 {
+    public int $parentId = 0;
     public string $uid = '';
     public string $value = '';
     public string $text = '';
@@ -98,6 +99,26 @@ class ListOption extends ValueObject
     public function setUid(string $uid): static
     {
         $this->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentId(): int
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * @param  int  $parentId
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setParentId(int $parentId): static
+    {
+        $this->parentId = $parentId;
 
         return $this;
     }

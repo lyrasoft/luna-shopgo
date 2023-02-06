@@ -10,7 +10,6 @@ use Windwalker\Core\Application\AppContext;
  * @var $app AppContext
  */
 
-
 ?>
 
 <script id="c-variant-generation" type="text/x-template">
@@ -42,7 +41,7 @@ use Windwalker\Core\Application\AppContext;
                         :id="'input-feature-' + feature.id"
                         class="form-check-input"
                         :indeterminate.prop="feature.checks !== 0 && feature.options.length > feature.checks"
-                        @change="featureCheckboxChanged(feature, $event)"/>
+                        @change="featureCheckboxChanged(feature, $event)" />
                 </span>
                 <label :for="'input-feature-' + feature.id">
                     @{{ feature.title }}
@@ -96,153 +95,178 @@ use Windwalker\Core\Application\AppContext;
 
 <script>
     function variantGeneration() {
-        const { ref, toRefs, reactive, computed, watch, onMounted, inject } = Vue;
+      const { ref, toRefs, reactive, computed, watch, onMounted, inject } = Vue;
 
-        return {
-            name: 'variantGeneration',
-            template: u.selectOne('#c-variant-generation').innerHTML,
-            props: {
-                items: Array
-            },
-            setup(props, { emit }) {
-                const state = reactive({
-                    features: [],
-                    loading: {
-                        generating: false,
-                        getFeatureOptions: false
-                    }
-                });
-
-                const product = inject('product') || {};
-                const mainPrice = inject('mainPrice');
-                const currentHashes = computed(() => props.items.map(item => item.hash));
-
-                onMounted(() => {
-                    getFeatureOptions();
-                });
-
-                async function getFeatureOptions() {
-                    state.loading.getFeatureOptions = true;
-
-                    try {
-                        const res = await u.$http.get('@product_ajax/getFeatureOptions');
-
-                        state.features = ShopgoVueUtilities.prepareVueItemList(
-                            res.data.data,
-                            (feature) => {
-                                feature.checks = 0;
-                            }
-                        );
-                    } finally {
-                        state.loading.getFeatureOptions = false;
-                    }
-                }
-
-                const combinationCount = computed(() => {
-                    return state.features.reduce((carry, feature) => {
-                        return feature.checks > 0 ? carry * feature.checks : carry;
-                    }, 1);
-                });
-
-                async function saveGenerate() {
-                    // Prevent too many selected
-                    if (combinationCount.value >= 100) {
-                        u.alert(
-                            '您選擇了過多選項', `這樣會產生 ${combinationCount.value} 個組合，系統與瀏覽器會無法負擔，請控制在 100 個以下`,
-                            'warning'
-                        );
-                        return;
-                    }
-
-                    state.loading.generating = true;
-
-                    try {
-                        const res = await u.$http.post(
-                            '@product_ajax/generateVariants',
-                            {
-                                product_id: product?.id,
-                                options: getCheckedOptionGroup(),
-                                currentHashes: currentHashes.value
-                            }
-                        );
-
-                        const variants = res.data.data;
-
-                        for (const variant of variants) {
-                            variant.price = Number(mainPrice.value);
-                        }
-
-                        emit('generated', variants);
-                    } finally {
-                        state.loading.generating = false;
-                    }
-                }
-
-                function getCheckedOptionGroup() {
-                    const data = {};
-
-                    for (const feature of state.features) {
-                        const options = feature.options
-                            .filter(option => option.checked);
-
-                        if (options.length > 0) {
-                            data[feature.id] = options;
-                        }
-                    }
-
-                    return data;
-                }
-
-                // function sortOptionGroups(featureOptGroups, parentGroup = []) {
-                //     featureOptGroups = [...featureOptGroups];
-                //     const currentOptions = featureOptGroups.pop();
-                //
-                //     let returnValue = [];
-                //
-                //     for (const option of currentOptions) {
-                //         const group = [...parentGroup];
-                //
-                //         group.push(option);
-                //
-                //         if (featureOptGroups.length > 0) {
-                //             returnValue = returnValue.concat(sortOptionGroups(featureOptGroups, group));
-                //         } else {
-                //             returnValue = returnValue.concat([group]);
-                //         }
-                //     }
-                //
-                //     return returnValue;
-                // }
-
-                function featureCheckboxChanged(feature, $event) {
-                    feature.options.forEach(option => option.checked = $event.target.checked);
-                    feature.checks = $event.target.checked ? feature.options.length : 0;
-                }
-
-                function optionCheckboxChanged(feature, option) {
-                    feature.checks = 0;
-
-                    feature.options.forEach(option => {
-                        if (option.checked) {
-                            feature.checks++;
-                        }
-                    });
-                }
-
-                function cancel() {
-                    emit('cancel');
-                }
-
-                return {
-                    ...toRefs(state),
-                    combinationCount,
-
-                    saveGenerate,
-                    featureCheckboxChanged,
-                    optionCheckboxChanged,
-                    cancel,
-                }
+      return {
+        name: 'variantGeneration',
+        template: u.selectOne('#c-variant-generation').innerHTML,
+        props: {
+          items: Array
+        },
+        setup(props, { emit }) {
+          const state = reactive({
+            features: [],
+            loading: {
+              generating: false,
+              getFeatureOptions: false
             }
+          });
+
+          const product = inject('product') || {};
+          const mainPrice = inject('mainPrice');
+          const currentHashes = computed(() => props.items.map(item => item.hash));
+          const currentOptionUids = computed(() => {
+            const options = new Set();
+
+            for (const item of props.items) {
+              for (const option of item.options) {
+                options.add(option.uid);
+              }
+            }
+
+            return Array.from(options);
+          });
+
+          onMounted(() => {
+            getFeatureOptions();
+          });
+
+          async function getFeatureOptions() {
+            state.loading.getFeatureOptions = true;
+
+            try {
+              const res = await u.$http.get('@product_ajax/getFeatureOptions');
+
+              state.features = ShopgoVueUtilities.prepareVueItemList(
+                res.data.data,
+                (feature) => {
+                  feature.checks = 0;
+                }
+              );
+
+              for (const feature of state.features) {
+                let i = 0;
+                for (const option of feature.options) {
+                  option.checked = currentOptionUids.value.includes(option.uid);
+
+                  if (option.checked) {
+                    i++;
+                  }
+                }
+
+                feature.checks = i;
+              }
+            } finally {
+              state.loading.getFeatureOptions = false;
+            }
+          }
+
+          const combinationCount = computed(() => {
+            return state.features.reduce((carry, feature) => {
+              return feature.checks > 0 ? carry * feature.checks : carry;
+            }, 1);
+          });
+
+          async function saveGenerate() {
+            // Prevent too many selected
+            if (combinationCount.value >= 100) {
+              u.alert(
+                '您選擇了過多選項', `這樣會產生 ${combinationCount.value} 個組合，系統與瀏覽器會無法負擔，請控制在 100 個以下`,
+                'warning'
+              );
+              return;
+            }
+
+            state.loading.generating = true;
+
+            try {
+              const res = await u.$http.post(
+                '@product_ajax/generateVariants',
+                {
+                  product_id: product?.id,
+                  options: getCheckedOptionGroup(),
+                  currentHashes: currentHashes.value
+                }
+              );
+
+              const variants = res.data.data;
+
+              for (const variant of variants) {
+                variant.price = Number(mainPrice.value);
+              }
+
+              emit('generated', variants);
+            } finally {
+              state.loading.generating = false;
+            }
+          }
+
+          function getCheckedOptionGroup() {
+            const data = {};
+
+            for (const feature of state.features) {
+              const options = feature.options
+                .filter(option => option.checked);
+
+              if (options.length > 0) {
+                data[feature.id] = options;
+              }
+            }
+
+            return data;
+          }
+
+          // function sortOptionGroups(featureOptGroups, parentGroup = []) {
+          //     featureOptGroups = [...featureOptGroups];
+          //     const currentOptions = featureOptGroups.pop();
+          //
+          //     let returnValue = [];
+          //
+          //     for (const option of currentOptions) {
+          //         const group = [...parentGroup];
+          //
+          //         group.push(option);
+          //
+          //         if (featureOptGroups.length > 0) {
+          //             returnValue = returnValue.concat(sortOptionGroups(featureOptGroups, group));
+          //         } else {
+          //             returnValue = returnValue.concat([group]);
+          //         }
+          //     }
+          //
+          //     return returnValue;
+          // }
+
+          function featureCheckboxChanged(feature, $event) {
+            feature.options.forEach(option => option.checked = $event.target.checked);
+            feature.checks = $event.target.checked ? feature.options.length : 0;
+          }
+
+          function optionCheckboxChanged(feature, option) {
+            feature.checks = 0;
+
+            feature.options.forEach(option => {
+              if (option.checked) {
+                feature.checks++;
+              }
+            });
+          }
+
+          function cancel() {
+            emit('cancel');
+          }
+
+          return {
+            ...toRefs(state),
+            combinationCount,
+            currentOptionUids,
+
+            saveGenerate,
+            featureCheckboxChanged,
+            optionCheckboxChanged,
+            cancel,
+          };
         }
+      };
     }
 </script>

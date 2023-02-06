@@ -38,6 +38,16 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
     use ManageRepositoryTrait;
     use ListRepositoryTrait;
 
+    public function getFrontListSelector(): ListSelector
+    {
+        $selector = $this->getListSelector();
+
+        $selector->where('product.state', 1);
+        $selector->where('category.state', 1);
+
+        return $selector;
+    }
+
     public function getListSelector(): ListSelector
     {
         $selector = $this->createSelector();
@@ -46,6 +56,8 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
             ->selectRaw('IFNULL(variants.count, 0) AS variants_count')
             ->selectRaw('IFNULL(variants.max_price, 0) AS max_price')
             ->selectRaw('IFNULL(variants.min_price, 0) AS min_price')
+            ->selectRaw('IFNULL(variants.max_price, 0) AS max_price')
+            ->selectRaw('IFNULL(variants.min_stock, 0) AS min_stock')
             ->selectRaw('IFNULL(variants.variants_stock_quantity, 0) AS variants_stock_quantity')
             ->selectRaw('IF(variants.count = 0, variant.stock_quantity, IFNULL(variants.variants_stock_quantity, 0)) AS total_stock_quantity')
              ->leftJoin(
@@ -61,6 +73,8 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
                      ->selectRaw('MAX(price) AS max_price')
                      ->selectRaw('MIN(price) AS min_price')
                      ->selectRaw('SUM(stock_quantity) AS variants_stock_quantity')
+                     ->selectRaw('MAX(stock_quantity) AS max_stock')
+                     ->selectRaw('MIN(stock_quantity) AS min_stock')
                      ->select('product_id')
                      ->from(ProductVariant::class)
                      ->where('primary', '!=', 1)

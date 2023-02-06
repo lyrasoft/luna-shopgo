@@ -1,2 +1,177 @@
-System.register([],(function(t,e){return{setters:[],execute:function(){window.ShopgoVueUtilities=class{static prepareVueItem(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null;return e&&(t=e(t)||t),t.uid=t.uid||u.tid(),t}static prepareVueItemList(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null;return t.map((t=>this.prepareVueItem(t,e)))}static mergeRecursive(t,e){let o=arguments.length>2&&void 0!==arguments[2]?arguments[2]:[null,void 0,""];for(let n in e)try{if(o.includes(e[n]))continue;e[n].constructor===Object?t[n]=this.mergeRecursive(t[n],e[n]):t[n]=e[n]}catch(o){t[n]=e[n]}return t}},window.ShopGoVuePlugin=function(t){t.config.compilerOptions.whitespace="preserve",t.config.compilerOptions.isCustomElement=t=>["uni-flatpickr"].includes(t),t.config.globalProperties.$lang=function(t){for(var e=arguments.length,o=new Array(e>1?e-1:0),n=1;n<e;n++)o[n-1]=arguments[n];return u.__(t,...o)},t.config.globalProperties.$numberFormat=function(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"";const o=t<0;let n=e+u.numberFormat(Math.abs(t));return o&&(n="-"+n),n},t.config.globalProperties.$offsetFormat=function(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:"";const o=t<0;let n=e+u.numberFormat(Math.abs(t));return n=o?"-"+n:"+"+n,n},t.config.globalProperties.$priceOffset=(t,e)=>{const o=t<0;return"fixed"===e?"="+u.numberFormat(Math.abs(t)):"offsets"===e?o?"-"+u.numberFormat(Math.abs(t)):"+"+u.numberFormat(Math.abs(t)):"percentage"===e?(t>100&&(t=100),t+"%"):t}},window.ShopGoVuePlugin.Colorpicker={async mounted(t,e){let{value:o}=e;await u.$ui.colorPicker(),Spectrum.getInstance(t,Object.assign({},o))},updated(t,e){let{value:o}=e;const n=Spectrum.getInstance(t,options);JSON.stringify(o)!==JSON.stringify(n.options)&&n.rebuild(Object.assign({},o))},unmounted(t){Spectrum.getInstance(t).destroy()}},window.ShopGoVuePlugin.Tooltip={async mounted(t,e){let{value:o}=e;u.$ui.bootstrap.tooltip(t,o)},updated(t,e){let{value:o}=e;u.$ui.bootstrap.tooltip(t,o).update()},beforeUnmount(t){u.$ui.bootstrap.tooltip(t,value).dispose()}}}}}));
+System.register([], function (_export, _context) {
+  "use strict";
+
+  return {
+    setters: [],
+    execute: function () {
+      /**
+       * Part of shopgo project.
+       *
+       * @copyright  Copyright (C) 2023 __ORGANIZATION__.
+       * @license    __LICENSE__
+       */
+
+      window.ShopgoVueUtilities = class ShopgoVueUtilities {
+        /**
+         * @template {[name: string]: any} T
+         * @param {T} item
+         * @param {(item: T) => T} callback
+         * @returns {object}
+         */
+        static prepareVueItem(item) {
+          let callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+          if (callback) {
+            item = callback(item) || item;
+          }
+          item.uid = item.uid || u.tid();
+          return item;
+        }
+
+        /**
+         * @template {[name: string]: any} T
+         * @param {T[]} items
+         * @param {(item: T) => T} callback
+         * @returns {object[]}
+         */
+        static prepareVueItemList(items) {
+          let callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+          return items.map(item => this.prepareVueItem(item, callback));
+        }
+
+        /**
+         * Merge recursive but ignore some values, Based on ChatGPT, modified by Simon.
+         *
+         * @template {[name: string]: any} T
+         * @param {T} obj1
+         * @param {object} obj2
+         * @param {any[]} ignoreValues
+         * @returns {T}
+         */
+        static mergeRecursive(obj1, obj2) {
+          let ignoreValues = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [null, undefined, ''];
+          for (let p in obj2) {
+            try {
+              if (ignoreValues.includes(obj2[p])) {
+                continue;
+              }
+
+              // Property in destination object set; update its value.
+              if (obj2[p].constructor === Object) {
+                obj1[p] = this.mergeRecursive(obj1[p], obj2[p]);
+              } else {
+                obj1[p] = obj2[p];
+              }
+            } catch (e) {
+              // Property in destination object not set; create it and set its value.
+              obj1[p] = obj2[p];
+            }
+          }
+          return obj1;
+        }
+      };
+      window.ShopGoVuePlugin = function (app) {
+        app.config.compilerOptions.whitespace = 'preserve';
+        app.config.compilerOptions.isCustomElement = tag => {
+          return ['uni-flatpickr'].includes(tag);
+        };
+        app.config.globalProperties.$lang = function (id) {
+          for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+          }
+          return u.__(id, ...args);
+        };
+        app.config.globalProperties.$numberFormat = function (num) {
+          let prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+          const negative = num < 0;
+          let formatted = prefix + u.numberFormat(Math.abs(num));
+          if (negative) {
+            formatted = '-' + formatted;
+          }
+          return formatted;
+        };
+        app.config.globalProperties.$offsetFormat = function (num) {
+          let prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+          const negative = num < 0;
+          let formatted = prefix + u.numberFormat(Math.abs(num));
+          if (negative) {
+            formatted = '-' + formatted;
+          } else {
+            formatted = '+' + formatted;
+          }
+          return formatted;
+        };
+        app.config.globalProperties.$priceOffset = (num, method) => {
+          const negative = num < 0;
+          if (method === 'fixed') {
+            return '=' + u.numberFormat(Math.abs(num));
+          }
+          if (method === 'offsets') {
+            if (negative) {
+              return '-' + u.numberFormat(Math.abs(num));
+            }
+            return '+' + u.numberFormat(Math.abs(num));
+          }
+          if (method === 'percentage') {
+            if (num > 100) {
+              num = 100;
+            }
+            return num + '%';
+          }
+          return num;
+        };
+        app.config.globalProperties.$formatPrice = function (num) {
+          let addCode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+          return Currency.format(num, addCode);
+        };
+      };
+
+      // Directive
+
+      // Colorpicker
+      window.ShopGoVuePlugin.Colorpicker = {
+        async mounted(el, _ref) {
+          let {
+            value
+          } = _ref;
+          await u.$ui.colorPicker();
+          Spectrum.getInstance(el, Object.assign({}, value));
+        },
+        updated(el, _ref2) {
+          let {
+            value
+          } = _ref2;
+          const sp = Spectrum.getInstance(el, options);
+          if (JSON.stringify(value) !== JSON.stringify(sp.options)) {
+            sp.rebuild(Object.assign({}, value));
+          }
+        },
+        unmounted(el) {
+          const sp = Spectrum.getInstance(el);
+          sp.destroy();
+        }
+      };
+
+      // Tooltip
+      window.ShopGoVuePlugin.Tooltip = {
+        async mounted(el, _ref3) {
+          let {
+            value
+          } = _ref3;
+          const inc = u.$ui.bootstrap.tooltip(el, value);
+        },
+        updated(el, _ref4) {
+          let {
+            value
+          } = _ref4;
+          const inc = u.$ui.bootstrap.tooltip(el, value);
+          inc.update();
+        },
+        beforeUnmount(el) {
+          const inc = u.$ui.bootstrap.tooltip(el, value);
+          inc.dispose();
+        }
+      };
+    }
+  };
+});
 //# sourceMappingURL=shopgo-vue-utilities.js.map

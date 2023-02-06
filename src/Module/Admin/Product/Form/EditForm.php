@@ -172,7 +172,13 @@ class EditForm implements FieldDefinitionInterface
                     ->showSizeNotice(true);
 
                 $form->add('variant/images', MultiUploaderField::class)
-                    ->label($this->trans('shopgo.product.field.images'));
+                    ->label($this->trans('shopgo.product.field.images'))
+                    ->configureForm(
+                        function (Form $form) {
+                            $form->add('title', TextField::class)
+                                ->label($this->trans('unicorn.field.title'));
+                        }
+                    );
             }
         );
 

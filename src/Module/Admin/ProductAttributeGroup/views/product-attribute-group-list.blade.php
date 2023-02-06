@@ -162,9 +162,9 @@ $orders = [];
                                 <?php
                                 $categories = $categoryGroup[$entity->getId()]?->column('title') ?? [];
                                 ?>
-                                <x-shopgo.widgets.badge-list :items="$categories"
+                                <x-widgets.badge-list :items="$categories"
                                     :empty-text="$lang('shopgo.text.empty')"
-                                ></x-shopgo.widgets.badge-list>
+                                ></x-widgets.badge-list>
                             </td>
 
                             {{-- ORDERING --}}
