@@ -43,4 +43,50 @@ class ShopGoScript extends AbstractScript
             $this->js('@shopgo/currency.js');
         }
     }
+
+    public function productCart(): void
+    {
+        if ($this->available()) {
+            $this->sweetAlert();
+
+            $this->unicornScript->addRoute('@cart_ajax');
+            $this->unicornScript->addRoute('@cart');
+
+            $this->js('@shopgo/product-cart.js');
+        }
+    }
+
+    public function sweetAlert(): void
+    {
+        if ($this->available()) {
+            $this->js('@sweetalert');
+        }
+    }
+
+    public function swiper(?string $selector = null, array $options = []): void
+    {
+        $defaultOptions = [
+            'simulateTouch' => true,
+            'allowTouchMove' => true,
+            'autoHeight' => true
+        ];
+
+        if ($this->available()) {
+            $this->js('vendor/swiper/swiper-bundle.min.js');
+            $this->css('vendor/swiper/swiper-bundle.min.css');
+        }
+
+        if ($this->available($selector) && $selector) {
+            $var = $options['variable_name'] ?? '';
+
+            if ($var) {
+                $var = "var $var = ";
+            }
+
+            $optionString = static::getJSObject($defaultOptions, $options);
+            $this->internalJS(
+                $var . "new Swiper('$selector', $optionString);"
+            );
+        }
+    }
 }

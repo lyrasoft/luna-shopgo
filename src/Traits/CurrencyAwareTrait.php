@@ -26,10 +26,9 @@ trait CurrencyAwareTrait
 
     public function formatPrice(
         float|PriceObject $price,
-        Currency|int|string|null $currency = null,
         bool $addCode = false
     ): string {
-        return $this->currencyService->format($price, $currency, $addCode);
+        return $this->currencyService->format($price, null, $addCode);
     }
 
     public function getMainCurrency(): Currency
