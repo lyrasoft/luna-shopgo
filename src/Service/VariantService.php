@@ -38,6 +38,10 @@ class VariantService
             $priceSet['origin']->setPrice((string) $product->getOriginPrice());
         }
 
+        // Todo: @event PrepareProductPriceSet
+        // Todo: @event PrepareProductDiscountsInformation
+        // Todo: @event PrepareProductInformation
+
         return $variant;
     }
 

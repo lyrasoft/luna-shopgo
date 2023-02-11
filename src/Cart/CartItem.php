@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Cart;
 
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\DTO\ProductVariantDTO;
+use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Data\ValueObject;
 
@@ -23,11 +24,15 @@ class CartItem extends ValueObject
 {
     public ProductVariantDTO $variant;
 
+    public Product $product;
+
     public int $quantity = 0;
 
     public string $cover = '';
 
     public string $link = '';
+
+    public ?int $isAdditionalOf = null;
 
     public PriceSet $priceSet;
 
@@ -150,6 +155,46 @@ class CartItem extends ValueObject
     public function setCover(string $cover): static
     {
         $this->cover = $cover;
+
+        return $this;
+    }
+
+    /**
+     * @return Product
+     */
+    public function getProduct(): Product
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param  Product  $product
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setProduct(Product $product): static
+    {
+        $this->product = $product;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function isAdditionalOf(): ?int
+    {
+        return $this->isAdditionalOf;
+    }
+
+    /**
+     * @param  int|null  $isAdditionalOf
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setIsAdditionalOf(?int $isAdditionalOf): static
+    {
+        $this->isAdditionalOf = $isAdditionalOf;
 
         return $this;
     }

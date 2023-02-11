@@ -39,6 +39,16 @@ async function sendAddAction(el) {
     }
   );
 
+  u.trigger('cart.update', res.data.data);
+
+  const count = res.data.data.length;
+
+  const $cartButton = document.querySelector('[data-role=cart-button]');
+  const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');
+
+  $cartButton.classList.toggle('h-has-items', count > 0);
+  $cartQuantity.textContent = count;
+
   return res.data;
 }
 
