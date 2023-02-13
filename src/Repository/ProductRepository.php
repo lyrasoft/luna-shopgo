@@ -44,7 +44,7 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
     {
         $selector = $this->getListSelector();
 
-        if ($user) {
+        if ($user && $user->isLogin()) {
             $selector->leftJoin(
                 Wishlist::class,
                 'wishlist',
