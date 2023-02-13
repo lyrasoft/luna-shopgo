@@ -40,7 +40,7 @@ async function sendAddAction(el) {
       {
         product_id: productId,
         variant_id: variantId,
-        quantity: Number(qtyInput.value)
+        quantity: Number(qtyInput?.value || 1)
       }
     );
 

@@ -15,7 +15,7 @@ System.register(["@main"], function (_export, _context) {
       const res = await u.$http.post('@cart_ajax/addToCart', {
         product_id: productId,
         variant_id: variantId,
-        quantity: Number(qtyInput.value)
+        quantity: Number((qtyInput === null || qtyInput === void 0 ? void 0 : qtyInput.value) || 1)
       });
       updateCartButton(res.data.data);
       return res.data;
