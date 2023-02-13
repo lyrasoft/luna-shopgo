@@ -185,9 +185,21 @@ class FrontMiddleware extends AbstractLifecycleMiddleware
     {
         // ...
 
+        $this->shopGoScript->sweetAlert();
         $this->shopGoScript->wishlistButton();
         $this->shopGoScript->productCart();
 ```
+
+If you want ot make all JS alert as SweetAlert style, you can replace `u.alert` at `main.js`
+
+```javascript
+// main.js
+
+// ...
+
+u.alert = swal;
+```
+
 
 ### Add Cart Button
 
