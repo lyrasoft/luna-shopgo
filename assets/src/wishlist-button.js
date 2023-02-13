@@ -57,7 +57,11 @@ u.directive(
   'wishlist-button',
   {
     mounted(el) {
-      u.module(el, 'wishlist.button', () => new WishlistButton(el));
+      console.log(el);
+      
+      setTimeout(() => {
+        u.module(el, 'wishlist.button', () => new WishlistButton(el));
+      }, 100);
     }
   }
 );

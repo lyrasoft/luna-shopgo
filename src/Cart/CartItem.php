@@ -34,7 +34,7 @@ class CartItem extends ValueObject
 
     public string $key = '';
 
-    public ?int $isAdditionalOf = null;
+    public array $payload = [];
 
     public PriceSet $priceSet;
 
@@ -182,26 +182,6 @@ class CartItem extends ValueObject
     }
 
     /**
-     * @return int|null
-     */
-    public function isAdditionalOf(): ?int
-    {
-        return $this->isAdditionalOf;
-    }
-
-    /**
-     * @param  int|null  $isAdditionalOf
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setIsAdditionalOf(?int $isAdditionalOf): static
-    {
-        $this->isAdditionalOf = $isAdditionalOf;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getKey(): string
@@ -217,6 +197,26 @@ class CartItem extends ValueObject
     public function setKey(string $key): static
     {
         $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayload(): array
+    {
+        return $this->payload;
+    }
+
+    /**
+     * @param  array  $payload
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPayload(array $payload): static
+    {
+        $this->payload = $payload;
 
         return $this;
     }

@@ -93,13 +93,13 @@ class CartService
             $cartItem = new CartItem();
             $cartItem->setVariant($variant);
             $cartItem->setProduct($product);
-            $cartItem->setKey($k);
+            $cartItem->setKey((string) $k);
             $cartItem->setCover($variant->main_variant->cover);
             $cartItem->setLink(
                 (string) $product->makeLink($this->nav)
             );
             $cartItem->setQuantity((int) $item['quantity']);
-            $cartItem->setIsAdditionalOf($item['isAdditionalOf'] ?? null);
+            $cartItem->setPayload($item['payload'] ?? []);
             $cartItem->setPriceSet($variant->getPriceSet());
 
             $cartItems[] = $cartItem;
