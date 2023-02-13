@@ -54,7 +54,12 @@ async function sendAddAction(el) {
 }
 
 async function addToCart(el) {
-  sendAddAction(el);
+  try {
+    sendAddAction(el);
+  } catch (e) {
+    u.alert(e.message, '', 'warning');
+    return;
+  }
 
   const v = await swal({
     title: '已加入購物車',
@@ -94,7 +99,12 @@ async function addon(el) {
 }
 
 function buy(el) {
-  sendAddAction(el);
+  try {
+    sendAddAction(el);
+  } catch (e) {
+    u.alert(e.message, '', 'warning');
+    return;
+  }
 
   toCartPage();
 }

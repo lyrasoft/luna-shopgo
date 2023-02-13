@@ -6,15 +6,15 @@ System.register(["@main"], function (_export, _context) {
     if (!productId) {
       throw new Error('No product ID');
     }
-    const hash = el.dataset.hash;
-    if (!hash) {
-      throw new Error('No variant hash');
+    const variantId = el.dataset.variantId;
+    if (!variantId) {
+      throw new Error('No variant ID');
     }
     const qtyInput = document.querySelector('[data-role=quantity]');
     try {
       const res = await u.$http.post('@cart_ajax/addToCart', {
         product_id: productId,
-        hash,
+        variant_id: variantId,
         quantity: Number(qtyInput.value)
       });
       updateCartButton(res.data.data);
@@ -25,7 +25,12 @@ System.register(["@main"], function (_export, _context) {
     }
   }
   async function addToCart(el) {
-    sendAddAction(el);
+    try {
+      sendAddAction(el);
+    } catch (e) {
+      u.alert(e.message, '', 'warning');
+      return;
+    }
     const v = await swal({
       title: '已加入購物車',
       buttons: ['繼續購物', '前往結帳']
@@ -52,7 +57,12 @@ System.register(["@main"], function (_export, _context) {
     }
   }
   function buy(el) {
-    sendAddAction(el);
+    try {
+      sendAddAction(el);
+    } catch (e) {
+      u.alert(e.message, '', 'warning');
+      return;
+    }
     toCartPage();
   }
   function toCartPage() {
