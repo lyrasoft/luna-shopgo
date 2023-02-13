@@ -112,7 +112,7 @@ $attributes = $attributes->class('card c-product-card');
                 <button type="button" class="btn btn-primary flex-grow-1"
                     data-task="add-to-cart"
                     data-id="{{ $item->getId() }}"
-                    data-hash="{{ $variant->getHash() }}"
+                    data-variant-id="{{ $variant->getHash() }}"
                     @attr('disabled', $isOutOfStock)
                 >
                     <i class="fa fa-cart-plus"></i>

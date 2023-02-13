@@ -26,10 +26,10 @@ async function sendAddAction(el) {
     throw new Error('No product ID');
   }
 
-  const hash = el.dataset.hash;
+  const variantId = el.dataset.variantId;
 
-  if (!hash) {
-    throw new Error('No variant hash');
+  if (!variantId) {
+    throw new Error('No variant ID');
   }
 
   const qtyInput = document.querySelector('[data-role=quantity]');
@@ -39,7 +39,7 @@ async function sendAddAction(el) {
       '@cart_ajax/addToCart',
       {
         product_id: productId,
-        hash,
+        variant_id: variantId,
         quantity: Number(qtyInput.value)
       }
     );

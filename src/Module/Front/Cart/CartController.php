@@ -39,16 +39,16 @@ class CartController
     {
         [
             $id,
-            $hash,
+            $variantId,
             $quantity,
-        ] = $app->input('product_id', 'hash', 'quantity')->values();
+        ] = $app->input('product_id', 'variant_id', 'quantity')->values();
 
         /** @var ProductVariant $variant */
         $variant = $app->call(
             [$this, 'validateProductVariant'],
             [
                 'id' => (int) $id,
-                'hash' => (string) $hash
+                'variantId' => (int) $variantId
             ]
         );
 
@@ -88,11 +88,11 @@ class CartController
         return $cartService->getCartData();
     }
 
-    public function validateProductVariant(int $id, string $hash, ORM $orm): ProductVariant
+    public function validateProductVariant(int $id, int $variantId, ORM $orm): ProductVariant
     {
         $orm->mustFindOne(Product::class, $id);
 
-        return $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'hash' => $hash]);
+        return $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'id' => $variantId]);
     }
 
     public function validateAdditionalPurchase(int $apMapId, ORM $orm, CartStorage $cartStorage): AdditionalPurchaseMap

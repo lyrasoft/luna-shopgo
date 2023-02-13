@@ -312,7 +312,7 @@ $shopGoScript->swiper(
                         <button type="button" class="btn btn-primary btn-lg flex-fill"
                             data-task="buy"
                             :data-id="product.id"
-                            :data-hash="currentVariant?.hash"
+                            :data-variant-id="currentVariant?.id"
                             :disabled="!currentVariant || outOfStock">
                             <i class="fa fa-cart-shopping"></i>
                             立即購買
@@ -321,7 +321,7 @@ $shopGoScript->swiper(
                         <button type="button" class="btn btn-outline-primary btn-lg flex-fill"
                             data-task="add-to-cart"
                             :data-id="product.id"
-                            :data-hash="currentVariant?.hash"
+                            :data-variant-id="currentVariant?.id"
                             :disabled="!currentVariant || outOfStock">
                             <i class="fa fa-cart-plus"></i>
                             加入購物車
