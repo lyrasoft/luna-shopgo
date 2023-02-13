@@ -26,6 +26,7 @@ use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Unicorn\Utilities\SlugHelper;
 use Windwalker\Core\Seed\Seeder;
+use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
@@ -77,7 +78,7 @@ $seeder->import(
             );
             $item->setAlias(SlugHelper::safe($item->getTitle()));
             $item->setOriginPrice((float) $faker->randomElement([500, 1000, 1500, 2000, 2500, 3000, 3500]));
-            $item->setSafeStock(random_int(5, 20));
+            $item->setSafeStock(random_int(3, 5));
             $item->setIntro($faker->paragraph(2));
             $item->setDescription($faker->paragraph(5));
             $item->setMeta(
@@ -142,7 +143,7 @@ $seeder->import(
                 $attrMap->setLocale('*');
 
                 if ($attribute->getType() === ProductAttributeType::BOOL()) {
-                    $attrMap->setValue((string) random_int(0, 1));
+                     $attrMap->setValue((string) random_int(0, 1));
                 } elseif ($attribute->getType() === ProductAttributeType::TEXT()) {
                     $attrMap->setValue($faker->sentence());
                 } elseif ($attribute->getType() === ProductAttributeType::SELECT()) {
@@ -189,9 +190,28 @@ $seeder->import(
             $searchIndexes[] = $mainVariant->getSearchIndex();
 
             // Sub Variants
-            $currentFeatures = $faker->randomElements($features, random_int(0, 4));
+            $currentFeatures = [];
+
+            foreach ($faker->randomElements($features, 3) as $feature) {
+                /** @var ProductFeature $feature */
+                $feature = clone $feature;
+
+                /** @var ListOption[] $options */
+                $options = $faker->randomElements($feature->getOptions()->dump(), 3);
+
+                foreach ($options as $option) {
+                    $option->setParentId($feature->getId());
+                }
+
+                $feature->setOptions($options);
+
+                $currentFeatures[] = $feature;
+            }
+
+            $hasSubVariants = $faker->randomElement([true, true, false]);
+
             /** @var array<ListOption[]> $variantGroups */
-            $variantGroups = $sortGroup($currentFeatures);
+            $variantGroups = $hasSubVariants ? $sortGroup($currentFeatures) : [];
 
             foreach ($variantGroups as $h => $options) {
                 $options = ListOptionCollection::wrap($options);
@@ -199,9 +219,14 @@ $seeder->import(
                 $startDay = $item->getCreated()->modify($faker->randomElement(['+5 days', '+10 days', '+15 days']));
                 $haveStartDay = $faker->randomElement([1, 1, 0]);
 
+                $optUids = ListOptionCollection::wrap($options)
+                    ->as(Collection::class)
+                    ->map(static fn ($option) => $option['uid'])
+                    ->dump();
+
                 $variant->setProductId($item->getId());
-                $variant->setTitle((string) $options->column('text')->implode(' / '));
-                $variant->setHash(VariantService::hashByOptions($options));
+                $variant->setTitle((string) $options->as(Collection::class)->column('text')->implode(' / '));
+                $variant->setHash(VariantService::hash($optUids, $seed));
                 $variant->setPrimary(false);
                 $variant->setSku('PRD' . Str::padLeft((string) $i, 7, '0') . '-' . ($h + 1));
                 $variant->setStockQuantity(random_int(1, 30));
@@ -230,6 +255,8 @@ $seeder->import(
                     $variant->setPublishUp($startDay);
                     $variant->setPublishDown($startDay->modify('+25 days'));
                 }
+
+                $variant->setParams(compact('seed'));
 
                 $orm->createOne(ProductVariant::class, $variant);
 
@@ -264,8 +291,6 @@ $seeder->clear(
  * @return  array<ListOption>
  */
 $sortGroup = static function (array $features, array $parentGroup = []) use (&$sortGroup, $seeder) {
-    $faker = $seeder->faker('en_US');
-
     $feature = array_pop($features);
 
     if (!$feature) {
@@ -276,8 +301,9 @@ $sortGroup = static function (array $features, array $parentGroup = []) use (&$s
 
     $returnValue = [];
 
-    foreach ($faker->randomElements($currentOptions, 2) as $option) {
+    foreach ($currentOptions as $option) {
         $group = $parentGroup;
+        $option['parentId'] = $feature->getId();
 
         $group[] = new ListOption($option);
 
