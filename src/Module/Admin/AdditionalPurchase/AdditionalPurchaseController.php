@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase;
 
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\AdditionalPurchaseRepository;
@@ -21,6 +22,7 @@ use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\ORM;
 
 /**
@@ -49,6 +51,33 @@ class AdditionalPurchaseController
         $product = $orm->findOne(Product::class, $productId);
 
         $form = $formFactory->create(EditForm::class, product: $product);
+
+        $controller->afterSave(
+            function (AfterSaveEvent $event) use ($app) {
+                $data = $event->getData();
+                $orm = $event->getORM();
+                $productIds = $app->input('item')['products'];
+
+                $maps = [];
+
+                foreach ($productIds as $productId) {
+                    $map = new AdditionalPurchaseMap();
+                    $map->setAdditionalPurchaseId((int) $data['id']);
+                    $map->setAttachVariantId((int) $data['attach_variant_id']);
+                    $map->setAttachProductId((int) $data['attach_product_id']);
+                    $map->setTargetProductId((int) $productId);
+
+                    $maps[] = $map;
+                }
+
+                $orm->sync(
+                    AdditionalPurchaseMap::class,
+                    $maps,
+                    ['additional_purchase_id' => $data['id']],
+                    ['target_product_id']
+                );
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

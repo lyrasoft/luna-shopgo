@@ -168,3 +168,15 @@ window.ShopGoVuePlugin.Tooltip = {
     inc.dispose();
   }
 };
+
+// Tooltip
+window.ShopGoVuePlugin.TomSelect = {
+  async mounted(el, { value }) {
+    const inc = u.$ui.tomSelect(el, value);
+  },
+  beforeUnmount(el) {
+    const inc = u.$ui.tomSelect(el, value);
+
+    inc.destroy();
+  }
+};

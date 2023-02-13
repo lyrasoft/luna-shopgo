@@ -171,6 +171,20 @@ System.register([], function (_export, _context) {
           inc.dispose();
         }
       };
+
+      // Tooltip
+      window.ShopGoVuePlugin.TomSelect = {
+        async mounted(el, _ref5) {
+          let {
+            value
+          } = _ref5;
+          const inc = u.$ui.tomSelect(el, value);
+        },
+        beforeUnmount(el) {
+          const inc = u.$ui.tomSelect(el, value);
+          inc.destroy();
+        }
+      };
     }
   };
 });

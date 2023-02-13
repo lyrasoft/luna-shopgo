@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\ShopGo\Data\AddressData;
 use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
 use Windwalker\Utilities\SimpleTemplate;
 
@@ -46,16 +48,14 @@ class AddressService
         if ($withName) {
             $data = array_merge(
                 [
-                    [
-                        'fullname' => $addressData->getFullName(),
-                        'name' => $addressData->getFullName(),
-                        'firstname' => $addressData->getFirstName(),
-                        'lastname' => $addressData->getLastName(),
-                        'company' => $addressData->getCompany(),
-                        'vat' => $addressData->getVat(),
-                    ],
-                    $data,
-                ]
+                    'fullname' => $addressData->getFullName(),
+                    'name' => $addressData->getFullName(),
+                    'firstname' => $addressData->getFirstName(),
+                    'lastname' => $addressData->getLastName(),
+                    'company' => $addressData->getCompany(),
+                    'vat' => $addressData->getVat(),
+                ],
+                $data,
             );
         }
 

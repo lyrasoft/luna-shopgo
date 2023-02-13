@@ -26,6 +26,7 @@ trait AddressAwaitTrait
     public string $country = '';
     public string $state = '';
     public string $city = '';
+    public string $postcode = '';
     public string $address1 = '';
     public string $address2 = '';
     public string $vat = '';
@@ -332,6 +333,26 @@ trait AddressAwaitTrait
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostcode(): string
+    {
+        return $this->postcode;
+    }
+
+    /**
+     * @param  string  $postcode
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPostcode(string $postcode): static
+    {
+        $this->postcode = $postcode;
 
         return $this;
     }

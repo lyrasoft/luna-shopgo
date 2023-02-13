@@ -70,7 +70,7 @@ class CartService
         $vIds = array_unique(array_column($items, 'variantId'));
 
         $variants = $this->variantRepository->getCartListSelector()
-            ->where('id', $vIds)
+            ->where('product_variant.id', $vIds)
             ->tapIf(
                 $forUpdate,
                 fn (ListSelector $selector) => $selector->forUpdate()
@@ -80,7 +80,7 @@ class CartService
 
         $cartItems = [];
 
-        foreach ($items as $item) {
+        foreach ($items as $k => $item) {
             /** @var ?ProductVariant $variant */
             $variant = $variants[$item['variantId']] ?? null;
 
@@ -93,6 +93,8 @@ class CartService
             $cartItem = new CartItem();
             $cartItem->setVariant($variant);
             $cartItem->setProduct($product);
+            $cartItem->setKey($k);
+            $cartItem->setCover($variant->main_variant->cover);
             $cartItem->setLink(
                 (string) $product->makeLink($this->nav)
             );

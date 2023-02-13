@@ -46,6 +46,7 @@ $attributes->props(
     'max-price',
     'min-stock',
     'max-stock',
+    'added-wishlist'
 );
 
 $orm = $app->service(ORM::class);
@@ -59,6 +60,7 @@ $minPrice ??= $item->min_price ?? 0;
 $maxPrice ??= $item->max_price ?? 0;
 $minStock ??= $item->min_stock ?? 0;
 $maxStock ??= $item->max_stock ?? 0;
+$addedWishlist ??= null;
 
 $priceSet = $variant->getPriceSet();
 
@@ -66,8 +68,10 @@ $currencyService = $app->service(CurrencyService::class);
 $variantService = $app->service(VariantService::class);
 
 $variant = $variantService->prepareVariantView($variant, $item);
+$isOutOfStock = $variantService->isOutOfStock($variant, $item);
 
 $attributes = $attributes->class('card c-product-card');
+
 ?>
 
 <article {!! $attributes !!}>
@@ -99,13 +103,31 @@ $attributes = $attributes->class('card c-product-card');
 
         <div class="c-product-card__actions mt-auto d-flex gap-1"
             style="position: relative; z-index: 1">
-            <button type="button" class="btn btn-primary flex-grow-1">
-                <i class="fa fa-cart-plus"></i>
-                加入購物車
-            </button>
-            <button type="button" class="btn btn-outline-primary">
-                <i class="far fa-heart"></i>
-            </button>
+            @if ($item->variants_count > 1)
+                <a href="{{ $item->makeLink($nav) }}" class="btn btn-primary flex-grow-1">
+                    <i class="fa fa-eye"></i>
+                    觀看此商品
+                </a>
+            @else
+                <button type="button" class="btn btn-primary flex-grow-1"
+                    data-task="add-to-cart"
+                    data-id="{{ $item->getId() }}"
+                    data-hash="{{ $variant->getHash() }}"
+                    @attr('disabled', $isOutOfStock)
+                >
+                    <i class="fa fa-cart-plus"></i>
+                    @if ($isOutOfStock)
+                        {{ $variant->getOutOfStockText() ?: '庫存不足' }}
+                    @else
+                        加入購物車
+                    @endif
+                </button>
+            @endif
+
+            <x-wishlist-button :id="$item->getId()"
+                added="{{ $addedWishlist ? 1 : 0 }}"
+                class="btn btn-outline-primary">
+            </x-wishlist-button>
         </div>
     </div>
 </article>

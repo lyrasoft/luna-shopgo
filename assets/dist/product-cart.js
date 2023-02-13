@@ -11,12 +11,18 @@ System.register(["@main"], function (_export, _context) {
       throw new Error('No variant hash');
     }
     const qtyInput = document.querySelector('[data-role=quantity]');
-    const res = await u.$http.post('@cart_ajax/addToCart', {
-      product_id: productId,
-      hash,
-      quantity: Number(qtyInput.value)
-    });
-    return res.data;
+    try {
+      const res = await u.$http.post('@cart_ajax/addToCart', {
+        product_id: productId,
+        hash,
+        quantity: Number(qtyInput.value)
+      });
+      updateCartButton(res.data.data);
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      u.alert(e.message, '', 'warning');
+    }
   }
   async function addToCart(el) {
     sendAddAction(el);
@@ -29,12 +35,38 @@ System.register(["@main"], function (_export, _context) {
     }
     toCartPage();
   }
+  async function addon(el) {
+    const apMapId = el.dataset.apMapId;
+    try {
+      const res = await u.$http.post('@cart_ajax/addon', {
+        apMapId
+      });
+      updateCartButton(res.data.data);
+      swal({
+        title: '已加購'
+      });
+      return res.data;
+    } catch (e) {
+      console.error(e);
+      u.alert(e.message, '', 'warning');
+    }
+  }
   function buy(el) {
     sendAddAction(el);
     toCartPage();
   }
   function toCartPage() {
     location.href = u.route('cart');
+  }
+  function updateCartButton(data) {
+    u.trigger('cart.update', data);
+    const count = data.length;
+    const $cartButtons = document.querySelectorAll('[data-role=cart-button]');
+    for (const $cartButton of $cartButtons) {
+      const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');
+      $cartButton.classList.toggle('h-has-items', count > 0);
+      $cartQuantity.textContent = count;
+    }
   }
   return {
     setters: [function (_main) {}],
@@ -51,6 +83,9 @@ System.register(["@main"], function (_export, _context) {
       });
       u.delegate(document, '[data-task=buy]', 'click', e => {
         buy(e.target);
+      });
+      u.delegate(document, '[data-task=addon]', 'click', e => {
+        addon(e.target);
       });
     }
   };

@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Repository;
 
+use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\ShopGo\Entity\Wishlist;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -38,9 +40,20 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
     use ManageRepositoryTrait;
     use ListRepositoryTrait;
 
-    public function getFrontListSelector(): ListSelector
+    public function getFrontListSelector(?User $user = null): ListSelector
     {
         $selector = $this->getListSelector();
+
+        if ($user) {
+            $selector->leftJoin(
+                Wishlist::class,
+                'wishlist',
+                [
+                    ['wishlist.product_id', 'product.id'],
+                    ['wishlist.user_id', val($user->getId())],
+                ]
+            );
+        }
 
         $selector->where('product.state', 1);
         $selector->where('category.state', 1);

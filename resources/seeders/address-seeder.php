@@ -61,7 +61,7 @@ $seeder->import(
             $item->setMobile('09' . random_int(10000000, 99999999));
             $item->setVat((string) random_int(10000000, 99999999));
             $item->setDetails([]);
-            $item->setState(1);
+            $item->setEnabled(1);
 
             $mapper->createOne($item);
 

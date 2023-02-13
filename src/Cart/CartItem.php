@@ -32,6 +32,8 @@ class CartItem extends ValueObject
 
     public string $link = '';
 
+    public string $key = '';
+
     public ?int $isAdditionalOf = null;
 
     public PriceSet $priceSet;
@@ -195,6 +197,26 @@ class CartItem extends ValueObject
     public function setIsAdditionalOf(?int $isAdditionalOf): static
     {
         $this->isAdditionalOf = $isAdditionalOf;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param  string  $key
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setKey(string $key): static
+    {
+        $this->key = $key;
 
         return $this;
     }

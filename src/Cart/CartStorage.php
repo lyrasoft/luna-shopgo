@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Cart;
 
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
 use Windwalker\Core\State\AppState;
 
 /**
@@ -26,16 +27,19 @@ class CartStorage
     {
     }
 
-    public function addToCart(int $variantId, int $quantity = 1, ?int $isAdditionalOf = null): void
+    public function addToCart(int $variantId, int $quantity = 1, array $payload = []): void
     {
         $items = $this->getStoredItems();
 
-        $key = $this->getKeyName($variantId, $isAdditionalOf);
+        $key = $this->getKeyName($variantId, $payload);
 
         if (isset($items[$key])) {
             $items[$key]['quantity'] += $quantity;
         } else {
-            $items[$key] = compact('variantId', 'quantity', 'isAdditionalOf');
+            $items[$key] = array_merge(
+                compact('variantId', 'quantity', 'key'),
+                $payload
+            );
         }
 
         $this->setStoredItems($items);
@@ -52,12 +56,12 @@ class CartStorage
 
     public function changeItemQuantity(
         int $variantId,
-        ?int $isAdditionalOf = null,
-        int $offsets = 1
+        int $offsets = 1,
+        array $payload = []
     ): void {
         $items = $this->getStoredItems();
 
-        $key = $this->getKeyName($variantId, $isAdditionalOf);
+        $key = $this->getKeyName($variantId, $payload);
 
         if (!isset($items[$key])) {
             throw new \RuntimeException("Item: $variantId not found in cart");
@@ -68,17 +72,32 @@ class CartStorage
         $this->setStoredItems($items);
     }
 
-    public function setItemQuantity(int $variantId, ?int $isAdditionalOf = null, int $quantity = 1): void
+    public function setItemQuantity(int $variantId, int $quantity = 1, array $payload = []): void
     {
         $items = $this->getStoredItems();
 
-        $key = $this->getKeyName($variantId, $isAdditionalOf);
+        $key = $this->getKeyName($variantId, $payload);
 
         if (!isset($items[$key])) {
             throw new \RuntimeException("Item: $variantId not found in cart");
         }
 
         $items[$key]['quantity'] = $quantity;
+
+        $this->setStoredItems($items);
+    }
+
+    public function updateQuantities(array $values): void
+    {
+        $items = $this->getStoredItems();
+
+        foreach ($values as $key => $quantity) {
+            if (!isset($items[$key])) {
+                continue;
+            }
+
+            $items[$key]['quantity'] = (int) $quantity;
+        }
 
         $this->setStoredItems($items);
     }
@@ -114,13 +133,29 @@ class CartStorage
     }
 
     /**
-     * @param  int       $variantId
-     * @param  int|null  $isAdditionalOf
+     * @param  int    $variantId
+     * @param  array  $payload
      *
      * @return  string
      */
-    protected function getKeyName(int $variantId, ?int $isAdditionalOf = null): string
+    protected function getKeyName(int $variantId, array $payload = []): string
     {
-        return $variantId . ':' . ($isAdditionalOf ?? 0);
+        sort($payload);
+
+        $payload = array_map(static fn ($v) => $v ?: '0', $payload);
+
+        array_unshift($payload, $variantId);
+
+        return implode(':', $payload);
+    }
+
+    public function addAdditional(AdditionalPurchaseMap $apMap): void
+    {
+        $variantId = $apMap->getAttachVariantId();
+
+        $isAdditionalOf = $apMap->getTargetProductId();
+        $apMapId = $apMap->getId();
+
+        $this->addToCart($variantId, 1, compact('isAdditionalOf', 'apMapId'));
     }
 }

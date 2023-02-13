@@ -12,7 +12,8 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
-use Unicorn\Enum\BasicState;
+use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Service\AddressService;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
@@ -32,7 +33,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Address class.
  */
 #[Table('addresses', 'address')]
-class Address implements EntityInterface
+#[\AllowDynamicProperties]
+class Address implements EntityInterface, AddressAwareInterface
 {
     use EntityTrait;
 
@@ -54,6 +56,9 @@ class Address implements EntityInterface
     #[Column('fullname')]
     protected string $fullname = '';
 
+    #[Column('email')]
+    protected string $email = '';
+
     #[Column('company')]
     protected string $company = '';
 
@@ -62,6 +67,12 @@ class Address implements EntityInterface
 
     #[Column('address2')]
     protected string $address2 = '';
+
+    #[Column('country')]
+    protected string $country = '';
+
+    #[Column('state')]
+    protected string $state = '';
 
     #[Column('city')]
     protected string $city = '';
@@ -82,10 +93,9 @@ class Address implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $details = [];
 
-    #[Column('state')]
-    #[Cast('int')]
-    #[Cast(BasicState::class)]
-    protected BasicState $state;
+    #[Column('enabled')]
+    #[Cast('bool', 'int')]
+    protected bool $enabled = false;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -283,18 +293,6 @@ class Address implements EntityInterface
         return $this;
     }
 
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
     public function getCreated(): ?Chronos
     {
         return $this->created;
@@ -317,5 +315,79 @@ class Address implements EntityInterface
         $this->modified = Chronos::wrapOrNull($modified);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param  string  $email
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param  string  $country
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setCountry(string $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getAddressId(): int
+    {
+        return (int) $this->getId();
+    }
+
+    public function getState(): string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): static
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function formatByLocation(?Location $location = null, bool $withName = false): string
+    {
+        return AddressService::formatByLocation($this, $location, $withName);
     }
 }

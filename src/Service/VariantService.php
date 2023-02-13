@@ -45,6 +45,17 @@ class VariantService
         return $variant;
     }
 
+    public function isOutOfStock(ProductVariant $variant, Product $product): bool
+    {
+        if (!$variant->isSubtract()) {
+            return false;
+        }
+
+        $safeStock = $product->getSafeStock();
+
+        return $variant->getStockQuantity() - $safeStock < 1;
+    }
+
     /**
      * @param  array<ListOption|array>  $options
      *

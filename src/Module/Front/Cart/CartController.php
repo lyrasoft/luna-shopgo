@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Front\Cart;
 
+use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Core\Application\AppContext;
@@ -37,39 +40,93 @@ class CartController
         [
             $id,
             $hash,
-            $isAdditionalOf,
             $quantity,
-        ] = $app->input('id', 'hash', 'isAdditionalOf', 'quantity')->values();
+        ] = $app->input('product_id', 'hash', 'quantity')->values();
 
         /** @var ProductVariant $variant */
         $variant = $app->call(
-            [$this, 'checkProductExists'],
+            [$this, 'validateProductVariant'],
             [
                 'id' => (int) $id,
-                'hash' => (string) $hash,
-                'isAdditionalOf' => $isAdditionalOf
+                'hash' => (string) $hash
             ]
         );
 
-        $cartStorage->addToCart($variant->getId(), (string) $hash, $isAdditionalOf, (int) $quantity);
+        $cartStorage->addToCart($variant->getId(), (int) $quantity);
 
-        return $cartStorage->getStoredItems();
+        return array_values($cartStorage->getStoredItems());
     }
 
-    public function getItems(AppContext $app, CartService $cartService)
+    public function addon(AppContext $app, CartStorage $cartStorage): array
     {
-        $cartService->getCartData();
+        $apMapId = (int) $app->input('apMapId');
+
+        /** @var AdditionalPurchaseMap $apMap */
+        $apMap = $app->call(
+            [$this, 'validateAdditionalPurchase'],
+            [
+                'apMapId' => $apMapId
+            ]
+        );
+
+        $cartStorage->addAdditional($apMap);
+
+        return array_values($cartStorage->getStoredItems());
     }
 
-    protected function checkProductExists(int $id, string $hash, ?int $isAdditionalOf, ORM $orm): ProductVariant
+    public function updateQuantities(AppContext $app, CartStorage $cartStorage, CartService $cartService): CartData
+    {
+        $values = (array) $app->input('values');
+
+        $cartStorage->updateQuantities($values);
+
+        return $cartService->getCartData();
+    }
+
+    public function getItems(AppContext $app, CartService $cartService): CartData
+    {
+        return $cartService->getCartData();
+    }
+
+    public function validateProductVariant(int $id, string $hash, ORM $orm): ProductVariant
     {
         $orm->mustFindOne(Product::class, $id);
-        $variant = $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'hash' => $hash]);
 
-        if ($isAdditionalOf) {
-            $orm->mustFindOne(Product::class, $isAdditionalOf);
+        return $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'hash' => $hash]);
+    }
+
+    public function validateAdditionalPurchase(int $apMapId, ORM $orm, CartStorage $cartStorage): AdditionalPurchaseMap
+    {
+        $map = $orm->mustFindOne(AdditionalPurchaseMap::class, $apMapId);
+        $ap = $orm->mustFindOne(AdditionalPurchase::class, $map->getAdditionalPurchaseId());
+
+        $orm->mustFindOne(Product::class, $map->getTargetProductId());
+        $orm->mustFindOne(Product::class, $ap->getAttachProductId());
+        $orm->mustFindOne(ProductVariant::class, $ap->getAttachVariantId());
+
+        $variantIds = $orm->findColumn(
+            ProductVariant::class,
+            'id',
+            ['product_id' => $map->getTargetProductId()]
+        )
+            ->map('intval')
+            ->dump();
+
+        $items = $cartStorage->getStoredItems();
+        $exists = false;
+
+        foreach ($items as $item) {
+            if (isset($item['isAdditionalOf'])) {
+                continue;
+            }
+
+            $exists = $exists || in_array((int) $item['variantId'], $variantIds, true);
         }
 
-        return $variant;
+        if (!$exists) {
+            throw new \RuntimeException('請先加入主要商品才能加購');
+        }
+
+        return $map;
     }
 }

@@ -15,6 +15,10 @@ u.delegate(document, '[data-task=buy]', 'click', (e) => {
   buy(e.target);
 });
 
+u.delegate(document, '[data-task=addon]', 'click', (e) => {
+  addon(e.target);
+});
+
 async function sendAddAction(el) {
   const productId = el.dataset.id;
 
@@ -30,26 +34,23 @@ async function sendAddAction(el) {
 
   const qtyInput = document.querySelector('[data-role=quantity]');
 
-  const res = await u.$http.post(
-    '@cart_ajax/addToCart',
-    {
-      product_id: productId,
-      hash,
-      quantity: Number(qtyInput.value)
-    }
-  );
+  try {
+    const res = await u.$http.post(
+      '@cart_ajax/addToCart',
+      {
+        product_id: productId,
+        hash,
+        quantity: Number(qtyInput.value)
+      }
+    );
 
-  u.trigger('cart.update', res.data.data);
+    updateCartButton(res.data.data);
 
-  const count = res.data.data.length;
-
-  const $cartButton = document.querySelector('[data-role=cart-button]');
-  const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');
-
-  $cartButton.classList.toggle('h-has-items', count > 0);
-  $cartQuantity.textContent = count;
-
-  return res.data;
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    u.alert(e.message, '', 'warning');
+  }
 }
 
 async function addToCart(el) {
@@ -70,6 +71,28 @@ async function addToCart(el) {
   toCartPage();
 }
 
+async function addon(el) {
+  const apMapId = el.dataset.apMapId;
+
+  try {
+    const res = await u.$http.post(
+      '@cart_ajax/addon',
+      {
+        apMapId
+      }
+    );
+
+    updateCartButton(res.data.data);
+
+    swal({ title: '已加購' });
+
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    u.alert(e.message, '', 'warning');
+  }
+}
+
 function buy(el) {
   sendAddAction(el);
 
@@ -78,4 +101,19 @@ function buy(el) {
 
 function toCartPage() {
   location.href = u.route('cart');
+}
+
+function updateCartButton(data) {
+  u.trigger('cart.update', data);
+
+  const count = data.length;
+
+  const $cartButtons = document.querySelectorAll('[data-role=cart-button]');
+
+  for (const $cartButton of $cartButtons) {
+    const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');
+
+    $cartButton.classList.toggle('h-has-items', count > 0);
+    $cartQuantity.textContent = count;
+  }
 }

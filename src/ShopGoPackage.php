@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo;
 
 use Lyrasoft\Luna\Services\ConfigService;
 use Lyrasoft\ShopGo\Cart\CartService;
+use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Config\ShopConfig;
 use Lyrasoft\ShopGo\Service\AddressService;
 use Lyrasoft\ShopGo\Service\CheckoutService;
@@ -56,6 +57,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
         $container->share(self::class, $this);
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);
+        $container->prepareSharedObject(CartStorage::class);
         $container->prepareSharedObject(CheckoutService::class);
         $container->prepareSharedObject(CurrencyService::class);
         $container->prepareSharedObject(LocationService::class);
@@ -77,6 +79,20 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
                 static::path('views'),
             ],
             Container::MERGE_OVERRIDE
+        );
+
+        $container->mergeParameters(
+            'renderer.aliases',
+            [
+                '@wishlist-button' => 'front.wishlist-button',
+            ]
+        );
+
+        $container->mergeParameters(
+            'renderer.edge.components',
+            [
+                'wishlist-button' => '@wishlist-button',
+            ]
         );
 
         // Assets

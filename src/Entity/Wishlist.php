@@ -35,8 +35,8 @@ class Wishlist implements EntityInterface
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
-    #[Column('uesr_id')]
-    protected int $uesrId = 0;
+    #[Column('user_id')]
+    protected int $userId = 0;
 
     #[Column('product_id')]
     protected int $productId = 0;
@@ -64,14 +64,14 @@ class Wishlist implements EntityInterface
         return $this;
     }
 
-    public function getUesrId(): int
+    public function getUserId(): int
     {
-        return $this->uesrId;
+        return $this->userId;
     }
 
-    public function setUesrId(int $uesrId): static
+    public function setUserId(int $userId): static
     {
-        $this->uesrId = $uesrId;
+        $this->userId = $userId;
 
         return $this;
     }

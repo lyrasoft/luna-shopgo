@@ -63,6 +63,15 @@ class ShopGoScript extends AbstractScript
         }
     }
 
+    public function wishlistButton(): void
+    {
+        if ($this->available()) {
+            $this->unicornScript->addRoute('@wishlist_ajax');
+
+            $this->js('@shopgo/wishlist-button.js');
+        }
+    }
+
     public function swiper(?string $selector = null, array $options = []): void
     {
         $defaultOptions = [

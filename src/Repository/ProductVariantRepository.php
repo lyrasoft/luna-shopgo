@@ -24,6 +24,8 @@ use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 
+use function Windwalker\Query\val;
+
 /**
  * The ProductVariantRepository class.
  */
@@ -35,9 +37,17 @@ class ProductVariantRepository implements ManageRepositoryInterface, ListReposit
 
     public function getCartListSelector(): ListSelector
     {
-        $selector = $this->createSelector();
+        $selector = $this->getListSelector();
 
-        $selector->leftJoin(Product::class)
+        $selector->leftJoin(Product::class, 'product', 'product.id', 'product_variant.product_id')
+            ->leftJoin(
+                ProductVariant::class,
+                'main_variant',
+                [
+                    ['main_variant.product_id', 'product.id'],
+                    ['main_variant.primary', val(1)]
+                ]
+            )
             ->where('product_variant.state', 1)
             ->where('product.state', 1);
 

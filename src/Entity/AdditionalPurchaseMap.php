@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
@@ -25,6 +27,9 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 class AdditionalPurchaseMap implements EntityInterface
 {
     use EntityTrait;
+
+    #[Column('id'), PK, AutoIncrement]
+    protected ?int $id = null;
 
     #[Column('additional_purchase_id')]
     protected int $additionalPurchaseId = 0;
@@ -88,6 +93,18 @@ class AdditionalPurchaseMap implements EntityInterface
     public function setTargetProductId(int $targetProductId): static
     {
         $this->targetProductId = $targetProductId;
+
+        return $this;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
 
         return $this;
     }
