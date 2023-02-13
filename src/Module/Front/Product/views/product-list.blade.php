@@ -37,7 +37,6 @@ $shopGoScript->productCart();
 
 $orm = $app->service(ORM::class);
 
-$asset->js('js/front/product-cart.js');
 ?>
 
 @extends('global.body')

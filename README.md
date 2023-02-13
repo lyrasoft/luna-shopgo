@@ -140,6 +140,82 @@ Or run this command to copy languages files:
 php windwalker pkg:install lyrasoft/shopgo -t lang
 ```
 
+### CSS/JS
+
+Add these vendors to `fusionfile.mjs`
+
+```javascript
+export async function install() {
+  return installVendors(
+    [
+      // ...
+      
+      // Add these below
+      'sweetalert',
+      'swiper',
+    ],
+    [
+      // Add this
+      'lyrasoft/shopgo'
+    ]
+  );
+}
+```
+
+Then run this command to install npm vendors:
+
+```shell
+yarn add swiper sweetalert
+```
+
+The ShopGo Scripts will auto-register in destinestion pages. But if you want, you can register it globally in `FrontMiddleware`.
+
+```php
+class FrontMiddleware extends AbstractLifecycleMiddleware
+{
+    // ...
+
+    public function __construct(
+        // ...
+        protected ShopGoScript $shopGoScript,
+    ) {
+    }
+
+    protected function preprocess(ServerRequestInterface $request): void
+    {
+        // ...
+
+        $this->shopGoScript->wishlistButton();
+        $this->shopGoScript->productCart();
+```
+
+### Add Cart Button
+
+Currently ShopGo Beta has no cart button widget. You must add it to HTML manually.
+
+You must includes these 2 attributes to make JS works:
+
+- `[data-role=cart-button]`
+- `[data-role=cart-quantity]`
+
+```php
+<?php
+$cartStorage = $app->service(\Lyrasoft\ShopGo\Cart\CartStorage::class);
+$cartQuantity = $cartStorage->count();
+?>
+<div class="c-cart-button"
+    data-role="cart-button">
+    <div class="c-cart-button__quantity">
+        <i class="fa fa-cart"></i>
+        
+        <span class="badge bg-danger"
+            data-role="cart-quantity">
+            {{ $cartQuantity }}
+        </span>
+    </div>
+</div>
+```
+
 ## Register Admin Menu
 
 Edit `resources/menu/admin/sidemenu.menu.php`
