@@ -87,7 +87,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
 
                         {{-- Attachments --}}
                         <th class="text-nowrap">
-                            @lang('shopgo.additional.attachments')
+                            @lang('shopgo.additional.purchase.attachments')
                         </th>
 
                         {{-- Count --}}

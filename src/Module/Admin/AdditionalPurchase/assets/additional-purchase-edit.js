@@ -64,7 +64,7 @@ const AdditionalPurchaseAttachments = {
       window[callbackName] = async function ({ title, value: id, image: cover }) {
         for (const { product } of state.attachmentSet) {
           if (Number(product.id) === Number(id)) {
-            u.alert('這個商品已被選過');
+            u.alert(u.__('shopgo.additional.purchase.message.already.selected'));
             return;
           }
         }

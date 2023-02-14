@@ -43,6 +43,8 @@ $uniScript->data('price.step', $vm->getMainCurrency()->getInputStep());
 
 $uniScript->addRoute('product_modal', $nav->to('product_list')->layout('modal')->full());
 $uniScript->addRoute('@additional_purchase_ajax');
+$uniScript->translate('shopgo.additional.purchase.message.already.selected');
+$uniScript->translate('shopgo.additional.purchase.text.selected.count');
 ?>
 
 <additional-purchase-attachments-app>
@@ -56,7 +58,7 @@ $uniScript->addRoute('@additional_purchase_ajax');
                 @click="openProductSelector"
             >
                 <i class="fa fa-plus"></i>
-                加入商品
+                @lang('shopgo.additional.purchase.button.add.product')
             </button>
         </div>
 
@@ -79,7 +81,7 @@ $uniScript->addRoute('@additional_purchase_ajax');
                     @click="openProductSelector"
                 >
                     <i class="fa fa-plus"></i>
-                    加入商品
+                    @lang('shopgo.additional.purchase.button.add.product')
                 </button>
             </div>
         </div>

@@ -34,36 +34,35 @@ use Windwalker\Core\Router\SystemUri;
             </div>
         </div>
         <div class="w-100">
-            <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="d-flex align-items-center gap-2 mb-2">
                 <h4 class="m-0">@{{ product.title }}</h4>
                 <div>
-
                 </div>
 
                 <div class="ms-auto">
                     <div>
+                        <span class="badge border border-secondary text-secondary">
+                            #@{{ product.id }}
+                        </span>
                         <span class="badge bg-secondary">
-                            已選: @{{ checks }}
+                            @{{ $lang('shopgo.additional.purchase.text.selected.count', checks) }}
                         </span>
                         <button type="button" class="btn btn-outline-secondary btn-sm"
                             @click="$emit('remove')">
                             <i class="fa fa-trash"></i>
-                            刪除
+                            @lang('shopgo.additional.purchase.button.delete')
                         </button>
                     </div>
                 </div>
             </div>
             <div class="d-flex gap-3">
-                <div class="">
-                    ID: @{{ product.id }}
-                </div>
                 <div class="form-check">
                     <input :id="`input-sync-all-${product.id}`" type="checkbox" class="form-check-input"
                         v-model="syncAll"
                     />
                     <label :for="`input-sync-all-${product.id}`">
-                        編輯同步所有項目
                         <i class="fa" :class="[ syncAll ? 'fa-lock' : 'fa-unlock' ]"></i>
+                        @lang('shopgo.additional.purchase.text.sync.all')
                     </label>
                 </div>
 
@@ -90,16 +89,16 @@ use Windwalker\Core\Router\SystemUri;
                     />
                 </th>
                 <th>
-                    標題
+                    @lang('unicorn.field.title')
                 </th>
-                <th class="text-nowrap" style="width: 25%;">
-                    @lang('shopgo.discount.field.method')
+                <th class="text-nowrap" style="width: 23%;">
+                    @lang('shopgo.additional.purchase.field.method')
                 </th>
-                <th class="text-nowrap" style="width: 20%;">
-                    @lang('shopgo.product.discount.field.price.offsets')
+                <th class="text-nowrap" style="width: 15%;">
+                    @lang('shopgo.additional.purchase.field.pricing')
                 </th>
                 <th class="text-nowrap" style="width: 10%;">
-                    限購量
+                    @lang('shopgo.additional.purchase.field.max.quantity')
                 </th>
             </tr>
             </thead>
@@ -155,12 +154,13 @@ use Windwalker\Core\Router\SystemUri;
                     </select>
                 </td>
                 <td>
-                    <div class="input-group">
+                    <div class="input-group input-group-sm flex-nowrap">
                         <input type="number"
                             class="form-control form-control-sm"
                             :step="getPriceStep(item)"
                             v-model.number="item.attachment.price"
                             @change="syncAllFields($event.target.value, 'price')"
+                            style="min-width: 80px"
                         />
                             <span v-if="item.attachment.method === 'percentage'" class="input-group-text">
                                 %
