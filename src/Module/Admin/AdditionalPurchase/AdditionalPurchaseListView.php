@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase;
 
+use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form\GridForm;
 use Lyrasoft\ShopGo\Repository\AdditionalPurchaseRepository;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
@@ -23,6 +27,9 @@ use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+use Windwalker\Query\Query;
+
+use function Windwalker\Query\val;
 
 /**
  * The AdditionalPurchaseListView class.
@@ -78,6 +85,39 @@ class AdditionalPurchaseListView implements ViewModelInterface
 
         $pagination = $items->getPagination();
 
+        $items = $items->all();
+
+        $ids = $items->column('id')->dump();
+
+        // Attachments
+        $productSet = $this->orm->select('attachment.additional_purchase_id AS additional_purchase_id')
+            ->select('attachment.count AS attachment_count')
+            ->from(Product::class)
+            ->leftJoin(
+                ProductVariant::class,
+                'variant',
+                [
+                    ['variant.product_id', 'product.id'],
+                    ['variant.primary', val(1)],
+                ]
+            )
+            ->leftJoin(
+                fn (Query $query) => $query->select(
+                    'product_id',
+                    'additional_purchase_id'
+                )
+                    ->selectRaw('SUM(IF(state = 1, 1, 0)) AS count')
+                    ->from(AdditionalPurchaseAttachment::class)
+                    ->group('additional_purchase_id', 'product_id'),
+                'attachment',
+                'attachment.product_id',
+                'product.id'
+            )
+            ->where('attachment.additional_purchase_id', $ids ?: [0])
+            ->groupByJoins()
+            ->all(Product::class)
+            ->groupBy(fn ($item) => $item->additional_purchase_id);
+
         // Prepare Form
         $form = $this->formFactory->create(GridForm::class);
         $form->fill(compact('search', 'filter'));
@@ -86,7 +126,7 @@ class AdditionalPurchaseListView implements ViewModelInterface
 
         $this->prepareMetadata($app, $view);
 
-        return compact('items', 'pagination', 'form', 'showFilters', 'ordering');
+        return compact('items', 'pagination', 'form', 'showFilters', 'ordering', 'productSet');
     }
 
     public function prepareItem(Collection $item): object

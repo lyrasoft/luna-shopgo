@@ -29,8 +29,11 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
+use function Windwalker\collect;
+
 /**
  * @var AdditionalPurchase $entity
+ * @var Product[]          $productSet
  */
 
 $workflow = $app->service(BasicStateWorkflow::class);
@@ -75,11 +78,6 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </x-sort>
                         </th>
 
-                        {{-- Image --}}
-                        <th class="text-nowrap" style="width: 3%;">
-                            @lang('shopgo.product.field.cover')
-                        </th>
-
                         {{-- Title --}}
                         <th class="text-nowrap">
                             <x-sort field="additional_purchase.title">
@@ -87,11 +85,9 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </x-sort>
                         </th>
 
-                        {{-- Price --}}
-                        <th class="text-nowrap text-end">
-                            <x-sort field="additional_purchase.price">
-                                @lang('shopgo.product.field.price')
-                            </x-sort>
+                        {{-- Attachments --}}
+                        <th class="text-nowrap">
+                            @lang('shopgo.additional.attachments')
                         </th>
 
                         {{-- Count --}}
@@ -132,9 +128,9 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
 
                     <tbody>
                     @foreach($items as $i => $item)
-                        <?php
-                        $entity = $vm->prepareItem($item);
-                        ?>
+                            <?php
+                            $entity = $vm->prepareItem($item);
+                            ?>
                         <tr>
                             {{-- Checkbox --}}
                             <td>
@@ -152,12 +148,6 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                 ></x-state-dropdown>
                             </td>
 
-                            <td>
-{{--                                <img style="height: 55px;"--}}
-{{--                                    src="{{ $item->variant->cover ?: $defaultImage }}"--}}
-{{--                                    alt="Cover">--}}
-                            </td>
-
                             {{-- Title --}}
                             <td>
                                 <div>
@@ -165,19 +155,35 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                         {{ $item->title }}
                                     </a>
                                 </div>
-
-                                <div class="mt-1 small text-muted">
-{{--                                    {{ $product->getTitle() }}--}}
-{{--                                    @if (!$variant->isPrimary())--}}
-{{--                                        <i class="fa fa-arrow-right"></i>--}}
-{{--                                        {{ $variant->getTitle() }}--}}
-{{--                                    @endif--}}
-                                </div>
                             </td>
 
-                            {{-- Price --}}
-                            <td class="text-end">
-{{--                                {{ $vm->formatPrice($entity->getPrice()) }}--}}
+                            {{-- Attachments --}}
+                            <td class="">
+                                <?php
+                                $products = $productSet[$item->id] ?? collect();
+                                $more = $products->splice(8);
+                                ?>
+
+                                @foreach ($products as $product)
+                                    <img src="{{ $product->variant->cover }}" alt="cover"
+                                        class="rounded"
+                                        data-bs-toggle="tooltip"
+                                        style="height: 30px"
+                                        title="{{ $product->getTitle() }} ({{ $product->attachment_count }})"
+                                    >
+                                @endforeach
+
+                                @if (count($more))
+                                    <?php
+                                    $title = $more->column('title')->implode(' / ');
+                                    ?>
+                                    <span class="badge bg-secondary"
+                                        data-bs-toggle="tooltip"
+                                        title="{{ $title }}"
+                                    >
+                                        {{ count($more) }} more...
+                                    </span>
+                                @endif
                             </td>
 
                             {{-- Count --}}

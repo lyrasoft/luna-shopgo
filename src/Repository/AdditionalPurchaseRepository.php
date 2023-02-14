@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Repository;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
@@ -51,6 +52,32 @@ class AdditionalPurchaseRepository implements ManageRepositoryInterface, ListRep
                 'map.additional_purchase_id',
                 'additional_purchase.id'
             );
+
+        $selector->addFilterHandler(
+            'attachment',
+            function (Query $query, string $field, mixed $value) {
+                if ((string) $value !== '') {
+                    $query->whereExists(
+                        fn (Query $query) => $query->from(AdditionalPurchaseAttachment::class)
+                            ->whereRaw('product_id = %a', (int) $value)
+                            ->whereRaw('additional_purchase_id = additional_purchase.id')
+                    );
+                }
+            }
+        );
+
+        $selector->addFilterHandler(
+            'target',
+            function (Query $query, string $field, mixed $value) {
+                if ((string) $value !== '') {
+                    $query->whereExists(
+                        fn (Query $query) => $query->from(AdditionalPurchaseTarget::class)
+                            ->whereRaw('product_id = %a', (int) $value)
+                            ->whereRaw('additional_purchase_id = additional_purchase.id')
+                    );
+                }
+            }
+        );
 
         return $selector;
     }

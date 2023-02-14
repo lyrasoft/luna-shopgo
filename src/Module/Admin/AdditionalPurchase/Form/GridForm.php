@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
 
+use Lyrasoft\ShopGo\Field\ProductModalField;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\ListField;
@@ -51,6 +52,14 @@ class GridForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang))
+                    ->onchange('this.form.submit()');
+
+                $form->add('attachment', ProductModalField::class)
+                    ->label($this->trans('shopgo.additional.purchase.filter.attachment'))
+                    ->onchange('this.form.submit()');
+
+                $form->add('target', ProductModalField::class)
+                    ->label($this->trans('shopgo.additional.purchase.filter.target'))
                     ->onchange('this.form.submit()');
             }
         );
