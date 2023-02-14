@@ -52,6 +52,14 @@ class AdditionalPurchase implements EntityInterface
     #[Column('ordering')]
     protected int $ordering = 0;
 
+    #[Column('publish_up')]
+    #[CastNullable(Chronos::class)]
+    protected ?Chronos $publishUp = null;
+
+    #[Column('publish_down')]
+    #[CastNullable(Chronos::class)]
+    protected ?Chronos $publishDown = null;
+
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
@@ -184,6 +192,30 @@ class AdditionalPurchase implements EntityInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
+
+        return $this;
+    }
+
+    public function getPublishUp(): ?Chronos
+    {
+        return $this->publishUp;
+    }
+
+    public function setPublishUp(\DateTimeInterface|string|null $publishUp): static
+    {
+        $this->publishUp = Chronos::wrapOrNull($publishUp);
+
+        return $this;
+    }
+
+    public function getPublishDown(): ?Chronos
+    {
+        return $this->publishDown;
+    }
+
+    public function setPublishDown(\DateTimeInterface|string|null $publishDown): static
+    {
+        $this->publishDown = Chronos::wrapOrNull($publishDown);
 
         return $this;
     }

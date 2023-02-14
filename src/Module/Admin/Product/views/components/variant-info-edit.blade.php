@@ -145,57 +145,6 @@ use Windwalker\Core\Router\SystemUri;
             </div>
         </div>
 
-        <div class="d-flex gap-2">
-            <div class="form-group mb-4">
-                <label for="input-variant-publish_up" class="form-label">
-                    @lang('shopgo.product.field.publish_up')
-                </label>
-                <uni-flatpickr :options="flatpickrOptions">
-                    <div class="input-group">
-                        <input id="input-variant-publish_up" type="text" class="form-control"
-                            data-input
-                            v-model="current.publishUp" />
-                        <button type="button"
-                            class="btn btn-secondary"
-                            data-toggle
-                        >
-                            <span class="fa fa-calendar"></span>
-                        </button>
-                        <button type="button"
-                            class="btn btn-secondary"
-                            data-clear
-                        >
-                            <span class="fa fa-times"></span>
-                        </button>
-                    </div>
-                </uni-flatpickr>
-            </div>
-            <div class="form-group mb-4">
-                <label for="input-variant-publish_down" class="form-label">
-                    @lang('shopgo.product.field.publish.down')
-                </label>
-                <uni-flatpickr :options="flatpickrOptions">
-                    <div class="input-group">
-                        <input id="input-variant-publish_down" type="text" class="form-control"
-                            data-input
-                            v-model="current.publishDown" />
-                        <button type="button"
-                            class="btn btn-secondary"
-                            data-toggle
-                        >
-                            <span class="fa fa-calendar"></span>
-                        </button>
-                        <button type="button"
-                            class="btn btn-secondary"
-                            data-clear
-                        >
-                            <span class="fa fa-times"></span>
-                        </button>
-                    </div>
-                </uni-flatpickr>
-            </div>
-        </div>
-
         <div class="variant-images mt-4" v-if="items.length <= 1">
             <vue-drag-uploader
                 :model-value="JSON.parse(JSON.stringify(current.images))"

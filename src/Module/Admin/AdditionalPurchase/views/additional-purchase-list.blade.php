@@ -97,6 +97,20 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </x-sort>
                         </th>
 
+                        {{-- Publish Up --}}
+                        <th class="text-nowrap">
+                            <x-sort field="additional_purchase.publish_up">
+                                @lang('shopgo.additional.purchase.field.publish.up')
+                            </x-sort>
+                        </th>
+
+                        {{-- Publish Down --}}
+                        <th class="text-nowrap">
+                            <x-sort field="additional_purchase.publish_down">
+                                @lang('shopgo.additional.purchase.field.publish.down')
+                            </x-sort>
+                        </th>
+
                         {{-- Ordering --}}
                         <th style="width: 10%" class="text-nowrap">
                             <div class="d-flex w-100 justify-content-end">
@@ -145,6 +159,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                     :workflow="$workflow"
                                     :id="$entity->getId()"
                                     :value="$item->state"
+                                    no-title
                                 ></x-state-dropdown>
                             </td>
 
@@ -161,7 +176,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             <td class="">
                                 <?php
                                 $products = $productSet[$item->id] ?? collect();
-                                $more = $products->splice(8);
+                                $more = $products->splice(5);
                                 ?>
 
                                 @foreach ($products as $product)
@@ -191,6 +206,14 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                 <span class="badge bg-primary">
                                     {{ $item->target_product_counts ?: 0 }}
                                 </span>
+                            </td>
+
+                            <td>
+                                {{ $chronos->toLocalFormat($entity->getPublishUp()) }}
+                            </td>
+
+                            <td>
+                                {{ $chronos->toLocalFormat($entity->getPublishDown()) }}
                             </td>
 
                             {{-- Ordering --}}

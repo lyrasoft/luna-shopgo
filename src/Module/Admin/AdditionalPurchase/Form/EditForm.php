@@ -67,6 +67,12 @@ class EditForm implements FieldDefinitionInterface
                     ->color('success')
                     ->defaultValue('1');
 
+                $form->add('publish_up', CalendarField::class)
+                    ->label($this->trans('shopgo.additional.purchase.field.publish_up'));
+
+                $form->add('publish_down', CalendarField::class)
+                    ->label($this->trans('shopgo.additional.purchase.field.publish_down'));
+
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'));
 

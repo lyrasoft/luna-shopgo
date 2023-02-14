@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\User\UserService;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Discount;
@@ -40,6 +41,7 @@ use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 
+use function Windwalker\chronos;
 use function Windwalker\collect;
 use function Windwalker\str;
 
@@ -146,21 +148,7 @@ class ProductItemView implements ViewModelInterface
         }
 
         // Additional Purchases
-        $additionalPurchases = $this->orm->from(ProductVariant::class)
-            ->leftJoin(Product::class)
-            ->leftJoin(
-                AdditionalPurchaseAttachment::class,
-                'attachment',
-                'attachment.variant_id',
-                'product_variant.id'
-            )
-            ->whereExists(
-                fn (Query $query) => $query->from(AdditionalPurchaseTarget::class, 'target')
-                    ->whereRaw('additional_purchase_id = attachment.additional_purchase_id')
-                    ->whereRaw('target.product_id = %a', $item->getId())
-            )
-            ->groupByJoins()
-            ->all(ProductVariant::class);
+        $additionalPurchases = $this->additionalPurchaseService->getAvailableVariants($item->getId());
 
         // Tabs
         $tabs = $this->getTabsByCategoryId($category->getId());

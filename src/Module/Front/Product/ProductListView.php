@@ -91,7 +91,7 @@ class ProductListView implements ViewModelInterface
             ->ordering(
                 $category
                     ? 'category_map.ordering ASC'
-                    : 'product.modified DESC'
+                    : 'product.publish_up DESC, product.modified DESC'
             )
             ->page($page)
             ->limit($limit);

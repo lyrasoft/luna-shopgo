@@ -29,6 +29,7 @@ use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
 use Windwalker\Query\Query;
 
+use function Windwalker\chronos;
 use function Windwalker\Query\val;
 
 /**
@@ -57,6 +58,20 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
 
         $selector->where('product.state', 1);
         $selector->where('category.state', 1);
+
+        $now = chronos();
+        $selector->orWhere(
+            function (Query $query) use ($now) {
+                $query->where('product.publish_up', null);
+                $query->where('product.publish_up', '<', $now);
+            }
+        );
+        $selector->orWhere(
+            function (Query $query) use ($now) {
+                $query->where('product.publish_down', null);
+                $query->where('product.publish_down', '>=', $now);
+            }
+        );
 
         return $selector;
     }

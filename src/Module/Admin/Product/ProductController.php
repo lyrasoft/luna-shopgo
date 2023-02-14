@@ -164,25 +164,12 @@ class ProductController
     protected function saveSubVariants(AppContext $app, ORM $orm, int $productId): Collection
     {
         $variants = $app->input('variants') ?: throw new \RuntimeException('No variants data');
-        $chronosService = $app->service(ChronosService::class);
 
         $variants = collect(
             json_decode($variants, true, 512, JSON_THROW_ON_ERROR)
         );
 
-        $variants = $variants->map(function ($variant) use ($chronosService, $orm) {
-            $variant = $orm->toEntity(ProductVariant::class, $variant);
-
-            $variant->setPublishUp(
-                $chronosService->toServerFormat($variant->getPublishUp())
-            );
-
-            $variant->setPublishDown(
-                $chronosService->toServerFormat($variant->getPublishDown())
-            );
-
-            return $variant;
-        });
+        $variants = $variants->map(fn($variant) => $orm->toEntity(ProductVariant::class, $variant));
 
         $orm->sync(
             ProductVariant::class,
