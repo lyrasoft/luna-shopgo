@@ -134,8 +134,6 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                     @foreach($items as $i => $item)
                         <?php
                         $entity = $vm->prepareItem($item);
-                        $variant = $vm->toEntity(ProductVariant::class, $item->variant);
-                        $product = $vm->toEntity(Product::class, $item->product);
                         ?>
                         <tr>
                             {{-- Checkbox --}}
@@ -155,9 +153,9 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </td>
 
                             <td>
-                                <img style="height: 55px;"
-                                    src="{{ $item->variant->cover ?: $defaultImage }}"
-                                    alt="Cover">
+{{--                                <img style="height: 55px;"--}}
+{{--                                    src="{{ $item->variant->cover ?: $defaultImage }}"--}}
+{{--                                    alt="Cover">--}}
                             </td>
 
                             {{-- Title --}}
@@ -169,17 +167,17 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                 </div>
 
                                 <div class="mt-1 small text-muted">
-                                    {{ $product->getTitle() }}
-                                    @if (!$variant->isPrimary())
-                                        <i class="fa fa-arrow-right"></i>
-                                        {{ $variant->getTitle() }}
-                                    @endif
+{{--                                    {{ $product->getTitle() }}--}}
+{{--                                    @if (!$variant->isPrimary())--}}
+{{--                                        <i class="fa fa-arrow-right"></i>--}}
+{{--                                        {{ $variant->getTitle() }}--}}
+{{--                                    @endif--}}
                                 </div>
                             </td>
 
                             {{-- Price --}}
                             <td class="text-end">
-                                {{ $vm->formatPrice($entity->getPrice()) }}
+{{--                                {{ $vm->formatPrice($entity->getPrice()) }}--}}
                             </td>
 
                             {{-- Count --}}

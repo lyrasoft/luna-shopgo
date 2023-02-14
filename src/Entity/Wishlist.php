@@ -28,6 +28,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Wishlist class.
  */
 #[Table('wishlists', 'wishlist')]
+#[\AllowDynamicProperties]
 class Wishlist implements EntityInterface
 {
     use EntityTrait;

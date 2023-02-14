@@ -37,6 +37,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Manufacturer class.
  */
 #[Table('manufacturers', 'manufacturer')]
+#[\AllowDynamicProperties]
 class Manufacturer implements EntityInterface
 {
     use EntityTrait;

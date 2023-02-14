@@ -68,7 +68,8 @@ window.ShopGoVuePlugin = function (app) {
 
   app.config.compilerOptions.isCustomElement = (tag) => {
     return [
-      'uni-flatpickr'
+      'uni-flatpickr',
+      'uni-iframe-modal'
     ].includes(tag);
   };
 

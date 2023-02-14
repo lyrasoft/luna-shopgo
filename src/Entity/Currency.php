@@ -37,6 +37,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Currency class.
  */
 #[Table('currencies', 'currency')]
+#[\AllowDynamicProperties]
 class Currency implements EntityInterface
 {
     use EntityTrait;

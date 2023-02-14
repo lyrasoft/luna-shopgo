@@ -25,6 +25,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The ShopCategoryMap class.
  */
 #[Table('shop_category_maps', 'shop_category_map')]
+#[\AllowDynamicProperties]
 class ShopCategoryMap implements EntityInterface
 {
     use EntityTrait;

@@ -28,6 +28,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Coupon class.
  */
 #[Table('coupons', 'coupon')]
+#[\AllowDynamicProperties]
 class Coupon implements EntityInterface
 {
     use EntityTrait;

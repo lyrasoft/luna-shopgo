@@ -37,6 +37,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Payment class.
  */
 #[Table('payments', 'payment')]
+#[\AllowDynamicProperties]
 class Payment implements EntityInterface
 {
     use EntityTrait;

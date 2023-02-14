@@ -33,6 +33,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The AdditionalPurchase class.
  */
 #[Table('additional_purchases', 'additional_purchase')]
+#[\AllowDynamicProperties]
 class AdditionalPurchase implements EntityInterface
 {
     use EntityTrait;
@@ -42,15 +43,6 @@ class AdditionalPurchase implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
-
-    #[Column('attach_product_id')]
-    protected int $attachProductId = 0;
-
-    #[Column('attach_variant_id')]
-    protected int $attachVariantId = 0;
-
-    #[Column('price')]
-    protected float $price = 0.0;
 
     #[Column('state')]
     #[Cast('int')]
@@ -100,42 +92,6 @@ class AdditionalPurchase implements EntityInterface
         return $this;
     }
 
-    public function getAttachProductId(): int
-    {
-        return $this->attachProductId;
-    }
-
-    public function setAttachProductId(int $attachProductId): static
-    {
-        $this->attachProductId = $attachProductId;
-
-        return $this;
-    }
-
-    public function getAttachVariantId(): int
-    {
-        return $this->attachVariantId;
-    }
-
-    public function setAttachVariantId(int $attachVariantId): static
-    {
-        $this->attachVariantId = $attachVariantId;
-
-        return $this;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
     public function getTitle(): string
     {
         return $this->title;
@@ -168,18 +124,6 @@ class AdditionalPurchase implements EntityInterface
     public function setOrdering(int $ordering): static
     {
         $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
 
         return $this;
     }
@@ -228,6 +172,18 @@ class AdditionalPurchase implements EntityInterface
     public function setModifiedBy(int $modifiedBy): static
     {
         $this->modifiedBy = $modifiedBy;
+
+        return $this;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function setParams(array $params): static
+    {
+        $this->params = $params;
 
         return $this;
     }

@@ -35,6 +35,7 @@ use Windwalker\ORM\EntityTrait;
  * The Discount class.
  */
 #[Table('discounts', 'discount')]
+#[\AllowDynamicProperties]
 class Discount implements EntityInterface
 {
     use EntityTrait;
@@ -122,9 +123,9 @@ class Discount implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $categories = [];
 
-    #[Column('prodcuts')]
+    #[Column('products')]
     #[Cast(JsonCast::class)]
-    protected array $prodcuts = [];
+    protected array $products = [];
 
     #[Column('payments')]
     #[Cast(JsonCast::class)]
@@ -457,14 +458,14 @@ class Discount implements EntityInterface
         return $this;
     }
 
-    public function getProdcuts(): array
+    public function getProducts(): array
     {
         return $this->prodcuts;
     }
 
-    public function setProdcuts(array $prodcuts): static
+    public function setProducts(array $products): static
     {
-        $this->prodcuts = $prodcuts;
+        $this->prodcuts = $products;
 
         return $this;
     }

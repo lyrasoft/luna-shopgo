@@ -24,4 +24,7 @@ $router->group('additional-purchase')
         $router->any('additional_purchase_edit', '/additional-purchase/edit[/{id}]')
             ->controller(AdditionalPurchaseController::class)
             ->view(AdditionalPurchaseEditView::class);
+
+        $router->any('additional_purchase_ajax', '/additional-purchase/ajax[/{task}]')
+            ->controller(AdditionalPurchaseController::class, 'ajax');
     });

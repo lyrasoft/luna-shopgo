@@ -35,6 +35,7 @@ use Windwalker\ORM\Nested\NestedEntityTrait;
  * The Location class.
  */
 #[NestedSet('locations', 'location')]
+#[\AllowDynamicProperties]
 class Location implements NestedEntityInterface
 {
     use NestedEntityTrait;

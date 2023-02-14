@@ -26,6 +26,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The OrderTotal class.
  */
 #[Table('order_totals', 'order_total')]
+#[\AllowDynamicProperties]
 class OrderTotal implements EntityInterface
 {
     use EntityTrait;

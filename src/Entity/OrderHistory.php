@@ -31,6 +31,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The OrderHistory class.
  */
 #[Table('order_histories', 'order_history')]
+#[\AllowDynamicProperties]
 class OrderHistory implements EntityInterface
 {
     use EntityTrait;

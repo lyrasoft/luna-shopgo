@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Cart;
 
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Windwalker\Core\State\AppState;
 
 /**
@@ -149,7 +149,7 @@ class CartStorage
         return implode(':', $payload);
     }
 
-    public function addAdditional(AdditionalPurchaseMap $apMap): void
+    public function addAdditional(AdditionalPurchaseTarget $apMap): void
     {
         $variantId = $apMap->getAttachVariantId();
 

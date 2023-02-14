@@ -33,11 +33,6 @@ use Windwalker\Query\Query;
 class EditForm implements FieldDefinitionInterface
 {
     use TranslatorTrait;
-    use CurrencyAwareTrait;
-
-    public function __construct(protected ?Product $product)
-    {
-    }
 
     /**
      * Define the form fields.
@@ -54,34 +49,8 @@ class EditForm implements FieldDefinitionInterface
             ->required(true);
 
         $form->fieldset(
-            'basic',
+            'targets',
             function (Form $form) {
-                $form->add('attach_product_id', ProductModalField::class)
-                    ->label($this->trans('shopgo.additional.purchase.field.attach.product'))
-                    ->required(true);
-
-                $variants = $this->product?->getVariants() ?? 0;
-
-                $form->add('attach_variant_id', ProductVariantListField::class)
-                    ->label($this->trans('shopgo.additional.purchase.field.attach_variant'))
-                    // ->option($this->trans('unicorn.select.placeholder'), '')
-                    ->setProductId($this->product?->getId() ?: 0)
-                    ->configureQuery(
-                        function (Query $query) use ($variants) {
-                            if ($variants > 0) {
-                                $query->where('primary', 0);
-                            } else {
-                                $query->where('primary', 1);
-                            }
-                        }
-                    )
-                    ->tapIf(
-                        $variants === 0,
-                        fn (ListField $field) => $field->addWrapperClass('d-none')
-                    )
-                    ->addClass('has-tom-select')
-                    ->required(true);
-
                 $form->add('products', ProductModalField::class)
                     ->label($this->trans('shopgo.additional.purchase.field.target.products'))
                     ->hasImage(true)
@@ -97,11 +66,6 @@ class EditForm implements FieldDefinitionInterface
                     ->circle(true)
                     ->color('success')
                     ->defaultValue('1');
-
-                $form->add('price', NumberField::class)
-                    ->label($this->trans('shopgo.additional.purchase.field.price'))
-                    ->addClass('form-control-lg')
-                    ->step($this->getMainCurrency()->getInputStep());
 
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'));

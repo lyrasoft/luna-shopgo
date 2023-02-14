@@ -37,6 +37,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The ProductVariant class.
  */
 #[Table('product_variants', 'product_variant')]
+#[\AllowDynamicProperties]
 class ProductVariant implements EntityInterface
 {
     use EntityTrait;

@@ -27,9 +27,10 @@ use Windwalker\Core\Router\SystemUri;
 use Windwalker\Form\Form;
 
 /**
- * @var Form               $form
+ * @var Form $form
  * @var AdditionalPurchase $item
  */
+
 ?>
 
 @extends('admin.global.body-edit')
@@ -47,15 +48,24 @@ use Windwalker\Form\Form;
         <x-title-bar :form="$form"></x-title-bar>
 
         <div class="row">
-            <div class="col-lg-7">
-                <x-fieldset name="basic" :title="$lang('unicorn.fieldset.basic')"
-                    :form="$form"
-                    class="mb-4"
-                    is="card"
-                >
-                </x-fieldset>
+            <div class="col-lg-9">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <x-card>
+                            @include('additional-purchase-attachments-edit')
+                        </x-card>
+                    </div>
+                    <div class="col-lg-5">
+                        <x-fieldset name="targets"
+                            :form="$form"
+                            class="mb-4"
+                            is="card"
+                        >
+                        </x-fieldset>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-5">
+            <div class="col-lg-3">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"
                     :form="$form"
                     class="mb-4"

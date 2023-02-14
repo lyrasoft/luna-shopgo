@@ -27,6 +27,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The OrderItem class.
  */
 #[Table('order_items', 'order_item')]
+#[\AllowDynamicProperties]
 class OrderItem implements EntityInterface
 {
     use EntityTrait;

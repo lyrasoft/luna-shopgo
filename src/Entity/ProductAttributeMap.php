@@ -24,6 +24,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The ProductAttributeMap class.
  */
 #[Table('product_attribute_maps', 'product_attribute_map')]
+#[\AllowDynamicProperties]
 class ProductAttributeMap implements EntityInterface
 {
     use EntityTrait;

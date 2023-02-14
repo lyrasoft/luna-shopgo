@@ -11,19 +11,25 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase;
 
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\AdditionalPurchaseRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Attributes\JsonApi;
 use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\ORM;
+
+use function Windwalker\collect;
+use function Windwalker\Query\val;
 
 /**
  * The AdditionalPurchaseController class.
@@ -56,25 +62,53 @@ class AdditionalPurchaseController
             function (AfterSaveEvent $event) use ($app) {
                 $data = $event->getData();
                 $orm = $event->getORM();
+
+                // Attachments
+                $attachmentSet = $app->input('attachments');
+                $attachments = [];
+
+                foreach ($attachmentSet as $productId => $variants) {
+                    foreach ($variants as $variantId => $attachment) {
+                        $attachmentItem = new AdditionalPurchaseAttachment();
+
+                        $attachmentItem->setId((int) ($attachment['id'] ?? 0));
+                        $attachmentItem->setAdditionalPurchaseId((int) $data['id']);
+                        $attachmentItem->setProductId((int) $productId);
+                        $attachmentItem->setVariantId((int) $variantId);
+                        $attachmentItem->setMethod($attachment['method']);
+                        $attachmentItem->setPrice((float) $attachment['price']);
+                        $attachmentItem->setMaxQuantity((int) $attachment['max_quantity']);
+                        $attachmentItem->setState((int) $attachment['state']);
+                        $attachmentItem->setOrdering(1);
+
+                        $attachments[] = $attachmentItem;
+                    }
+                }
+
+                $orm->sync(
+                    AdditionalPurchaseAttachment::class,
+                    $attachments,
+                    ['additional_purchase_id' => $data['id']],
+                    ['id']
+                );
+
+                // Targets
                 $productIds = $app->input('item')['products'];
 
                 $maps = [];
 
                 foreach ($productIds as $productId) {
-                    $map = new AdditionalPurchaseMap();
+                    $map = new AdditionalPurchaseTarget();
                     $map->setAdditionalPurchaseId((int) $data['id']);
-                    $map->setAttachVariantId((int) $data['attach_variant_id']);
-                    $map->setAttachProductId((int) $data['attach_product_id']);
-                    $map->setTargetProductId((int) $productId);
+                    $map->setProductId((int) $productId);
 
                     $maps[] = $map;
                 }
 
-                $orm->sync(
-                    AdditionalPurchaseMap::class,
+                $orm->flush(
+                    AdditionalPurchaseTarget::class,
                     $maps,
                     ['additional_purchase_id' => $data['id']],
-                    ['target_product_id']
                 );
             }
         );
@@ -134,5 +168,40 @@ class AdditionalPurchaseController
         GridController $controller
     ): mixed {
         return $app->call([$controller, 'copy'], compact('repository'));
+    }
+
+    #[JsonApi]
+    public function ajax(AppContext $app): mixed
+    {
+        $task = $app->input('task');
+
+        return $app->call([$this, $task]);
+    }
+
+    public function getProductInfo(AppContext $app, ORM $orm): array
+    {
+        $id = $app->input('id');
+
+        /** @var Product $product */
+        $product = $orm->mustFindOne(Product::class, $id);
+        $variant = $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'primary' => 1]);
+
+        $product->variant = $variant;
+
+        $variants = $orm->from(ProductVariant::class, 'variant')
+            ->where('product_id', $product->getId())
+            ->all(ProductVariant::class);
+
+        $variants = $variants->filter(
+            function (ProductVariant $variant) use ($product) {
+                if ($product->getVariants() === 0) {
+                    return $variant->isPrimary();
+                }
+
+                return !$variant->isPrimary();
+            }
+        )->values();
+
+        return compact('product', 'variants');
     }
 }

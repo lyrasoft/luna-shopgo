@@ -29,6 +29,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The DiscountUsage class.
  */
 #[Table('discount_usages', 'discount_usage')]
+#[\AllowDynamicProperties]
 class DiscountUsage implements EntityInterface
 {
     use EntityTrait;

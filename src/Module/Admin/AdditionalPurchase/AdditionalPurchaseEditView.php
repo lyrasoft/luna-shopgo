@@ -12,10 +12,13 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\AdditionalPurchaseRepository;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -25,6 +28,9 @@ use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+
+use function Windwalker\collect;
+use function Windwalker\Query\val;
 
 /**
  * The AdditionalPurchaseEditView class.
@@ -36,6 +42,7 @@ use Windwalker\ORM\ORM;
 class AdditionalPurchaseEditView implements ViewModelInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     public function __construct(
         protected ORM $orm,
@@ -60,32 +67,78 @@ class AdditionalPurchaseEditView implements ViewModelInterface
         /** @var AdditionalPurchase $item */
         $item = $this->repository->getItem($id);
 
-        $currentItem = $this->repository->getState()->getAndForget('edit.data')
-            ?: $this->orm->extractEntity($item);
-
-        $productId = $currentItem['attach_product_id'] ?? 0;
-
-        $product = $this->orm->findOne(Product::class, $productId);
-
         $form = $this->formFactory
-            ->create(EditForm::class, product: $product)
-            ->setNamespace('item');
+            ->create(EditForm::class)
+            ->setNamespace('item')
+            ->fill(
+                $this->repository->getState()->getAndForget('edit.data')
+                    ?: $this->orm->extractEntity($item)
+            );
 
         if ($item) {
             $productIds = $this->orm->findColumn(
-                AdditionalPurchaseMap::class,
-                'target_product_id',
+                AdditionalPurchaseTarget::class,
+                'product_id',
                 ['additional_purchase_id' => $item->getId()]
             )->dump();
 
             $form->fill(['products' => $productIds]);
         }
 
-        $form->fill($currentItem);
+        // Attachments
+        $attachments = $this->orm->from(AdditionalPurchaseAttachment::class)
+            ->where('additional_purchase_id', $item?->getId())
+            ->all(AdditionalPurchaseAttachment::class)
+            ->keyBy('variantId');
+
+        $productIds = $attachments->column('productId')->unique()->dump();
+
+        $variants = $this->orm->from(ProductVariant::class, 'variant')
+            ->where('product_id', $productIds)
+            ->all(ProductVariant::class);
+
+        /** @var ProductVariant $variant */
+        foreach ($variants as $variant) {
+            $variant->attachment = $attachments[$variant->getId()] ?? null;
+        }
+
+        $variantSet = $variants->groupBy('productId');
+
+        /** @var Product[] $products */
+        $products = $this->orm->from(Product::class)
+            ->leftJoin(
+                ProductVariant::class,
+                'variant',
+                [
+                    ['variant.product_id', 'product.id'],
+                    ['variant.primary', val(1)],
+                ]
+            )
+            ->where('product.id', $productIds ?: [0])
+            ->groupByJoins()
+            ->all(Product::class);
+
+        $attachmentsData = [];
+
+        foreach ($products as $product) {
+            $variants = $variantSet[$product->getId()] ?? collect();
+
+            $variants = $variants->filter(
+                function (ProductVariant $variant) use ($product) {
+                    if ($product->getVariants() === 0) {
+                        return $variant->isPrimary();
+                    }
+
+                    return !$variant->isPrimary();
+                }
+            )->values();
+
+            $attachmentsData[] = compact('product', 'variants');
+        }
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item');
+        return compact('form', 'id', 'item', 'attachmentsData');
     }
 
     /**

@@ -72,7 +72,7 @@ System.register([], function (_export, _context) {
       window.ShopGoVuePlugin = function (app) {
         app.config.compilerOptions.whitespace = 'preserve';
         app.config.compilerOptions.isCustomElement = tag => {
-          return ['uni-flatpickr'].includes(tag);
+          return ['uni-flatpickr', 'uni-iframe-modal'].includes(tag);
         };
         app.config.globalProperties.$lang = function (id) {
           for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {

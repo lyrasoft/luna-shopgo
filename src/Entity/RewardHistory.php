@@ -28,6 +28,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The RewardHistory class.
  */
 #[Table('reward_histories', 'reward_history')]
+#[\AllowDynamicProperties]
 class RewardHistory implements EntityInterface
 {
     use EntityTrait;

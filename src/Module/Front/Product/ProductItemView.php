@@ -13,7 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\User\UserService;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductTab;
@@ -146,7 +146,7 @@ class ProductItemView implements ViewModelInterface
         $additionalPurchases = $this->orm->from(ProductVariant::class)
             ->leftJoin(Product::class)
             ->leftJoin(
-                AdditionalPurchaseMap::class,
+                AdditionalPurchaseTarget::class,
                 'ap_map',
                 'ap_map.attach_variant_id',
                 'product_variant.id'

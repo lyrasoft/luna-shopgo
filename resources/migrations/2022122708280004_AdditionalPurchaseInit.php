@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Migration;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Windwalker\Core\Console\ConsoleApplication;
 use Windwalker\Core\Migration\Migration;
 use Windwalker\Database\Schema\Schema;
@@ -47,7 +47,7 @@ $mig->up(
             }
         );
         $mig->createTable(
-            AdditionalPurchaseMap::class,
+            AdditionalPurchaseTarget::class,
             function (Schema $schema) {
                 $schema->primary('id');
                 $schema->integer('additional_purchase_id');
@@ -70,6 +70,6 @@ $mig->up(
 $mig->down(
     static function () use ($mig) {
         // $mig->dropTableColumns(Table::class, 'column');
-        $mig->dropTables(AdditionalPurchase::class, AdditionalPurchaseMap::class);
+        $mig->dropTables(AdditionalPurchase::class, AdditionalPurchaseTarget::class);
     }
 );

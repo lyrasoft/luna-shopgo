@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Repository;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Unicorn\Attributes\ConfigureAction;
@@ -41,30 +41,16 @@ class AdditionalPurchaseRepository implements ManageRepositoryInterface, ListRep
         $selector = $this->createSelector();
 
         $selector->from(AdditionalPurchase::class)
-            ->leftJoin(
-                ProductVariant::class,
-                'variant',
-                'additional_purchase.attach_variant_id',
-                'variant.id',
-            )
-            ->leftJoin(
-                Product::class,
-                'product',
-                'additional_purchase.attach_product_id',
-                'product.id',
-            )
             ->selectRaw('IFNULL(map.count, 0) AS target_product_counts')
             ->leftJoin(
                 fn(Query $query) => $query->select('additional_purchase_id')
                     ->selectRaw('COUNT(*) AS count')
-                    ->from(AdditionalPurchaseMap::class)
+                    ->from(AdditionalPurchaseTarget::class)
                     ->group('additional_purchase_id'),
                 'map',
                 'map.additional_purchase_id',
                 'additional_purchase.id'
-            )
-            ->where('variant.id', '!=', null)
-            ->where('product.id', '!=', null);
+            );
 
         return $selector;
     }

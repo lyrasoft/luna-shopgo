@@ -15,7 +15,7 @@ use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Core\Application\AppContext;
@@ -61,7 +61,7 @@ class CartController
     {
         $apMapId = (int) $app->input('apMapId');
 
-        /** @var AdditionalPurchaseMap $apMap */
+        /** @var AdditionalPurchaseTarget $apMap */
         $apMap = $app->call(
             [$this, 'validateAdditionalPurchase'],
             [
@@ -95,9 +95,9 @@ class CartController
         return $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'id' => $variantId]);
     }
 
-    public function validateAdditionalPurchase(int $apMapId, ORM $orm, CartStorage $cartStorage): AdditionalPurchaseMap
+    public function validateAdditionalPurchase(int $apMapId, ORM $orm, CartStorage $cartStorage): AdditionalPurchaseTarget
     {
-        $map = $orm->mustFindOne(AdditionalPurchaseMap::class, $apMapId);
+        $map = $orm->mustFindOne(AdditionalPurchaseTarget::class, $apMapId);
         $ap = $orm->mustFindOne(AdditionalPurchase::class, $map->getAdditionalPurchaseId());
 
         $orm->mustFindOne(Product::class, $map->getTargetProductId());

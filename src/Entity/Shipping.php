@@ -37,6 +37,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Shipping class.
  */
 #[Table('shippings', 'shipping')]
+#[\AllowDynamicProperties]
 class Shipping implements EntityInterface
 {
     use EntityTrait;

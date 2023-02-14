@@ -4,18 +4,16 @@
  * Part of starter project.
  *
  * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
+ * @license    __LICENSE__
  */
 
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
-use DateTimeInterface;
-use Lyrasoft\ShopGo\Data\ListOptionCollection;
-use Lyrasoft\ShopGo\Enum\ProductAttributeType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
+use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -33,46 +31,43 @@ use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
- * The ProductAttribute class.
+ * The AdditionalPurchaseAttachment class.
  */
-#[Table('product_attributes', 'product_attribute')]
+#[Table('additional_purchase_attachments', 'additional_purchase_attachment')]
 #[\AllowDynamicProperties]
-class ProductAttribute implements EntityInterface
+class AdditionalPurchaseAttachment implements EntityInterface
 {
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
-    #[Column('category_id')]
-    protected int $categoryId = 0;
+    #[Column('additional_purchase_id')]
+    protected int $additionalPurchaseId = 0;
 
-    #[Column('type')]
-    #[Cast(ProductAttributeType::class)]
-    protected ProductAttributeType $type;
+    #[Column('product_id')]
+    protected int $productId = 0;
 
-    #[Column('title')]
-    protected string $title = '';
+    #[Column('variant_id')]
+    protected int $variantId = 0;
 
-    #[Column('key')]
-    protected string $key = '';
+    #[Column('method')]
+    #[Cast(DiscountMethod::class)]
+    protected DiscountMethod $method;
 
-    #[Column('display')]
-    #[Cast('bool', 'int')]
-    protected bool $display = false;
+    #[Column('price')]
+    protected float $price = 0.0;
 
-    #[Column('ordering')]
-    protected int $ordering = 0;
+    #[Column('max_quantity')]
+    protected int $maxQuantity = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
     protected BasicState $state;
 
-    #[Column('options')]
-    #[Cast(JsonCast::class)]
-    #[Cast(ListOptionCollection::class)]
-    protected ListOptionCollection $options;
+    #[Column('ordering')]
+    protected int $ordering = 0;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -96,8 +91,6 @@ class ProductAttribute implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
-    protected string $value = '';
-
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
@@ -116,38 +109,26 @@ class ProductAttribute implements EntityInterface
         return $this;
     }
 
-    public function getTitle(): string
+    public function getPrice(): float
     {
-        return $this->title;
+        return $this->price;
     }
 
-    public function setTitle(string $title): static
+    public function setPrice(float $price): static
     {
-        $this->title = $title;
+        $this->price = $price;
 
         return $this;
     }
 
-    public function getKey(): string
+    public function getMaxQuantity(): int
     {
-        return $this->key;
+        return $this->maxQuantity;
     }
 
-    public function setKey(string $key): static
+    public function setMaxQuantity(int $maxQuantity): static
     {
-        $this->key = $key;
-
-        return $this;
-    }
-
-    public function getOrdering(): int
-    {
-        return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): static
-    {
-        $this->ordering = $ordering;
+        $this->maxQuantity = $maxQuantity;
 
         return $this;
     }
@@ -164,14 +145,14 @@ class ProductAttribute implements EntityInterface
         return $this;
     }
 
-    public function getOptions(): ListOptionCollection
+    public function getOrdering(): int
     {
-        return $this->options ??= new ListOptionCollection();
+        return $this->ordering;
     }
 
-    public function setOptions(ListOptionCollection|array $options): static
+    public function setOrdering(int $ordering): static
     {
-        $this->options = ListOptionCollection::wrap($options);
+        $this->ordering = $ordering;
 
         return $this;
     }
@@ -181,7 +162,7 @@ class ProductAttribute implements EntityInterface
         return $this->created;
     }
 
-    public function setCreated(DateTimeInterface|string|null $created): static
+    public function setCreated(\DateTimeInterface|string|null $created): static
     {
         $this->created = Chronos::wrapOrNull($created);
 
@@ -193,7 +174,7 @@ class ProductAttribute implements EntityInterface
         return $this->modified;
     }
 
-    public function setModified(DateTimeInterface|string|null $modified): static
+    public function setModified(\DateTimeInterface|string|null $modified): static
     {
         $this->modified = Chronos::wrapOrNull($modified);
 
@@ -236,66 +217,50 @@ class ProductAttribute implements EntityInterface
         return $this;
     }
 
-    public function getType(): ProductAttributeType
+    public function getAdditionalPurchaseId(): int
     {
-        return $this->type;
+        return $this->additionalPurchaseId;
     }
 
-    public function setType(string|ProductAttributeType $type): static
+    public function setAdditionalPurchaseId(int $additionalPurchaseId): static
     {
-        $this->type = ProductAttributeType::wrap($type);
+        $this->additionalPurchaseId = $additionalPurchaseId;
 
         return $this;
     }
 
-    public function getCategoryId(): int
+    public function getProductId(): int
     {
-        return $this->categoryId;
+        return $this->productId;
     }
 
-    public function setCategoryId(int $categoryId): static
+    public function setProductId(int $productId): static
     {
-        $this->categoryId = $categoryId;
+        $this->productId = $productId;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function shouldDisplay(): bool
+    public function getVariantId(): int
     {
-        return $this->display;
+        return $this->variantId;
     }
 
-    /**
-     * @param  bool  $display
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setDisplay(bool $display): static
+    public function setVariantId(int $variantId): static
     {
-        $this->display = $display;
+        $this->variantId = $variantId;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getValue(): string
+    public function getMethod(): DiscountMethod
     {
-        return $this->value;
+        return $this->method;
     }
 
-    /**
-     * @param  string  $value
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setValue(string $value): static
+    public function setMethod(string|DiscountMethod $method): static
     {
-        $this->value = $value;
+        $this->method = DiscountMethod::wrap($method);
 
         return $this;
     }

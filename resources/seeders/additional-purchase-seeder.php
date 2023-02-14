@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace App\Seeder;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseMap;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\ShopGoPackage;
@@ -77,14 +77,14 @@ $seeder->import(
                 $chosenPrimaryProducts = $faker->randomElements($primaryProducts->dump(), random_int(1, 5));
 
                 foreach ($chosenPrimaryProducts as $chosenPrimaryProduct) {
-                    $map = new AdditionalPurchaseMap();
+                    $map = new AdditionalPurchaseTarget();
 
                     $map->setAdditionalPurchaseId($ap->getId());
                     $map->setAttachProductId($attachmentProduct->getId());
                     $map->setAttachVariantId($variant->getId());
                     $map->setTargetProductId($chosenPrimaryProduct->getId());
 
-                    $orm->createOne(AdditionalPurchaseMap::class, $map);
+                    $orm->createOne(AdditionalPurchaseTarget::class, $map);
 
                     $seeder->outCounting();
                 }
