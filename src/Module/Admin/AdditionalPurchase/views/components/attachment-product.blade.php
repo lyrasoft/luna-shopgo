@@ -159,7 +159,7 @@ use Windwalker\Core\Router\SystemUri;
                             class="form-control form-control-sm"
                             :step="getPriceStep(item)"
                             v-model.number="item.attachment.price"
-                            @change="syncAllFields($event.target.value, 'price')"
+                            @change="normalizePricing(item)"
                             style="min-width: 80px"
                         />
                             <span v-if="item.attachment.method === 'percentage'" class="input-group-text">
@@ -171,7 +171,9 @@ use Windwalker\Core\Router\SystemUri;
                     <input type="number"
                         class="form-control form-control-sm"
                         v-model="item.attachment.maxQuantity"
-                        @change="syncAllFields($event.target.value, 'maxQuantity')"
+                        @change="onMaxQuantityChange(item)"
+                        min="10"
+                        max="30"
                     />
                 </td>
             </tr>
@@ -222,6 +224,21 @@ use Windwalker\Core\Router\SystemUri;
                 function onMethodChange(item) {
                     syncAllFields(item.attachment.method, 'method');
 
+                    normalizePricing(item);
+                }
+
+                function onMaxQuantityChange(item) {
+                    let qty = item.attachment.maxQuantity;
+
+                    qty = Math.max(qty, 0);
+                    qty = Math.min(qty, 30);
+
+                    item.attachment.maxQuantity = qty;
+
+                    syncAllFields(item.attachment.maxQuantity, 'maxQuantity');
+                }
+
+                function normalizePricing(item) {
                     if (
                         item.attachment.method === 'percentage'
                         && (item.attachment.price < 0 || item.attachment.price > 100)
@@ -232,6 +249,27 @@ use Windwalker\Core\Router\SystemUri;
                         );
 
                         syncAllFields(item.attachment.price, 'price');
+                        return;
+                    }
+
+                    if (
+                        item.attachment.method === 'offsets'
+                        && item.attachment.price > 0
+                    ) {
+                        item.attachment.price = -item.attachment.price;
+
+                        syncAllFields(item.attachment.price, 'price');
+                        return;
+                    }
+
+                    if (
+                        item.attachment.method === 'fixed'
+                        && item.attachment.price < 0
+                    ) {
+                        item.attachment.price = -item.attachment.price;
+
+                        syncAllFields(item.attachment.price, 'price');
+                        return;
                     }
                 }
 
@@ -277,6 +315,8 @@ use Windwalker\Core\Router\SystemUri;
 
                     toggleAll,
                     onMethodChange,
+                    onMaxQuantityChange,
+                    normalizePricing,
                     syncAllFields,
                     getPriceStep,
                 };

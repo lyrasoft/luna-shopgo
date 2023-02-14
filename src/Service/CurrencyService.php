@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Brick\Math\BigDecimal;
 use Lyrasoft\Luna\LunaPackage;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\ShopGo\ShopGoPackage;
-use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Application\ApplicationInterface;
-use Windwalker\Core\Http\AppRequest;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Session\Session;
@@ -38,7 +37,7 @@ class CurrencyService
     }
 
     public function format(
-        float|PriceObject $num,
+        PriceObject|BigDecimal|string|float $num,
         Currency|int|string|null $currency = null,
         bool $addCode = false
     ): string {
@@ -53,8 +52,11 @@ class CurrencyService
         return $currency->formatPrice($num, $addCode);
     }
 
-    public static function formatByCurrency(float $num, Currency $currency, bool $addCode = false): string
-    {
+    public static function formatByCurrency(
+        PriceObject|BigDecimal|string|float $num,
+        Currency $currency,
+        bool $addCode = false
+    ): string {
         return $currency->formatPrice($num, $addCode);
     }
 

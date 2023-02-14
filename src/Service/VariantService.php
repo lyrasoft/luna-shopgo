@@ -45,15 +45,20 @@ class VariantService
         return $variant;
     }
 
-    public function isOutOfStock(ProductVariant $variant, Product $product): bool
+    public static function isOutOfStock(ProductVariant $variant, Product $product): bool
     {
         if (!$variant->isSubtract()) {
             return false;
         }
 
+        return static::getAvailableQuantity($variant, $product) < 1;
+    }
+
+    public static function getAvailableQuantity(ProductVariant $variant, Product $product): int
+    {
         $safeStock = $product->getSafeStock();
 
-        return $variant->getStockQuantity() - $safeStock < 1;
+        return max($variant->getStockQuantity() - $safeStock, 0);
     }
 
     /**

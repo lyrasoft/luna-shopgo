@@ -25,7 +25,10 @@ use Lyrasoft\ShopGo\Entity\ProductFeature;
 use Lyrasoft\ShopGo\Entity\ProductTab;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
+use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
+use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
+use Lyrasoft\ShopGo\Service\VariantService;
 use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
@@ -50,6 +53,7 @@ use Windwalker\Core\Router\SystemUri;
 
 $imagePlaceholder = $app->service(ImagePlaceholder::class);
 $attributeService = $app->service(ProductAttributeService::class);
+$additionalPurchaseService = $app->service(AdditionalPurchaseService::class);
 
 $shopGoScript = $app->service(ShopGoScript::class);
 $shopGoScript->vueUtilities();
@@ -339,6 +343,20 @@ $shopGoScript->swiper(
                 <div class="l-additional-purchases__slides swiper">
                     <div class="l-additional-purchases__wrapper swiper-wrapper">
                         @foreach ($additionalPurchases as $additionalPurchase)
+                                <?php
+                                [$additionalPurchase, $apProduct, $attachment] = $vm->prepareAdditionalPurchase(
+                                    $additionalPurchase
+                                );
+                                $priceSet = $additionalPurchase->getPriceSet();
+                                $maxQuantity = $attachment->getMaxQuantity() ?: 30;
+
+                                if (VariantService::isOutOfStock($additionalPurchase, $apProduct)) {
+                                    continue;
+                                }
+
+                                $stock = VariantService::getAvailableQuantity($additionalPurchase, $apProduct);
+                                $maxQuantity = min($maxQuantity, $stock);
+                                ?>
                             <div class="c-additional-purchase-product card swiper-slide">
                                 <div class="card-body d-flex gap-2">
                                     <div class="c-additional-purchase-product__cover "
@@ -349,26 +367,47 @@ $shopGoScript->swiper(
                                     </div>
                                     <div>
                                         <h6 class="c-additional-purchase-product__title mb-1">
-                                            {{ $additionalPurchase->product->title }}
+                                            {{ $apProduct->getTitle() }}
                                         </h6>
 
                                         @if (!$additionalPurchase->isPrimary())
-                                            <div class="c-additional-purchase-product__variant text-muted">
+                                            <div class="c-additional-purchase-product__variant text-muted small">
                                                 {{ $additionalPurchase->getTitle() }}
                                             </div>
                                         @endif
 
-                                        <div class="c-additional-purchase-product__price">
-                                            {{ $vm->formatPrice($additionalPurchase->getPrice(), true) }}
+                                        @if (!$priceSet['final']->eq($priceSet['origin']))
+                                            <div class="c-additional-purchase-product__base-price text-muted small">
+                                                <del>{{ $vm->formatPrice($priceSet['origin']) }}</del>
+                                            </div>
+                                        @endif
+
+                                        <div class="c-additional-purchase-product__price fs-bold">
+                                            {{ $vm->formatPrice($priceSet['final'], true) }}
                                         </div>
 
-                                        <div class="c-additional-purchase-product__actions mt-2">
-                                            <button class="btn btn-outline-primary btn-sm"
-                                                data-task="addon"
-                                                data-ap-map-id="{{ $additionalPurchase->ap_map->id }}"
-                                            >
-                                                加購
-                                            </button>
+                                        <div
+                                            class="c-additional-purchase-product__actions mt-2 d-flex align-items-center gap-3">
+                                            <div class="form-check">
+                                                <input id="input-attachment-{{ $attachment->getId() }}"
+                                                    type="checkbox" class="form-check-input"
+                                                    value="{{ $attachment->getId() }}"
+                                                    name="attachments[{{ $attachment->getId() }}][id]"
+                                                />
+                                                <label for="input-attachment-{{ $attachment->getId() }}"
+                                                    class="stretched-link">
+                                                    加購
+                                                </label>
+                                            </div>
+
+                                            <div class="position-relative" style="z-index: 1">
+                                                <select name="attachments[{{ $attachment->getId() }}][quantity]"
+                                                    class="form-select form-select-sm">
+                                                    @foreach (range(1, $maxQuantity) as $qty)
+                                                        <option value="{{ $qty }}">{{ $qty }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

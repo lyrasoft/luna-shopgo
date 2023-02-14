@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Traits;
 
+use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\ShopGo\Service\CurrencyService;
@@ -25,7 +26,7 @@ trait CurrencyAwareTrait
     protected CurrencyService $currencyService;
 
     public function formatPrice(
-        float|PriceObject $price,
+        PriceObject|BigDecimal|string|float $price,
         bool $addCode = false
     ): string {
         return $this->currencyService->format($price, null, $addCode);

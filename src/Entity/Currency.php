@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
+use Brick\Math\BigDecimal;
 use DateTimeInterface;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Enum\SignPosition;
@@ -104,11 +105,13 @@ class Currency implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
-    public function formatPrice(float|PriceObject $num, bool $addCode = false): string
+    public function formatPrice(PriceObject|BigDecimal|string|float $num, bool $addCode = false): string
     {
         if ($num instanceof  PriceObject) {
             return $num->format($this, $addCode);
         }
+
+        $num = (float) (string) $num;
 
         $negative = $num < 0;
 

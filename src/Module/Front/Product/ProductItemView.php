@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\User\UserService;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
@@ -23,6 +24,7 @@ use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\ShopGo\Entity\Wishlist;
 use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Repository\ProductRepository;
+use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
@@ -62,6 +64,7 @@ class ProductItemView implements ViewModelInterface
         protected ProductRepository $repository,
         protected UserService $userService,
         protected VariantService $variantService,
+        protected AdditionalPurchaseService $additionalPurchaseService,
         protected ProductAttributeService $productAttributeService,
     ) {
         //
@@ -146,12 +149,16 @@ class ProductItemView implements ViewModelInterface
         $additionalPurchases = $this->orm->from(ProductVariant::class)
             ->leftJoin(Product::class)
             ->leftJoin(
-                AdditionalPurchaseTarget::class,
-                'ap_map',
-                'ap_map.attach_variant_id',
+                AdditionalPurchaseAttachment::class,
+                'attachment',
+                'attachment.variant_id',
                 'product_variant.id'
             )
-            ->where('ap_map.target_product_id', $item->getId())
+            ->whereExists(
+                fn (Query $query) => $query->from(AdditionalPurchaseTarget::class, 'target')
+                    ->whereRaw('additional_purchase_id = attachment.additional_purchase_id')
+                    ->whereRaw('target.product_id = %a', $item->getId())
+            )
             ->groupByJoins()
             ->all(ProductVariant::class);
 
@@ -232,5 +239,22 @@ class ProductItemView implements ViewModelInterface
             )
             ->order('tab.ordering', 'ASC')
             ->all(ProductTab::class);
+    }
+
+    /**
+     * @param  ProductVariant  $variant
+     *
+     * @return  array{ 0: ProductVariant, 1: Product, 2: AdditionalPurchaseAttachment }
+     *
+     * @throws \ReflectionException
+     */
+    public function prepareAdditionalPurchase(ProductVariant $variant): array
+    {
+        $attachment = $this->orm->toEntity(AdditionalPurchaseAttachment::class, $variant->attachment);
+        $product = $this->orm->toEntity(Product::class, $variant->product);
+
+        $this->additionalPurchaseService->prepareVariantView($variant, $product, $attachment);
+
+        return [$variant, $product, $attachment];
     }
 }

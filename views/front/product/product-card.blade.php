@@ -68,7 +68,7 @@ $currencyService = $app->service(CurrencyService::class);
 $variantService = $app->service(VariantService::class);
 
 $variant = $variantService->prepareVariantView($variant, $item);
-$isOutOfStock = $variantService->isOutOfStock($variant, $item);
+$isOutOfStock = $variantService::isOutOfStock($variant, $item);
 
 $attributes = $attributes->class('card c-product-card');
 

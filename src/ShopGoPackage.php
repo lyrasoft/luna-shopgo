@@ -15,6 +15,8 @@ use Lyrasoft\Luna\Services\ConfigService;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Config\ShopConfig;
+use Lyrasoft\ShopGo\Script\ShopGoScript;
+use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\AddressService;
 use Lyrasoft\ShopGo\Service\CheckoutService;
 use Lyrasoft\ShopGo\Service\CurrencyService;
@@ -22,6 +24,7 @@ use Lyrasoft\ShopGo\Service\LocationService;
 use Lyrasoft\ShopGo\Service\OrderHistoryService;
 use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Service\OrderStateService;
+use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Application\ApplicationInterface;
@@ -55,17 +58,20 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
         class_alias(Collection::class, ShopConfig::class);
 
         $container->share(self::class, $this);
+        $container->prepareSharedObject(AdditionalPurchaseService::class);
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);
         $container->prepareSharedObject(CartStorage::class);
         $container->prepareSharedObject(CheckoutService::class);
         $container->prepareSharedObject(CurrencyService::class);
         $container->prepareSharedObject(LocationService::class);
+        $container->prepareSharedObject(PricingService::class);
         $container->prepareSharedObject(OrderHistoryService::class);
         $container->prepareSharedObject(OrderService::class);
         $container->prepareSharedObject(OrderStateService::class);
         $container->prepareSharedObject(ProductAttributeService::class);
         $container->prepareSharedObject(VariantService::class);
+        $container->prepareSharedObject(ShopGoScript::class);
         $container->bindShared(
             ShopConfig::class,
             static fn(Container $container) => $container->get(ConfigService::class)
