@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * Part of shopgo project.
+ *
+ * @copyright  Copyright (C) 2023 __ORGANIZATION__.
+ * @license    __LICENSE__
+ */
+
+declare(strict_types=1);
+
+namespace Lyrasoft\ShopGo\Service;
+
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\DiscountUsage;
+use Windwalker\Data\Collection;
+use Windwalker\ORM\ORM;
+use Windwalker\Query\Query;
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
+
+use function Windwalker\chronos;
+use function Windwalker\collect;
+
+/**
+ * The DiscountUsageService class.
+ */
+class DiscountUsageService
+{
+    use InstanceCacheTrait;
+
+    public function __construct(protected ORM $orm)
+    {
+    }
+
+    /**
+     * @param  int    $userId
+     *
+     * @return  Collection<int>
+     */
+    public function getUserUsages(int $userId): Collection
+    {
+        return $this->once(
+            'user.usages.' . $userId,
+            fn() => $this->orm->select('discount_id')
+                ->selectRaw('COUNT(id) AS count')
+                ->from(DiscountUsage::class, 'usage')
+                ->leftJoin(Discount::class, 'discount')
+                ->where('discount.state', 1)
+                ->orWhere(
+                    function (Query $query) {
+                        $query->where('discount.publish_up', null);
+                        $query->where('discount.publish_up', '<', chronos());
+                    }
+                )
+                ->orWhere(
+                    function (Query $query) {
+                        $query->where('discount.publish_down', null);
+                        $query->where('discount.publish_down', '>=', chronos());
+                    }
+                )
+                ->where('user_id', $userId)
+                ->group('discount_id')
+                ->all()
+                ->mapWithKeys(fn ($item) => [$item->discount_id => $item->count])
+        );
+    }
+
+    /**
+     * @param  int    $userId
+     *
+     * @return  Collection<int>
+     */
+    public function getUserUsageGroups(int $userId): Collection
+    {
+        return $this->once(
+            'user.usage.groups.' . $userId,
+            fn () => $this->getUserUsages($userId)->groupBy('discountId')
+        );
+    }
+
+    /**
+     * @param  int  $userId
+     * @param  int  $discountId
+     *
+     * @return  int
+     */
+    public function getUserUsagesOfDiscount(int $userId, int $discountId): int
+    {
+        return $this->getUserUsageGroups($userId)[$discountId] ?? 0;
+    }
+}

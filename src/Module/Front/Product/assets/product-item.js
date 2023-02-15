@@ -4,6 +4,31 @@ import '@main';
 
 await u.domready();
 
+// Additional Purchases
+// ----------------------------------------
+
+// Click quantity make auto select
+u.selectAll('[data-role=attachment_quantity]', (qty) => {
+  qty.addEventListener('click', () => {
+    const idInput = qty.closest('[data-role=attachment]')
+      ?.querySelector('[data-role=attachment_id]');
+
+    if (idInput) {
+      idInput.checked = true;
+      idInput.dispatchEvent(new CustomEvent('change'));
+    }
+  });
+});
+
+// Add highlight after selected
+u.selectAll('[data-role=attachment_id]', (idInput) => {
+  idInput.addEventListener('change', () => {
+    idInput.closest('[data-role=attachment]')
+      ?.classList.toggle('border-primary', idInput.checked);
+  });
+});
+
+// Product Variants
 const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick, onMounted } = Vue;
 
 const ProductItemApp = {

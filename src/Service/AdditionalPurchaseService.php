@@ -16,9 +16,12 @@ use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
+
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 use function Windwalker\chronos;
 
@@ -27,6 +30,8 @@ use function Windwalker\chronos;
  */
 class AdditionalPurchaseService
 {
+    use InstanceCacheTrait;
+
     public function __construct(protected ORM $orm)
     {
     }
@@ -105,5 +110,76 @@ class AdditionalPurchaseService
             )
             ->groupByJoins()
             ->all(ProductVariant::class);
+    }
+
+    /**
+     * @param  AdditionalPurchaseAttachment  $attachment
+     * @param  Product                       $targetProduct
+     *
+     * @return  array{ 0: Product, 1: ProductVariant, 2: AdditionalPurchase }
+     */
+    public function validateAttachment(AdditionalPurchaseAttachment $attachment, Product $targetProduct): array
+    {
+        $ap = $this->getAdditionalPurchase($attachment->getAdditionalPurchaseId());
+
+        $now = chronos();
+
+        if ($ap->getPublishUp() !== null && $ap->getPublishUp() > $now) {
+            throw new ValidateFailException('Additional Purchase not started yet.');
+        }
+
+        if ($ap->getPublishDown() !== null && $ap->getPublishDown() < $now) {
+            throw new ValidateFailException('Additional Purchase has ended.');
+        }
+
+        $targets = $this->getTargets($ap->getId());
+
+        $targetIds = $targets->column('productId');
+
+        if (!$targetIds->contains($targetProduct->getId())) {
+            throw new ValidateFailException('The target product not in additional purchase targets');
+        }
+
+        $variant = $this->orm->mustFindOne(ProductVariant::class, $attachment->getVariantId());
+        $product = $this->getVariantProduct($variant->getProductId());
+
+        if (VariantService::isOutOfStock($variant, $product)) {
+            throw new ValidateFailException(
+                sprintf(
+                    "Attachment: %s - %s (%d) is out of stock",
+                    $product->getTitle(),
+                    $variant->getTitle(),
+                    $variant->getId()
+                )
+            );
+        }
+
+        return [$product, $variant, $ap];
+    }
+
+    protected function getVariantProduct(int $id): Product
+    {
+        return $this->cacheStorage['product.' . $id] ??= $this->orm->mustFindOne(Product::class, $id);
+    }
+
+    /**
+     * @param  int  $apId
+     *
+     * @return  Collection<AdditionalPurchaseTarget>
+     */
+    public function getTargets(int $apId): Collection
+    {
+        return $this->cacheStorage['ap.targets.' . $apId]
+            ??= $this->orm->findList(
+                AdditionalPurchaseTarget::class,
+                [
+                    'additional_purchase_id' => $apId
+                ]
+            )->all();
+    }
+
+    public function getAdditionalPurchase(int $id): AdditionalPurchase
+    {
+        return $this->cacheStorage['ap.' . $id] ??= $this->orm->mustFindOne(AdditionalPurchase::class, $id);
     }
 }

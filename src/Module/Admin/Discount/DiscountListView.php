@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Discount;
 
+use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Module\Admin\Discount\Form\GridForm;
 use Lyrasoft\ShopGo\Repository\DiscountRepository;
 use Windwalker\Core\Application\AppContext;
@@ -64,7 +65,7 @@ class DiscountListView implements ViewModelInterface
         $search   = (array) $state->rememberFromRequest('search');
         $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering();
 
-        $items = $this->repository->getGlobalListSelector()
+        $items = $this->repository->getListSelector(DiscountType::GLOBAL())
             ->setFilters($filter)
             ->searchTextFor(
                 $search['*'] ?? '',

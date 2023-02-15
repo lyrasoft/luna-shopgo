@@ -15,9 +15,11 @@ use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\ORM\ORM;
@@ -41,35 +43,31 @@ class CartController
             $id,
             $variantId,
             $quantity,
-        ] = $app->input('product_id', 'variant_id', 'quantity')->values();
+            $attachments,
+        ] = $app->input('product_id', 'variant_id', 'quantity', 'attachments')->values();
 
         /** @var ProductVariant $variant */
-        $variant = $app->call(
+        [$product, $variant] = $app->call(
             [$this, 'validateProductVariant'],
             [
                 'id' => (int) $id,
-                'variantId' => (int) $variantId
+                'variantId' => (int) $variantId,
             ]
         );
 
-        $cartStorage->addToCart($variant->getId(), (int) $quantity);
+        $attachments = (array) $attachments;
 
-        return array_values($cartStorage->getStoredItems());
-    }
+        if ($attachments !== []) {
+            $app->call(
+                [$this, 'validateAdditionalPurchase'],
+                [
+                    'targetProduct' => $product,
+                    'attachments' => $attachments
+                ]
+            );
+        }
 
-    public function addon(AppContext $app, CartStorage $cartStorage): array
-    {
-        $apMapId = (int) $app->input('apMapId');
-
-        /** @var AdditionalPurchaseTarget $apMap */
-        $apMap = $app->call(
-            [$this, 'validateAdditionalPurchase'],
-            [
-                'apMapId' => $apMapId
-            ]
-        );
-
-        $cartStorage->addAdditional($apMap);
+        $cartStorage->addToCart($variant->getId(), (int) $quantity, compact('attachments'));
 
         return array_values($cartStorage->getStoredItems());
     }
@@ -88,45 +86,34 @@ class CartController
         return $cartService->getCartData();
     }
 
-    public function validateProductVariant(int $id, int $variantId, ORM $orm): ProductVariant
+    /**
+     * @param  int  $id
+     * @param  int  $variantId
+     * @param  ORM  $orm
+     *
+     * @return  array{ 0: Product, 1: ProductVariant }
+     */
+    public function validateProductVariant(int $id, int $variantId, ORM $orm): array
     {
-        $orm->mustFindOne(Product::class, $id);
+        $product = $orm->mustFindOne(Product::class, $id);
 
-        return $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'id' => $variantId]);
+        $variant = $orm->mustFindOne(ProductVariant::class, ['product_id' => $id, 'id' => $variantId]);
+
+        return [$product, $variant];
     }
 
-    public function validateAdditionalPurchase(int $apMapId, ORM $orm, CartStorage $cartStorage): AdditionalPurchaseTarget
-    {
-        $map = $orm->mustFindOne(AdditionalPurchaseTarget::class, $apMapId);
-        $ap = $orm->mustFindOne(AdditionalPurchase::class, $map->getAdditionalPurchaseId());
+    public function validateAdditionalPurchase(
+        Product $targetProduct,
+        array $attachments,
+        ORM $orm,
+        AdditionalPurchaseService $additionalPurchaseService
+    ): void {
+        $attachmentIds = array_keys($attachments);
 
-        $orm->mustFindOne(Product::class, $map->getTargetProductId());
-        $orm->mustFindOne(Product::class, $ap->getAttachProductId());
-        $orm->mustFindOne(ProductVariant::class, $ap->getAttachVariantId());
+        $attachItems = $orm->findList(AdditionalPurchaseAttachment::class, ['id' => $attachmentIds])->all();
 
-        $variantIds = $orm->findColumn(
-            ProductVariant::class,
-            'id',
-            ['product_id' => $map->getTargetProductId()]
-        )
-            ->map('intval')
-            ->dump();
-
-        $items = $cartStorage->getStoredItems();
-        $exists = false;
-
-        foreach ($items as $item) {
-            if (isset($item['isAdditionalOf'])) {
-                continue;
-            }
-
-            $exists = $exists || in_array((int) $item['variantId'], $variantIds, true);
+        foreach ($attachItems as $attachItem) {
+            $additionalPurchaseService->validateAttachment($attachItem, $targetProduct);
         }
-
-        if (!$exists) {
-            throw new \RuntimeException('請先加入主要商品才能加購');
-        }
-
-        return $map;
     }
 }

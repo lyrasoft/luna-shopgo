@@ -16,6 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Module\Admin\Product\ProductEditView;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -24,6 +25,9 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
+/**
+ * @var $item Product
+ */
 ?>
 
 <div x-title="toolbar" x-data="{ form: $store.form }" class="l-toolbar">
@@ -43,6 +47,16 @@ use Windwalker\Core\Router\SystemUri;
         <span class="fa fa-check"></span>
         @lang('unicorn.toolbar.save2close')
     </button>
+
+    @if ($item)
+        {{-- Preview --}}
+        <a class="btn btn-outline-primary btn-sm uni-btn-priview"
+            href="{{ $item->makeLink($nav) }}"
+            target="_blank">
+            <span class="fa fa-eye"></span>
+            @lang('shopgo.toolbar.button.preview')
+        </a>
+    @endif
 
     {{-- Cancel --}}
     <a class="btn btn-default btn-outline-secondary btn-sm uni-btn-cancel"

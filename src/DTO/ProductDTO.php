@@ -4,7 +4,7 @@
  * Part of shopgo project.
  *
  * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
+ * @license    __LICENSE__
  */
 
 declare(strict_types=1);
@@ -14,21 +14,20 @@ namespace Lyrasoft\ShopGo\DTO;
 use Windwalker\Data\AbstractDTO;
 
 /**
- * The ProductVariantDTO class.
+ * The ProductDTO class.
  */
-class ProductVariantDTO extends AbstractDTO
+class ProductDTO extends AbstractDTO
 {
     protected function configure(object $data): void
     {
         $this->addKeepFields(
             'id',
-            'productId',
+            'model',
             'title',
-            'cover',
-            'applyDiscounts',
-            'priceSet',
-            'category',
-            'primary',
+            'originPrice',
+            'safeStock',
+            'variants',
+            'state',
         );
     }
 }

@@ -16,6 +16,8 @@ use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductFeature;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 
@@ -24,7 +26,7 @@ use Windwalker\ORM\ORM;
  */
 class VariantService
 {
-    public function __construct(protected ORM $orm)
+    public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo)
     {
     }
 
@@ -38,7 +40,23 @@ class VariantService
             $priceSet['origin']->setPrice((string) $product->getOriginPrice());
         }
 
-        // Todo: @event PrepareProductPriceSet
+        // $mainVariant = $item->getMainVariant();
+        $context = PrepareProductPricesEvent::PRODUCT_VIEW;
+
+        // Todo: @event PrepareProductPrices
+        $event = $this->shopGo->emit(
+            PrepareProductPricesEvent::class,
+            compact(
+                'context',
+                'product',
+                'variant',
+                'priceSet'
+            )
+        );
+
+        $variant->setPriceSet($event->getPriceSet());
+
+
         // Todo: @event PrepareProductDiscountsInformation
         // Todo: @event PrepareProductInformation
 

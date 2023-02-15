@@ -13,11 +13,12 @@ namespace Lyrasoft\ShopGo\Cart;
 
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Windwalker\Core\State\AppState;
+use Windwalker\Utilities\Arr;
 
 /**
  * The CartStorage class.
  *
- * @psalm-type CartStorageItem = array{ variantId: int, isAdditionalOf: ?int, quantity: int }
+ * @psalm-type CartStorageItem = array{ variantId: int, attachments: ?array<int, int>, quantity: int }
  */
 class CartStorage
 {
@@ -137,25 +138,42 @@ class CartStorage
      * @param  array  $payload
      *
      * @return  string
+     * @throws \JsonException
      */
     protected function getKeyName(int $variantId, array $payload = []): string
     {
-        sort($payload);
+        if ($payload === []) {
+            return (string) $variantId;
+        }
 
-        $payload = array_map(static fn ($v) => $v ?: '0', $payload);
+        $key = $variantId;
 
-        array_unshift($payload, $variantId);
+        // Will build key like this: `1536` or `1536:attachments:25=3,27=2`
+        foreach ($payload as $k => $values) {
+            if (is_scalar($values)) {
+                if ($values === '') {
+                    continue;
+                }
 
-        return implode(':', $payload);
-    }
+                $key .= '|' . $k . ':' . $values;
+            }
 
-    public function addAdditional(AdditionalPurchaseTarget $apMap): void
-    {
-        $variantId = $apMap->getAttachVariantId();
+            if (is_array($values)) {
+                if ($values === []) {
+                    continue;
+                }
 
-        $isAdditionalOf = $apMap->getTargetProductId();
-        $apMapId = $apMap->getId();
+                ksort($values);
 
-        $this->addToCart($variantId, 1, compact('isAdditionalOf', 'apMapId'));
+                foreach ($values as $k2 => &$value) {
+                    $value = "$k2=$value";
+                }
+
+                unset($value);
+
+                $key .= '|' . $k . ':' . implode(',', $values);
+            }
+        }
+        return $key;
     }
 }

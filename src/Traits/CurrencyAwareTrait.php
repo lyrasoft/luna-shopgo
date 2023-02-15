@@ -26,7 +26,7 @@ trait CurrencyAwareTrait
     protected CurrencyService $currencyService;
 
     public function formatPrice(
-        PriceObject|BigDecimal|string|float $price,
+        mixed $price,
         bool $addCode = false
     ): string {
         return $this->currencyService->format($price, null, $addCode);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Cart;
 
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\DTO\ProductDTO;
 use Lyrasoft\ShopGo\DTO\ProductVariantDTO;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
@@ -24,7 +25,9 @@ class CartItem extends ValueObject
 {
     public ProductVariantDTO $variant;
 
-    public Product $product;
+    public ProductVariantDTO $mainVariant;
+
+    public ProductDTO $product;
 
     public int $quantity = 0;
 
@@ -36,7 +39,11 @@ class CartItem extends ValueObject
 
     public array $payload = [];
 
+    public array $attachments = [];
+
     public PriceSet $priceSet;
+
+    public array $discounts = [];
 
     public function __construct(mixed $data = [])
     {
@@ -124,6 +131,17 @@ class CartItem extends ValueObject
      */
     public function setPriceSet(PriceSet $priceSet): static
     {
+        $this->priceSet = $priceSet;
+
+        $this->calcTotals();
+
+        return $this;
+    }
+
+    public function calcTotals(): static
+    {
+        $priceSet = $this->priceSet;
+
         $originTotal = $priceSet->get('origin')
             ->clone('base_total', 'Product Base total')
             ->multiply((string) $this->getQuantity());
@@ -162,21 +180,21 @@ class CartItem extends ValueObject
     }
 
     /**
-     * @return Product
+     * @return ProductDTO
      */
-    public function getProduct(): Product
+    public function getProduct(): ProductDTO
     {
         return $this->product;
     }
 
     /**
-     * @param  Product  $product
+     * @param  ProductDTO|Product  $product
      *
      * @return  static  Return self to support chaining.
      */
-    public function setProduct(Product $product): static
+    public function setProduct(ProductDTO|Product $product): static
     {
-        $this->product = $product;
+        $this->product = ProductDTO::wrap($product);
 
         return $this;
     }
@@ -217,6 +235,78 @@ class CartItem extends ValueObject
     public function setPayload(array $payload): static
     {
         $this->payload = $payload;
+
+        return $this;
+    }
+
+    /**
+     * @return array<CartItem>
+     */
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param  array<CartItem>  $attachments
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setAttachments(array $attachments): static
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
+     * @param  CartItem  $attachment
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function addAttachment(CartItem $attachment): static
+    {
+        $this->attachments[] = $attachment;
+
+        return $this;
+    }
+
+    /**
+     * @return ProductVariantDTO
+     */
+    public function getMainVariant(): ProductVariantDTO
+    {
+        return $this->mainVariant;
+    }
+
+    /**
+     * @param  ProductVariantDTO|ProductVariant  $mainVariant
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMainVariant(ProductVariantDTO|ProductVariant $mainVariant): static
+    {
+        $this->mainVariant = ProductVariantDTO::wrap($mainVariant);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function &getDiscounts(): array
+    {
+        return $this->discounts;
+    }
+
+    /**
+     * @param  array  $discounts
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setDiscounts(array $discounts): static
+    {
+        $this->discounts = $discounts;
 
         return $this;
     }

@@ -164,7 +164,7 @@ window.ShopGoVuePlugin.Tooltip = {
     inc.update();
   },
   beforeUnmount(el) {
-    const inc = u.$ui.bootstrap.tooltip(el, value);
+    const inc = u.$ui.bootstrap.tooltip(el);
 
     inc.dispose();
   }

@@ -15,10 +15,6 @@ u.delegate(document, '[data-task=buy]', 'click', (e) => {
   buy(e.target);
 });
 
-u.delegate(document, '[data-task=addon]', 'click', (e) => {
-  addon(e.target);
-});
-
 async function sendAddAction(el) {
   const productId = el.dataset.id;
 
@@ -33,6 +29,10 @@ async function sendAddAction(el) {
   }
 
   const qtyInput = document.querySelector('[data-role=quantity]');
+  const quantity = Number(qtyInput?.value || 1);
+
+  // Find additional purchases
+  const attachments = findAttachments();
 
   try {
     const res = await u.$http.post(
@@ -40,7 +40,8 @@ async function sendAddAction(el) {
       {
         product_id: productId,
         variant_id: variantId,
-        quantity: Number(qtyInput?.value || 1)
+        quantity,
+        attachments
       }
     );
 
@@ -49,13 +50,13 @@ async function sendAddAction(el) {
     return res.data;
   } catch (e) {
     console.error(e);
-    u.alert(e.message, '', 'warning');
+    throw e;
   }
 }
 
 async function addToCart(el) {
   try {
-    sendAddAction(el);
+    await sendAddAction(el);
   } catch (e) {
     u.alert(e.message, '', 'warning');
     return;
@@ -76,31 +77,9 @@ async function addToCart(el) {
   toCartPage();
 }
 
-async function addon(el) {
-  const apMapId = el.dataset.apMapId;
-
+async function buy(el) {
   try {
-    const res = await u.$http.post(
-      '@cart_ajax/addon',
-      {
-        apMapId
-      }
-    );
-
-    updateCartButton(res.data.data);
-
-    swal({ title: '已加購' });
-
-    return res.data;
-  } catch (e) {
-    console.error(e);
-    u.alert(e.message, '', 'warning');
-  }
-}
-
-function buy(el) {
-  try {
-    sendAddAction(el);
+    await sendAddAction(el);
   } catch (e) {
     u.alert(e.message, '', 'warning');
     return;
@@ -126,4 +105,20 @@ function updateCartButton(data) {
     $cartButton.classList.toggle('h-has-items', count > 0);
     $cartQuantity.textContent = count;
   }
+}
+
+function findAttachments() {
+  const attachments = u.selectAll('[data-role=attachment]');
+  const attachItems = {};
+
+  for (const attachment of attachments) {
+    const idInput = attachment.querySelector('[data-role=attachment_id]');
+    const qtyInput = attachment.querySelector('[data-role=attachment_quantity]');
+
+    if (idInput.checked) {
+      attachItems[idInput.value] = Number(qtyInput.value);
+    }
+  }
+
+  return attachItems;
 }

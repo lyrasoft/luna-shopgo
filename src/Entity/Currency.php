@@ -105,9 +105,9 @@ class Currency implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
-    public function formatPrice(PriceObject|BigDecimal|string|float $num, bool $addCode = false): string
+    public function formatPrice(mixed $num, bool $addCode = false): string
     {
-        if ($num instanceof  PriceObject) {
+        if ($num instanceof PriceObject) {
             return $num->format($this, $addCode);
         }
 

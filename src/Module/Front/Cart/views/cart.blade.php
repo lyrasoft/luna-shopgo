@@ -72,68 +72,7 @@ $uniScript->addRoute('@address_ajax');
                     <div class="l-cart-data">
 
                         {{-- Cart Items --}}
-                        <div class="l-cart-items">
-
-                            {{-- Cart Item --}}
-                            <div class="c-cart-item card mb-3" v-for="item of items">
-                                <div class="card-body d-grid d-lg-flex gap-3">
-                                    <div class="d-flex gap-3">
-
-                                        {{-- Cover --}}
-                                        <div class="c-cart-item__image">
-                                            <div style="width: 75px" class="ratio ratio-1x1">
-                                                <img :src="item.cover" :alt="item.product.title"
-                                                    style="">
-                                            </div>
-                                        </div>
-
-                                        {{-- Content --}}
-                                        <div class="c-cart-item__content">
-                                            <h5>@{{ item.product.title }}</h5>
-                                            <div class="fs-6 text-muted">
-                                                @{{ item.variant.title }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="ms-auto d-flex align-items-center gap-3"
-                                        style="max-width: 350px">
-
-                                        {{-- Quantity --}}
-                                        <div class="c-cart-item__quantity d-flex gap-2">
-                                            <div class="input-group">
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                    @click="changeItemQuantity(item, -1)">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
-                                                <input type="text" class="form-control form-control-sm"
-                                                    v-model.number="item.quantity"
-                                                    @input="updateQuantities"
-                                                />
-                                                <button type="button" class="btn btn-secondary btn-sm"
-                                                    @click="changeItemQuantity(item, +1)">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-
-                                            {{-- Remove --}}
-                                            <button type="button" class="btn btn-secondary btn-sm">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        {{-- Item Total --}}
-                                        <div class="c-cart-item__price text-end"
-                                            style="min-width: 135px">
-
-                                            <div class="fs-5">
-                                                @{{ $formatPrice(item.priceSet.final_total.price) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <x-cart-items></x-cart-items>
 
                         {{-- Addresses --}}
                         <div class="">

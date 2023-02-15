@@ -41,6 +41,7 @@ class WishlistButton {
     } catch (e) {
       console.error(e);
       u.alert(e.message, '', 'warning');
+      throw e;
     }
   }
 
@@ -57,8 +58,6 @@ u.directive(
   'wishlist-button',
   {
     mounted(el) {
-      console.log(el);
-      
       setTimeout(() => {
         u.module(el, 'wishlist.button', () => new WishlistButton(el));
       }, 100);

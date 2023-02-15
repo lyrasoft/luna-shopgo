@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Cart\Price;
 
+use Brick\Math\BigDecimal;
+use http\Encoding\Stream;
 use Traversable;
+use Windwalker\Utilities\Str;
 
 /**
  * The PriceSet class.
@@ -92,6 +95,20 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
      *
      * @return  static
      */
+    public function prepend(PriceObject $price): static
+    {
+        $name = $price->getName();
+
+        $this->prices = array_merge(
+            [
+                $name => $price,
+            ],
+            $this->prices
+        );
+
+        return $this;
+    }
+
     public function set(PriceObject $price): static
     {
         $name = $price->getName();
@@ -99,6 +116,19 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
         $this->prices[$name] = $price;
 
         return $this;
+    }
+
+    public function add(string $name, mixed $price, string $label): PriceObject
+    {
+        $this->set(
+            $price = PriceObject::create(
+                $name,
+                $price,
+                $label,
+            )
+        );
+
+        return $price;
     }
 
     /**
@@ -125,17 +155,19 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
     /**
      * remove
      *
-     * @param string $name
+     * @param  string  $name
      *
-     * @return  PriceSet
+     * @return PriceObject|null
      *
      * @since  0.1.1
      */
-    public function remove(string $name): self
+    public function remove(string $name): ?PriceObject
     {
+        $price = $this->prices[$name] ?? null;
+
         unset($this->prices[$name]);
 
-        return $this;
+        return $price;
     }
 
     /**

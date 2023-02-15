@@ -20,6 +20,8 @@ use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\AddressService;
 use Lyrasoft\ShopGo\Service\CheckoutService;
 use Lyrasoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Service\DiscountService;
+use Lyrasoft\ShopGo\Service\DiscountUsageService;
 use Lyrasoft\ShopGo\Service\LocationService;
 use Lyrasoft\ShopGo\Service\OrderHistoryService;
 use Lyrasoft\ShopGo\Service\OrderService;
@@ -28,19 +30,23 @@ use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\Event\CoreEventAwareTrait;
 use Windwalker\Core\Package\AbstractPackage;
 use Windwalker\Core\Package\PackageInstaller;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\ServiceProviderInterface;
+use Windwalker\Event\EventAwareInterface;
 use Windwalker\Utilities\StrNormalize;
 
 /**
  * The ShopGoPackage class.
  */
-class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
+class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface, EventAwareInterface
 {
+    use CoreEventAwareTrait;
+
     public function __construct(protected ApplicationInterface $app)
     {
         //
@@ -64,6 +70,8 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface
         $container->prepareSharedObject(CartStorage::class);
         $container->prepareSharedObject(CheckoutService::class);
         $container->prepareSharedObject(CurrencyService::class);
+        $container->prepareSharedObject(DiscountService::class);
+        $container->prepareSharedObject(DiscountUsageService::class);
         $container->prepareSharedObject(LocationService::class);
         $container->prepareSharedObject(PricingService::class);
         $container->prepareSharedObject(OrderHistoryService::class);

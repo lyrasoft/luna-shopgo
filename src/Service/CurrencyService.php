@@ -37,7 +37,7 @@ class CurrencyService
     }
 
     public function format(
-        PriceObject|BigDecimal|string|float $num,
+        mixed $num,
         Currency|int|string|null $currency = null,
         bool $addCode = false
     ): string {

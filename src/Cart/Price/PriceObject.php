@@ -41,7 +41,7 @@ use Lyrasoft\ShopGo\Entity\Currency;
  *
  * @since  0.1.1
  */
-class PriceObject implements \JsonSerializable
+class PriceObject implements \JsonSerializable, \Stringable
 {
     public const DEFAULT_SCALE = 4;
 
@@ -77,13 +77,15 @@ class PriceObject implements \JsonSerializable
      * PriceObject constructor.
      *
      * @param  string  $name
-     * @param  string|BigDecimal|PriceObject  $price
+     * @param  mixed   $price
      * @param  string  $label
-     * @param  array  $params
+     * @param  array   $params
+     *
+     * @throws MathException
      */
     public function __construct(
         string $name,
-        string|BigDecimal|PriceObject $price,
+        mixed $price,
         string $label = '',
         array $params = []
     ) {
@@ -92,21 +94,20 @@ class PriceObject implements \JsonSerializable
         }
 
         $this->name = $name;
-        $this->price = BigDecimal::of($price);
+        $this->price = BigDecimal::of((string) $price);
         $this->label = $label;
         $this->params = $params;
     }
 
     /**
-     * create
-     *
      * @param  string  $name
-     * @param  string  $price
-     * @param ?string  $label
+     * @param  mixed   $price
+     * @param  string  $label
      *
      * @return  static
+     * @throws MathException
      */
-    public static function create(string $name, string $price, string $label = '')
+    public static function create(string $name, mixed $price, string $label = '')
     {
         return new static($name, $price, $label);
     }
@@ -148,14 +149,15 @@ class PriceObject implements \JsonSerializable
     /**
      * Method to set property price
      *
-     * @param  string|BigDecimal  $price
+     * @param  mixed  $price
      *
      * @return  static  Return self to support chaining.
+     * @throws MathException
      */
-    public function withPrice(string|BigDecimal $price): self
+    public function withPrice(mixed $price): self
     {
         return $this->cloneInstance(function (PriceObject $new) use ($price) {
-            $new->price = $price instanceof BigDecimal ? $price : BigDecimal::of($price);
+            $new->price = BigDecimal::of((string) $price);
         });
     }
 
@@ -398,12 +400,12 @@ class PriceObject implements \JsonSerializable
     /**
      * Method to set property price
      *
-     * @param  string|float  $price
+     * @param  mixed  $price
      *
      * @return  static  Return self to support chaining.
      * @throws MathException
      */
-    public function setPrice(string|float $price): static
+    public function setPrice(mixed $price): static
     {
         $this->price = BigDecimal::of((string) $price);
 

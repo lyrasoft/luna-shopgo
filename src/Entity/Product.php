@@ -146,7 +146,7 @@ class Product implements EntityInterface
 
     public function makeLink(Navigator $nav): RouteUri
     {
-        return $nav->to('product_item')->id($this->getId())->alias($this->getAlias());
+        return $nav->to('front::product_item')->id($this->getId())->alias($this->getAlias());
     }
 
     public function getId(): ?int

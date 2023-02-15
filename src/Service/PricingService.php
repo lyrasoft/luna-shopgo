@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Service;
 
 use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 
@@ -24,30 +25,46 @@ class PricingService
     use CurrencyAwareTrait;
 
     public static function pricingByMethod(
-        PriceObject|BigDecimal|string|float $price,
-        PriceObject|BigDecimal|string|float $offsets,
-        DiscountMethod|string $method
+        mixed $price,
+        mixed $offsets,
+        DiscountMethod|string $method,
+        ?BigDecimal &$diff = null,
     ): BigDecimal {
         /** @var DiscountMethod $method */
         $method = DiscountMethod::wrap($method);
+        $diff = BigDecimal::of(0);
 
         $price = BigDecimal::of((string) $price);
         $offsets = BigDecimal::of((string) $offsets);
 
         if ($method === DiscountMethod::FIXED()) {
+            $diff = $price->minus($offsets);
             return $offsets;
         }
 
         if ($method === DiscountMethod::OFFSETS()) {
+            $diff = $diff->plus($offsets);
             return $price->plus($offsets);
         }
 
-        return $price->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($offsets);
+        $newPrice = $price->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($offsets);
+
+        $diff = $newPrice->minus($price);
+
+        return $newPrice;
+    }
+
+    public static function pricingByDiscount(
+        mixed $price,
+        Discount $discount,
+        ?BigDecimal &$diff = null,
+    ): BigDecimal {
+        return static::pricingByMethod($price, $discount->getPrice(), $discount->getMethod(), $diff);
     }
 
     public function pricingByMethodAndFormat(
-        PriceObject|BigDecimal|string|float $price,
-        PriceObject|BigDecimal|string|float $offsets,
+        mixed $price,
+        mixed $offsets,
         DiscountMethod|string $method,
         bool $addCode = false
     ): string {
