@@ -54,6 +54,25 @@ const AdditionalPurchaseAttachments = {
 
     u.$ui.iframeModal();
 
+    onMounted(() => {
+      setTimeout(() => {
+        const targetSelected = window.targetSelected;
+
+        window.targetSelected = function (value) {
+          const id = value.value;
+
+          try {
+            checkAvailable(id)
+          } catch (e) {
+            u.alert(e.message);
+            return;
+          }
+
+          targetSelected(value);
+        }
+      }, 500);
+    });
+
     const productSelector = ref(null);
 
     function openProductSelector() {
@@ -62,11 +81,11 @@ const AdditionalPurchaseAttachments = {
       url.searchParams.set('callback', callbackName);
 
       window[callbackName] = async function ({ title, value: id, image: cover }) {
-        for (const { product } of state.attachmentSet) {
-          if (Number(product.id) === Number(id)) {
-            u.alert(u.__('shopgo.additional.purchase.message.already.selected'));
-            return;
-          }
+        try {
+          checkAvailable(id);
+        } catch (e) {
+          u.alert(e.message, '', 'warning');
+          return;
         }
 
         const res = await u.$http.get(`@additional_purchase_ajax/getProductInfo?id=${id}`);
@@ -88,6 +107,24 @@ const AdditionalPurchaseAttachments = {
       }
 
       productSelector.value.open(url, { size: 'modal-xl' });
+    }
+
+    function checkAvailable(id) {
+      // Check is in attachments
+      for (const { product } of state.attachmentSet) {
+        if (Number(product.id) === Number(id)) {
+          throw new Error(u.__('shopgo.additional.purchase.message.already.selected'));
+          return;
+        }
+      }
+
+      // Check is in targets
+      for (const target of u.selectAll('#input-item-products-wrap .list-group-item')) {
+        if (Number(target.dataset.value) === Number(id)) {
+          throw new Error(u.__('shopgo.additional.purchase.message.already.in.targets'));
+          return;
+        }
+      }
     }
 
     function removeProduct(i) {

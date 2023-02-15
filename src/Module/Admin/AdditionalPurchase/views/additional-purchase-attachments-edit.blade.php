@@ -43,7 +43,7 @@ $uniScript->data('price.step', $vm->getMainCurrency()->getInputStep());
 
 $uniScript->addRoute('product_modal', $nav->to('product_list')->layout('modal')->full());
 $uniScript->addRoute('@additional_purchase_ajax');
-$uniScript->translate('shopgo.additional.purchase.message.already.selected');
+$uniScript->translate('shopgo.additional.purchase.message.*');
 $uniScript->translate('shopgo.additional.purchase.text.selected.count');
 ?>
 

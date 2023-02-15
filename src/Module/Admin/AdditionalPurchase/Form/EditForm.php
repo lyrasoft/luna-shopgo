@@ -53,6 +53,7 @@ class EditForm implements FieldDefinitionInterface
             function (Form $form) {
                 $form->add('products', ProductModalField::class)
                     ->label($this->trans('shopgo.additional.purchase.field.target.products'))
+                    ->callback('targetSelected')
                     ->hasImage(true)
                     ->multiple(true);
             }
