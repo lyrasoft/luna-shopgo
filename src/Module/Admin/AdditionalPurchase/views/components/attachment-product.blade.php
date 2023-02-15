@@ -172,7 +172,7 @@ use Windwalker\Core\Router\SystemUri;
                         class="form-control form-control-sm"
                         v-model="item.attachment.maxQuantity"
                         @change="onMaxQuantityChange(item)"
-                        min="10"
+                        min="0"
                         max="30"
                     />
                 </td>
@@ -247,9 +247,6 @@ use Windwalker\Core\Router\SystemUri;
                             Math.abs(item.attachment.price),
                             100
                         );
-
-                        syncAllFields(item.attachment.price, 'price');
-                        return;
                     }
 
                     if (
@@ -257,9 +254,6 @@ use Windwalker\Core\Router\SystemUri;
                         && item.attachment.price > 0
                     ) {
                         item.attachment.price = -item.attachment.price;
-
-                        syncAllFields(item.attachment.price, 'price');
-                        return;
                     }
 
                     if (
@@ -267,10 +261,9 @@ use Windwalker\Core\Router\SystemUri;
                         && item.attachment.price < 0
                     ) {
                         item.attachment.price = -item.attachment.price;
-
-                        syncAllFields(item.attachment.price, 'price');
-                        return;
                     }
+
+                    syncAllFields(item.attachment.price, 'price');
                 }
 
                 function syncAllFields(value, field) {
