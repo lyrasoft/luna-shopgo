@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Subscriber;
 
+use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
+use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
 use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Service\DiscountService;
 use Windwalker\Event\Attributes\EventSubscriber;
@@ -30,11 +32,13 @@ class DiscountSubscriber
     #[ListenTo(BeforeComputeTotalsEvent::class)]
     public function beforeComputeTotals(BeforeComputeTotalsEvent $event): void
     {
-        $cartData = $event->getCartData();
-        $totals = $event->getTotals();
+        //
+    }
 
-        // Compute Single product discounts
-        $cartItems = $cartData->getItems();
+    #[ListenTo(ComputingTotalsEvent::class)]
+    public function computeTotals(ComputingTotalsEvent $event): void
+    {
+        $this->discountService->computeGlobalDiscounts($event);
     }
 
     #[ListenTo(PrepareProductPricesEvent::class)]
@@ -42,20 +46,17 @@ class DiscountSubscriber
     {
         $context = $event->getContext();
 
-        $priceSet = $this->discountService->computeSingleProductSpecials($event)->getPriceSet();
-        $event->setPriceSet($priceSet);
-
-        $cartItem = $event->getCartItem();
+        $this->discountService->computeSingleProductSpecials($event);
 
         if ($context === $event::CART || $context === $event::ORDER) {
-            $priceSet = $this->discountService->computeSingleProductDiscounts($event, $cartItem->getQuantity())
-                ->getPriceSet();
+            $cartItem = $event->getCartItem();
 
-            $event->setPriceSet($priceSet);
+            $priceSet = $this->discountService->computeSingleProductDiscounts($event, $cartItem->getQuantity())
+                ->getPricing();
+
+            $event->setPricing($priceSet);
         }
 
-        $this->discountService->computeGlobalDiscountsForProduct($event);
-
-        $event->setPriceSet($priceSet);
+        // $this->discountService->computeGlobalDiscountsForProduct($event);
     }
 }

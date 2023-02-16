@@ -460,12 +460,12 @@ class Discount implements EntityInterface
 
     public function getProducts(): array
     {
-        return $this->prodcuts;
+        return $this->products;
     }
 
     public function setProducts(array $products): static
     {
-        $this->prodcuts = $products;
+        $this->products = $products;
 
         return $this;
     }

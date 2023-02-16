@@ -12,16 +12,19 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Admin\Discount;
 
 use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Module\Admin\Discount\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\DiscountRepository;
 use Lyrasoft\Luna\User\Password;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
+use Unicorn\Repository\Event\PrepareSaveEvent;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Attributes\JsonApi;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\ORM;
 
 /**
@@ -37,6 +40,14 @@ class DiscountController
         #[Autowire] DiscountRepository $repository,
     ): mixed {
         $form = $app->make(EditForm::class);
+
+        $controller->prepareSave(
+            function (PrepareSaveEvent $event) {
+                $data = &$event->getData();
+
+                $data['type'] = DiscountType::GLOBAL();
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

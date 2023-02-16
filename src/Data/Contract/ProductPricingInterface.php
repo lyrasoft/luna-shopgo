@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
 
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
@@ -19,8 +20,20 @@ use Lyrasoft\ShopGo\Entity\ProductVariant;
 /**
  * Interface ProductPricingInterface
  */
-interface ProductPricingInterface
+interface ProductPricingInterface extends DiscountsAppliedInterface
 {
+    /**
+     * @return string
+     */
+    public function getContext(): string;
+
+    /**
+     * @param  string  $context
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setContext(string $context): static;
+
     /**
      * @return Product
      */
@@ -60,24 +73,25 @@ interface ProductPricingInterface
     /**
      * @return PriceSet
      */
-    public function getPriceSet(): PriceSet;
+    public function getPricing(): PriceSet;
 
     /**
      * @param  PriceSet  $productSet
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPriceSet(PriceSet $productSet): static;
+    public function setPricing(PriceSet $productSet): static;
+
 
     /**
-     * @return array<Discount>
+     * @return PriceObject
      */
-    public function &getAppliedDiscounts(): array;
+    public function getBasePrice(): PriceObject;
 
     /**
-     * @param  array<Discount>  $appliedDiscounts
+     * @param  PriceObject  $basePrice
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAppliedDiscounts(array $appliedDiscounts): static;
+    public function setBasePrice(PriceObject $basePrice): static;
 }

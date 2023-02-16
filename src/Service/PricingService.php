@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Service;
 
 use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
@@ -71,5 +72,16 @@ class PricingService
         $price = static::pricingByMethod($price, $offsets, $method);
 
         return $this->formatPrice($price, $addCode);
+    }
+
+    public static function calcAmount(mixed $base, iterable $offsetsList): BigDecimal
+    {
+        $amount = BigDecimal::of((string) $base);
+
+        foreach ($offsetsList as $tt) {
+            $amount = $amount->plus((string) $tt);
+        }
+
+        return $amount;
     }
 }

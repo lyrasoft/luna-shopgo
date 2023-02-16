@@ -146,7 +146,7 @@ class CartStorage
             return (string) $variantId;
         }
 
-        $key = $variantId;
+        $key = (string) $variantId;
 
         // Will build key like this: `1536` or `1536:attachments:25=3,27=2`
         foreach ($payload as $k => $values) {
@@ -174,6 +174,7 @@ class CartStorage
                 $key .= '|' . $k . ':' . implode(',', $values);
             }
         }
+
         return $key;
     }
 }

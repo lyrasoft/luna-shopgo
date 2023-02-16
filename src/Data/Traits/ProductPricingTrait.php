@@ -11,26 +11,49 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Traits;
 
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
-use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
-use Windwalker\Data\Collection;
 
 /**
  * Trait ProductPricingTrait
  */
 trait ProductPricingTrait
 {
+    use DiscountsAppliedTrait;
+
+    public string $context = self::PRODUCT_VIEW;
+
     public Product $product;
 
     public ProductVariant $variant;
 
     public ProductVariant $mainVariant;
 
-    public PriceSet $priceSet;
+    public PriceSet $pricing;
 
-    public array $appliedDiscounts = [];
+    public PriceObject $basePrice;
+
+    /**
+     * @return string
+     */
+    public function getContext(): string
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param  string  $context
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setContext(string $context): static
+    {
+        $this->context = $context;
+
+        return $this;
+    }
 
     /**
      * @return Product
@@ -95,39 +118,39 @@ trait ProductPricingTrait
     /**
      * @return PriceSet
      */
-    public function getPriceSet(): PriceSet
+    public function getPricing(): PriceSet
     {
-        return $this->priceSet;
+        return $this->pricing;
     }
 
     /**
-     * @param  PriceSet  $priceSet
+     * @param  PriceSet  $pricing
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPriceSet(PriceSet $priceSet): static
+    public function setPricing(PriceSet $pricing): static
     {
-        $this->priceSet = $priceSet;
+        $this->pricing = $pricing;
 
         return $this;
     }
 
     /**
-     * @return array<Discount>
+     * @return PriceObject
      */
-    public function &getAppliedDiscounts(): array
+    public function getBasePrice(): PriceObject
     {
-        return $this->appliedDiscounts;
+        return $this->basePrice;
     }
 
     /**
-     * @param  array<Discount>  $appliedDiscounts
+     * @param  PriceObject  $basePrice
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAppliedDiscounts(array $appliedDiscounts): static
+    public function setBasePrice(PriceObject $basePrice): static
     {
-        $this->appliedDiscounts = $appliedDiscounts;
+        $this->basePrice = $basePrice;
 
         return $this;
     }

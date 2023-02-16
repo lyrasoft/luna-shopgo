@@ -13,8 +13,10 @@ namespace Lyrasoft\ShopGo\Service;
 
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\User\UserService;
+use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Data\Contract\CartTotalsInterface;
 use Lyrasoft\ShopGo\Data\Contract\ProductPricingInterface;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Order;
@@ -54,7 +56,7 @@ class DiscountService
         //
     }
 
-    public function computeGlobalDiscountsForProduct(ProductPricingInterface $pricing)
+    public function computeGlobalDiscounts(CartTotalsInterface $pricing): void
     {
         foreach ($this->getGlobalDiscounts() as $discount) {
             if (!$this->matchDiscount($discount, $pricing)) {
@@ -79,67 +81,52 @@ class DiscountService
         }
     }
 
-    public function applyDiscount(ProductPricingInterface $pricing, Discount $discount): void
+    public function applyDiscount(CartTotalsInterface $pricing, Discount $discount): void
     {
-        $applied = &$pricing->getAppliedDiscounts();
-        $priceSet = $pricing->getPriceSet();
-        $discountLogged = false;
-
         // Apply
-        if ($discount->isFreeShipping()) {
-            if (!$pricing instanceof PrepareProductPricesEvent) {
-                return;
-            }
-
-            $totals = $pricing->getTotals();
-            $grandTotal = $pricing->getGrandTotal();
-
-            $shippingFee = $totals->remove('shipping_fee');
-            $totals->remove('shipping_fee');
-
-            $grandTotal = $grandTotal->minus($shippingFee);
-            $pricing->setGrandTotal($grandTotal);
-
-            $cartApplied = $pricing->getCartData()->getDiscounts();
-            $cartApplied[] = $discount;
-            $discountLogged = true;
-        }
-
         if ($discount->getApplyTo() === DiscountApplyTo::MATCHED()) {
-            $priceSet = $this->addDiscountToProductPrice($priceSet, $discount);
+            $cartItems = $pricing->getMatchedItems()[$discount] ?? [];
 
-            $pricing->setPriceSet($priceSet);
+            /** @var CartItem $cartItem */
+            foreach ($cartItems as $cartItem) {
+                $itemApplied = &$cartItem->getDiscounts();
+                $priceSet = $cartItem->getPriceSet();
 
-            $applied[] = $discount;
-        } elseif ($discount->getApplyTo() === DiscountApplyTo::ORDER()) {
-            if (!$pricing instanceof PrepareProductPricesEvent) {
-                return;
+                $r = $this->checkDiscountCombine($discount, $itemApplied);
+
+                if ($r === 'continue') {
+                    continue;
+                }
+
+                if ($r === 'break') {
+                    break;
+                }
+
+                if ($itemApplied !== [] && $priceSet['final']->lte((string) $discount->getMinPrice())) {
+                    continue;
+                }
+
+                $priceSet = $this->addDiscountToProductPrice($priceSet, $discount);
+
+                $cartItem->setPriceSet($priceSet);
+                $itemApplied[] = $discount;
             }
-
+        } elseif ($discount->getApplyTo() === DiscountApplyTo::ORDER()) {
             $totals = $pricing->getTotals();
-            $grandTotal = $pricing->getGrandTotal();
+            $grandTotal = PricingService::calcAmount($pricing->getTotal(), $totals);
 
-            $grandTotal->setPrice(
-                PricingService::pricingByDiscount($grandTotal, $discount, $diff)
-            );
+            PricingService::pricingByDiscount($grandTotal, $discount, $diff);
 
             $totals->add(
                 'discount:' . $discount->getId(),
                 $diff,
                 $discount->getTitle()
             );
-            $pricing->setGrandTotal($grandTotal);
             $pricing->setTotals($totals);
 
-            if (!$discountLogged) {
-                $cartApplied = $pricing->getCartData()->getDiscounts();
-                $cartApplied[] = $discount;
-            }
+            $cartApplied = $pricing->getCartData()->getDiscounts();
+            $cartApplied[] = $discount;
         } elseif ($discount->getApplyTo() === DiscountApplyTo::PRODUCTS()) {
-            if (!$pricing instanceof PrepareProductPricesEvent) {
-                return;
-            }
-
             foreach ($discount->getApplyProducts() as $applyTarget) {
                 $cartData = $pricing->getCartData();
 
@@ -202,27 +189,21 @@ class DiscountService
         return true;
     }
 
-    protected function matchDiscount(Discount $discount, ProductPricingInterface $pricing): bool
+    protected function matchDiscount(Discount $discount, CartTotalsInterface $pricing): bool
     {
-        $applied = &$pricing->getAppliedDiscounts();
-        $product = $pricing->getProduct();
-        $priceSet = $pricing->getPriceSet();
         $user = $this->userService->getUser();
 
         // @ Minimum Discounted Price
         // If a target (order/product/category) has discounts and lower than this price, will be ignored.
-        if ($applied !== [] && $priceSet['final']->lte((string) $discount->getMinPrice())) {
-            return false;
-        }
+        // Todo: Move to discountApply()
+        // if ($applied !== [] && $priceSet['final']->lte((string) $discount->getMinPrice())) {
+        //     return false;
+        // }
 
-        // Only works in cart
+        $cartData = $pricing->getCartData();
 
         // @ Minimum Cart Items
         if ($discount->getMinCartItems()) {
-            if (!$pricing instanceof PrepareProductPricesEvent) {
-                return false;
-            }
-
             $cartData = $pricing->getCartData();
             $count = count($cartData->getItems());
 
@@ -233,10 +214,6 @@ class DiscountService
 
         // @ Minimum Cart Price
         if ($discount->getMinCartPrice()) {
-            if (!$pricing instanceof PrepareProductPricesEvent) {
-                return false;
-            }
-
             $total = $pricing->getTotal();
 
             if ($total->lt((string) $discount->getMinCartPrice())) {
@@ -298,22 +275,46 @@ class DiscountService
 
         // @ Categories
         if ($discount->getCategories()) {
-            $categoryIds = $this->orm->findColumn(
-                'category_id',
-                ShopCategoryMap::class,
-                ['target_id' => $product->getId(), 'type' => 'product']
-            )
-                ->map('intval')
-                ->dump();
+            $matched = [];
 
-            if (!array_intersect($categoryIds, $discount->getCategories())) {
+            foreach ($cartData->getItems() as $cartItem) {
+                /** @var Product $product */
+                $product = $cartItem->getProduct()->getData();
+
+                $categoryIds = $this->orm->findColumn(
+                    'category_id',
+                    ShopCategoryMap::class,
+                    ['target_id' => $product->getId(), 'type' => 'product']
+                )
+                    ->map('intval')
+                    ->dump();
+
+                if (array_intersect($categoryIds, $discount->getCategories())) {
+                    $pricing->addMatchedItem($discount, $matched[] = $cartItem);
+                }
+            }
+
+            if ($matched === []) {
                 return false;
             }
         }
 
         // @ Products
-        if ($discount->getProducts() && !in_array($product->getId(), $discount->getProducts(), true)) {
-            return false;
+        if ($discount->getProducts()) {
+            $matched = [];
+
+            foreach ($cartData->getItems() as $cartItem) {
+                /** @var Product $product */
+                $product = $cartItem->getProduct()->getData();
+
+                if (in_array($product->getId(), $discount->getProducts(), true)) {
+                    $pricing->addMatchedItem($discount, $matched[] = $cartItem);
+                }
+            }
+
+            if ($matched === []) {
+                return false;
+            }
         }
 
         // Todo: Payments
@@ -344,7 +345,7 @@ class DiscountService
         }
 
         $product = $pricing->getProduct();
-        $priceSet = $pricing->getPriceSet();
+        $priceSet = $pricing->getPricing();
 
         $discounts = $this->getProductDiscounts($product->getId());
 
@@ -360,22 +361,16 @@ class DiscountService
             return $pricing;
         }
 
-        $newPrice = PricingService::pricingByDiscount($priceSet['final'], $matchedDiscount);
+        PricingService::pricingByDiscount($pricing->getBasePrice(), $matchedDiscount, $diff);
 
-        $offsets = $newPrice->minus((string) $priceSet['final']);
-
-        $priceSet->set(
-            PriceObject::create(
-                'product_discount',
-                (string) $offsets,
-                $this->trans('shopgo.total.product.discount')
-            )
+        $prices = $pricing->getPricing();
+        $prices->add(
+            'product_discount',
+            $diff,
+            $this->trans('shopgo.total.product.discount')
         );
-        $priceSet->modify('final', (string) $newPrice);
 
         $applied[] = $matchedDiscount;
-
-        $pricing->setPriceSet($priceSet);
 
         return $pricing;
     }
@@ -399,7 +394,7 @@ class DiscountService
         }
 
         $product = $pricing->getProduct();
-        $priceSet = $pricing->getPriceSet();
+        $priceSet = $pricing->getPricing();
 
         $specials = $this->getProductSpecials($product->getId());
 
@@ -407,23 +402,18 @@ class DiscountService
         $special = $specials->first();
 
         if ($special) {
-            $newPrice = PricingService::pricingByDiscount($priceSet['final'], $special);
+            PricingService::pricingByDiscount($pricing->getBasePrice(), $special, $diff);
 
-            $offsets = $newPrice->minus((string) $priceSet['final']);
-
-            $priceSet->set(
-                PriceObject::create(
-                    'product_special',
-                    (string) $offsets,
-                    $this->trans('shopgo.total.product.special')
-                )
+            $priceSet->add(
+                'product_special',
+                $diff,
+                $this->trans('shopgo.total.product.special')
             );
-            $priceSet->modify('final', (string) $newPrice);
 
             $applied[] = $special;
         }
 
-        $pricing->setPriceSet($priceSet);
+        $pricing->setPricing($priceSet);
 
         return $pricing;
     }

@@ -12,21 +12,26 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Data\Traits;
 
 use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\Product;
 
 /**
  * Trait OrderTotalsTrait
  */
 trait CartTotalsTrait
 {
+    use DiscountsAppliedTrait;
+
     public CartData $cartData;
 
     public PriceObject $total;
 
-    public PriceObject $grandTotal;
-
     public PriceSet $totals;
+
+    public ?\SplObjectStorage $matchedItems = null;
 
     /**
      * @return CartData
@@ -89,21 +94,39 @@ trait CartTotalsTrait
     }
 
     /**
-     * @return PriceObject
+     * @return \SplObjectStorage<Discount, CartItem>
      */
-    public function getGrandTotal(): PriceObject
+    public function getMatchedItems(): \SplObjectStorage
     {
-        return $this->grandTotal;
+        return $this->matchedItems ??= new \SplObjectStorage();
     }
 
     /**
-     * @param  PriceObject  $grandTotal
+     * @param  \SplObjectStorage<Discount, CartItem>  $matchedItems
      *
      * @return  static  Return self to support chaining.
      */
-    public function setGrandTotal(PriceObject $grandTotal): static
+    public function setMatchedItems(\SplObjectStorage $matchedItems): static
     {
-        $this->grandTotal = $grandTotal;
+        $this->matchedItems = $matchedItems;
+
+        return $this;
+    }
+
+    /**
+     * @param  Discount  $discount
+     * @param  CartItem  $cartItem
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function addMatchedItem(Discount $discount, CartItem $cartItem): static
+    {
+        $items = $this->getMatchedItems();
+
+        $items[$discount] ??= [];
+        $items[$discount][$cartItem->getUid()] = $cartItem;
+
+        $this->setMatchedItems($items);
 
         return $this;
     }

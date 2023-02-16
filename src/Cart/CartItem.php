@@ -18,6 +18,8 @@ use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Data\ValueObject;
 
+use function Windwalker\uid;
+
 /**
  * The CartItem class.
  */
@@ -37,6 +39,8 @@ class CartItem extends ValueObject
 
     public string $key = '';
 
+    public string $uid = '';
+
     public array $payload = [];
 
     public array $attachments = [];
@@ -50,6 +54,7 @@ class CartItem extends ValueObject
         parent::__construct($data);
 
         $this->priceSet = new PriceSet();
+        $this->uid = uid();
     }
 
     /**
@@ -126,14 +131,17 @@ class CartItem extends ValueObject
 
     /**
      * @param  PriceSet  $priceSet
+     * @param  bool      $calcTotals
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPriceSet(PriceSet $priceSet): static
+    public function setPriceSet(PriceSet $priceSet, bool $calcTotals = true): static
     {
         $this->priceSet = $priceSet;
 
-        $this->calcTotals();
+        if ($calcTotals) {
+            $this->calcTotals();
+        }
 
         return $this;
     }
@@ -307,6 +315,26 @@ class CartItem extends ValueObject
     public function setDiscounts(array $discounts): static
     {
         $this->discounts = $discounts;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUid(): string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param  string  $uid
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setUid(string $uid): static
+    {
+        $this->uid = $uid;
 
         return $this;
     }

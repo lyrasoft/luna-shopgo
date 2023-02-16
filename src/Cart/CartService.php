@@ -11,15 +11,19 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Cart;
 
+use Brick\Math\Exception\MathException;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
+use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
 use Lyrasoft\ShopGo\Event\PrepareCartItemEvent;
 use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Repository\ProductVariantRepository;
+use Lyrasoft\ShopGo\Service\PricingService;
+use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\ApplicationInterface;
@@ -50,7 +54,8 @@ class CartService
         protected Navigator $nav,
         protected ORM $orm,
         #[Autowire]
-        protected ProductVariantRepository $variantRepository
+        protected ProductVariantRepository $variantRepository,
+        protected VariantService $variantService,
     ) {
         //
     }
@@ -135,99 +140,92 @@ class CartService
      * @param  iterable<CartItem>  $cartItems
      *
      * @return CartData
+     * @throws MathException
      */
     public function createCartDataFromItems(iterable $cartItems): CartData
     {
         $cartData = new CartData();
 
         $totals = new PriceSet();
-        $total = PriceObject::create(
-            'total',
-            '0',
-            $this->trans('shopgo.order.total.total')
-        );
-
-        $grandTotal = $total->clone('grand_total', $this->trans('shopgo.order.total.grand.total'));
+        $total = PriceObject::create('products_total', '0');
 
         $cartItems = TypeCast::toArray($cartItems);
 
         foreach ($cartItems as $item) {
-            $total = $total->plus($item->getPriceSet()['base_total']);
-            $grandTotal = $grandTotal->plus($item->getPriceSet()['final_total']);
+            $total = $total->plus($item->getPriceSet()['final_total']);
         }
 
         $cartData->setItems(collect($cartItems));
 
-        // todo: Shipping adds here
-        // Add a flat shipping fee for test
-        $shippingFee = PriceObject::create('shipping_fee', '200', '運費');
-        $grandTotal = $grandTotal->plus($shippingFee);
-        $totals->set($shippingFee);
+        $finalTotal = PriceObject::create(
+            'total',
+            '0',
+            $this->trans('shopgo.order.total.total')
+        );
 
         // @event BeforeComputeTotalsEvent
         $event = $this->shopGo->emit(
             BeforeComputeTotalsEvent::class,
             compact(
                 'total',
-                'grandTotal',
                 'totals',
                 'cartData'
             )
         );
 
-        $total = $event->getTotal();
-        $grandTotal = $event->getGrandTotal();
         $totals = $event->getTotals();
         $cartData = $event->getCartData();
 
         // Now we have grand total, we must check discount min price.
         /** @var CartItem $cartItem */
         foreach ($cartItems as $cartItem) {
-            // Todo: @event PrepareCartItemEvent
-            $product = $cartItem->getProduct()->getData();
-            $variant = $cartItem->getVariant()->getData();
-            $mainVariant = $cartItem->getMainVariant()->getData();
-            $priceSet = $cartItem->getPriceSet();
-            $appliedDiscounts = $cartItem->getDiscounts();
-            $context = PrepareProductPricesEvent::CART;
-
-            $event = $this->shopGo->emit(
-                PrepareProductPricesEvent::class,
-                compact(
-                    'context',
-                    'product',
-                    'variant',
-                    'mainVariant',
-                    'priceSet',
-                    'cartItem',
-                    'appliedDiscounts',
-                    'cartData',
-                    'totals',
-                    'total',
-                    'grandTotal',
-                )
+            $priceSet = $this->variantService->computeProductPriceSet(
+                PrepareProductPricesEvent::CART,
+                $cartItem->getProduct()->getData(),
+                $cartItem->getVariant()->getData(),
+                $cartItem->getMainVariant()->getData(),
+                $cartItem->getPriceSet(),
+                $cartItem,
             );
 
-            $priceSet = $event->getPriceSet();
-
-            $cartItem = $event->getCartItem();
-            $cartItem->setPriceSet($priceSet);
-
-            // /** @var ProductVariant $variant */
-            // $variant = $item->getVariant()->getData();
-            //
-            // $item->setVariant($variant)
-            //     ->setPriceSet($variant->getPriceSet());
+            $finalTotal = $finalTotal->plus($priceSet['final_total']);
         }
 
+        $total = $finalTotal;
 
-        $totals->set($total);
-        // $totals = $this->computeProductsTotals($totals, $items);
-
-        $totals->set(
-            PriceObject::create('shipping_fee', '0')
-                ->withLabel($this->trans('shopgo.order.total.shipping.fee'))
+        // @event ComputingTotalsEvent
+        $event = $this->shopGo->emit(
+            ComputingTotalsEvent::class,
+            compact(
+                'total',
+                'totals',
+                'cartData'
+            )
         );
+
+        $total = $event->getTotal();
+        $totals = $event->getTotals();
+        $cartData = $event->getCartData();
+
+        $freeShipping = false;
+
+        foreach ($cartData->getDiscounts() as $discount) {
+            $freeShipping = $freeShipping || $discount->isFreeShipping();
+        }
+
+        if (!$freeShipping) {
+            // todo: Shipping adds here
+            // Todo: Add a flat shipping fee for test
+            $shippingFee = PriceObject::create('shipping_fee', '200', '運費');
+            $totals->set($shippingFee);
+        }
+
+        // Calc Grand Totals
+        $grandTotal = $total->clone('grand_total', $this->trans('shopgo.order.total.grand.total'));
+
+        foreach ($totals as $tt) {
+            $grandTotal = $grandTotal->plus($tt);
+        }
 
         // @event AfterComputeTotalsEvent
         $event = $this->shopGo->emit(
@@ -240,12 +238,16 @@ class CartService
             )
         );
 
+        $total = $event->getTotal();
         $totals = $event->getTotals();
-        $totals->prepend($event->getTotal());
-        $totals->set($event->getGrandTotal());
+        $grandTotal = $event->getGrandTotal();
+        $cartData = $event->getCartData();
+
+        $totals->prepend($total);
+        $totals->set($grandTotal);
 
         $cartData->setTotals($totals);
 
-        return $cartData;
+        return $event->getCartData();
     }
 }

@@ -186,8 +186,6 @@ class PriceObject implements \JsonSerializable, \Stringable
     }
 
     /**
-     * getParamValue
-     *
      * @param  string  $name
      *
      * @return  mixed|null
@@ -200,8 +198,6 @@ class PriceObject implements \JsonSerializable, \Stringable
     }
 
     /**
-     * withParamValue
-     *
      * @param  string  $name
      * @param  mixed   $value
      *
@@ -214,6 +210,17 @@ class PriceObject implements \JsonSerializable, \Stringable
         return $this->cloneInstance(function (PriceObject $new) use ($name, $value) {
             $new->params[$name] = $value;
         });
+    }
+
+    public function plusMultiple(mixed ...$prices): PriceObject
+    {
+        $new = clone $this;
+
+        foreach ($prices as $price) {
+            $new = $new->plus($price);
+        }
+
+        return $new;
     }
 
     /**

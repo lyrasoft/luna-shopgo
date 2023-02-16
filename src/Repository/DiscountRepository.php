@@ -80,9 +80,16 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
                 $query->where('discount.publish_down', '>=', $now);
             }
         );
-        $selector->whereRaw('usage.count < discount.quantity');
+        $selector->orWhere(
+            function (Query $query) {
+                $query->where('discount.quantity', null);
+                $query->where('discount.quantity', 0);
+                $query->whereRaw('usage.count < discount.quantity');
+            }
+        );
 
         $selector->order('discount.ordering', 'ASC');
+        $selector->limit(0);
 
         return $selector;
     }

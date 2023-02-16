@@ -23,7 +23,6 @@ use Windwalker\Event\AbstractEvent;
 class PrepareProductPricesEvent extends AbstractEvent implements ProductPricingInterface
 {
     use ProductPricingTrait;
-    use CartTotalsTrait;
 
     public const PRODUCT_VIEW = 'product_view';
 
@@ -31,44 +30,22 @@ class PrepareProductPricesEvent extends AbstractEvent implements ProductPricingI
 
     public const ORDER = 'order';
 
-    public string $context = self::PRODUCT_VIEW;
-
-    public CartItem $cartItem;
+    public ?CartItem $cartItem;
 
     /**
-     * @return string
+     * @return ?CartItem
      */
-    public function getContext(): string
-    {
-        return $this->context;
-    }
-
-    /**
-     * @param  string  $context
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setContext(string $context): static
-    {
-        $this->context = $context;
-
-        return $this;
-    }
-
-    /**
-     * @return CartItem
-     */
-    public function getCartItem(): CartItem
+    public function getCartItem(): ?CartItem
     {
         return $this->cartItem;
     }
 
     /**
-     * @param  CartItem  $cartItem
+     * @param  ?CartItem  $cartItem
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCartItem(CartItem $cartItem): static
+    public function setCartItem(?CartItem $cartItem): static
     {
         $this->cartItem = $cartItem;
 

@@ -118,7 +118,7 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
         return $this;
     }
 
-    public function add(string $name, mixed $price, string $label): PriceObject
+    public function add(string $name, mixed $price, string $label = ''): PriceObject
     {
         $this->set(
             $price = PriceObject::create(

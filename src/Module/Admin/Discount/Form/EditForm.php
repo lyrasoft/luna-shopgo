@@ -87,41 +87,41 @@ class EditForm implements FieldDefinitionInterface
             function (Form $form) {
                 $form->add('quantity', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.quantity'))
-                    ->min(0)
+                    ->min(0, false)
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_price', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.min_price'))
                     ->step('0.0001')
-                    ->min(0)
+                    ->min(0, false)
                     ->description($this->trans('shopgo.discount.field.min_price.desc'))
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_cart_items', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.min_cart_items'))
-                    ->min(0)
+                    ->min(0, false)
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('min_cart_price', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.min_cart_price'))
                     ->step('0.0001')
-                    ->min(0)
+                    ->min(0, false)
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('times_per_user', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.times_per_user'))
-                    ->min(0)
+                    ->min(0, false)
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('first_buy', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.first_buy'))
-                    ->min(0)
+                    ->min(0, false)
                     ->description($this->trans('shopgo.discount.field.first_buy.desc'))
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('after_registered', NumberField::class)
                     ->label($this->trans('shopgo.discount.field.after_registered'))
-                    ->min(0)
+                    ->min(0, false)
                     ->help($this->trans('shopgo.discount.help.zero.or.empty.is.no.limit'));
 
                 $form->add('can_rollback', SwitcherField::class)
@@ -192,8 +192,10 @@ class EditForm implements FieldDefinitionInterface
         $form->fieldset(
             'pricing',
             function (Form $form) {
-                $form->add('free_shipping', NumberField::class)
-                    ->label($this->trans('shopgo.discount.field.free_shipping'));
+                $form->add('free_shipping', SwitcherField::class)
+                    ->label($this->trans('shopgo.discount.field.free_shipping'))
+                    ->circle(true)
+                    ->color('primary');
 
                 $form->add('method', ListField::class)
                     ->label($this->trans('shopgo.discount.field.method'))

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\ShopGo\Cart\CartItem;
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Data\ListOption;
 use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Lyrasoft\ShopGo\Entity\Product;
@@ -41,26 +43,74 @@ class VariantService
         }
 
         // $mainVariant = $item->getMainVariant();
-        $context = PrepareProductPricesEvent::PRODUCT_VIEW;
-
         // Todo: @event PrepareProductPrices
-        $event = $this->shopGo->emit(
-            PrepareProductPricesEvent::class,
-            compact(
-                'context',
-                'product',
-                'variant',
-                'priceSet'
-            )
+        $priceSet = $this->computeProductPriceSet(
+            PrepareProductPricesEvent::PRODUCT_VIEW,
+            $product,
+            $variant,
+            $variant,
+            $priceSet,
         );
 
-        $variant->setPriceSet($event->getPriceSet());
-
+        $variant->setPriceSet($priceSet);
 
         // Todo: @event PrepareProductDiscountsInformation
         // Todo: @event PrepareProductInformation
 
         return $variant;
+    }
+
+    /**
+     * @param  string          $context
+     * @param  Product         $product
+     * @param  ProductVariant  $mainVariant
+     * @param  ProductVariant  $variant
+     * @param  PriceSet        $priceSet
+     * @param  CartItem|null   $cartItem
+     *
+     * @return PriceSet
+     */
+    public function computeProductPriceSet(
+        string $context,
+        Product $product,
+        ProductVariant $mainVariant,
+        ProductVariant $variant,
+        PriceSet $priceSet,
+        ?CartItem $cartItem = null,
+    ): PriceSet {
+        $pricing = new PriceSet();
+
+        $basePrice = $priceSet['base'];
+
+        $event = (new PrepareProductPricesEvent())
+            ->setContext($context)
+            ->setProduct($product)
+            ->setMainVariant($mainVariant)
+            ->setVariant($variant)
+            ->setPricing($pricing)
+            ->setBasePrice($basePrice)
+            ->setCartItem($cartItem)
+            ->setAppliedDiscounts($cartItem?->getDiscounts() ?? []);
+
+        /** @var PrepareProductPricesEvent $event */
+        $event = $this->shopGo->emit($event);
+
+        $pricing = $event->getPricing();
+
+        foreach ($pricing as $price) {
+            $priceSet->set($price);
+        }
+
+        $priceSet->set(
+            $event->getBasePrice()
+                ->plusMultiple(...$pricing)
+                ->withName('final')
+        );
+
+        $cartItem?->setDiscounts($event->getAppliedDiscounts());
+        $cartItem?->setPriceSet($priceSet);
+
+        return $priceSet;
     }
 
     public static function isOutOfStock(ProductVariant $variant, Product $product): bool
