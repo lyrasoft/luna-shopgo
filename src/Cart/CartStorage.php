@@ -46,11 +46,18 @@ class CartStorage
         $this->setStoredItems($items);
     }
 
-    public function removeFromCart(mixed $id): void
+    public function remove(int $variantId, array $payload = []): void
+    {
+        $key = $this->getKeyName($variantId, $payload);
+
+        $this->removeByKey($key);
+    }
+
+    public function removeByKey(mixed $key): void
     {
         $items = $this->getStoredItems();
 
-        unset($items[$id]);
+        unset($items[$key]);
 
         $this->setStoredItems($items);
     }

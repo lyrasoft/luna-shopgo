@@ -61,6 +61,13 @@ const CartApp = {
       state.totals = data.totals;
     }
 
+    // Actions
+    async function removeItem(item, i) {
+      const res = await u.$http.delete(`@cart_ajax/removeItem?key=${item.key}`);
+
+      setCartData(res.data.data);
+    }
+
     // Quantity
     function changeItemQuantity(item, offsets) {
       item.quantity += offsets;
@@ -113,6 +120,7 @@ const CartApp = {
       ...toRefs(state),
       filteredTotals,
 
+      removeItem,
       changeItemQuantity,
       updateQuantities,
     };

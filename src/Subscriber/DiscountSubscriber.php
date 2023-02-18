@@ -28,12 +28,6 @@ class DiscountSubscriber
     {
     }
 
-    #[ListenTo(BeforeComputeTotalsEvent::class)]
-    public function beforeComputeTotals(BeforeComputeTotalsEvent $event): void
-    {
-        //
-    }
-
     #[ListenTo(PrepareProductPricesEvent::class)]
     public function prepareProductPrices(PrepareProductPricesEvent $event): void
     {
@@ -51,12 +45,16 @@ class DiscountSubscriber
         }
     }
 
-    #[ListenTo(ComputingTotalsEvent::class)]
-    public function computeTotals(ComputingTotalsEvent $event): void
+    #[ListenTo(BeforeComputeTotalsEvent::class)]
+    public function beforeComputeTotals(BeforeComputeTotalsEvent $event): void
     {
         // Compute products discounts first to get final product amount.
         $this->discountService->computeProductsGlobalDiscounts($event);
+    }
 
+    #[ListenTo(ComputingTotalsEvent::class)]
+    public function computeTotals(ComputingTotalsEvent $event): void
+    {
         // Now we got new product amount, compute order discounts then.
         $this->discountService->computeGlobalDiscounts($event);
     }

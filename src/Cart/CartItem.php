@@ -41,6 +41,8 @@ class CartItem extends ValueObject
 
     public string $uid = '';
 
+    public bool $outOfStock = false;
+
     public array $payload = [];
 
     public array $attachments = [];
@@ -335,6 +337,26 @@ class CartItem extends ValueObject
     public function setUid(string $uid): static
     {
         $this->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutOfStock(): bool
+    {
+        return $this->outOfStock;
+    }
+
+    /**
+     * @param  bool  $outOfStock
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOutOfStock(bool $outOfStock): static
+    {
+        $this->outOfStock = $outOfStock;
 
         return $this;
     }

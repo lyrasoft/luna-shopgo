@@ -16,7 +16,7 @@ use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 /**
  * The AfterComputeOrderTotalsEvent class.
  */
-class AfterComputeTotalsEvent extends AbstractComputeTotalsEvent
+class AfterComputeTotalsEvent extends AbstractCartDataEvent
 {
     public PriceObject $grandTotal;
 

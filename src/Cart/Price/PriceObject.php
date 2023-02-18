@@ -24,19 +24,19 @@ use Lyrasoft\ShopGo\Entity\Currency;
  * @property string     label
  * @property string     params
  *
- * @method PriceObject plus(string | PriceObject $price)
- * @method PriceObject minus(string | PriceObject $price)
- * @method PriceObject divide(string | PriceObject $price, int $scale = null, $roundingMode = RoundingMode::UNNECESSARY)
- * @method PriceObject exactlyDivide(string | PriceObject $price)
- * @method PriceObject multiply(string | PriceObject $price)
- * @method PriceObject remainder(string | PriceObject $price)
- * @method PriceObject power(string | PriceObject $price)
- * @method int         compare(string | PriceObject $price)
- * @method bool        eq(string | PriceObject $price)
- * @method bool        lt(string | PriceObject $price)
- * @method bool        lte(string | PriceObject $price)
- * @method bool        gt(string | PriceObject $price)
- * @method bool        gte(string | PriceObject $price)
+ * @method PriceObject plus(mixed $price)
+ * @method PriceObject minus(mixed $price)
+ * @method PriceObject divide(mixed $price, int $scale = null, $roundingMode = RoundingMode::UNNECESSARY)
+ * @method PriceObject exactlyDivide(mixed $price)
+ * @method PriceObject multiply(mixed $price)
+ * @method PriceObject remainder(mixed $price)
+ * @method PriceObject power(mixed $price)
+ * @method int         compare(mixed $price)
+ * @method bool        eq(mixed $price)
+ * @method bool        lt(mixed $price)
+ * @method bool        lte(mixed $price)
+ * @method bool        gt(mixed $price)
+ * @method bool        gte(mixed $price)
  * @method bool        isZero()
  *
  * @since  0.1.1

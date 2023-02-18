@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Brick\Math\BigDecimal;
 use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\User\UserService;
@@ -89,24 +90,11 @@ class DiscountService
      */
     public function computeProductsGlobalDiscounts(CartTotalsInterface $pricing): void
     {
-        $cartData = $pricing->getCartData();
-
         $discounts = $this->getGlobalDiscounts();
 
         $this->matchProducts($discounts, $pricing);
 
         $this->applyProductsDiscounts($pricing, $discounts);
-
-        $total = $pricing->getTotal()->setPrice('0');
-
-        // We must re-calculate order cart total since products' price may be changed.
-        foreach ($cartData->getItems() as $cartItem) {
-            $priceSet = $cartItem->getPriceSet();
-
-            $total = $total->plus($priceSet['final_total']);
-        }
-
-        $pricing->setTotal($total);
     }
 
     public function applyCartDiscount(CartTotalsInterface $pricing, Discount $discount): void
@@ -139,6 +127,8 @@ class DiscountService
 
     public function applyProductsDiscounts(CartTotalsInterface $pricing, iterable $discounts): void
     {
+        $total = $pricing->getTotal();
+
         foreach ($discounts as $discount) {
             // Apply
             if ($discount->getApplyTo() === DiscountApplyTo::MATCHED()) {
@@ -163,9 +153,11 @@ class DiscountService
                         continue;
                     }
 
-                    $priceSet = $this->addDiscountToProductPrice($priceSet, $discount);
+                    /** @var BigDecimal $diff */
+                    $priceSet = $this->addDiscountToProductPrice($priceSet, $discount, $diff);
 
                     $cartItem->setPriceSet($priceSet);
+                    $total = $total->plus($diff->multipliedBy($cartItem->getQuantity()));
                     $itemApplied[] = $discount;
                 }
             } elseif ($discount->getApplyTo() === DiscountApplyTo::PRODUCTS()) {
@@ -181,10 +173,14 @@ class DiscountService
                             $itemApplied = &$cartItem->getDiscounts();
 
                             if ($this->checkDiscountCombine($discount, $itemApplied) === true) {
-                                $priceSet = $this->addDiscountToProductPrice($cartItem->getPriceSet(), $discount);
+                                $priceSet = $this->addDiscountToProductPrice(
+                                    $cartItem->getPriceSet(),
+                                    $discount,
+                                    $diff
+                                );
 
                                 $cartItem->setPriceSet($priceSet);
-
+                                $total = $total->plus($diff);
                                 $itemApplied[] = $discount;
                             }
                         }
@@ -192,10 +188,15 @@ class DiscountService
                 }
             }
         }
+
+        $pricing->setTotal($total);
     }
 
-    protected function addDiscountToProductPrice(PriceSet $priceSet, Discount $discount): PriceSet
-    {
+    protected function addDiscountToProductPrice(
+        PriceSet $priceSet,
+        Discount $discount,
+        ?BigDecimal &$diff = null
+    ): PriceSet {
         if (!$discount->isAccumulate() && $discount->getMethod() === DiscountMethod::PERCENTAGE()) {
             PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
@@ -205,7 +206,7 @@ class DiscountService
         $priceSet->add(
             'discount:' . $discount->getId(),
             $diff,
-            $discount->getTitle()
+            $discount->getTitle(),
         );
         $priceSet['final'] = $priceSet['final']->plus($diff);
 
@@ -217,6 +218,7 @@ class DiscountService
         foreach ($applied as $appliedDiscount) {
             if ($appliedDiscount->getCombine() === DiscountCombine::STOP()) {
                 $action = 'break';
+
                 return false;
             }
 
@@ -225,6 +227,7 @@ class DiscountService
                 && !in_array($discount->getId(), array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
+
                 return false;
             }
 
@@ -233,6 +236,7 @@ class DiscountService
                 && in_array($discount->getId(), array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
+
                 return false;
             }
         }
@@ -344,7 +348,7 @@ class DiscountService
     }
 
     /**
-     * @param  iterable<Discount>   $discounts
+     * @param  iterable<Discount>  $discounts
      * @param  CartTotalsInterface  $pricing
      *
      * @return  CartTotalsInterface
@@ -557,7 +561,7 @@ class DiscountService
     {
         return $this->once(
             'product.categories.' . $product->getId(),
-            fn () => $this->orm->findColumn(
+            fn() => $this->orm->findColumn(
                 ShopCategoryMap::class,
                 'category_id',
                 ['target_id' => $product->getId(), 'type' => 'product']
@@ -576,7 +580,7 @@ class DiscountService
     {
         return $this->once(
             'product.tags.' . $product->getId(),
-            fn () => $this->orm->findColumn(
+            fn() => $this->orm->findColumn(
                 TagMap::class,
                 'tag_id',
                 ['target_id' => $product->getId(), 'type' => 'product']

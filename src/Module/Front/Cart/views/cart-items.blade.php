@@ -90,7 +90,8 @@ use Windwalker\Core\Router\SystemUri;
 
                 <div class="c-cart-item__actions ms-auto">
                     {{-- Remove --}}
-                    <button type="button" class="btn btn-link link-secondary btn-sm">
+                    <button type="button" class="btn btn-link link-secondary btn-sm"
+                        @click="removeItem(item, i)">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -101,11 +102,11 @@ use Windwalker\Core\Router\SystemUri;
             <h6>加價購</h6>
 
             <div v-for="attachment of item.attachments"
-                class="d-flex gap-3 my-3">
-                <div class="d-flex gap-3 me-auto">
+                class="c-attachment w-100 d-grid d-lg-flex gap-3 align-items-center py-2 border-bottom">
+                <div class="d-flex gap-3 flex-grow-1 align-items-center">
 
                     {{-- Cover --}}
-                    <div class="c-cart-item__image">
+                    <div class="c-attachment__image">
                         <div style="width: 45px" class="ratio ratio-1x1">
                             <img :src="attachment.cover" :alt="attachment.product.title"
                                 style="">
@@ -113,29 +114,48 @@ use Windwalker\Core\Router\SystemUri;
                     </div>
 
                     {{-- Content --}}
-                    <div class="c-cart-item__content">
+                    <div class="c-attachment__content">
                         <h5 class="fs-6 mb-0">@{{ attachment.product.title }}</h5>
                         <div v-if="!attachment.variant.primary" class="text-muted small">
                             @{{ attachment.variant.title }}
                         </div>
                     </div>
+
+                    <span v-if="attachment.outOfStock"
+                        class="badge bg-danger">
+                        庫存不足
+                    </span>
+
+                    <div class="c-attachment__quantity ms-auto">
+                        x@{{ attachment.quantity * item.quantity }}
+                    </div>
                 </div>
 
-                <div class="d-flex gap-3">
-                    {{-- Item Total --}}
-                    <div class="c-cart-item__price d-flex align-items-center gap-2 text-end text-nowrap"
-                        style="min-width: 135px">
+                <div class="d-flex gap-3 ms-auto ms-lg-0">
+                    <div class="c-attachment__total d-flex justify-content-end gap-3"
+                        style="width: 250px">
+                        {{-- Item Total --}}
+                        <div class="c-cart-item__price d-flex align-items-center gap-2 text-end text-nowrap"
+                            style="min-width: 135px">
+                            <div v-if="attachment.priceSet.base_total.price !== attachment.priceSet.final_total.price"
+                                class="small text-muted">
+                                <del>@{{ $formatPrice(attachment.priceSet.base_total.price) }}</del>
+                            </div>
 
-                        <div v-if="attachment.priceSet.base_total.price !== attachment.priceSet.final_total.price"
-                            class="small text-muted">
-                            <del>@{{ $formatPrice(attachment.priceSet.base_total.price) }}</del>
-                        </div>
-
-                        <div class="">
-                            @{{ $formatPrice(attachment.priceSet.final_total.price, true) }}
+                            <div class="">
+                                @{{ $formatPrice(attachment.priceSet.final_total.price) }}
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-3 text-end fs-5">
+                <strong>商品總價</strong>
+
+                <span class="">
+                    @{{ $formatPrice(item.priceSet.attached_final_total.price, true) }}
+                </span>
             </div>
         </div>
     </div>

@@ -13,7 +13,7 @@ namespace Lyrasoft\ShopGo\Event;
 
 use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Data\Contract\ProductPricingInterface;
-use Lyrasoft\ShopGo\Data\Traits\CartTotalsTrait;
+use Lyrasoft\ShopGo\Data\Traits\CartDataAwareTrait;
 use Lyrasoft\ShopGo\Data\Traits\ProductPricingTrait;
 use Windwalker\Event\AbstractEvent;
 

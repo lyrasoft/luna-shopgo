@@ -21,7 +21,7 @@ use Lyrasoft\ShopGo\Entity\Product;
 /**
  * Trait OrderTotalsTrait
  */
-trait CartTotalsTrait
+trait CartDataAwareTrait
 {
     use DiscountsAppliedTrait;
 

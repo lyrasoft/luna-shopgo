@@ -113,13 +113,13 @@ class VariantService
         return $priceSet;
     }
 
-    public static function isOutOfStock(ProductVariant $variant, Product $product): bool
+    public static function isOutOfStock(ProductVariant $variant, Product $product, int $quantity = 1): bool
     {
         if (!$variant->isSubtract()) {
             return false;
         }
 
-        return static::getAvailableQuantity($variant, $product) < 1;
+        return static::getAvailableQuantity($variant, $product) < $quantity;
     }
 
     public static function getAvailableQuantity(ProductVariant $variant, Product $product): int

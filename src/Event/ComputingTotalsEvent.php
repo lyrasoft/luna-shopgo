@@ -14,6 +14,6 @@ namespace Lyrasoft\ShopGo\Event;
 /**
  * The ComputingTotalsEvent class.
  */
-class ComputingTotalsEvent extends AbstractComputeTotalsEvent
+class ComputingTotalsEvent extends AbstractCartDataEvent
 {
 }

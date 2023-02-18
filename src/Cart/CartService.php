@@ -19,6 +19,7 @@ use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
+use Lyrasoft\ShopGo\Event\PrepareCartDataEvent;
 use Lyrasoft\ShopGo\Event\PrepareCartItemEvent;
 use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Repository\ProductVariantRepository;
@@ -104,16 +105,19 @@ class CartService
             $product = $this->orm->toEntity(Product::class, $variant->product);
             $mainVariant = $this->orm->toEntity(ProductVariant::class, $variant->main_variant);
 
+            $quantity = (int) $storageItem['quantity'];
+
             $cartItem = new CartItem();
             $cartItem->setVariant($variant);
             $cartItem->setProduct($product);
             $cartItem->setMainVariant($mainVariant);
+            $cartItem->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
             $cartItem->setKey((string) $k);
-            $cartItem->setCover($variant->main_variant->cover);
+            $cartItem->setCover($mainVariant->getCover());
             $cartItem->setLink(
                 (string) $product->makeLink($this->nav)
             );
-            $cartItem->setQuantity((int) $storageItem['quantity']);
+            $cartItem->setQuantity($quantity);
             $cartItem->setPayload($storageItem['payload'] ?? []);
 
             $cartItem->setPriceSet($variant->getPriceSet());
@@ -164,9 +168,9 @@ class CartService
             $this->trans('shopgo.order.total.total')
         );
 
-        // @event BeforeComputeTotalsEvent
+        // @event PrepareCartDataEvent
         $event = $this->shopGo->emit(
-            BeforeComputeTotalsEvent::class,
+            PrepareCartDataEvent::class,
             compact(
                 'total',
                 'totals',
@@ -195,6 +199,22 @@ class CartService
         }
 
         $total = $finalTotal;
+
+        // @event BeforeComputeTotalsEvent
+        $event = $this->shopGo->emit(
+            BeforeComputeTotalsEvent::class,
+            compact(
+                'total',
+                'totals',
+                'cartData',
+                'appliedDiscounts'
+            )
+        );
+
+        $total = $event->getTotal();
+        $totals = $event->getTotals();
+        $cartData = $event->getCartData();
+        $appliedDiscounts = $event->getAppliedDiscounts();
 
         // @event ComputingTotalsEvent
         $event = $this->shopGo->emit(

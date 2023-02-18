@@ -72,6 +72,15 @@ class CartController
         return array_values($cartStorage->getStoredItems());
     }
 
+    public function removeItem(AppContext $app, CartService $cartService, CartStorage $cartStorage): CartData
+    {
+        $key = $app->input('key');
+
+        $cartStorage->removeByKey($key);
+
+        return $cartService->getCartData();
+    }
+
     public function updateQuantities(AppContext $app, CartStorage $cartStorage, CartService $cartService): CartData
     {
         $values = (array) $app->input('values');
