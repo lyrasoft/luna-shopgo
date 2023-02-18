@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
+use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductAttributeMap;
@@ -143,6 +144,15 @@ class ProductEditView implements ViewModelInterface
             }
 
             $form->fill(['attrs' => $attrValues]);
+
+            // Tags
+            $tagIds = $this->orm->findColumn(
+                TagMap::class,
+                'tag_id',
+                ['type' => 'product', 'target_id' => $item->getId()]
+            )->dump();
+
+            $form->fill(['tags' => $tagIds]);
         }
 
         $this->prepareMetadata($app, $view);

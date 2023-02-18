@@ -146,6 +146,7 @@ class CartService
     {
         $cartData = new CartData();
 
+        $appliedDiscounts = [];
         $totals = new PriceSet();
         $total = PriceObject::create('products_total', '0');
 
@@ -169,12 +170,14 @@ class CartService
             compact(
                 'total',
                 'totals',
-                'cartData'
+                'cartData',
+                'appliedDiscounts'
             )
         );
 
         $totals = $event->getTotals();
         $cartData = $event->getCartData();
+        $appliedDiscounts = $event->getAppliedDiscounts();
 
         // Now we have grand total, we must check discount min price.
         /** @var CartItem $cartItem */
@@ -199,17 +202,19 @@ class CartService
             compact(
                 'total',
                 'totals',
-                'cartData'
+                'cartData',
+                'appliedDiscounts',
             )
         );
 
         $total = $event->getTotal();
         $totals = $event->getTotals();
         $cartData = $event->getCartData();
+        $appliedDiscounts = $event->getAppliedDiscounts();
 
         $freeShipping = false;
 
-        foreach ($cartData->getDiscounts() as $discount) {
+        foreach ($appliedDiscounts as $discount) {
             $freeShipping = $freeShipping || $discount->isFreeShipping();
         }
 
@@ -234,7 +239,8 @@ class CartService
                 'total',
                 'grandTotal',
                 'totals',
-                'cartData'
+                'cartData',
+                'appliedDiscounts',
             )
         );
 
@@ -242,11 +248,13 @@ class CartService
         $totals = $event->getTotals();
         $grandTotal = $event->getGrandTotal();
         $cartData = $event->getCartData();
+        $appliedDiscounts = $event->getAppliedDiscounts();
 
         $totals->prepend($total);
         $totals->set($grandTotal);
 
         $cartData->setTotals($totals);
+        $cartData->setDiscounts($appliedDiscounts);
 
         return $event->getCartData();
     }

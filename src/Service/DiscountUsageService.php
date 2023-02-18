@@ -41,9 +41,9 @@ class DiscountUsageService
     {
         return $this->once(
             'user.usages.' . $userId,
-            fn() => $this->orm->select('discount_id')
-                ->selectRaw('COUNT(id) AS count')
-                ->from(DiscountUsage::class, 'usage')
+            fn() => $this->orm->select('discount_usage.discount_id')
+                ->selectRaw('COUNT(discount_usage.id) AS count')
+                ->from(DiscountUsage::class, 'discount_usage')
                 ->leftJoin(Discount::class, 'discount')
                 ->where('discount.state', 1)
                 ->orWhere(
@@ -58,8 +58,8 @@ class DiscountUsageService
                         $query->where('discount.publish_down', '>=', chronos());
                     }
                 )
-                ->where('user_id', $userId)
-                ->group('discount_id')
+                ->where('discount_usage.user_id', $userId)
+                ->group('discount_usage.discount_id')
                 ->all()
                 ->mapWithKeys(fn ($item) => [$item->discount_id => $item->count])
         );

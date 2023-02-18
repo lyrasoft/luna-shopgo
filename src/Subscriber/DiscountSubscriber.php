@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Subscriber;
 
-use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
 use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
@@ -35,12 +34,6 @@ class DiscountSubscriber
         //
     }
 
-    #[ListenTo(ComputingTotalsEvent::class)]
-    public function computeTotals(ComputingTotalsEvent $event): void
-    {
-        $this->discountService->computeGlobalDiscounts($event);
-    }
-
     #[ListenTo(PrepareProductPricesEvent::class)]
     public function prepareProductPrices(PrepareProductPricesEvent $event): void
     {
@@ -56,7 +49,15 @@ class DiscountSubscriber
 
             $event->setPricing($priceSet);
         }
+    }
 
-        // $this->discountService->computeGlobalDiscountsForProduct($event);
+    #[ListenTo(ComputingTotalsEvent::class)]
+    public function computeTotals(ComputingTotalsEvent $event): void
+    {
+        // Compute products discounts first to get final product amount.
+        $this->discountService->computeProductsGlobalDiscounts($event);
+
+        // Now we got new product amount, compute order discounts then.
+        $this->discountService->computeGlobalDiscounts($event);
     }
 }

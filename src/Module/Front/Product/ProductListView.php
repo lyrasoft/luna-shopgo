@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\Luna\Entity\Tag;
+use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\Module\Front\Category\CategoryViewTrait;
 use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
@@ -67,6 +69,15 @@ class ProductListView implements ViewModelInterface
 
         $category = $this->getCategory(['type' => 'article', 'path' => $path]);
 
+        // Tags
+        $tag = null;
+        $tagAlias = $app->input('tag');
+
+        if ($tagAlias) {
+            $tag = $this->orm->mustFindOne(Tag::class, ['alias' => $tagAlias]);
+        }
+
+
         $limit = 16;
         $user = $this->userService->getUser();
 
@@ -88,6 +99,18 @@ class ProductListView implements ViewModelInterface
                     ]
                 )
             )
+            ->tapIf(
+                (bool) $tag,
+                fn (ListSelector $selector) => $selector->leftJoin(
+                    TagMap::class,
+                    'tag_map',
+                    [
+                        ['tag_map.type', '=', val('product')],
+                        ['tag_map.target_id', '=', 'product.id'],
+                        ['tag_map.category_id', '=', val($tag->getId())],
+                    ]
+                )
+            )
             ->ordering(
                 $category
                     ? 'category_map.ordering ASC'
@@ -104,6 +127,7 @@ class ProductListView implements ViewModelInterface
             'items',
             'pagination',
             'category',
+            'tag',
             'q',
         );
     }

@@ -86,9 +86,9 @@ class CartData extends ValueObject
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDiscounts(Collection $discounts): static
+    public function setDiscounts(Collection|array $discounts): static
     {
-        $this->discounts = $discounts;
+        $this->discounts = Collection::wrap($discounts);
 
         return $this;
     }

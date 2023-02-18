@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Discount\Form;
 
+use Lyrasoft\Luna\Field\TagListField;
 use Lyrasoft\ShopGo\Enum\DiscountApplyTo;
 use Lyrasoft\ShopGo\Enum\DiscountCombine;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
@@ -146,11 +147,17 @@ class EditForm implements FieldDefinitionInterface
                     ->multiple(true)
                     ->help($this->trans('shopgo.discount.field.categories.help'));
 
-                $form->add('prodcuts', ProductModalField::class)
-                    ->label($this->trans('shopgo.discount.field.prodcuts'))
+                $form->add('products', ProductModalField::class)
+                    ->label($this->trans('shopgo.discount.field.products'))
                     ->hasImage(true)
                     ->multiple(true)
                     ->help($this->trans('shopgo.discount.field.products.help'));
+
+                $form->add('tags', TagListField::class)
+                    ->label($this->trans('shopgo.discount.field.tags'))
+                    ->addClass('has-tom-select')
+                    ->multiple(true)
+                    ->help($this->trans('shopgo.discount.field.tags.help'));
 
                 $form->add('payments', PaymentModalField::class)
                     ->label($this->trans('shopgo.discount.field.payments'))
@@ -205,6 +212,12 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('shopgo.discount.field.price'))
                     ->step('0.0001')
                     ->help($this->trans('shopgo.discount.field.price.help'));
+
+                $form->add('accumulate', SwitcherField::class)
+                    ->label($this->trans('shopgo.discount.field.accumulate'))
+                    ->circle(true)
+                    ->color('danger')
+                    ->set('showon', ['method' => DiscountMethod::PERCENTAGE()]);
 
                 $form->add('apply_to', ListField::class)
                     ->label($this->trans('shopgo.discount.field.apply_to'))

@@ -12,10 +12,9 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\Luna\PageBuilder\PageService;
 use Lyrasoft\Luna\User\UserService;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductTab;
@@ -29,19 +28,24 @@ use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
+use Psr\Cache\InvalidArgumentException;
+use Unicorn\Enum\BasicState;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Http\Browser;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Exception\RouteNotFoundException;
+use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 
-use function Windwalker\chronos;
 use function Windwalker\collect;
 use function Windwalker\str;
 
@@ -62,6 +66,8 @@ class ProductItemView implements ViewModelInterface
      */
     public function __construct(
         protected ORM $orm,
+        protected Navigator $nav,
+        protected PageService $pageService,
         #[Autowire]
         protected ProductRepository $repository,
         protected UserService $userService,
@@ -75,24 +81,38 @@ class ProductItemView implements ViewModelInterface
     /**
      * Prepare View.
      *
-     * @param  AppContext  $app   The web app context.
+     * @param  AppContext  $app  The web app context.
      * @param  View        $view  The view object.
      *
-     * @return  mixed
+     * @return RouteUri|array
+     *
+     * @throws InvalidArgumentException
+     * @throws DefinitionException
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): RouteUri|array
     {
-        [$id, $alias, $preview] = $app->input('id', 'alias', 'preview')->values()->dump();
+        [$id, $alias, $previewSecret] = $app->input('id', 'alias', 'preview')->values()->dump();
 
         /** @var Product $item */
         $item = $this->repository->mustGetItem($id);
 
-        if ($item->getState()->isUnpublished()) {
+        $canPreview = $previewSecret && $this->pageService->secretVerify($item->getId(), (string) $previewSecret);
+
+        if (!$canPreview && $item->getState()->isUnpublished()) {
             throw new RouteNotFoundException();
         }
 
         $variant = $this->orm->mustFindOne(ProductVariant::class, $item->getPrimaryVariantId());
         $category = $this->orm->mustFindOne(Category::class, $item->getCategoryId());
+
+        if (!$canPreview && $category->getState()->isUnpublished()) {
+            throw new RouteNotFoundException();
+        }
+
+        // Keep URL unique
+        if (($item->getAlias() !== $alias) && !$app->service(Browser::class)->isRobot()) {
+            return $this->nav->self()->alias($item->getAlias());
+        }
 
         // Prepare variant view & price
         $variant = $this->variantService->prepareVariantView($variant, $item);
@@ -204,6 +224,9 @@ class ProductItemView implements ViewModelInterface
         }
 
         $htmlFrame->setCoverImages(...$images);
+
+        // Canonical
+        $htmlFrame->addLink('canonical', (string) $item->makeLink($this->nav)->full());
     }
 
     protected function getTabsByCategoryId(int $categoryId): Collection

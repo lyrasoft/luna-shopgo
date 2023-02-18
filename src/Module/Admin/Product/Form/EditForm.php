@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Product\Form;
 
+use Lyrasoft\Luna\Field\TagListField;
 use Lyrasoft\ShopGo\Field\ShippingModalField;
 use Lyrasoft\Luna\Field\CategoryListField;
 use Lyrasoft\Luna\Field\CategoryModalField;
@@ -235,6 +236,10 @@ class EditForm implements FieldDefinitionInterface
                     ->addClass('has-tom-select')
                     ->multiple(true);
 
+                $form->add('tags', TagListField::class)
+                    ->label($this->trans('shopgo.product.field.tags'))
+                    ->multiple(true);
+
                 $form->add('state', SwitcherField::class)
                     ->label($this->trans('unicorn.field.published'))
                     ->circle(true)
@@ -254,16 +259,20 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('shopgo.product.field.publish_down'));
 
                 $form->add('created', CalendarField::class)
-                    ->label($this->trans('unicorn.field.created'));
+                    ->label($this->trans('unicorn.field.created'))
+                    ->disabled(true);
 
                 $form->add('modified', CalendarField::class)
-                    ->label($this->trans('unicorn.field.modified'));
+                    ->label($this->trans('unicorn.field.modified'))
+                    ->disabled(true);
 
                 $form->add('created_by', UserModalField::class)
-                    ->label($this->trans('unicorn.field.author'));
+                    ->label($this->trans('unicorn.field.author'))
+                    ->disabled(true);
 
                 $form->add('modified_by', UserModalField::class)
-                    ->label($this->trans('unicorn.field.modified_by'));
+                    ->label($this->trans('unicorn.field.modified_by'))
+                    ->disabled(true);
 
                 $form->add('primary_variant_id', HiddenField::class);
             }

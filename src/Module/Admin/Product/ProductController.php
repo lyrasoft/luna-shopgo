@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
+use Lyrasoft\Luna\Services\TagService;
 use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductFeature;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
@@ -44,12 +46,13 @@ class ProductController
         AppContext $app,
         CrudController $controller,
         Navigator $nav,
+        TagService $tagService,
         #[Autowire] ProductRepository $repository,
     ): mixed {
         $form = $app->make(EditForm::class);
 
         $controller->afterSave(
-            function (AfterSaveEvent $event) use ($repository, $app) {
+            function (AfterSaveEvent $event) use ($tagService, $repository, $app) {
                 $orm = $event->getORM();
                 $data = $event->getData();
 
@@ -88,6 +91,15 @@ class ProductController
                 $data['search_index'] = implode('|', array_filter($searchIndexes));
 
                 $repository->save($data);
+
+                /** @var Product $entity */
+                $entity = $event->getEntity();
+
+                $tagService->flushTagMapsFromInput(
+                    'product',
+                    $entity->getId(),
+                    (array) ($app->input('item')['tags'] ?? [])
+                );
             }
         );
 

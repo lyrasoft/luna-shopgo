@@ -41,7 +41,11 @@ use Windwalker\Core\Router\SystemUri;
 
                 {{-- Content --}}
                 <div class="c-cart-item__content">
-                    <h5>@{{ item.product.title }}</h5>
+                    <h5>
+                        <a :href="item.link" target="_blank">
+                            @{{ item.product.title }}
+                        </a>
+                    </h5>
                     <div v-if="!item.variant.primary" class="fs-6 text-muted">
                         @{{ item.variant.title }}
                     </div>

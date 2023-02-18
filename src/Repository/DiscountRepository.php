@@ -133,7 +133,11 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
     #[ConfigureAction(ReorderAction::class)]
     protected function configureReorderAction(ReorderAction $action): void
     {
-        //
+        $action->setReorderGroupHandler(
+            function (Query $query, Discount $discount) {
+                $query->where('type', $discount->getType());
+            }
+        );
     }
 
     #[ConfigureAction(BatchAction::class)]

@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
+use Lyrasoft\Luna\Attributes\Author;
+use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\ShopGo\Enum\DiscountApplyTo;
 use Lyrasoft\ShopGo\Enum\DiscountCombine;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Lyrasoft\ShopGo\Enum\DiscountType;
-use Lyrasoft\Luna\Attributes\Author;
-use Lyrasoft\Luna\Attributes\Modifier;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -127,6 +127,10 @@ class Discount implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $products = [];
 
+    #[Column('tags')]
+    #[Cast(JsonCast::class)]
+    protected array $tags = [];
+
     #[Column('payments')]
     #[Cast(JsonCast::class)]
     protected array $payments = [];
@@ -151,6 +155,10 @@ class Discount implements EntityInterface
     #[Column('free_shipping')]
     #[Cast('bool', 'int')]
     protected bool $freeShipping = false;
+
+    #[Column('accumulate')]
+    #[Cast('bool', 'int')]
+    protected bool $accumulate = false;
 
     #[Column('method')]
     #[Cast(DiscountMethod::class)]
@@ -646,6 +654,30 @@ class Discount implements EntityInterface
     public function setUsers(array $users): static
     {
         $this->users = $users;
+
+        return $this;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    public function setTags(array $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function isAccumulate(): bool
+    {
+        return $this->accumulate;
+    }
+
+    public function setAccumulate(bool $accumulate): static
+    {
+        $this->accumulate = $accumulate;
 
         return $this;
     }

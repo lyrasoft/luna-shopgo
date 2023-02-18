@@ -8,7 +8,7 @@ namespace App\View;
  * Global variables
  * --------------------------------------------------------------
  * @var  $app       AppContext      Application context.
- * @var  $view      \Lyrasoft\ShopGo\Module\Admin\Product\ProductEditView  The view modal object.
+ * @var  $view      ProductEditView The view modal object.
  * @var  $uri       SystemUri       System Uri information.
  * @var  $chronos   ChronosService  The chronos datetime service.
  * @var  $nav       Navigator       Navigator object to build route.
@@ -16,6 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\Luna\PageBuilder\PageService;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Module\Admin\Product\ProductEditView;
 use Windwalker\Core\Application\AppContext;
@@ -28,6 +29,8 @@ use Windwalker\Core\Router\SystemUri;
 /**
  * @var $item Product
  */
+
+$pageService = $app->service(PageService::class);
 ?>
 
 <div x-title="toolbar" x-data="{ form: $store.form }" class="l-toolbar">
@@ -51,7 +54,7 @@ use Windwalker\Core\Router\SystemUri;
     @if ($item)
         {{-- Preview --}}
         <a class="btn btn-outline-primary btn-sm uni-btn-priview"
-            href="{{ $item->makeLink($nav) }}"
+            href="{{ $item->makeLink($nav)->var('preview', $pageService->genPreviewSecret($item->getId())) }}"
             target="_blank">
             <span class="fa fa-eye"></span>
             @lang('shopgo.toolbar.button.preview')

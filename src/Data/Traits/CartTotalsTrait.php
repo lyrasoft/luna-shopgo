@@ -123,8 +123,15 @@ trait CartTotalsTrait
     {
         $items = $this->getMatchedItems();
 
-        $items[$discount] ??= [];
-        $items[$discount][$cartItem->getUid()] = $cartItem;
+        if (!isset($items[$discount])) {
+            $items[$discount] = [];
+        }
+
+        $storage = $items[$discount];
+
+        $storage[$cartItem->getUid()] = $cartItem;
+
+        $items[$discount] = $storage;
 
         $this->setMatchedItems($items);
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
+use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Data\ListOptionCollection;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
@@ -81,6 +82,11 @@ class OrderItem implements EntityInterface
 
     #[Column('total')]
     protected float $total = 0.0;
+
+    #[Column('price_set')]
+    #[Cast(JsonCast::class)]
+    #[Cast(PriceSet::class)]
+    protected PriceSet $priceSet;
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
@@ -309,6 +315,18 @@ class OrderItem implements EntityInterface
     public function setParams(array $params): static
     {
         $this->params = $params;
+
+        return $this;
+    }
+
+    public function getPriceSet(): PriceSet
+    {
+        return $this->priceSet ??= new PriceSet();
+    }
+
+    public function setPriceSet(PriceSet|array $priceSet): static
+    {
+        $this->priceSet = PriceSet::wrap($priceSet);
 
         return $this;
     }

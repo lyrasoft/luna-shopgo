@@ -162,6 +162,7 @@ class CheckoutService
             $orderItem->setQuantity($item->getQuantity());
             $orderItem->setImage($variant->getCover() ?: $product->getCover());
             $orderItem->setTotal($item->getPriceSet()['final_total']->toFloat());
+            $orderItem->setPriceSet($item->getPriceSet());
             $orderItem->setOptions($variant->getOptions());
 
             $order->getOrderItems()->attach($orderItem);

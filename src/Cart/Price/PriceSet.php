@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Cart\Price;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\Exception\MathException;
 use http\Encoding\Stream;
 use Traversable;
 use Windwalker\Utilities\Str;
@@ -52,11 +53,35 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
     /**
      * PriceSet constructor.
      *
-     * @param PriceObject[] $prices
+     * @param  PriceObject[]  $prices
+     *
+     * @throws MathException
      */
     public function __construct(array $prices = [])
     {
-        $this->prices = $prices;
+        $this->fill($prices);
+    }
+
+    public static function wrap(mixed $priceSet): static
+    {
+        if ($priceSet instanceof static) {
+            return $priceSet;
+        }
+
+        return new static($priceSet);
+    }
+
+    public function fill(iterable $prices)
+    {
+        foreach ($prices as $name => $price) {
+            if (is_numeric($price)) {
+                $price = new PriceObject($name, $price);
+            } elseif (is_array($price)) {
+                $price = new PriceObject($price['name'], $price['price'], $price['label'] ?? '');
+            }
+
+            $this->set($price);
+        }
     }
 
     /**
@@ -173,19 +198,20 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
     /**
      * modify
      *
-     * @param string                      $name
-     * @param \Closure|string|PriceObject $newPrice
+     * @param  string                       $name
+     * @param  \Closure|string|PriceObject  $newPrice
      *
      * @return  PriceObject
+     * @throws MathException
      */
-    public function modify(string $name, \Closure|string|PriceObject $newPrice): PriceObject
+    public function modify(string $name, mixed $newPrice): PriceObject
     {
         $price = $this->get($name);
 
         if ($newPrice instanceof \Closure) {
             $modified = $newPrice($price);
-        } elseif ($newPrice instanceof PriceObject) {
-            $modified = $newPrice->getPrice();
+        } elseif ($newPrice instanceof \Stringable) {
+            $modified = (string) $newPrice;
         } else {
             $modified = $newPrice;
         }

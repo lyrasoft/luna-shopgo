@@ -25,3 +25,13 @@ u.$ui.disableIfStackNotEmpty();
 
 // Keep Alive
 u.$ui.keepAlive(location.href);
+
+// Tags
+u.$ui.tomSelect('#input-item-tags', {
+  create: (input) => {
+    return {
+      value: `new#${input}`,
+      text: input,
+    }
+  },
+});
