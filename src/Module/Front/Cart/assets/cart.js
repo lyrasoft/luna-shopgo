@@ -20,25 +20,12 @@ const CartApp = {
       items: [],
       totals: [],
       coupons: [],
-      paymentState: 'new',
-      paymentData: {
-        addressId: '',
-        locationId: '',
-        firstName: '',
-        lastName: '',
-        name: '',
-        email: '',
-        phone: '',
-        mobile: '',
-        company: '',
-        vat: '',
-        country: '',
-        state: '',
-        city: '',
-        zip: '',
-        address1: '',
-        address2: '',
-      },
+      paymentId: '',
+      paymentData: {},
+      shippingId: '',
+      shippingData: {},
+      shippings: [],
+      payments: [],
       loading: false
     });
 
@@ -115,6 +102,19 @@ const CartApp = {
 
       return totals;
     });
+
+    // Shippings
+    watch(() => state.shippingData.locationId, (locId) => {
+      loadShippings(locId);
+    });
+
+    async function loadShippings(locId) {
+      const res = await u.$http.get(`@cart_ajax/shippings?location_id=${locId}`);
+
+      state.shippings = res.data.data;
+    }
+
+    // Payments
 
     return {
       ...toRefs(state),

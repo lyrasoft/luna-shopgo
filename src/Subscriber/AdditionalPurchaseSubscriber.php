@@ -24,6 +24,7 @@ use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Form\Exception\ValidateFailException;
+use Windwalker\Core\Manager\Logger;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
@@ -97,6 +98,7 @@ class AdditionalPurchaseSubscriber
 
                 $cartItem->addAttachment($attachCartItem);
             } catch (ValidateFailException | NoResultException $e) {
+                Logger::debug('error', (string) $e);
                 continue;
             }
         }

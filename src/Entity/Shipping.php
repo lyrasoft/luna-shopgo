@@ -59,6 +59,10 @@ class Shipping implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
+
+    #[Column('subtitle')]
+    protected string $subtitle = '';
+
     #[Column('alias')]
     #[Slugify]
     protected string $alias = '';
@@ -66,12 +70,19 @@ class Shipping implements EntityInterface
     #[Column('description')]
     protected string $description = '';
 
+    #[Column('note')]
+    protected string $note = '';
+
     #[Column('image')]
     protected string $image = '';
 
     #[Column('payments')]
     #[Cast(JsonCast::class)]
     protected array $payments = [];
+
+    #[Column('tags')]
+    #[Cast(JsonCast::class)]
+    protected array $tags = [];
 
     #[Column('pricing')]
     #[Cast(JsonCast::class)]
@@ -309,7 +320,7 @@ class Shipping implements EntityInterface
         return $this;
     }
 
-    public function getParams(): array
+    public function &getParams(): array
     {
         return $this->params;
     }
@@ -332,13 +343,52 @@ class Shipping implements EntityInterface
 
         return $this;
     }
-    public function getAlias() : string
+
+    public function getAlias(): string
     {
         return $this->alias;
     }
-    public function setAlias(string $alias) : static
+
+    public function setAlias(string $alias): static
     {
         $this->alias = $alias;
+
+        return $this;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    public function setTags(array $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getNote(): string
+    {
+        return $this->note;
+    }
+
+    public function setNote(string $note): static
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getSubtitle(): string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
+
         return $this;
     }
 }

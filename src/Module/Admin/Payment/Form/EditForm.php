@@ -53,6 +53,9 @@ class EditForm implements FieldDefinitionInterface
         $form->fieldset(
             'basic',
             function (Form $form) {
+                $form->add('subtitle', TextField::class)
+                    ->label($this->trans('shopgo.payment.field.subtitle'));
+
                 $form->add('description', TextareaField::class)
                     ->label($this->trans('unicorn.field.description'))
                     ->rows(4);
@@ -83,6 +86,10 @@ class EditForm implements FieldDefinitionInterface
                     ->circle(true)
                     ->color('success')
                     ->defaultValue('0');
+
+                $form->add('note', TextField::class)
+                    ->label($this->trans('shopgo.payment.field.note'))
+                    ->maxlength(255);
 
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'))

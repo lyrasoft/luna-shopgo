@@ -43,7 +43,6 @@ $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('cart.props', [
     'user' => $userService->isLogin() ? $userService->getUser() : null,
 ]);
-$uniScript->data('addresses', $addresses);
 $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
 
 $uniScript->addRoute('@cart_ajax');
@@ -76,8 +75,21 @@ $uniScript->addRoute('@address_ajax');
 
                         {{-- Addresses --}}
                         <div class="">
-                            <address-form type="shipping" :user="user"></address-form>
+                            <address-form type="shipping"
+                                title="收件者地址"
+                                :user="user"
+                                v-model="shippingData"
+                            ></address-form>
+                            <address-form type="payment"
+                                title="購買者地址"
+                                :user="user"
+                                :sync-data="shippingData"
+                                v-model="paymentData"
+                            ></address-form>
                         </div>
+
+                        {{-- Shippings --}}
+                        <x-cart-shippings></x-cart-shippings>
                     </div>
                 </div>
 

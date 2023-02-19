@@ -156,12 +156,15 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                                     <a href="{{ $nav->to('shipping_edit')->id($entity->getId()) }}">
                                         {{ $item->title }}
                                     </a>
+                                    <span class="small">
+                                        ({{ $entity->getAlias() }})
+                                    </span>
                                 </div>
-                                <div>
-                                    <div class="small text-muted">
-                                        {{ $entity->getAlias() }}
+                                @if ($entity->getNote())
+                                    <div class="small text-muted mt-1">
+                                        {{ $entity->getNote() }}
                                     </div>
-                                </div>
+                                @endif
                             </td>
 
                             <td>

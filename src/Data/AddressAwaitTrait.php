@@ -16,9 +16,9 @@ namespace Lyrasoft\ShopGo\Data;
  */
 trait AddressAwaitTrait
 {
-    public string $fullName = '';
-    public string $firstName = '';
-    public string $lastName = '';
+    public string $name = '';
+    public string $firstname = '';
+    public string $lastname = '';
     public string $email = '';
     public string $phone = '';
     public string $mobile = '';
@@ -36,23 +36,23 @@ trait AddressAwaitTrait
     /**
      * @return string
      */
-    public function getFullName(): string
+    public function getName(): string
     {
-        if ($this->fullName) {
-            return $this->fullName;
+        if ($this->name) {
+            return $this->name;
         }
 
-        return trim($this->firstName . ' ' . $this->lastName);
+        return trim($this->firstname . ' ' . $this->lastname);
     }
 
     /**
-     * @param  string  $fullName
+     * @param  string  $name
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFullName(string $fullName): static
+    public function setName(string $name): static
     {
-        $this->fullName = $fullName;
+        $this->name = $name;
 
         return $this;
     }
@@ -300,19 +300,19 @@ trait AddressAwaitTrait
     /**
      * @return string
      */
-    public function getLastName(): string
+    public function getLastname(): string
     {
-        return $this->lastName;
+        return $this->lastname;
     }
 
     /**
-     * @param  string  $lastName
+     * @param  string  $lastname
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLastName(string $lastName): static
+    public function setLastname(string $lastname): static
     {
-        $this->lastName = $lastName;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -320,19 +320,19 @@ trait AddressAwaitTrait
     /**
      * @return string
      */
-    public function getFirstName(): string
+    public function getFirstname(): string
     {
-        return $this->firstName;
+        return $this->firstname;
     }
 
     /**
-     * @param  string  $firstName
+     * @param  string  $firstname
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFirstName(string $firstName): static
+    public function setFirstname(string $firstname): static
     {
-        $this->firstName = $firstName;
+        $this->firstname = $firstname;
 
         return $this;
     }

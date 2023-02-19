@@ -56,6 +56,16 @@ class ShippingRepository implements ManageRepositoryInterface, ListRepositoryInt
         return $selector;
     }
 
+    public function getAvailableListSelector(): ListSelector
+    {
+        $selector = $this->getListSelector();
+
+        $selector->where('shipping.state', 1);
+        $selector->order('shipping.ordering', 'ASC');
+
+        return $selector;
+    }
+
     #[ConfigureAction(SaveAction::class)]
     protected function configureSaveAction(SaveAction $action): void
     {

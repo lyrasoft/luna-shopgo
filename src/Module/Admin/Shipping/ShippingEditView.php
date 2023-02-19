@@ -14,6 +14,7 @@ namespace Lyrasoft\ShopGo\Module\Admin\Shipping;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Module\Admin\Shipping\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ShippingRepository;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -39,6 +40,7 @@ class ShippingEditView implements ViewModelInterface
         protected ORM $orm,
         protected FormFactory $formFactory,
         protected Navigator $nav,
+        protected ShippingService $shippingService,
         #[Autowire] protected ShippingRepository $repository
     ) {
     }
@@ -57,18 +59,24 @@ class ShippingEditView implements ViewModelInterface
 
         /** @var Shipping $item */
         $item = $this->repository->getItem($id);
+        $type = $item?->getType() ?? $app->input('type');
+
+        $typeClass = $this->shippingService->getTypeClass($type);
+        $typeInstance = $this->shippingService->createTypeInstance($type);
 
         $form = $this->formFactory
             ->create(EditForm::class)
             ->setNamespace('item')
+            ->defineFormFields($typeInstance)
             ->fill(
                 $this->repository->getState()->getAndForget('edit.data')
                     ?: $this->orm->extractEntity($item)
-            );
+            )
+            ->fill(compact('type'));
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item');
+        return compact('form', 'id', 'item', 'typeClass', 'typeInstance');
     }
 
     /**

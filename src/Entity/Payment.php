@@ -62,12 +62,19 @@ class Payment implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
+
+    #[Column('subtitle')]
+    protected string $subtitle = '';
+
     #[Column('alias')]
     #[Slugify]
     protected string $alias = '';
 
     #[Column('description')]
     protected string $description = '';
+
+    #[Column('note')]
+    protected string $note = '';
 
     #[Column('image')]
     protected string $image = '';
@@ -315,13 +322,40 @@ class Payment implements EntityInterface
 
         return $this;
     }
-    public function getAlias() : string
+
+    public function getAlias(): string
     {
         return $this->alias;
     }
-    public function setAlias(string $alias) : static
+
+    public function setAlias(string $alias): static
     {
         $this->alias = $alias;
+
+        return $this;
+    }
+
+    public function getNote(): string
+    {
+        return $this->note;
+    }
+
+    public function setNote(string $note): static
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getSubtitle(): string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
+
         return $this;
     }
 }

@@ -36,7 +36,7 @@ class PricingService
         $diff = BigDecimal::of(0);
 
         if ($method === DiscountMethod::NONE()) {
-            return $price;
+            return BigDecimal::of((string) $price);
         }
 
         $price = BigDecimal::of((string) $price);

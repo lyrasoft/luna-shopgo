@@ -48,10 +48,10 @@ class AddressService
         if ($withName) {
             $data = array_merge(
                 [
-                    'fullname' => $addressData->getFullName(),
-                    'name' => $addressData->getFullName(),
-                    'firstname' => $addressData->getFirstName(),
-                    'lastname' => $addressData->getLastName(),
+                    'fullname' => $addressData->getName(),
+                    'name' => $addressData->getName(),
+                    'firstname' => $addressData->getFirstname(),
+                    'lastname' => $addressData->getLastname(),
                     'company' => $addressData->getCompany(),
                     'vat' => $addressData->getVat(),
                 ],

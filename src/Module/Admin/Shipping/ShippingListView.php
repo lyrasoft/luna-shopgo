@@ -99,7 +99,7 @@ class ShippingListView implements ViewModelInterface
      */
     public function getDefaultOrdering(): string
     {
-        return 'shipping.id DESC';
+        return 'shipping.ordering ASC';
     }
 
     /**

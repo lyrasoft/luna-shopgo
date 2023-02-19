@@ -38,7 +38,7 @@ use Windwalker\Core\Router\SystemUri;
                 @lang('shopgo.order.field.buyer')
             </dt>
             <dd class="col-8">
-                {{ $paymentData->getFullName() }}
+                {{ $paymentData->getName() }}
             </dd>
             <dt class="col-4">
                 @lang('shopgo.order.field.mobile')

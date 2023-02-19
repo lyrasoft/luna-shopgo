@@ -14,12 +14,12 @@ namespace Lyrasoft\ShopGo\Module\Front\Cart;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
-use Lyrasoft\ShopGo\Entity\AdditionalPurchaseTarget;
+use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\ORM\ORM;
@@ -62,7 +62,7 @@ class CartController
                 [$this, 'validateAdditionalPurchase'],
                 [
                     'targetProduct' => $product,
-                    'attachments' => $attachments
+                    'attachments' => $attachments,
                 ]
             );
         }
@@ -124,5 +124,36 @@ class CartController
         foreach ($attachItems as $attachItem) {
             $additionalPurchaseService->validateAttachment($attachItem, $targetProduct);
         }
+    }
+
+    public function shippings(
+        AppContext $app,
+        ORM $orm,
+        ShippingService $shippingService,
+        CartService $cartService
+    ): iterable {
+        $locationId = (int) $app->input('location_id');
+
+        $location = $orm->findOne(Location::class, $locationId);
+
+        if (!$location || !$location->isLeaf()) {
+            return [];
+        }
+
+        $cartData = $cartService->getCartData();
+
+        $variantIds = [];
+
+        foreach ($cartData->getItems() as $item) {
+            $variantIds[] = $item->getVariant()->getData()->getId();
+
+            foreach ($item->getAttachments() as $attachment) {
+                $variantIds[] = $attachment->getVariant()->getData()->getId();
+            }
+        }
+
+        $variantIds = array_unique($variantIds);
+
+        return $shippingService->getShippings($location, $variantIds);
     }
 }

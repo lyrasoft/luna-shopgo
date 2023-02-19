@@ -29,11 +29,24 @@ use Windwalker\Core\Router\SystemUri;
     <div class="card mb-4">
         <div class="card-body">
             <div class="card-title d-flex justify-content-between">
-                <h4 class="m-0">
-                    收件地址
-                </h4>
+                <div class="d-flex align-items-center gap-3">
+                    <h4 class="m-0">
+                        @{{ title }}
+                    </h4>
 
-                <div v-if="user">
+                    <div class="form-check" v-if="syncData">
+                        <label :for="`input-${type}-sync`" class="form-check-label">
+                            @{{ syncLabel || '同收件者地址' }}
+                        </label>
+                        <input type="checkbox" v-model="sync" :id="`input-${type}-sync`"
+                            :name="buildInputName('sync')"
+                            class="form-check-input"
+                            value="1"
+                        />
+                    </div>
+                </div>
+
+                <div v-if="user && !sync">
                     <button type="button"
                         class="btn btn-outline-success btn-sm"
                         style="width: 100px"
@@ -51,138 +64,152 @@ use Windwalker\Core\Router\SystemUri;
                 </div>
             </div>
 
-            <div class="row mt-3">
-                <div class="col-lg-5">
-                    {{-- First Name --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('firstName')" class="form-label col-3">
-                            名
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('firstName')" type="text" class="form-control"
-                                v-model="data.firstName" />
+            <transition name="fade">
+                <div v-if="!sync" class="row mt-3" style="animation-duration: .3s">
+                    <div class="col-lg-5">
+                        {{-- First Name --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('firstname')" class="form-label col-3">
+                                名
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('firstname')" type="text" class="form-control"
+                                    :name="buildInputName('firstname')"
+                                    v-model="data.firstname" />
+                            </div>
+                        </div>
+
+                        {{-- Last Name --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('lastname')" class="form-label col-3">
+                                姓
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('lastname')" type="text" class="form-control"
+                                    :name="buildInputName('lastname')"
+                                    v-model="data.lastname" />
+                            </div>
+                        </div>
+
+                        {{-- Email --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('email')" class="form-label col-3">
+                                Email
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('email')" type="text" class="form-control"
+                                    :name="buildInputName('email')"
+                                    v-model="data.email" />
+                            </div>
+                        </div>
+
+                        {{-- Phone --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('phone')" class="form-label col-3">
+                                電話
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('phone')" type="text" class="form-control"
+                                    :name="buildInputName('phone')"
+                                    v-model="data.phone" />
+                            </div>
+                        </div>
+
+                        {{-- Mobile --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('mobile')" class="form-label col-3">
+                                手機
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('mobile')" type="text" class="form-control"
+                                    :name="buildInputName('mobile')"
+                                    v-model="data.mobile" />
+                            </div>
+                        </div>
+
+                        {{-- Company --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('company')" class="form-label col-3">
+                                公司
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('company')" type="text" class="form-control"
+                                    :name="buildInputName('company')"
+                                    v-model="data.company" />
+                            </div>
+                        </div>
+
+                        {{-- VAT --}}
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('vat')" class="form-label col-3">
+                                統編
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('vat')" type="text" class="form-control"
+                                    :name="buildInputName('vat')"
+                                    v-model="data.vat" />
+                            </div>
                         </div>
                     </div>
 
-                    {{-- Last Name --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('lastName')" class="form-label col-3">
-                            姓
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('lastName')" type="text" class="form-control"
-                                v-model="data.lastName" />
+                    <div class="col-lg-7 mb-4 mb-lg-0">
+                        <div class="form-group mb-4">
+                            <label :for="buildInputId('country')" class="form-label">
+                                國家/地區
+                            </label>
+                            <cascade-select :options="cascadeOptions"
+                                v-model="locationPath"
+                                @change="locationChanged"
+                                :name="buildInputName('location_id')"
+                                ref="locationSelector"
+                            >
+
+                            </cascade-select>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('postcode')" class="form-label col-3">
+                                郵遞區號
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('postcode')" type="text" class="form-control"
+                                    :name="buildInputName('postcode')"
+                                    v-model="data.postcode" maxlength="10" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('address1')" class="form-label col-3">
+                                地址1
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('address1')" type="text" class="form-control"
+                                    :name="buildInputName('address1')"
+                                    v-model="data.address1" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <label :for="buildInputId('address2')" class="form-label col-3">
+                                地址2
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('address2')" type="text" class="form-control"
+                                    :name="buildInputName('address2')"
+                                    v-model="data.address2" />
+                            </div>
+                        </div>
+                        <div v-if="showSaveButton" class="form-group row mb-4">
+                            <label :for="buildInputId('save')" class="form-label col-3">
+                                儲存供下次使用
+                            </label>
+                            <div class="col-9">
+                                <input :id="buildInputId('save')" type="checkbox" class="form-check-input"
+                                    :name="buildInputName('save')"
+                                    v-model="data.save" />
+                            </div>
                         </div>
                     </div>
 
-                    {{-- Email --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('email')" class="form-label col-3">
-                            Email
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('email')" type="text" class="form-control"
-                                v-model="data.email" />
-                        </div>
-                    </div>
-
-                    {{-- Phone --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('phone')" class="form-label col-3">
-                            電話
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('phone')" type="text" class="form-control"
-                                v-model="data.phone" />
-                        </div>
-                    </div>
-
-                    {{-- Mobile --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('mobile')" class="form-label col-3">
-                            手機
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('mobile')" type="text" class="form-control"
-                                v-model="data.mobile" />
-                        </div>
-                    </div>
-
-                    {{-- Company --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('company')" class="form-label col-3">
-                            公司
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('company')" type="text" class="form-control"
-                                v-model="data.company" />
-                        </div>
-                    </div>
-
-                    {{-- VAT --}}
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('vat')" class="form-label col-3">
-                            統編
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('vat')" type="text" class="form-control"
-                                v-model="data.vat" />
-                        </div>
-                    </div>
                 </div>
-
-                <div class="col-lg-7 mb-4 mb-lg-0">
-                    <div class="form-group mb-4">
-                        <label :for="buildInputId('country')" class="form-label">
-                            國家/地區
-                        </label>
-                        <cascade-select :options="cascadeOptions"
-                            v-model="locationPath"
-                            @change="locationChanged"
-                            :select-attrs="{ 'v-tom-select': '{}' }"
-                        >
-
-                        </cascade-select>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('postcode')" class="form-label col-3">
-                            郵遞區號
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('postcode')" type="text" class="form-control"
-                                v-model="data.postcode" maxlength="10" />
-                        </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('address1')" class="form-label col-3">
-                            地址1
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('address1')" type="text" class="form-control"
-                                v-model="data.address1" />
-                        </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('address2')" class="form-label col-3">
-                            地址2
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('address2')" type="text" class="form-control"
-                                v-model="data.address2" />
-                        </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <label :for="buildInputId('save')" class="form-label col-3">
-                            儲存供下次使用
-                        </label>
-                        <div class="col-9">
-                            <input :id="buildInputId('save')" type="checkbox" class="form-check-input"
-                                v-model="data.save" />
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            </transition>
         </div>
 
         {{-- Modal --}}
@@ -201,11 +228,19 @@ use Windwalker\Core\Router\SystemUri;
                     </div>
                     <div class="modal-body">
                         <div class="list-group list-group-flush">
-                            <a href="javascript://" class="list-group-item"
+                            <a href="javascript://" class="list-group-item d-flex gap-2 justify-content-between"
                                 v-for="address of addresses"
                                 :key="address"
+                                @click="selectAddress(address)"
                             >
-                                @{{ address.formatted }}
+                                <div>
+                                    @{{ address.formatted }}
+                                </div>
+                                <div>
+                                    <span class="btn btn-outline-secondary btn-sm text-nowrap">
+                                        使用
+                                    </span>
+                                </div>
                             </a>
                         </div>
                     </div>
@@ -217,13 +252,13 @@ use Windwalker\Core\Router\SystemUri;
 
 <script>
     function addressForm() {
-      const { ref, toRefs, reactive, computed, watch, onMounted, inject } = Vue;
+      const { ref, toRefs, reactive, computed, watch, onMounted, inject, nextTick } = Vue;
 
       const defaultAddress = {
         addressId: '',
         locationId: '',
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         name: '',
         email: '',
         phone: '',
@@ -250,9 +285,12 @@ use Windwalker\Core\Router\SystemUri;
             required: true
           },
           modelValue: Object,
-          user: Object
+          user: Object,
+          syncData: Object,
+          title: String,
+          syncLabel: String,
         },
-        setup(props) {
+        setup(props, { emit }) {
           const state = reactive({
             currentState: 'new',
             locationPath: [],
@@ -275,26 +313,52 @@ use Windwalker\Core\Router\SystemUri;
               {},
               defaultAddress,
               {
-                firstName: this.user?.firstName || '',
-                lastName: this.user?.lastName || '',
+                firstName: this.user?.firstname || '',
+                lastName: this.user?.lastname || '',
                 name: this.user?.name || '',
               },
               props.modelValue
             ),
-            addresses: u.data('addresses') || []
+            addresses: [],
+            currentAddressHash: '',
+            sync: props.syncData != null
+          });
+
+          watch(() => state.data, () => {
+            emit('update:modelValue', state.data);
+          }, { deep: true, immediate: true });
+
+          watch(() => props.syncData, async () => {
+            if (state.sync && props.syncData) {
+              state.data = JSON.parse(JSON.stringify(props.syncData || {}));
+
+              await updateLocationList();
+            }
+          }, { deep: true, immediate: true });
+
+          const showSaveButton = computed(() => {
+            return state.currentAddressHash !== u.md5(JSON.stringify(state.data));
           });
 
           onMounted(() => {
-            //
+            // syncAddressData();
           });
 
+          const locationSelector = ref(null);
+
           function locationChanged(e) {
-            state.data.locationId = e.detail.value;
-            state.locationPath = e.detail.path;
+            if (e.detail) {
+              state.data.locationId = e.detail.value;
+              state.locationPath = e.detail.path;
+            }
           }
 
           function buildInputId(name) {
             return `input-${props.type}-${name}`;
+          }
+
+          function buildInputName(name) {
+            return `${props.type}[${name}]`;
           }
 
           function createNew() {
@@ -306,18 +370,54 @@ use Windwalker\Core\Router\SystemUri;
           // Select
           const modal = ref(null);
 
-          function openAddressSelector() {
+          async function openAddressSelector() {
+            const res = await u.$http.get('@address_ajax/myAddresses');
+
+            state.addresses = res.data.data;
+
             u.$ui.bootstrap.modal(modal.value).show();
+          }
+
+          async function selectAddress(address) {
+            state.addressSelecting = true;
+            state.data = Object.assign(
+              {},
+              defaultAddress,
+              address
+            );
+
+            state.data.locationPath = state.data.locationPath.map(v => String(v));
+
+            state.data.addressId = String(address.id);
+            state.data.locationId = String(state.data.locationId);
+
+            state.currentAddressHash = u.md5(JSON.stringify(state.data));
+
+            u.$ui.bootstrap.modal(modal.value).hide();
+
+            await updateLocationList();
+
+            state.addressSelecting = false;
+          }
+
+          async function updateLocationList() {
+            state.locationPath = state.data.locationPath || [];
+            await nextTick();
+            await locationSelector.value?.prepareValues();
           }
 
           return {
             ...toRefs(state),
             modal,
+            locationSelector,
+            showSaveButton,
 
             createNew,
             locationChanged,
             buildInputId,
+            buildInputName,
             openAddressSelector,
+            selectAddress,
           };
         }
       }

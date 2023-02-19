@@ -47,7 +47,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.name')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getFullName() }}
+                {{ $shippingData->getName() }}
             </dd>
 
             {{-- Email --}}

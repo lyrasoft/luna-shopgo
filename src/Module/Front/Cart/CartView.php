@@ -12,10 +12,14 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Front\Cart;
 
 use Lyrasoft\Luna\User\UserService;
+use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
+use Psr\Cache\InvalidArgumentException;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\ORM\ORM;
@@ -34,8 +38,12 @@ class CartView implements ViewModelInterface
     /**
      * Constructor.
      */
-    public function __construct(protected UserService $userService, protected ORM $orm)
-    {
+    public function __construct(
+        protected UserService $userService,
+        protected Navigator $nav,
+        protected ORM $orm,
+        protected CartStorage $cartStorage,
+    ) {
         //
     }
 
@@ -45,36 +53,15 @@ class CartView implements ViewModelInterface
      * @param  AppContext  $app   The web app context.
      * @param  View        $view  The view object.
      *
-     * @return  mixed
+     * @return  RouteUri|array
+     * @throws InvalidArgumentException
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): RouteUri|array
     {
-        $user = $this->userService->getUser();
-
-        $addresses = collect();
-
-        if ($user->isLogin()) {
-            $addresses = $this->orm->from(Address::class)
-                ->leftJoin(
-                    Location::class,
-                    'location',
-                    'location.id',
-                    'address.location_id'
-                )
-                ->where('address.user_id', $user->getId())
-                ->order('address.id', 'DESC')
-                ->groupByJoins()
-                ->all(Address::class);
-
-            /** @var Address $address */
-            foreach ($addresses as $address) {
-                $location = $this->orm->toEntity(Location::class, $address->location);
-                $address->formatted = $address->formatByLocation($location, true);
-            }
+        if ($this->cartStorage->count() === 0) {
+            return $this->nav->back();
         }
 
-        return compact(
-            'addresses'
-        );
+        return [];
     }
 }

@@ -129,7 +129,7 @@ $seeder->import(
             $item->setPaymentId($payment->getId());
 
             $paymentData = $item->getPaymentData()
-                ->setFullName($user->getName())
+                ->setName($user->getName())
                 ->setEmail($user->getEmail())
                 ->setAddress1($paymentAddress->getAddress1())
                 ->setAddress2($paymentAddress->getAddress2())
@@ -158,9 +158,9 @@ $seeder->import(
             $lastName = $shippingAddress->getLastname();
 
             $item->getShippingData()
-                ->setFullName($firstName . ' ' . $lastName)
-                ->setFirstName($firstName)
-                ->setLastName($lastName)
+                ->setName($firstName . ' ' . $lastName)
+                ->setFirstname($firstName)
+                ->setLastname($lastName)
                 ->setAddressId($shippingAddress->getId())
                 ->setAddress1($shippingAddress->getAddress1())
                 ->setAddress2($shippingAddress->getAddress2())

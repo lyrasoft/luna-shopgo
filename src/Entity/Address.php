@@ -173,7 +173,7 @@ class Address implements EntityInterface, AddressAwareInterface
         return $this;
     }
 
-    public function getFullname(): string
+    public function getName(): string
     {
         return $this->fullname;
     }

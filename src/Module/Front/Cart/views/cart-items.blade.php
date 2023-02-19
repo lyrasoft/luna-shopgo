@@ -50,6 +50,13 @@ use Windwalker\Core\Router\SystemUri;
                         @{{ item.variant.title }}
                     </div>
                 </div>
+
+                <div v-if="item.outOfStock">
+                    <span
+                        class="badge bg-danger">
+                        庫存不足
+                    </span>
+                </div>
             </div>
 
             {{-- Quantity --}}
@@ -98,7 +105,7 @@ use Windwalker\Core\Router\SystemUri;
             </div>
         </div>
 
-        <div v-if="item.attachments.length > 0" class="card-footer">
+        <div v-if="item.attachments.length > 0" class="card-footer py-4 px-3 px-lg-5">
             <h6>加價購</h6>
 
             <div v-for="attachment of item.attachments"

@@ -56,6 +56,8 @@ use Windwalker\Core\Router\SystemUri;
                 </select>
             </div>
         </div>
+
+        <input :name="name" type="hidden" :value="getFinalValue()" />
     </div>
 </script>
 
@@ -77,6 +79,7 @@ use Windwalker\Core\Router\SystemUri;
             }
           },
           modelValue: Array,
+          name: String,
         },
         data() {
           return {
@@ -139,6 +142,8 @@ use Windwalker\Core\Router\SystemUri;
             this.lists = [];
 
             let values = this.modelValue.slice().map(String);
+
+            this.values = [...values];
 
             if (values.length === 0) {
               values = [null];

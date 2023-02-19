@@ -19,17 +19,17 @@ interface AddressAwareInterface
     /**
      * @return string
      */
-    public function getFirstName(): string;
+    public function getFirstname(): string;
 
     /**
      * @return string
      */
-    public function getLastName(): string;
+    public function getLastname(): string;
 
     /**
      * @return string
      */
-    public function getFullName(): string;
+    public function getName(): string;
 
     /**
      * @return string

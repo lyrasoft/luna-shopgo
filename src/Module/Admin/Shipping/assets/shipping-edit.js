@@ -8,6 +8,7 @@
 import '@main';
 
 u.$ui.bootstrap.tooltip();
+u.$ui.tomSelect('.has-tom-select');
 
 const formSelector = '#admin-form';
 

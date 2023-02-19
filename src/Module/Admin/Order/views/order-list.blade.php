@@ -154,15 +154,15 @@ $orm = $app->service(ORM::class);
 
                     <tbody>
                     @foreach($items as $i => $item)
-                        <?php
-                        $entity = $vm->prepareItem($item);
+                            <?php
+                            $entity = $vm->prepareItem($item);
 
-                        if ($item->order_state?->id) {
-                            $state = $orm->toEntity(OrderState::class, $item->order_state);
-                        } else {
-                            $state = null;
-                        }
-                        ?>
+                            if ($item->order_state?->id) {
+                                $state = $orm->toEntity(OrderState::class, $item->order_state);
+                            } else {
+                                $state = null;
+                            }
+                            ?>
                         <tr>
                             {{-- Checkbox --}}
                             <td>
@@ -188,7 +188,7 @@ $orm = $app->service(ORM::class);
 
                             {{-- User --}}
                             <td class="text-nowrap">
-                                {{ $entity->getPaymentData()->getFullName() }}
+                                {{ $entity->getPaymentData()->getName() }}
                             </td>
 
                             {{-- Total --}}
