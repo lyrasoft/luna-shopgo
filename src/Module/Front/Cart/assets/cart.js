@@ -10,6 +10,7 @@ const CartApp = {
   name: 'CartApp',
   components: {
     'address-form': addressForm(),
+    'shipping-item': shippingItem(),
   },
   props: {
     user: Object
@@ -29,6 +30,30 @@ const CartApp = {
       loading: false
     });
 
+    const form = ref(null);
+
+    const loadItems = u.debounce(async function () {
+      const res = await u.$http.get(
+        '@cart_ajax/getItems',
+        {
+          params: {
+            location_id: state.shippingData.locationId,
+            shipping_id: state.shippingId,
+            payment_id: state.paymentId,
+          }
+        }
+      );
+
+      setCartData(res.data.data);
+    }, 300);
+
+    function setCartData(data) {
+      state.items = data.items;
+      state.totals = data.totals;
+
+      loadShippings();
+    }
+
     init();
 
     async function init() {
@@ -37,22 +62,11 @@ const CartApp = {
       state.loaded = true;
     }
 
-    async function loadItems() {
-      const res = await u.$http.get('@cart_ajax/getItems');
-
-      setCartData(res.data.data);
-    }
-
-    function setCartData(data) {
-      state.items = data.items;
-      state.totals = data.totals;
-    }
-
     // Actions
     async function removeItem(item, i) {
       const res = await u.$http.delete(`@cart_ajax/removeItem?key=${item.key}`);
 
-      setCartData(res.data.data);
+      return loadItems();
     }
 
     // Quantity
@@ -72,7 +86,7 @@ const CartApp = {
       try {
         const res = await u.$http.post('@cart_ajax/updateQuantities', { values });
 
-        setCartData(res.data.data);
+        return loadItems();
       } catch (e) {
         u.alert(e.message, '', 'warning');
       }
@@ -104,21 +118,25 @@ const CartApp = {
     });
 
     // Shippings
-    watch(() => state.shippingData.locationId, (locId) => {
-      loadShippings(locId);
+    watch(() => state.shippingData.locationId, () => {
+      loadShippings();
+    });
+    watch(() => state.shippingId, () => {
+      loadItems();
     });
 
-    async function loadShippings(locId) {
-      const res = await u.$http.get(`@cart_ajax/shippings?location_id=${locId}`);
+    const loadShippings = u.debounce(async function () {
+      const res = await u.$http.get(`@cart_ajax/shippings?location_id=${state.shippingData.locationId}`);
 
       state.shippings = res.data.data;
-    }
+    }, 300);
 
     // Payments
 
     return {
       ...toRefs(state),
       filteredTotals,
+      form,
 
       removeItem,
       changeItemQuantity,

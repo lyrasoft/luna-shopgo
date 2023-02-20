@@ -31,6 +31,8 @@ class PrepareCartItemEvent extends AbstractEvent
 
     public ProductVariant $variant;
 
+    public array $options = [];
+
     /**
      * @return CartItem
      */
@@ -127,6 +129,26 @@ class PrepareCartItemEvent extends AbstractEvent
     public function setVariant(ProductVariant $variant): static
     {
         $this->variant = $variant;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function &getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param  array  $options
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOptions(array $options): static
+    {
+        $this->options = $options;
 
         return $this;
     }

@@ -11,14 +11,23 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Shipping;
 
+use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\Luna\Entity\Tag;
+use Lyrasoft\Luna\Entity\TagMap;
+use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Repository\ShippingRepository;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
+use Windwalker\Utilities\TypeCast;
+
+use function Windwalker\collect;
 
 /**
  * The ShippingService class.
@@ -35,10 +44,124 @@ class ShippingService
     ) {
     }
 
-    public function getShippings(Location $location, array $variantIds): iterable
+    /**
+     * @param  Location  $location
+     * @param  array     $products
+     *
+     * @return  Collection<Shipping>
+     */
+    public function getShippings(Location $location, array $products): Collection
     {
-        return $this->repository->getAvailableListSelector()
+        $shippings = $this->repository->getAvailableListSelector()
+            ->orWhere(
+                function (Query $query) use ($location) {
+                    $query->where('location_category_id', 0);
+                    $query->whereExists(
+                        fn(Query $query) => $query->from(Location::class)
+                            ->leftJoin(Category::class)
+                            ->whereRaw('category.id = shipping.location_category_id')
+                            ->whereRaw('location.lft <= %a', $location->getLft())
+                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                    );
+                }
+            )
+            ->orWhere(
+                function (Query $query) use ($location) {
+                    $query->where('location_id', 0);
+                    $query->whereExists(
+                        fn(Query $query) => $query->from(Location::class)
+                            ->whereRaw('location.id = shipping.location_id')
+                            ->whereRaw('location.lft <= %a', $location->getLft())
+                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                    );
+                }
+            )
             ->all(Shipping::class);
+
+        if (count($shippings) === 0) {
+            return $shippings;
+        }
+
+        $productIds = array_column($products, 'id');
+
+        $tagMapsSet = $this->orm->from(TagMap::class, 'map')
+            ->where('map.target_id', $productIds ?: [0])
+            ->where('map.type', 'product')
+            ->all(TagMap::class)
+            ->groupBy('targetId');
+
+        // Let's product filter tags
+        $shippings = $shippings->filter(
+            function (Shipping $shipping) use ($products, $tagMapsSet) {
+                if (
+                    $shipping->getUnallowTags() === []
+                    && $shipping->getAllowTags() === []
+                ) {
+                    return true;
+                }
+
+                // Allow Tags should default TRUE if no selected
+                $allow = $shipping->getAllowTags() === [];
+
+                // Unallow Tags always default FALSE, only TRUE if matched.
+                $disallow = false;
+
+                foreach ($products as $product) {
+                    $tagMaps = $tagMapsSet[$product->getId()] ?? collect();
+                    $tagIds = $tagMaps->column('tagId')->values();
+
+                    $allow = $allow || $tagIds->intersect($shipping->getAllowTags())->count() > 0;
+                    $disallow = $disallow || $tagIds->intersect($shipping->getUnallowTags())->count() > 0;
+                }
+
+                // Disallow priority higher, if TRUE means ignore this shipping.
+                if ($disallow) {
+                    return false;
+                }
+
+                // Final, we return allow matched or not.
+                return $allow;
+            }
+        );
+
+        return $shippings->values();
+    }
+
+    public function getShippingFee(Shipping $shipping, Location $location, CartData $cartData)
+    {
+        $typeInstance = $this->createTypeInstance($shipping->getType(), $shipping);
+
+        $typeInstance->getShippingFeeComputer($cartData, $location);
+    }
+
+    // protected function matchLocation(Shipping $shipping, Location $location)
+    // {
+    //     $this->getFlatLocations(
+    //         $shipping->getLocationCategoryId()
+    //     );
+    // }
+
+    /**
+     * @param  iterable  $locationCategoryIds
+     * @param  iterable  $locationIds
+     *
+     * @return  Collection<Location>
+     */
+    public function getFlatLocations(iterable $locationCategoryIds, iterable $locationIds): Collection
+    {
+        $locationCategoryIds = TypeCast::toArray($locationCategoryIds);
+        $locationIds = TypeCast::toArray($locationIds);
+
+        return $this->orm->select('location.*')
+            ->from(Location::class)
+            ->leftJoin(Category::class)
+            ->orWhere(
+                function (Query $query) use ($locationIds, $locationCategoryIds) {
+                    $query->where('location.id', $locationIds ?: [0]);
+                    $query->where('category.id', $locationCategoryIds ?: [0]);
+                }
+            )
+            ->all(Location::class);
     }
 
     public function createTypeInstance(string $type, ?Shipping $data = null): ?AbstractShipping

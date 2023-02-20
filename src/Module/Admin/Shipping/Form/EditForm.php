@@ -75,8 +75,13 @@ class EditForm implements FieldDefinitionInterface
                     $form->add('location_id', LocationModalField::class)
                         ->label($this->trans('shopgo.payment.field.location'));
 
-                    $form->add('tags', TagListField::class)
-                        ->label($this->trans('shopgo.shipping.field.tags'))
+                    $form->add('allow_tags', TagListField::class)
+                        ->label($this->trans('shopgo.shipping.field.allow.tags'))
+                        ->addClass('has-tom-select')
+                        ->multiple(true);
+
+                    $form->add('unallow_tags', TagListField::class)
+                        ->label($this->trans('shopgo.shipping.field.unallow.tags'))
                         ->addClass('has-tom-select')
                         ->multiple(true);
 

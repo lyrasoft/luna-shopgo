@@ -11,14 +11,18 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Shipping;
 
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Module\Admin\Shipping\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ShippingRepository;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\ORM;
 
 /**
  * The ShippingController class.
@@ -31,8 +35,17 @@ class ShippingController
         CrudController $controller,
         Navigator $nav,
         #[Autowire] ShippingRepository $repository,
+        ShippingService $shippingService,
+        FormFactory $formFactory,
     ): mixed {
-        $form = $app->make(EditForm::class);
+        $item = $app->input('item');
+        $typeInstance = $shippingService->createTypeInstance(
+            $item['type'] ?? 'basic',
+            $app->service(ORM::class)->toEntity(Shipping::class, $item)
+        );
+
+        $form = $formFactory->create(EditForm::class)
+            ->defineFormFields($typeInstance);
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

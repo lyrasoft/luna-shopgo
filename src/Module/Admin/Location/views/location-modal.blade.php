@@ -17,6 +17,7 @@ namespace App\View;
  */
 
 use Lyraoft\ShopGo\Module\Admin\Location\LocationListView;
+use Lyrasoft\ShopGo\Entity\Location;
 use Unicorn\Html\Breadcrumb;
 use Unicorn\Workflow\BasicStateWorkflow;
 use Windwalker\Core\Application\AppContext;
@@ -25,6 +26,10 @@ use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
+
+/**
+ * @var $parents Location[]
+ */
 
 $callback = $app->input('callback');
 $workflow = $app->service(BasicStateWorkflow::class);
@@ -38,7 +43,11 @@ $breadcrumb->push(
 $parents->shift();
 $parentsCount = count($parents);
 
+$path = [];
+
 foreach ($parents as $i => $parent) {
+    $path[] = $parent->getTitle();
+
     $breadcrumb->push(
         $parent->getTitle(),
         ($i + 1) !== $parentsCount
@@ -118,8 +127,9 @@ foreach ($parents as $i => $parent) {
                         'title' => $item->title,
                         'value' => $item->id,
                         'image' => $item->image,
+                        'path' => $path
                     ])
-                    <?php $entity = $vm->prepareItem($item); ?>
+                        <?php $entity = $vm->prepareItem($item); ?>
                     <tr>
                         <td>
                             <x-state-dropdown color-on="text"

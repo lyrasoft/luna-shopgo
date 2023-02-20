@@ -13,6 +13,8 @@ namespace Lyrasoft\ShopGo\Cart;
 
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Windwalker\Data\Collection;
 use Windwalker\Data\ValueObject;
 
@@ -24,12 +26,12 @@ use function Windwalker\collect;
 class CartData extends ValueObject
 {
     /**
-     * @var Collection|CartItem[]
+     * @var Collection<CartItem>
      */
     public Collection $items;
 
     /**
-     * @var Collection|Discount[]
+     * @var Collection<Discount>
      */
     public Collection $discounts;
 
@@ -42,6 +44,12 @@ class CartData extends ValueObject
      * @var Collection
      */
     public Collection $coupons;
+
+    public ?Location $location = null;
+
+    public ?Shipping $shipping = null;
+
+    public array $params = [];
 
     public function __construct(mixed $data = [])
     {
@@ -129,6 +137,66 @@ class CartData extends ValueObject
     public function setCoupons(Collection $coupons): static
     {
         $this->coupons = $coupons;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function &getParams(): array
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param  array  $params
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setParams(array $params): static
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+    /**
+     * @return Location|null
+     */
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param  Location|null  $location
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Shipping|null
+     */
+    public function getShipping(): ?Shipping
+    {
+        return $this->shipping;
+    }
+
+    /**
+     * @param  Shipping|null  $shipping
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setShipping(?Shipping $shipping): static
+    {
+        $this->shipping = $shipping;
 
         return $this;
     }

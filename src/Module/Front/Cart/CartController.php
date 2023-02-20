@@ -22,6 +22,7 @@ use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Renderer\RendererService;
 use Windwalker\ORM\ORM;
 
 /**
@@ -72,27 +73,37 @@ class CartController
         return array_values($cartStorage->getStoredItems());
     }
 
-    public function removeItem(AppContext $app, CartService $cartService, CartStorage $cartStorage): CartData
+    public function removeItem(AppContext $app, CartService $cartService, CartStorage $cartStorage): bool
     {
         $key = $app->input('key');
 
         $cartStorage->removeByKey($key);
 
-        return $cartService->getCartData();
+        return true;
     }
 
-    public function updateQuantities(AppContext $app, CartStorage $cartStorage, CartService $cartService): CartData
+    public function updateQuantities(AppContext $app, CartStorage $cartStorage, CartService $cartService): bool
     {
         $values = (array) $app->input('values');
 
         $cartStorage->updateQuantities($values);
 
-        return $cartService->getCartData();
+        return true;
     }
 
     public function getItems(AppContext $app, CartService $cartService): CartData
     {
-        return $cartService->getCartData();
+        $locationId = $app->input('location_id') ?? [];
+        $shippingId = $app->input('shipping_id') ?? [];
+        $paymentId = $app->input('payment_id') ?? [];
+
+        return $cartService->getCartData(
+            [
+                'location_id' => $locationId,
+                'shipping_id' => $shippingId,
+                'payment_id' => $paymentId,
+            ]
+        );
     }
 
     /**
@@ -130,7 +141,8 @@ class CartController
         AppContext $app,
         ORM $orm,
         ShippingService $shippingService,
-        CartService $cartService
+        CartService $cartService,
+        RendererService $rendererService,
     ): iterable {
         $locationId = (int) $app->input('location_id');
 
@@ -140,20 +152,43 @@ class CartController
             return [];
         }
 
-        $cartData = $cartService->getCartData();
+        $cartData = $cartService->getCartData(['location_id' => $location->getId()]);
 
-        $variantIds = [];
+        /** @var Product[] $products */
+        $products = [];
 
         foreach ($cartData->getItems() as $item) {
-            $variantIds[] = $item->getVariant()->getData()->getId();
+            /** @var Product $product */
+            $product = $item->getProduct()->getData();
+            $products[$product->getId()] = $product;
 
             foreach ($item->getAttachments() as $attachment) {
-                $variantIds[] = $attachment->getVariant()->getData()->getId();
+                /** @var Product $product */
+                $product = $attachment->getProduct()->getData();
+                $products[$product->getId()] = $product;
             }
         }
 
-        $variantIds = array_unique($variantIds);
+        $shippings = $shippingService->getShippings($location, $products);
 
-        return $shippingService->getShippings($location, $variantIds);
+        foreach ($shippings as $shipping) {
+            $instance = $shippingService->createTypeInstance($shipping->getType(), $shipping);
+
+            if (!$instance) {
+                continue;
+            }
+
+            $fee = $app->call($instance->getShippingFeeComputer($cartData, $cartData->getTotals()['total']));
+
+            $shipping->fee = $fee;
+
+            $renderer = $rendererService->createRenderer();
+            $shipping->optionLayout = $instance->renderOptionLayout(
+                $renderer,
+                compact('location')
+            );
+        }
+
+        return $shippings;
     }
 }

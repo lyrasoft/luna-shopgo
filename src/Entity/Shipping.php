@@ -80,9 +80,13 @@ class Shipping implements EntityInterface
     #[Cast(JsonCast::class)]
     protected array $payments = [];
 
-    #[Column('tags')]
+    #[Column('allow_tags')]
     #[Cast(JsonCast::class)]
-    protected array $tags = [];
+    protected array $allowTags = [];
+
+    #[Column('unallow_tags')]
+    #[Cast(JsonCast::class)]
+    protected array $unallowTags = [];
 
     #[Column('pricing')]
     #[Cast(JsonCast::class)]
@@ -356,14 +360,14 @@ class Shipping implements EntityInterface
         return $this;
     }
 
-    public function getTags(): array
+    public function getUnallowTags(): array
     {
-        return $this->tags;
+        return $this->unallowTags;
     }
 
-    public function setTags(array $tags): static
+    public function setUnallowTags(array $unallowTags): static
     {
-        $this->tags = $tags;
+        $this->unallowTags = $unallowTags;
 
         return $this;
     }
@@ -388,6 +392,18 @@ class Shipping implements EntityInterface
     public function setSubtitle(string $subtitle): static
     {
         $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
+    public function getAllowTags(): array
+    {
+        return $this->allowTags;
+    }
+
+    public function setAllowTags(array $allowTags): static
+    {
+        $this->allowTags = $allowTags;
 
         return $this;
     }

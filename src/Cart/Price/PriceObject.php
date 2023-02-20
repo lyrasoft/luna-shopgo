@@ -103,13 +103,14 @@ class PriceObject implements \JsonSerializable, \Stringable
      * @param  string  $name
      * @param  mixed   $price
      * @param  string  $label
+     * @param  array   $params
      *
      * @return  static
      * @throws MathException
      */
-    public static function create(string $name, mixed $price, string $label = '')
+    public static function create(string $name, mixed $price, string $label = '', array $params = [])
     {
-        return new static($name, $price, $label);
+        return new static($name, $price, $label, $params);
     }
 
     /**

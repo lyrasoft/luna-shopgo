@@ -48,8 +48,15 @@ class PricingService
         }
 
         if ($method === DiscountMethod::OFFSETS()) {
-            $diff = $diff->plus($offsets);
-            return $price->plus($offsets);
+            $newPrice = $price->plus($offsets);
+
+            if ($newPrice->isLessThan(0)) {
+                $newPrice = BigDecimal::of(0);
+            }
+
+            $diff = $newPrice->minus($price);
+
+            return $newPrice;
         }
 
         $newPrice = $price->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($offsets);

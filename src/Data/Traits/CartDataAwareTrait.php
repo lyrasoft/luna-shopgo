@@ -38,6 +38,8 @@ trait CartDataAwareTrait
      */
     public function getCartData(): CartData
     {
+        $this->cartData->setTotals($this->getTotals());
+
         return $this->cartData;
     }
 

@@ -62,7 +62,6 @@ class Payment implements EntityInterface
 
     #[Column('title')]
     protected string $title = '';
-
     #[Column('subtitle')]
     protected string $subtitle = '';
 
@@ -346,16 +345,13 @@ class Payment implements EntityInterface
 
         return $this;
     }
-
-    public function getSubtitle(): string
+    public function getSubtitle() : string
     {
         return $this->subtitle;
     }
-
-    public function setSubtitle(string $subtitle): static
+    public function setSubtitle(string $subtitle) : static
     {
         $this->subtitle = $subtitle;
-
         return $this;
     }
 }

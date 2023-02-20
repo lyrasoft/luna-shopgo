@@ -14,8 +14,10 @@ namespace Lyrasoft\ShopGo\Cart;
 use Brick\Math\Exception\MathException;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
@@ -25,6 +27,7 @@ use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Repository\ProductVariantRepository;
 use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\VariantService;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\ApplicationInterface;
@@ -57,23 +60,27 @@ class CartService
         #[Autowire]
         protected ProductVariantRepository $variantRepository,
         protected VariantService $variantService,
+        protected ShippingService $shippingService,
     ) {
         //
     }
 
-    public function getCartData(int $flags = 0): CartData
+    public function getCartData(array $params = [], int $flags = 0): CartData
     {
-        $cartItems = $this->getCartItems((bool) ($flags & static::FOR_UPDATE));
+        $cartItems = $this->getCartItems((bool) ($flags & static::FOR_UPDATE), $params);
 
-        return $this->createCartDataFromItems($cartItems);
+        return $this->createCartDataFromItems($cartItems, $params);
     }
 
     /**
+     * @param  bool   $forUpdate
+     * @param  array  $params
+     *
      * @return  array<CartItem>
      *
      * @throws \ReflectionException
      */
-    public function getCartItems(bool $forUpdate = false): array
+    public function getCartItems(bool $forUpdate = false, array $params = []): array
     {
         $cartStorage = $this->app->service(CartStorage::class);
 
@@ -131,6 +138,7 @@ class CartService
                     'product',
                     'variant',
                     'mainVariant',
+                    'params'
                 )
             );
 
@@ -142,13 +150,20 @@ class CartService
 
     /**
      * @param  iterable<CartItem>  $cartItems
+     * @param  array               $params
      *
      * @return CartData
      * @throws MathException
      */
-    public function createCartDataFromItems(iterable $cartItems): CartData
+    public function createCartDataFromItems(iterable $cartItems, array $params = []): CartData
     {
         $cartData = new CartData();
+        $cartData->setParams($params);
+
+        $location = $this->orm->findOne(Location::class, $params['location_id'] ?? 0);
+        $shipping = $this->orm->findOne(Shipping::class, $params['shipping_id'] ?? 0);
+
+        $cartData->setLocation($location)->setShipping($shipping);
 
         $appliedDiscounts = [];
         $totals = new PriceSet();
@@ -175,7 +190,7 @@ class CartService
                 'total',
                 'totals',
                 'cartData',
-                'appliedDiscounts'
+                'appliedDiscounts',
             )
         );
 
@@ -232,6 +247,7 @@ class CartService
         $cartData = $event->getCartData();
         $appliedDiscounts = $event->getAppliedDiscounts();
 
+        // Shipping Fee
         $freeShipping = false;
 
         foreach ($appliedDiscounts as $discount) {
@@ -239,10 +255,7 @@ class CartService
         }
 
         if (!$freeShipping) {
-            // todo: Shipping adds here
-            // Todo: Add a flat shipping fee for test
-            $shippingFee = PriceObject::create('shipping_fee', '200', '運費');
-            $totals->set($shippingFee);
+            $this->computeShippingFee($cartData, $total);
         }
 
         // Calc Grand Totals
@@ -277,5 +290,28 @@ class CartService
         $cartData->setDiscounts($appliedDiscounts);
 
         return $event->getCartData();
+    }
+
+    /**
+     * @param  CartData    $cartData
+     * @param  PriceObject $total
+     *
+     * @return  void
+     */
+    protected function computeShippingFee(CartData $cartData, PriceObject $total): void
+    {
+        $shipping = $cartData->getShipping();
+
+        if (!$shipping) {
+            return;
+        }
+
+        $instance = $this->shippingService->createTypeInstance($shipping->getType(), $shipping);
+
+        if (!$instance) {
+            return;
+        }
+
+        $this->app->call($instance->getShippingFeeComputer($cartData, $total));
     }
 }

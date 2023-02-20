@@ -59,7 +59,7 @@ unset($tabs['meta']);
 
         <div class="row">
             <div class="col-lg-7">
-                <x-tabs keepalive variant="pills">
+                <x-tabs keepactive variant="pills">
                     @foreach ($tabs as $tab)
                         <?php
                         if (!$tab->getTitle()) {

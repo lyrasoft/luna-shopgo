@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Shipping;
 
+use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
@@ -98,6 +101,11 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         return $this;
     }
 
+    public function getPricing(): array
+    {
+        return $this->getData()->getPricing();
+    }
+
     public function &getParams(): array
     {
         $params = &$this->getData()->getParams();
@@ -116,4 +124,11 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
         return dirname($ref->getFileName());
     }
+
+    abstract public function getShippingFeeComputer(CartData $cartData, PriceObject $total): \Closure;
+
+    // public function computeAndAddShippingFee(ApplicationInterface $app, CartData $cartData, Location $location): void
+    // {
+    //     $fee = $this->computeShippingFee($app, $cartData, $location);
+    // }
 }

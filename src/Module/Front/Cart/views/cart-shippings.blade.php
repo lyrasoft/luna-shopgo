@@ -30,10 +30,13 @@ use Windwalker\Core\Router\SystemUri;
 
     <div>
         <div class="card my-3" v-for="shipping of shippings" :key="shipping.id">
-            <div class="card-body d-flex align-items-center gap-3">
+            <div class="card-body d-flex align-items-center gap-3 position-relative">
                 <div class="form-check">
-                    <input type="radio" name="shipping[id]" v-model="shippingId"
+                    <input type="radio"
+                        name="shipping[id]"
+                        v-model="shippingId"
                         class="form-check-input"
+                        :value="shipping.id"
                     />
                 </div>
                 <div class="">
@@ -49,6 +52,12 @@ use Windwalker\Core\Router\SystemUri;
                     <div v-if="shipping.subtitle">
                         @{{ shipping.subtitle }}
                     </div>
+                </div>
+
+                <div class="ms-auto">
+                    <span class="fs-5">
+                        @{{ $formatPrice(shipping.fee, true) }}
+                    </span>
                 </div>
             </div>
         </div>
