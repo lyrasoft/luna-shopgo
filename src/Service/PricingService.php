@@ -26,8 +26,8 @@ class PricingService
     use CurrencyAwareTrait;
 
     public static function pricingByMethod(
-        mixed $price,
-        mixed $offsets,
+        mixed $origin,
+        mixed $modify,
         DiscountMethod|string $method,
         ?BigDecimal &$diff = null,
     ): BigDecimal {
@@ -36,32 +36,37 @@ class PricingService
         $diff = BigDecimal::of(0);
 
         if ($method === DiscountMethod::NONE()) {
-            return BigDecimal::of((string) $price);
+            return BigDecimal::of((string) $origin);
         }
 
-        $price = BigDecimal::of((string) $price);
-        $offsets = BigDecimal::of((string) $offsets);
+        $origin = BigDecimal::of((string) $origin);
+        $modify = BigDecimal::of((string) $modify);
 
         if ($method === DiscountMethod::FIXED()) {
-            $diff = $price->minus($offsets);
-            return $offsets;
+            // New price should not greater than origin.
+            if ($modify->isGreaterThan($origin)) {
+                return $origin;
+            }
+
+            $diff = $origin->minus($modify);
+            return $modify;
         }
 
         if ($method === DiscountMethod::OFFSETS()) {
-            $newPrice = $price->plus($offsets);
+            $newPrice = $origin->plus($modify);
 
             if ($newPrice->isLessThan(0)) {
                 $newPrice = BigDecimal::of(0);
             }
 
-            $diff = $newPrice->minus($price);
+            $diff = $newPrice->minus($origin);
 
             return $newPrice;
         }
 
-        $newPrice = $price->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($offsets);
+        $newPrice = $origin->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($modify);
 
-        $diff = $newPrice->minus($price);
+        $diff = $newPrice->minus($origin);
 
         return $newPrice;
     }

@@ -12,10 +12,9 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Shipping;
 
 use Lyrasoft\Luna\Entity\Category;
-use Lyrasoft\Luna\Entity\Tag;
 use Lyrasoft\Luna\Entity\TagMap;
-use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Repository\ShippingRepository;
 use Lyrasoft\ShopGo\ShopGoPackage;
@@ -46,7 +45,7 @@ class ShippingService
 
     /**
      * @param  Location  $location
-     * @param  array     $products
+     * @param  array<Product>  $products
      *
      * @return  Collection<Shipping>
      */
@@ -82,6 +81,31 @@ class ShippingService
             return $shippings;
         }
 
+        // Filter by product shippings
+        $productShippingIds = collect();
+
+        /** @var Product $product */
+        foreach ($products as $product) {
+            if (!$product->getShippings()) {
+                continue;
+            }
+
+            if ($productShippingIds->count() === 0) {
+                $productShippingIds = collect($product->getShippings());
+            } else {
+                $productShippingIds = array_intersect($productShippingIds, $product->getShippings());
+            }
+        }
+
+        $productShippingIds = $productShippingIds->map('intval');
+
+        if ($productShippingIds->count()) {
+            $shippings = $shippings->filter(
+                fn(Shipping $shipping) => $productShippingIds->contains($shipping->getId())
+            );
+        }
+
+        // Filter by tags
         $productIds = array_column($products, 'id');
 
         $tagMapsSet = $this->orm->from(TagMap::class, 'map')

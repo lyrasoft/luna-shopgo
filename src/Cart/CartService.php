@@ -162,8 +162,8 @@ class CartService
         $cartData = new CartData();
         $cartData->setParams($params);
 
-        $location = $this->orm->findOne(Location::class, $params['location_id'] ?? 0);
-        $shipping = $this->orm->findOne(Shipping::class, $params['shipping_id'] ?? 0);
+        $location = $this->orm->findOne(Location::class, $params['location_id'] ?? null ?: 0);
+        $shipping = $this->orm->findOne(Shipping::class, $params['shipping_id'] ?? null ?: 0);
 
         $cartData->setLocation($location)->setShipping($shipping);
 

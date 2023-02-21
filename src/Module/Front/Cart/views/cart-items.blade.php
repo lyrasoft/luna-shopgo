@@ -27,7 +27,10 @@ use Windwalker\Core\Router\SystemUri;
 <div class="l-cart-items">
 
     {{-- Cart Item --}}
-    <div class="c-cart-item card mb-3" v-for="item of items">
+    <div class="c-cart-item card mb-3" v-for="item of items"
+        :data-product-id="item.product.id"
+        :data-variant-id="item.variant.id"
+    >
         <div class="card-body d-grid d-lg-flex gap-3">
             <div class="d-flex gap-3 me-auto">
 
@@ -49,6 +52,9 @@ use Windwalker\Core\Router\SystemUri;
                     <div v-if="!item.variant.primary" class="fs-6 text-muted">
                         @{{ item.variant.title }}
                     </div>
+                    <div class="text-muted small">
+                        @{{ item.product.model }}
+                    </div>
                 </div>
 
                 <div v-if="item.outOfStock">
@@ -69,7 +75,7 @@ use Windwalker\Core\Router\SystemUri;
                         </button>
                         <input type="text" class="form-control form-control-sm"
                             v-model.number="item.quantity"
-                            @input="updateQuantities"
+                            @change="updateQuantities(item)"
                             style="width: 75px"
                         />
                         <button type="button" class="btn btn-secondary btn-sm"
@@ -109,7 +115,10 @@ use Windwalker\Core\Router\SystemUri;
             <h6>加價購</h6>
 
             <div v-for="attachment of item.attachments"
-                class="c-attachment w-100 d-grid d-lg-flex gap-3 align-items-center py-2 border-bottom">
+                class="c-attachment w-100 d-grid d-lg-flex gap-3 align-items-center py-2 border-bottom"
+                :data-product-id="attachment.product.id"
+                :data-variant-id="attachment.variant.id"
+            >
                 <div class="d-flex gap-3 flex-grow-1 align-items-center">
 
                     {{-- Cover --}}

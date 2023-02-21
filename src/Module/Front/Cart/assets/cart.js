@@ -124,10 +124,14 @@ const CartApp = {
     function changeItemQuantity(item, offsets) {
       item.quantity += offsets;
 
-      updateQuantities();
+      item.quantity = Math.max(item.quantity, 1);
+
+      updateQuantities(item);
     }
 
-    const updateQuantities = u.debounce(async () => {
+    const updateQuantities = u.debounce(async (item) => {
+      item.quantity = Math.max(item.quantity, 1);
+
       const values = {};
 
       for (const item of state.items) {

@@ -98,9 +98,9 @@ class CartController
 
     public function getItems(AppContext $app, CartService $cartService): CartData
     {
-        $locationId = $app->input('location_id') ?? [];
-        $shippingId = $app->input('shipping_id') ?? [];
-        $paymentId = $app->input('payment_id') ?? [];
+        $locationId = $app->input('location_id') ?? 0;
+        $shippingId = $app->input('shipping_id') ?? 0;
+        $paymentId = $app->input('payment_id') ?? 0;
 
         return $cartService->getCartData(
             [

@@ -233,7 +233,7 @@ use Windwalker\Core\Router\SystemUri;
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="list-group list-group-flush">
+                        <div v-if="!addressLoading && addresses.length" class="list-group list-group-flush">
                             <a href="javascript://" class="list-group-item d-flex gap-2 justify-content-between"
                                 v-for="address of addresses"
                                 :key="address"
@@ -248,6 +248,14 @@ use Windwalker\Core\Router\SystemUri;
                                     </span>
                                 </div>
                             </a>
+                        </div>
+                        <div v-else class="card bg-light text-center py-5">
+                            <template v-if="addressLoading">
+                                <span class="spinner spinner-border mx-auto"></span>
+                            </template>
+                            <template v-else>
+                                您目前沒有儲存的地址
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -298,6 +306,7 @@ use Windwalker\Core\Router\SystemUri;
         },
         setup(props, { emit }) {
           const state = reactive({
+            addressLoading: false,
             currentState: 'new',
             locationPath: [],
             cascadeOptions: {
@@ -372,10 +381,6 @@ use Windwalker\Core\Router\SystemUri;
             return state.currentAddressHash !== u.md5(JSON.stringify(state.data));
           });
 
-          onMounted(() => {
-            // syncAddressData();
-          });
-
           const locationSelector = ref(null);
 
           function locationChanged(e) {
@@ -403,11 +408,17 @@ use Windwalker\Core\Router\SystemUri;
           const modal = ref(null);
 
           async function openAddressSelector() {
-            const res = await u.$http.get('@address_ajax/myAddresses');
-
-            state.addresses = res.data.data;
+            state.addressLoading = true;
 
             u.$ui.bootstrap.modal(modal.value).show();
+
+            try {
+              const res = await u.$http.get('@address_ajax/myAddresses');
+
+              state.addresses = res.data.data;
+            } finally {
+              state.addressLoading = false;
+            }
           }
 
           async function selectAddress(address) {
