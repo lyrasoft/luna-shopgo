@@ -1,5 +1,9 @@
 // SCSS file for ProductItem
 
 .view-product-item {
-    //
+  [v-cloak] {
+    [data-cloak], &[data-cloak] {
+      visibility: hidden;
+    }
+  }
 }

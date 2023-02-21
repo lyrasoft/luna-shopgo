@@ -99,9 +99,10 @@ $shopGoScript->swiper(
 
     <div class="l-product-item container my-5">
 
-        <div id="product-item-app" class="row">
+        <div id="product-item-app" class="row" v-cloak>
             <div class="col-lg-6 l-product-item__images l-product-images mb-4 mb-lg-0">
-                <div class="l-product-images__hero border ratio ratio-1x1">
+                <div class="l-product-images__hero border ratio ratio-1x1"
+                    data-cloak>
                     <img :src="imageView" alt="Cover">
                 </div>
 
@@ -111,6 +112,7 @@ $shopGoScript->swiper(
                         <div v-for="image of images" class="c-product-image border swiper-slide"
                             style="cursor: pointer"
                             @mouseenter="imageView = image.url"
+                            data-cloak
                         >
                             <div class="c-product-images__inner ratio ratio-1x1">
                                 <img class=""
@@ -173,7 +175,7 @@ $shopGoScript->swiper(
                             </div>
                         </div>
 
-                        <div>
+                        <div data-cloak>
                             <span v-if="outOfStock" class="badge bg-danger">
                                 @{{ currentVariant.outOfStockText || mainVariant.outOfStockText || '庫存不足' }}
                             </span>
@@ -205,6 +207,7 @@ $shopGoScript->swiper(
 
                     <template v-else>
                         <div class="l-pricing__final c-price c-price--base fs-5"
+                            data-cloak
                             v-if="hasDiscount">
                             <span class="c-price__label">
                                 售價
@@ -214,7 +217,8 @@ $shopGoScript->swiper(
                             </del>
                         </div>
 
-                        <div class="l-pricing__final c-price c-price--final fs-4 fw-bold">
+                        <div class="l-pricing__final c-price c-price--final fs-4 fw-bold"
+                            data-cloak>
                             <span class="c-price__label">
                                 @{{ hasDiscount ? '優惠價' : '售價' }}
                             </span>
@@ -256,7 +260,8 @@ $shopGoScript->swiper(
                 </div>
 
                 {{-- Discounts --}}
-                <div v-if="discounts.length" class="l-product-info__discounts l-discounts mt-4">
+                <div v-if="discounts.length" class="l-product-info__discounts l-discounts mt-4"
+                    data-cloak>
                     <h5>多件折扣</h5>
 
                     <div v-if="currentVariant">
@@ -273,7 +278,7 @@ $shopGoScript->swiper(
                 </div>
 
                 @if (count($features))
-                    <div class="l-product-info__features l-features mt-4">
+                    <div class="l-product-info__features l-features mt-4" data-cloak>
                         <div class="l-feature-item mb-3" v-for="feature of features">
                             <div class="l-feature-item__title mb-2">
                                 <strong>@{{ feature.title }}</strong>

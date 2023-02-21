@@ -55,7 +55,7 @@ $uniScript->addRoute('@address_ajax');
 
 @section('content')
     <div class="l-cart-page container my-5">
-        <cart-app>
+        <cart-app v-cloak>
             <form id="cart-form" ref="form" action="." method="post">
                 <div class="row">
                     <div class="col-lg-8 l-cart-page__content">
@@ -71,7 +71,13 @@ $uniScript->addRoute('@address_ajax');
                             </div>
                         </header>
 
-                        <div class="l-cart-data">
+                        <div data-loading>
+                            <div class="d-flex py-5">
+                                <span class="spinner spinner-grow spinner-lg mx-auto"></span>
+                            </div>
+                        </div>
+
+                        <div class="l-cart-data" data-cloak>
 
                             {{-- Cart Items --}}
                             <x-cart-items></x-cart-items>
@@ -161,7 +167,7 @@ $uniScript->addRoute('@address_ajax');
                                         </button>
                                     </div>
 
-                                    <div v-if="coupons.length" class="list-group list-group-flush mt-4">
+                                    <div v-if="coupons.length" data-cloak class="list-group list-group-flush mt-4">
                                         <div v-for="coupon of coupons" class="list-group-item border-top d-flex">
                                             <div>
                                                 <div>
@@ -187,7 +193,7 @@ $uniScript->addRoute('@address_ajax');
                                     </div>
                                 </div>
 
-                                <div v-if="loaded" class="card-body l-cart-totals text-end">
+                                <div v-if="loaded" data-cloak class="card-body l-cart-totals text-end">
                                     <div v-if="totals.total" class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100">
                                         <div class="l-cart-total__label">
                                             訂單小計
@@ -226,7 +232,7 @@ $uniScript->addRoute('@address_ajax');
                                 </div>
                             </div>
 
-                            <div class="mt-3 d-grid gap-3">
+                            <div class="mt-3 d-grid gap-3" data-cloak>
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <i class="fa fa-truck"></i>

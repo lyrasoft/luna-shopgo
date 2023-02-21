@@ -1,5 +1,17 @@
 // SCSS file for Cart
 
 .view-cart {
-    //
+  [v-cloak] {
+    [data-cloak], &[data-cloak] {
+      visibility: hidden;
+    }
+
+    [data-loading] {
+      display: block;
+    }
+  }
+
+  [data-loading] {
+    display: none;
+  }
 }
