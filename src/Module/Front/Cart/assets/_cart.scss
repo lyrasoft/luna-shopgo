@@ -14,4 +14,9 @@
   [data-loading] {
     display: none;
   }
+
+  .l-cart-sidebar {
+    overflow-y: auto;
+    height: calc(100vh - var(--sidebar-offsets-top, 90px) - var(--sidebar-offsets-bottom, 30px));
+  }
 }

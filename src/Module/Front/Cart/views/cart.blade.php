@@ -56,7 +56,8 @@ $uniScript->addRoute('@address_ajax');
 @section('content')
     <div class="l-cart-page container my-5">
         <cart-app v-cloak>
-            <form id="cart-form" ref="form" action="." method="post">
+            <form id="cart-form" ref="form" action="." method="post"
+                style="--sidebar-offsets-top: 90px; --sidebar-offsets-bottom: 30px">
                 <div class="row">
                     <div class="col-lg-8 l-cart-page__content">
                         <header class="d-flex align-items-center justify-content-between mb-4">
@@ -152,7 +153,9 @@ $uniScript->addRoute('@address_ajax');
                     </div>
 
                     <div class="col-lg-4 l-cart-page__sidebar">
-                        <div class="l-cart-sidebar position-sticky" style="top: 90px">
+                        <div class="l-cart-sidebar position-sticky"
+                            style="top: var(--sidebar-offsets-top, 90px);"
+                        >
                             <div class="card">
                                 <div class="card-body l-cart-coupons border-bottom">
                                     <h5>優惠碼</h5>
@@ -219,7 +222,12 @@ $uniScript->addRoute('@address_ajax');
                                             @{{ $formatPrice(total.price, true) }}
                                         </div>
                                     </div>
+                                </div>
+                            </div>
 
+                            <div class="card mt-3 position-sticky"
+                                style="bottom: 0;">
+                                <div class="card-body d-grid gap-3" data-cloak>
                                     <div v-if="totals.grand_total" class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100 fs-5 fw-bold">
                                         <div class="l-cart-total__label">
                                             訂單總計
@@ -229,28 +237,26 @@ $uniScript->addRoute('@address_ajax');
                                             @{{ $formatPrice(totals.grand_total.price, true) }}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="mt-3 d-grid gap-3" data-cloak>
-                                <div class="d-flex justify-content-between">
-                                    <div>
-                                        <i class="fa fa-truck"></i>
-                                        @{{ selectedShipping?.title || '尚未選擇貨運方式' }}
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <i class="fa fa-truck"></i>
+                                            @{{ selectedShipping?.title || '尚未選擇貨運方式' }}
+                                        </div>
+
+                                        <div>
+                                            <i class="fa fa-credit-card"></i>
+                                            @{{ selectedPayment?.title || '尚未選擇付款方式' }}
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <i class="fa fa-credit-card"></i>
-                                        @{{ selectedPayment?.title || '尚未選擇付款方式' }}
-                                    </div>
+                                    <button type="button" class="btn btn-primary btn-lg"
+                                        :disabled="loading || !canCheckout"
+                                        @click="checkout"
+                                    >
+                                        @{{ loading ? '載入中' : '結帳' }}
+                                    </button>
                                 </div>
-
-                                <button type="button" class="btn btn-primary btn-lg"
-                                    :disabled="loading || !canCheckout"
-                                    @click="checkout"
-                                >
-                                    @{{ loading ? '載入中' : '結帳' }}
-                                </button>
                             </div>
                         </div>
                     </div>

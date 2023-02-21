@@ -79,6 +79,10 @@ const CartApp = {
 
     init();
 
+    onMounted(() => {
+      calcNavAndStickySidebar(form.value);
+    });
+
     async function init() {
       await loadItems();
 
@@ -358,3 +362,15 @@ app.use(ShopGoVuePlugin);
 app.directive('tooltip', ShopGoVuePlugin.Tooltip);
 app.directive('tom-select', ShopGoVuePlugin.TomSelect);
 app.mount('cart-app');
+
+function calcNavAndStickySidebar(form, offsets = 30) {
+  const navbar = document.querySelector('header .navbar, .navbar');
+
+  if (!navbar) {
+    return;
+  }
+
+  const top = navbar.clientHeight + offsets;
+
+  form.style.setProperty('--sidebar-offsets-top', top + 'px');
+}
