@@ -55,7 +55,7 @@ class ShippingService
         $shippings = $this->repository->getAvailableListSelector()
             ->orWhere(
                 function (Query $query) use ($location) {
-                    $query->where('location_category_id', 0);
+                    $query->where('shipping.location_category_id', 0);
                     $query->whereExists(
                         fn(Query $query) => $query->from(Location::class)
                             ->leftJoin(Category::class)
@@ -67,7 +67,7 @@ class ShippingService
             )
             ->orWhere(
                 function (Query $query) use ($location) {
-                    $query->where('location_id', 0);
+                    $query->where('shipping.location_id', 0);
                     $query->whereExists(
                         fn(Query $query) => $query->from(Location::class)
                             ->whereRaw('location.id = shipping.location_id')
@@ -127,20 +127,6 @@ class ShippingService
         return $shippings->values();
     }
 
-    public function getShippingFee(Shipping $shipping, Location $location, CartData $cartData)
-    {
-        $typeInstance = $this->createTypeInstance($shipping->getType(), $shipping);
-
-        $typeInstance->getShippingFeeComputer($cartData, $location);
-    }
-
-    // protected function matchLocation(Shipping $shipping, Location $location)
-    // {
-    //     $this->getFlatLocations(
-    //         $shipping->getLocationCategoryId()
-    //     );
-    // }
-
     /**
      * @param  iterable  $locationCategoryIds
      * @param  iterable  $locationIds
@@ -164,8 +150,13 @@ class ShippingService
             ->all(Location::class);
     }
 
-    public function createTypeInstance(string $type, ?Shipping $data = null): ?AbstractShipping
+    public function createTypeInstance(string|Shipping $type, ?Shipping $data = null): ?AbstractShipping
     {
+        if ($type instanceof Shipping) {
+            $data = $type;
+            $type = $type->getType();
+        }
+
         $typeClass = $this->getTypeClass($type);
 
         if (!$typeClass) {

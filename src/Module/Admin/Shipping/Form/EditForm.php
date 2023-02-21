@@ -129,5 +129,6 @@ class EditForm implements FieldDefinitionInterface
         );
 
         $form->add('id', HiddenField::class);
+        $form->add('type', HiddenField::class);
     }
 }

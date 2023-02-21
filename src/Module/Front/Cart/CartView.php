@@ -59,7 +59,7 @@ class CartView implements ViewModelInterface
     public function prepare(AppContext $app, View $view): RouteUri|array
     {
         if ($this->cartStorage->count() === 0) {
-            return $this->nav->back();
+            return $this->nav->to('home');
         }
 
         return [];

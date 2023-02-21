@@ -310,7 +310,7 @@ class Payment implements EntityInterface
         return $this;
     }
 
-    public function getParams(): array
+    public function &getParams(): array
     {
         return $this->params;
     }

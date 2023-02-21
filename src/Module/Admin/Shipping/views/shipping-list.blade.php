@@ -224,6 +224,8 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
         </div>
 
         <x-batch-modal :form="$form" namespace="batch"></x-batch-modal>
+
+        <x-create-modal></x-create-modal>
     </form>
 
 @stop

@@ -34,7 +34,7 @@ trait PriceRangeTrait
     use CurrencyAwareTrait;
     use TranslatorTrait;
 
-    protected function registerPricingForm(Form $form)
+    protected function registerPricingForm(Form $form): void
     {
         $form->fieldset('pricing')
             ->title($this->trans('shopgo.shipping.fieldset.pricing'))
@@ -158,6 +158,7 @@ trait PriceRangeTrait
                                     '運費',
                                     [
                                         'id' => $this->getData()->getId(),
+                                        'alias' => $this->getData()->getAlias(),
                                         'title' => $this->getData()->getTitle(),
                                         'location_id' => $location?->getId(),
                                     ]
@@ -208,6 +209,7 @@ trait PriceRangeTrait
                         '運費',
                         [
                             'id' => $this->getData()->getId(),
+                            'alias' => $this->getData()->getAlias(),
                             'title' => $this->getData()->getTitle(),
                             'location_id' => $location?->getId(),
                         ]

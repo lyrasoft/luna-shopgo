@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Admin\Payment;
 
 use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Module\Admin\Payment\Form\EditForm;
+use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
@@ -39,6 +40,7 @@ class PaymentEditView implements ViewModelInterface
         protected ORM $orm,
         protected FormFactory $formFactory,
         protected Navigator $nav,
+        protected PaymentService $paymentService,
         #[Autowire] protected PaymentRepository $repository
     ) {
     }
@@ -58,17 +60,24 @@ class PaymentEditView implements ViewModelInterface
         /** @var Payment $item */
         $item = $this->repository->getItem($id);
 
+        $type = $item?->getType() ?? $app->input('type');
+
+        $typeClass = $this->paymentService->getTypeClass($type);
+        $typeInstance = $this->paymentService->createTypeInstance($type);
+
         $form = $this->formFactory
             ->create(EditForm::class)
             ->setNamespace('item')
+            ->defineFormFields($typeInstance)
             ->fill(
                 $this->repository->getState()->getAndForget('edit.data')
                     ?: $this->orm->extractEntity($item)
-            );
+            )
+            ->fill(compact('type'));
 
         $this->prepareMetadata($app, $view);
 
-        return compact('form', 'id', 'item');
+        return compact('form', 'id', 'item', 'type', 'typeInstance', 'typeClass');
     }
 
     /**

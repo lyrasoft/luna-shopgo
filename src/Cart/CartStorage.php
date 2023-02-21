@@ -22,7 +22,8 @@ use Windwalker\Utilities\Arr;
  */
 class CartStorage
 {
-    protected const KEY_NAME = 'cart.items';
+    protected const CART_ITEMS_KEY = 'cart.items';
+    protected const COUPONS_KEY = 'cart.coupons';
 
     public function __construct(protected AppState $state)
     {
@@ -112,7 +113,7 @@ class CartStorage
 
     public function clear(): void
     {
-        $this->state->remember(static::KEY_NAME, []);
+        $this->state->remember(static::CART_ITEMS_KEY, []);
     }
 
     /**
@@ -122,7 +123,7 @@ class CartStorage
      */
     public function getStoredItems(): array
     {
-        return (array) $this->state->get(static::KEY_NAME);
+        return (array) $this->state->get(static::CART_ITEMS_KEY);
     }
 
     /**
@@ -132,7 +133,7 @@ class CartStorage
      */
     public function setStoredItems(array $items): void
     {
-        $this->state->remember(static::KEY_NAME, $items);
+        $this->state->remember(static::CART_ITEMS_KEY, $items);
     }
 
     public function count(): int
@@ -183,5 +184,68 @@ class CartStorage
         }
 
         return $key;
+    }
+
+    /**
+     * @param  int  $id
+     *
+     * @return  static
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function addCoupon(int $id): self
+    {
+        $key = static::COUPONS_KEY;
+
+        $coupons = (array) $this->state->get(static::COUPONS_KEY);
+
+        $coupons[] = $id;
+        $coupons = array_unique($coupons);
+
+        $this->state->remember($key, $coupons);
+
+        return $this;
+    }
+
+    /**
+     * @param  int  $id
+     *
+     * @return CartStorage
+     */
+    public function removeCoupon(int $id): static
+    {
+        $coupons = $this->getCoupons();
+
+        $coupons = array_filter($coupons, static fn($couponId) => (int) $couponId !== $id);
+
+        $this->state->remember(static::COUPONS_KEY, $coupons);
+
+        return $this;
+    }
+
+    /**
+     * @return  array
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function getCoupons(): array
+    {
+        $key = static::COUPONS_KEY;
+
+        return array_unique((array) ($this->state->get($key) ?? []));
+    }
+
+    /**
+     * @return  static
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function clearCoupons(): self
+    {
+        $key = static::COUPONS_KEY;
+
+        $this->state->forget($key);
+
+        return $this;
     }
 }

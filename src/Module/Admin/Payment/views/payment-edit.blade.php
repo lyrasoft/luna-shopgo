@@ -18,6 +18,7 @@ namespace App\View;
 
 use Lyrasoft\ShopGo\Module\Admin\Payment\PaymentEditView;
 use Lyrasoft\ShopGo\Entity\Payment;
+use Lyrasoft\ShopGo\Payment\AbstractPayment;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -27,9 +28,14 @@ use Windwalker\Core\Router\SystemUri;
 use Windwalker\Form\Form;
 
 /**
- * @var Form    $form
- * @var Payment $item
+ * @var Form                          $form
+ * @var Payment                       $item
+ * @var class-string<AbstractPayment> $typeClass
+ * @var AbstractPayment              $typeInstance
  */
+
+$tabs = $form->getFieldsets();
+unset($tabs['meta']);
 ?>
 
 @extends('admin.global.body-edit')
@@ -48,12 +54,25 @@ use Windwalker\Form\Form;
 
         <div class="row">
             <div class="col-lg-7">
-                <x-fieldset name="basic" :title="$lang('unicorn.fieldset.basic')"
-                    :form="$form"
-                    class="mb-4"
-                    is="card"
-                >
-                </x-fieldset>
+                <x-tabs keepactive variant="pills">
+                    @foreach ($tabs as $tab)
+                        <?php
+                        if (!$tab->getTitle()) {
+                            continue;
+                        }
+                        ?>
+                        <x-tab :name="$tab->getName()" :title="$tab->getTitle()">
+                            <x-fieldset
+                                title=""
+                                :name="$tab->getName()"
+                                :form="$form"
+                                class=""
+                                is="card"
+                            >
+                            </x-fieldset>
+                        </x-tab>
+                    @endforeach
+                </x-tabs>
             </div>
             <div class="col-lg-5">
                 <x-fieldset name="meta" :title="$lang('unicorn.fieldset.meta')"

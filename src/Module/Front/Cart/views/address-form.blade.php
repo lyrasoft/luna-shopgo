@@ -65,7 +65,8 @@ use Windwalker\Core\Router\SystemUri;
             </div>
 
             <transition name="fade">
-                <div v-if="!sync" class="row mt-3" style="animation-duration: .3s">
+                <div v-if="!sync" class="row mt-3" style="animation-duration: .3s"
+                    ref="form">
                     <div class="col-lg-5">
                         {{-- First Name --}}
                         <div class="form-group row mb-4">
@@ -75,6 +76,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('firstname')" type="text" class="form-control"
                                     :name="buildInputName('firstname')"
+                                    required
                                     v-model="data.firstname" />
                             </div>
                         </div>
@@ -87,6 +89,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('lastname')" type="text" class="form-control"
                                     :name="buildInputName('lastname')"
+                                    required
                                     v-model="data.lastname" />
                             </div>
                         </div>
@@ -99,6 +102,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('email')" type="text" class="form-control"
                                     :name="buildInputName('email')"
+                                    required
                                     v-model="data.email" />
                             </div>
                         </div>
@@ -123,6 +127,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('mobile')" type="text" class="form-control"
                                     :name="buildInputName('mobile')"
+                                    required
                                     v-model="data.mobile" />
                             </div>
                         </div>
@@ -183,6 +188,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('address1')" type="text" class="form-control"
                                     :name="buildInputName('address1')"
+                                    required
                                     v-model="data.address1" />
                             </div>
                         </div>
@@ -324,6 +330,32 @@ use Windwalker\Core\Router\SystemUri;
             sync: props.syncData != null
           });
 
+          const form = ref(null);
+
+          function validate() {
+            if (state.sync) {
+              return true;
+            }
+
+            if (form.value) {
+              let pass = true;
+              const inputs = form.value.querySelectorAll('input,textarea,select');
+
+              for (const input of inputs) {
+                if (!input.checkValidity()) {
+                  pass = pass && false;
+
+                  input.reportValidity();
+                  break;
+                }
+              }
+
+              emit('validated', pass);
+
+              return pass;
+            }
+          }
+
           watch(() => state.data, () => {
             emit('update:modelValue', state.data);
           }, { deep: true, immediate: true });
@@ -409,9 +441,11 @@ use Windwalker\Core\Router\SystemUri;
           return {
             ...toRefs(state),
             modal,
+            form,
             locationSelector,
             showSaveButton,
 
+            validate,
             createNew,
             locationChanged,
             buildInputId,

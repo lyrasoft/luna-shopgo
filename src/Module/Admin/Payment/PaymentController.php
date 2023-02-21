@@ -11,14 +11,18 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Payment;
 
+use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Module\Admin\Payment\Form\EditForm;
+use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\ORM;
 
 /**
  * The PaymentController class.
@@ -31,8 +35,17 @@ class PaymentController
         CrudController $controller,
         Navigator $nav,
         #[Autowire] PaymentRepository $repository,
+        FormFactory $formFactory,
+        PaymentService $paymentService,
     ): mixed {
-        $form = $app->make(EditForm::class);
+        $item = $app->input('item');
+        $typeInstance = $paymentService->createTypeInstance(
+            $item['type'] ?? 'transfer',
+            $app->service(ORM::class)->toEntity(Payment::class, $item)
+        );
+
+        $form = $formFactory->create(EditForm::class)
+            ->defineFormFields($typeInstance);
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

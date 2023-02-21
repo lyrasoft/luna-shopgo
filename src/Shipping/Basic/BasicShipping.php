@@ -11,24 +11,12 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Shipping\Basic;
 
-use Brick\Math\BigDecimal;
-use Lyrasoft\Luna\Entity\Category;
-use Lyrasoft\ShopGo\Cart\CartData;
-use Lyrasoft\ShopGo\Entity\Location;
-use Lyrasoft\ShopGo\Entity\ProductVariant;
-use Lyrasoft\ShopGo\Field\ShippingPricingField;
 use Lyrasoft\ShopGo\Shipping\AbstractShipping;
 use Lyrasoft\ShopGo\Shipping\PriceRangeTrait;
-use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
-use Unicorn\Field\ButtonRadioField;
-use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Language\TranslatorTrait;
-use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Form;
-use Windwalker\ORM\ORM;
-use Windwalker\Renderer\CompositeRenderer;
 
 /**
  * The BasicShipping class.

@@ -16,6 +16,7 @@ use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Cart\CartItem;
+use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Data\Contract\CartTotalsInterface;
 use Lyrasoft\ShopGo\Data\Contract\ProductPricingInterface;
@@ -56,9 +57,17 @@ class DiscountService
         //
     }
 
-    public function computeGlobalDiscounts(CartTotalsInterface $pricing): void
+    /**
+     * @param  CartTotalsInterface      $pricing
+     * @param  iterable<Discount>|null  $discounts
+     *
+     * @return  void
+     */
+    public function computeGlobalDiscounts(CartTotalsInterface $pricing, ?iterable $discounts = null): void
     {
-        foreach ($this->getGlobalDiscounts() as $discount) {
+        $discounts ??= $this->getGlobalDiscounts();
+
+        foreach ($discounts as $discount) {
             if (!$this->matchDiscount($discount, $pricing)) {
                 continue;
             }
@@ -82,15 +91,15 @@ class DiscountService
     }
 
     /**
-     * @param  CartTotalsInterface  $pricing
+     * @param  CartTotalsInterface      $pricing
+     * @param  iterable<Discount>|null  $discounts
      *
      * @return  void
      *
-     * @throws \Brick\Math\Exception\MathException
      */
-    public function computeProductsGlobalDiscounts(CartTotalsInterface $pricing): void
+    public function computeProductsGlobalDiscounts(CartTotalsInterface $pricing, ?iterable $discounts = null): void
     {
-        $discounts = $this->getGlobalDiscounts();
+        $discounts ??= $this->getGlobalDiscounts();
 
         $this->matchProducts($discounts, $pricing);
 
@@ -115,7 +124,13 @@ class DiscountService
                 $totals->add(
                     'discount:' . $discount->getId(),
                     $diff,
-                    $discount->getTitle()
+                    $discount->getTitle(),
+                    [
+                        'id' => $discount->getId(),
+                        'type' => $discount->getType(),
+                        'subtype' => $discount->getSubtype(),
+                        'code' => $discount->getCode(),
+                    ]
                 );
                 $pricing->setTotals($totals);
             }
@@ -207,6 +222,12 @@ class DiscountService
             'discount:' . $discount->getId(),
             $diff,
             $discount->getTitle(),
+            [
+                'id' => $discount->getId(),
+                'type' => $discount->getType(),
+                'subtype' => $discount->getSubtype(),
+                'code' => $discount->getCode(),
+            ]
         );
         $priceSet['final'] = $priceSet['final']->plus($diff);
 
@@ -348,7 +369,7 @@ class DiscountService
     }
 
     /**
-     * @param  iterable<Discount>  $discounts
+     * @param  iterable<Discount>   $discounts
      * @param  CartTotalsInterface  $pricing
      *
      * @return  CartTotalsInterface
@@ -502,6 +523,35 @@ class DiscountService
     }
 
     /**
+     * @param  string     $code
+     * @param  User|null  $user
+     *
+     * @return  Collection<Discount>
+     */
+    public function findCodeDiscountsAndCoupons(string $code, ?User $user = null): Collection
+    {
+        return $this->once(
+            'discounts.codes.coupons',
+            function () use ($user, $code) {
+                $discounts = $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL())
+                    ->where('subtype', 'code')
+                    ->where('code', $code)
+                    ->all(Discount::class);
+
+                /** @var Discount[] $coupons */
+                $coupons = $this->discountRepository->getAvailableCouponSelector($code, $user)
+                    ->all(Discount::class);
+
+                foreach ($coupons as $coupon) {
+                    $coupon->setCode($code);
+                }
+
+                return $discounts->merge($coupons);
+            }
+        );
+    }
+
+    /**
      * @return  Collection<Discount>
      */
     public function getGlobalDiscounts(): Collection
@@ -511,6 +561,33 @@ class DiscountService
             fn() => $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL())
                 ->where('subtype', 'basic')
                 ->all(Discount::class)
+        );
+    }
+
+    /**
+     * @param  CartStorage  $cartStorage
+     *
+     * @return  Collection<Discount>
+     */
+    public function getGlobalDiscountsAndAttachedCoupons(CartStorage $cartStorage): Collection
+    {
+        return $this->once(
+            'attached.discounts',
+            function () use ($cartStorage) {
+                $discounts = $this->getGlobalDiscounts();
+
+                $coupons = $cartStorage->getCoupons();
+
+                if (!$coupons) {
+                    return $discounts;
+                }
+
+                return $discounts->merge(
+                    $this->discountRepository->getAvailableSelector()
+                        ->where('id', $coupons)
+                        ->all(Discount::class)
+                );
+            }
         );
     }
 

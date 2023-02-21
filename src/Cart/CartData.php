@@ -122,7 +122,7 @@ class CartData extends ValueObject
     }
 
     /**
-     * @return Collection
+     * @return Collection<Discount>
      */
     public function getCoupons(): Collection
     {
@@ -130,13 +130,13 @@ class CartData extends ValueObject
     }
 
     /**
-     * @param  Collection  $coupons
+     * @param  Collection|array  $coupons
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCoupons(Collection $coupons): static
+    public function setCoupons(Collection|array $coupons): static
     {
-        $this->coupons = $coupons;
+        $this->coupons = Collection::wrap($coupons);
 
         return $this;
     }

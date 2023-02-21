@@ -11,6 +11,7 @@ const CartApp = {
   components: {
     'address-form': addressForm(),
     'shipping-item': shippingItem(),
+    'payment-item': paymentItem(),
   },
   props: {
     user: Object
@@ -27,29 +28,51 @@ const CartApp = {
       shippingData: {},
       shippings: [],
       payments: [],
-      loading: false
+      code: '',
+      loading: false,
     });
 
     const form = ref(null);
+    const loadingStack = u.stack('loading');
 
-    const loadItems = u.debounce(async function () {
-      const res = await u.$http.get(
-        '@cart_ajax/getItems',
-        {
-          params: {
-            location_id: state.shippingData.locationId,
-            shipping_id: state.shippingId,
-            payment_id: state.paymentId,
-          }
-        }
-      );
+    loadingStack.observe((stack, length) => {
+      state.loading = length > 0;
+    });
 
-      setCartData(res.data.data);
+    const afterItemsChanged = u.debounce(function () {
+      return loadItems();
     }, 300);
+
+    async function loadItems() {
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.get(
+          '@cart_ajax/getItems',
+          {
+            params: {
+              location_id: state.shippingData.locationId,
+              shipping_id: state.shippingId,
+              payment_id: state.paymentId,
+            }
+          }
+        );
+
+        setCartData(res.data.data);
+
+        return res;
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
 
     function setCartData(data) {
       state.items = data.items;
       state.totals = data.totals;
+      state.coupons = data.coupons;
 
       loadShippings();
     }
@@ -64,9 +87,37 @@ const CartApp = {
 
     // Actions
     async function removeItem(item, i) {
-      const res = await u.$http.delete(`@cart_ajax/removeItem?key=${item.key}`);
+      loadingStack.push(true);
 
-      return loadItems();
+      try {
+        const res = await u.$http.delete(`@cart_ajax/removeItem?key=${item.key}`);
+
+        return await afterItemsChanged();
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
+
+    async function clearCart() {
+      loadingStack.push(true);
+
+      try {
+        await u.$http.put(`@cart_ajax/clearCart`);
+
+        await loadItems();
+
+        await u.alert('已移除所有商品', '將回到首頁', 'success');
+
+        location.href = u.route('home');
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
     }
 
     // Quantity
@@ -83,14 +134,56 @@ const CartApp = {
         values[item.key] = item.quantity;
       }
 
+      loadingStack.push(true);
+
       try {
         const res = await u.$http.post('@cart_ajax/updateQuantities', { values });
 
-        return loadItems();
+        return await loadItems();
       } catch (e) {
+        console.error(e);
         u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
       }
     }, 300);
+
+    // Code / Coupons
+    async function addCode() {
+      if (state.code === '') {
+        return;
+      }
+
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.post('@cart_ajax/addCode', { code: state.code });
+
+        state.code = '';
+
+        await loadItems();
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
+
+    async function removeCode(id) {
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.delete('@cart_ajax/removeCode', { id });
+
+        await loadItems();
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
 
     // Totals
     const filteredTotals = computed(() => {
@@ -125,22 +218,132 @@ const CartApp = {
       loadItems();
     });
 
-    const loadShippings = u.debounce(async function () {
-      const res = await u.$http.get(`@cart_ajax/shippings?location_id=${state.shippingData.locationId}`);
+    const selectedShipping = computed(() => {
+      return state.shippings.find(item => item.id === state.shippingId);
+    });
 
-      state.shippings = res.data.data;
-    }, 300);
+    async function loadShippings() {
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.get(`@cart_ajax/shippings?location_id=${state.shippingData.locationId}`);
+
+        state.shippings = res.data.data;
+
+        await nextTick();
+
+        if (state.shippings.length > 0) {
+          if (!selectedShipping.value) {
+            state.shippingId = state.shippings[0].id;
+          }
+        } else {
+          state.shippingId = null;
+        }
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
 
     // Payments
+    watch(() => [state.shippingData.shippingId, state.shippingId], () => {
+      loadPayments();
+    });
+
+    const selectedPayment = computed(() => {
+      return state.payments.find(item => item.id === state.paymentId);
+    });
+
+    async function loadPayments() {
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.get(
+          `@cart_ajax/payments`,
+          {
+            params: {
+              location_id: state.shippingData.locationId,
+              shipping_id: state.shippingId
+            }
+          }
+        );
+
+        state.payments = res.data.data;
+
+        await nextTick();
+
+        if (state.payments.length > 0) {
+          if (!state.payments.find((payment) => payment.id === state.paymentId)) {
+            state.paymentId = state.payments[0].id;
+          }
+        } else {
+          state.paymentId = null;
+        }
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        loadingStack.pop();
+      }
+    }
+
+    // Checkout
+    const canCheckout = computed(() => {
+      if (!state.shippingData.locationId) {
+        return false;
+      }
+
+      if (!state.paymentData.locationId) {
+        return false;
+      }
+
+      if (!state.shippingId) {
+        return false;
+      }
+
+      if (!state.paymentId) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const shippingForm = ref(null);
+    const paymentForm = ref(null);
+
+    function checkout() {
+      if (!shippingForm.value.validate()) {
+        console.log('Shipping Validate Fail');
+        return;
+      }
+
+      if (!paymentForm.value.validate()) {
+        console.log('Payment Validate Fail');
+        return;
+      }
+
+      form.value.requestSubmit();
+    }
 
     return {
       ...toRefs(state),
       filteredTotals,
       form,
+      canCheckout,
+      selectedShipping,
+      selectedPayment,
+      shippingForm,
+      paymentForm,
 
       removeItem,
+      clearCart,
       changeItemQuantity,
+      addCode,
+      removeCode,
       updateQuantities,
+      checkout,
     };
   }
 };
@@ -148,5 +351,6 @@ const CartApp = {
 const app = createApp(CartApp, u.data('cart.props'));
 
 app.use(ShopGoVuePlugin);
+app.directive('tooltip', ShopGoVuePlugin.Tooltip);
 app.directive('tom-select', ShopGoVuePlugin.TomSelect);
 app.mount('cart-app');

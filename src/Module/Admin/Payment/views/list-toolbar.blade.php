@@ -29,8 +29,10 @@ use Windwalker\Core\Router\SystemUri;
 <div x-title="toolbar" x-data="{ form: $store.grid.form, grid: $store.grid }" class="l-toolbar">
     {{-- Create --}}
     <a class="btn btn-primary btn-sm uni-btn-new"
-        href="{{ $nav->to('payment_edit')->var('new', 1) }}"
+        href="javascript://"
         style="min-width: 150px"
+        data-bs-toggle="modal"
+        data-bs-target="#create-modal"
     >
         <i class="fa fa-plus"></i>
         @lang('unicorn.toolbar.new')

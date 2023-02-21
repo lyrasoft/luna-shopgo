@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Repository;
 
+use Lyrasoft\Luna\Entity\User;
+use Lyrasoft\ShopGo\Entity\Coupon;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\DiscountUsage;
 use Lyrasoft\ShopGo\Enum\DiscountType;
@@ -90,6 +92,28 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
 
         $selector->order('discount.ordering', 'ASC');
         $selector->limit(0);
+
+        return $selector;
+    }
+
+    public function getAvailableCouponSelector(string $code, ?User $user = null): ListSelector
+    {
+        $selector = $this->getListSelector(DiscountType::COUPON());
+
+        $selector->whereExists(
+            fn(Query $query) => $query->from(Coupon::class)
+                ->whereRaw('code = %q', $code)
+                ->tap(
+                    function (Query $query) use ($user) {
+                        if ($user) {
+                            $query->whereRaw('user_id = %a', $user->getId());
+                        } else {
+                            $query->whereRaw('user_id = 0 OR user_id IS NULL');
+                        }
+                    }
+                )
+                ->whereRaw('discount_id = discount.id')
+        );
 
         return $selector;
     }

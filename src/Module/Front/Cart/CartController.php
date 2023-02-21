@@ -11,14 +11,19 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Front\Cart;
 
+use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
+use Lyrasoft\ShopGo\Data\CartPricingData;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\Shipping;
+use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
+use Lyrasoft\ShopGo\Service\DiscountService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
@@ -106,6 +111,75 @@ class CartController
         );
     }
 
+    public function clearCart(AppContext $app, CartStorage $cartStorage): bool
+    {
+        $cartStorage->clear();
+        $cartStorage->clearCoupons();
+
+        return true;
+    }
+
+    public function addCode(
+        AppContext $app,
+        UserService $userService,
+        CartService $cartService,
+        CartStorage $cartStorage,
+        DiscountService $discountService
+    ): bool {
+        $code = $app->input('code');
+
+        if (!$code) {
+            throw new \RuntimeException('沒有序號');
+        }
+
+        $cartData = $cartService->getCartData();
+
+        if (!count($cartData->getItems())) {
+            throw new \RuntimeException('購物車沒有商品', 403);
+        }
+
+        $user = $userService->getUser();
+
+        $discounts = $discountService->findCodeDiscountsAndCoupons($code, $user->isLogin() ? $user : null);
+
+        $data = new CartPricingData();
+        $data->setTotals($cartData->getTotals())
+            ->setTotal($cartData->getTotals()['total'])
+            ->setCartData($cartData);
+
+        $matched = null;
+
+        foreach ($discounts as $discount) {
+            if (!$discountService->matchDiscount($discount, $data)) {
+                continue;
+            }
+
+            $matched = $discount;
+            break;
+        }
+
+        if (!$matched) {
+            throw new \RuntimeException('找不到合適的優惠券', 404);
+        }
+
+        $cartStorage->addCoupon($matched->getId());
+
+        return true;
+    }
+
+    public function removeCode(AppContext $app, CartStorage $cartStorage): bool
+    {
+        $id = (int) $app->input('id');
+
+        if (!$id) {
+            return false;
+        }
+
+        $cartStorage->removeCoupon($id);
+
+        return true;
+    }
+
     /**
      * @param  int  $id
      * @param  int  $variantId
@@ -172,7 +246,7 @@ class CartController
         $shippings = $shippingService->getShippings($location, $products);
 
         foreach ($shippings as $shipping) {
-            $instance = $shippingService->createTypeInstance($shipping->getType(), $shipping);
+            $instance = $shippingService->createTypeInstance($shipping);
 
             if (!$instance) {
                 continue;
@@ -190,5 +264,45 @@ class CartController
         }
 
         return $shippings;
+    }
+
+    public function payments(
+        AppContext $app,
+        ORM $orm,
+        PaymentService $paymentService,
+        RendererService $rendererService,
+    ): iterable {
+        $locationId = (int) $app->input('location_id');
+        $shippingId = (int) $app->input('shipping_id');
+
+        $location = $orm->findOne(Location::class, $locationId);
+
+        if (!$location || !$location->isLeaf()) {
+            return [];
+        }
+
+        $shipping = $orm->findOne(Shipping::class, $shippingId);
+
+        if (!$shipping) {
+            return [];
+        }
+
+        $payments = $paymentService->getPayments($location, $shipping);
+
+        foreach ($payments as $payment) {
+            $instance = $paymentService->createTypeInstance($payment);
+
+            if (!$instance) {
+                continue;
+            }
+
+            $renderer = $rendererService->createRenderer();
+            $payment->optionLayout = $instance->renderOptionLayout(
+                $renderer,
+                compact('location')
+            );
+        }
+
+        return $payments;
     }
 }

@@ -56,6 +56,16 @@ class PaymentRepository implements ManageRepositoryInterface, ListRepositoryInte
         return $selector;
     }
 
+    public function getAvailableListSelector(): ListSelector
+    {
+        $selector = $this->getListSelector();
+
+        $selector->where('payment.state', 1);
+        $selector->order('payment.ordering', 'ASC');
+
+        return $selector;
+    }
+
     #[ConfigureAction(SaveAction::class)]
     protected function configureSaveAction(SaveAction $action): void
     {

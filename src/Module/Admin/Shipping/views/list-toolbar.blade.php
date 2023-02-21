@@ -29,7 +29,9 @@ use Windwalker\Core\Router\SystemUri;
 <div x-title="toolbar" x-data="{ form: $store.grid.form, grid: $store.grid }" class="l-toolbar">
     {{-- Create --}}
     <a class="btn btn-primary btn-sm uni-btn-new"
-        href="{{ $nav->to('shipping_edit')->var('new', 1) }}"
+        href="javascript://"
+        data-bs-toggle="modal"
+        data-bs-target="#create-modal"
         style="min-width: 150px"
     >
         <i class="fa fa-plus"></i>

@@ -50,27 +50,28 @@ class EditForm implements FieldDefinitionInterface
             ->label($this->trans('unicorn.field.alias'))
             ->addFilter('trim');
 
-        $form->fieldset(
-            'basic',
-            function (Form $form) {
-                $form->add('subtitle', TextField::class)
-                    ->label($this->trans('shopgo.payment.field.subtitle'));
+        $form->fieldset('basic')
+            ->title($this->trans('unicorn.fieldset.basic'))
+            ->register(
+                function (Form $form) {
+                    $form->add('subtitle', TextField::class)
+                        ->label($this->trans('shopgo.payment.field.subtitle'));
 
-                $form->add('description', TextareaField::class)
-                    ->label($this->trans('unicorn.field.description'))
-                    ->rows(4);
+                    $form->add('description', TextareaField::class)
+                        ->label($this->trans('unicorn.field.description'))
+                        ->rows(4);
 
-                $form->add('order_state_id', OrderStateListField::class)
-                    ->label($this->trans('shopgo.payment.field.order.state'));
+                    $form->add('order_state_id', OrderStateListField::class)
+                        ->label($this->trans('shopgo.payment.field.order.state'));
 
-                $form->add('location_category_id', CategoryModalField::class)
-                    ->label($this->trans('shopgo.payment.field.location_category'))
-                    ->categoryType('location');
+                    $form->add('location_category_id', CategoryModalField::class)
+                        ->label($this->trans('shopgo.payment.field.location_category'))
+                        ->categoryType('location');
 
-                $form->add('location_id', LocationModalField::class)
-                    ->label($this->trans('shopgo.payment.field.location'));
-            }
-        );
+                    $form->add('location_id', LocationModalField::class)
+                        ->label($this->trans('shopgo.payment.field.location'));
+                }
+            );
 
         $form->fieldset(
             'meta',
@@ -109,6 +110,7 @@ class EditForm implements FieldDefinitionInterface
             }
         );
 
+        $form->add('type', HiddenField::class);
         $form->add('id', HiddenField::class);
     }
 }

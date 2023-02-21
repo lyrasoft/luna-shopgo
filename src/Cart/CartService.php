@@ -14,10 +14,12 @@ namespace Lyrasoft\ShopGo\Cart;
 use Brick\Math\Exception\MathException;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\Shipping;
+use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
@@ -89,7 +91,7 @@ class CartService
         $vIds = array_unique(array_column($items, 'variantId'));
 
         $variants = $this->variantRepository->getCartListSelector()
-            ->where('product_variant.id', $vIds)
+            ->where('product_variant.id', $vIds ?: [0])
             ->tapIf(
                 $forUpdate,
                 fn (ListSelector $selector) => $selector->forUpdate()
@@ -289,6 +291,17 @@ class CartService
         $cartData->setTotals($totals);
         $cartData->setDiscounts($appliedDiscounts);
 
+        $coupons = [];
+
+        /** @var Discount $discount */
+        foreach ($appliedDiscounts as $discount) {
+            if ($discount->getType() === DiscountType::COUPON() || $discount->getSubtype() === 'code') {
+                $coupons[] = $discount;
+            }
+        }
+
+        $cartData->setCoupons($coupons);
+
         return $event->getCartData();
     }
 
@@ -306,7 +319,7 @@ class CartService
             return;
         }
 
-        $instance = $this->shippingService->createTypeInstance($shipping->getType(), $shipping);
+        $instance = $this->shippingService->createTypeInstance($shipping);
 
         if (!$instance) {
             return;
