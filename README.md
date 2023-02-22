@@ -8,14 +8,6 @@ Install from composer
 composer require lyrasoft/shopgo
 ```
 
-You must register `SequencePackage` to `stc/di.php` first:
-
-```php
-        'providers' => [
-            \Lyrasoft\Sequence\SequencePackage::class,
-        ],
-```
-
 Then copy files to project
 
 ```shell
@@ -218,7 +210,7 @@ $cartQuantity = $cartStorage->count();
 <div class="c-cart-button"
     data-role="cart-button">
     <div class="c-cart-button__quantity">
-        <i class="fa fa-cart"></i>
+        <i class="fa fa-cart-shopping"></i>
         
         <span class="badge bg-danger"
             data-role="cart-quantity">
