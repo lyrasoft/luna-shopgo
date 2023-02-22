@@ -152,7 +152,7 @@ $seeder->import(
                 $attrMap->setLocale('*');
 
                 if ($attribute->getType() === ProductAttributeType::BOOL()) {
-                    $attrMap->setValue((string) random_int(0, 1));
+                     $attrMap->setValue((string) random_int(0, 1));
                 } elseif ($attribute->getType() === ProductAttributeType::TEXT()) {
                     $attrMap->setValue($faker->sentence());
                 } elseif ($attribute->getType() === ProductAttributeType::SELECT()) {
