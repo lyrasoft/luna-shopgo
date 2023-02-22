@@ -58,7 +58,7 @@ const CartApp = {
           }
         );
 
-        setCartData(res.data.data);
+        await setCartData(res.data.data);
 
         return res;
       } catch (e) {
@@ -69,12 +69,12 @@ const CartApp = {
       }
     }
 
-    function setCartData(data) {
+    async function setCartData(data) {
       state.items = data.items;
       state.totals = data.totals;
       state.coupons = data.coupons;
 
-      loadShippings();
+      return await loadShippings();
     }
 
     init();
@@ -125,12 +125,12 @@ const CartApp = {
     }
 
     // Quantity
-    function changeItemQuantity(item, offsets) {
+    async function changeItemQuantity(item, offsets) {
       item.quantity += offsets;
 
       item.quantity = Math.max(item.quantity, 1);
 
-      updateQuantities(item);
+      await updateQuantities(item);
     }
 
     const updateQuantities = u.debounce(async (item) => {
@@ -251,7 +251,10 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        setTimeout(() => {
+          // Wait items re-loading
+          loadingStack.pop();
+        }, 100);
       }
     }
 

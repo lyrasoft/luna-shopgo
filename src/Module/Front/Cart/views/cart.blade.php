@@ -60,8 +60,15 @@ $uniScript->addRoute('@address_ajax');
                 style="--sidebar-offsets-top: 90px; --sidebar-offsets-bottom: 30px">
                 <div class="row">
                     <div class="col-lg-8 l-cart-page__content">
+                        {{-- Header --}}
                         <header class="d-flex align-items-center justify-content-between mb-4">
-                            <h3 class="m-0">購物車</h3>
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="m-0">購物車</h3>
+                                <div v-if="loading" class="spinner spinner-border-sm spinner-border"
+                                    data-cloak>
+
+                                </div>
+                            </div>
 
                             <div>
                                 <a href="javascript://"
@@ -72,6 +79,7 @@ $uniScript->addRoute('@address_ajax');
                             </div>
                         </header>
 
+                        {{-- Body Loading --}}
                         <div data-loading>
                             <div class="d-flex py-5">
                                 <span class="spinner spinner-grow spinner-lg mx-auto"></span>
@@ -105,17 +113,23 @@ $uniScript->addRoute('@address_ajax');
                                 <h3>貨運方式</h3>
 
                                 <template v-if="shippings.length > 0">
-                                    <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
-                                        :shipping="shipping"
-                                        :i="i"
-                                        :selected="shippingId === shipping.id"
-                                        @selected="shippingId = shipping.id"
-                                    >
-                                    </shipping-item>
+                                    <transition-group name="fade">
+                                        <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
+                                            style="animation-duration: .3s"
+                                            :shipping="shipping"
+                                            :i="i"
+                                            :selected="shippingId === shipping.id"
+                                            @selected="shippingId = shipping.id"
+                                        >
+                                        </shipping-item>
+                                    </transition-group>
                                 </template>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
-                                        <template v-if="shippingData.locationId">
+                                        <template v-if="loading">
+                                            <span class="spinner spinner-border"></span>
+                                        </template>
+                                        <template v-else-if="shippingData.locationId">
                                             目前沒有合適的貨運方式
                                         </template>
                                         <template v-else>
@@ -130,17 +144,23 @@ $uniScript->addRoute('@address_ajax');
                                 <h3>付款方式</h3>
 
                                 <template v-if="payments.length > 0">
-                                    <payment-item v-for="(payment, i) of payments" :key="payment.id"
-                                        :payment="payment"
-                                        :i="i"
-                                        :selected="paymentId === payment.id"
-                                        @selected="paymentId = payment.id"
-                                    >
-                                    </payment-item>
+                                    <transition-group name="fade">
+                                        <payment-item v-for="(payment, i) of payments" :key="payment.id"
+                                            style="animation-duration: .3s"
+                                            :payment="payment"
+                                            :i="i"
+                                            :selected="paymentId === payment.id"
+                                            @selected="paymentId = payment.id"
+                                        >
+                                        </payment-item>
+                                    </transition-group>
                                 </template>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
-                                        <template v-if="shippingData.shippingId">
+                                        <template v-if="loading">
+                                            <span class="spinner spinner-border"></span>
+                                        </template>
+                                        <template v-else-if="shippingData.shippingId">
                                             目前沒有合適的付款方式
                                         </template>
                                         <template v-else>
@@ -152,11 +172,13 @@ $uniScript->addRoute('@address_ajax');
                         </div>
                     </div>
 
+                    {{-- Sidebar --}}
                     <div class="col-lg-4 l-cart-page__sidebar">
                         <div class="l-cart-sidebar position-sticky"
                             style="top: var(--sidebar-offsets-top, 90px);"
                         >
                             <div class="card">
+                                {{-- Code Input --}}
                                 <div class="card-body l-cart-coupons border-bottom">
                                     <h5>優惠碼</h5>
                                     <div class="d-flex gap-2">
@@ -165,11 +187,13 @@ $uniScript->addRoute('@address_ajax');
                                             style="min-width: 100px"
                                             @click="addCode"
                                             :disabled="code === '' || loading"
+                                            disabled
                                         >
                                             使用
                                         </button>
                                     </div>
 
+                                    {{-- Coupons --}}
                                     <div v-if="coupons.length" data-cloak class="list-group list-group-flush mt-4">
                                         <div v-for="coupon of coupons" class="list-group-item border-top d-flex">
                                             <div>
@@ -196,13 +220,22 @@ $uniScript->addRoute('@address_ajax');
                                     </div>
                                 </div>
 
+                                {{-- Totals Loading --}}
+                                <div v-if="!loaded" class="card-body">
+                                    <div class="card-text placeholder-glow d-flex my-2">
+                                        <span class="placeholder col-4"></span>
+                                        <span class="placeholder col-3 ms-auto"></span>
+                                    </div>
+                                </div>
+
+                                {{-- Totals --}}
                                 <div v-if="loaded" data-cloak class="card-body l-cart-totals text-end">
-                                    <div v-if="totals.total" class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100">
+                                    <div class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100">
                                         <div class="l-cart-total__label">
                                             訂單小計
                                         </div>
 
-                                        <div class="l-cart-total__value">
+                                        <div v-if="totals.total" class="l-cart-total__value">
                                             @{{ $formatPrice(totals.total.price, true) }}
                                         </div>
                                     </div>
@@ -225,20 +258,25 @@ $uniScript->addRoute('@address_ajax');
                                 </div>
                             </div>
 
+                            {{-- Checkbox --}}
                             <div class="card mt-3 position-sticky"
                                 style="bottom: 0;">
-                                <div class="card-body d-grid gap-3" data-cloak>
-                                    <div v-if="totals.grand_total" class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100 fs-5 fw-bold">
+                                <div class="card-body d-grid gap-3">
+                                    {{-- Grand Total --}}
+                                    <div v-if="loaded" class="l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold"
+                                        data-cloak>
                                         <div class="l-cart-total__label">
                                             訂單總計
                                         </div>
 
-                                        <div class="l-cart-total__value">
+                                        <div v-if="totals.grand_total" class="l-cart-total__value">
                                             @{{ $formatPrice(totals.grand_total.price, true) }}
                                         </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-between">
+                                    {{-- Shipping / Payment Info --}}
+                                    <div v-if="loaded" class="d-flex justify-content-between"
+                                        data-cloak>
                                         <div>
                                             <i class="fa fa-truck"></i>
                                             @{{ selectedShipping?.title || '尚未選擇貨運方式' }}
@@ -250,15 +288,39 @@ $uniScript->addRoute('@address_ajax');
                                         </div>
                                     </div>
 
+                                    {{-- Loading --}}
+                                    <div v-if="!loaded">
+                                        <div class="card-text placeholder-glow d-flex mb-1" style="height: 1.25rem;">
+                                            <span class="placeholder col-3" ></span>
+                                            <span class="placeholder col-4 ms-auto"></span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Loading --}}
+                                    <div v-if="!loaded">
+                                        <div class="card-text placeholder-glow d-flex">
+                                            <span class="placeholder col-3"></span>
+                                            <span class="placeholder col-3 ms-auto"></span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Checkout Button --}}
                                     <button type="button" class="btn btn-primary btn-lg"
                                         :disabled="loading || !canCheckout"
+                                        disabled
                                         @click="checkout"
                                     >
-                                        @{{ loading ? '載入中' : '結帳' }}
+                                        <div data-cloak>
+                                            @{{ loading ? '載入中' : '結帳' }}
+                                        </div>
+                                        <div data-loading>
+                                            <span class="spinner spinner-border"></span>
+                                        </div>
                                     </button>
                                 </div>
                             </div>
                         </div>
+                        {{-- End Sidebar--}}
                     </div>
                 </div>
             </form>

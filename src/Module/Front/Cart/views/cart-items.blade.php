@@ -33,7 +33,6 @@ use Windwalker\Core\Router\SystemUri;
     >
         <div class="card-body d-grid d-lg-flex gap-3">
             <div class="d-flex gap-3 me-auto">
-
                 {{-- Cover --}}
                 <div class="c-cart-item__image">
                     <div style="width: 75px" class="ratio ratio-1x1">
@@ -111,6 +110,7 @@ use Windwalker\Core\Router\SystemUri;
             </div>
         </div>
 
+        {{-- Attachments --}}
         <div v-if="item.attachments.length > 0" class="card-footer py-4 px-3 px-lg-5">
             <h6>加價購</h6>
 
@@ -166,6 +166,7 @@ use Windwalker\Core\Router\SystemUri;
                 </div>
             </div>
 
+            {{-- Product Total --}}
             <div class="mt-3 text-end fs-5">
                 <strong>商品總價</strong>
 

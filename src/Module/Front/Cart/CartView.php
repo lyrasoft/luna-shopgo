@@ -15,6 +15,7 @@ use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Psr\Cache\InvalidArgumentException;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
@@ -42,6 +43,7 @@ class CartView implements ViewModelInterface
         protected UserService $userService,
         protected Navigator $nav,
         protected ORM $orm,
+        protected ShopGoPackage $shopGo,
         protected CartStorage $cartStorage,
     ) {
         //
@@ -58,6 +60,12 @@ class CartView implements ViewModelInterface
      */
     public function prepare(AppContext $app, View $view): RouteUri|array
     {
+        $user = $this->userService->getUser();
+
+        if (!$user->isLogin() && !$this->shopGo->config('checkout.allow_anonymous')) {
+            return $this->nav->to('login')->withReturn();
+        }
+
         if ($this->cartStorage->count() === 0) {
             return $this->nav->to('home');
         }

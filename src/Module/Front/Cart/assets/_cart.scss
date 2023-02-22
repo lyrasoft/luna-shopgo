@@ -3,7 +3,7 @@
 .view-cart {
   [v-cloak] {
     [data-cloak], &[data-cloak] {
-      visibility: hidden;
+      display: none !important;
     }
 
     [data-loading] {

@@ -64,8 +64,17 @@ use Windwalker\Core\Router\SystemUri;
                 </div>
             </div>
 
-            <transition name="fade">
-                <div v-if="!sync" class="row mt-3" style="animation-duration: .3s"
+            <transition name="fade" mode="out-in">
+                <div v-if="currentState === 'initializing'">
+                    <div class="placeholder-glow">
+                        <span class="placeholder col-7"></span>
+                    </div>
+                </div>
+                <div v-else-if="!sync && data.addressId" class="mt-3"
+                    style="animation-duration: .3s">
+                    @{{ data.formatted }}
+                </div>
+                <div v-else-if="!sync && !data.addressId" class="row mt-3" style="animation-duration: .3s"
                     ref="form">
                     <div class="col-lg-5">
                         {{-- First Name --}}
@@ -216,6 +225,13 @@ use Windwalker\Core\Router\SystemUri;
 
                 </div>
             </transition>
+
+            <div class="d-none">
+                <input :id="buildInputId('address_id')" type="hidden"
+                    :name="buildInputName('address_id')"
+                    v-model="data.addressId"
+                />
+            </div>
         </div>
 
         {{-- Modal --}}
@@ -307,7 +323,7 @@ use Windwalker\Core\Router\SystemUri;
         setup(props, { emit }) {
           const state = reactive({
             addressLoading: false,
-            currentState: 'new',
+            currentState: props.syncData == null ? 'initializing' : 'sync',
             locationPath: [],
             cascadeOptions: {
               ajaxUrl: u.route('@address_ajax/locationOptions'),
@@ -341,6 +357,30 @@ use Windwalker\Core\Router\SystemUri;
 
           const form = ref(null);
 
+          if (Object.keys(props.modelValue).length === 0) {
+            const firstAddress = findMyAddress()[0] || null;
+
+            if (firstAddress) {
+              state.data = firstAddress;
+            }
+          }
+
+          onMounted(async () => {
+            if (!state.sync && Object.keys(props.modelValue).length === 0) {
+              const addresses = await findMyAddress();
+
+              const address = addresses[0];
+
+              if (address) {
+                setAddressToData(address);
+              }
+
+              state.currentState = 'selected';
+            } else {
+              state.currentState = 'form';
+            }
+          });
+
           function validate() {
             if (state.sync) {
               return true;
@@ -371,11 +411,25 @@ use Windwalker\Core\Router\SystemUri;
 
           watch(() => props.syncData, async () => {
             if (state.sync && props.syncData) {
-              state.data = JSON.parse(JSON.stringify(props.syncData || {}));
-
-              await updateLocationList();
+              syncAddressFromOutside();
             }
           }, { deep: true, immediate: true });
+
+          watch(() => state.sync, (v) => {
+            if (!v) {
+              state.currentState = 'form';
+              state.data.addressId = null;
+            } else if (props.syncData) {
+              state.currentState = 'sync';
+              syncAddressFromOutside();
+            }
+          });
+
+          function syncAddressFromOutside() {
+            state.data = JSON.parse(JSON.stringify(props.syncData || {}));
+
+            // await updateLocationList();
+          }
 
           const showSaveButton = computed(() => {
             return state.currentAddressHash !== u.md5(JSON.stringify(state.data));
@@ -404,6 +458,12 @@ use Windwalker\Core\Router\SystemUri;
             state.data = Object.assign({}, defaultAddress);
           }
 
+          async function findMyAddress() {
+            const res = await u.$http.get('@address_ajax/myAddresses');
+
+            return res.data.data;
+          }
+
           // Select
           const modal = ref(null);
 
@@ -413,9 +473,7 @@ use Windwalker\Core\Router\SystemUri;
             u.$ui.bootstrap.modal(modal.value).show();
 
             try {
-              const res = await u.$http.get('@address_ajax/myAddresses');
-
-              state.addresses = res.data.data;
+              state.addresses = await findMyAddress();
             } finally {
               state.addressLoading = false;
             }
@@ -429,18 +487,30 @@ use Windwalker\Core\Router\SystemUri;
               address
             );
 
+            setAddressToData(address);
+
+            state.currentAddressHash = u.md5(JSON.stringify(state.data));
+
+            await updateLocationList();
+
+            state.addressSelecting = false;
+          }
+
+          async function setAddressToData(address) {
+            state.data = Object.assign(
+              {},
+              defaultAddress,
+              address
+            );
+
             state.data.locationPath = state.data.locationPath.map(v => String(v));
 
             state.data.addressId = String(address.id);
             state.data.locationId = String(state.data.locationId);
 
-            state.currentAddressHash = u.md5(JSON.stringify(state.data));
-
             u.$ui.bootstrap.modal(modal.value).hide();
 
             await updateLocationList();
-
-            state.addressSelecting = false;
           }
 
           async function updateLocationList() {

@@ -27,7 +27,7 @@ use Windwalker\Core\Router\SystemUri;
 <script id="c-payment-item" type="x-template">
 <div class="card my-3"
     :class="[ selected ? 'border border-primary' : '' ]">
-    <div class="card-body d-flex align-items-center gap-3 position-relative">
+    <div class="card-body d-flex align-items-center gap-3">
         <div class="form-check">
             <input type="radio"
                 :id="`input-payment-id-${payment.id}`"
@@ -61,9 +61,11 @@ use Windwalker\Core\Router\SystemUri;
         </div>
     </div>
 
-    <div v-if="payment.description.trim()" class="card-body border-top ps-5"
-        v-html="payment.description">
+    <div v-if="payment.description.trim()" class="card-body border-top ps-5">
+        <div class="position-relative" style="z-index: 1"
+            v-html="payment.description">
 
+        </div>
     </div>
 
     <transition name="fade" mode="out-in">

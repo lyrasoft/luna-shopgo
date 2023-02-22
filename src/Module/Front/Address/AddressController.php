@@ -15,6 +15,7 @@ use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Enum\LocationType;
+use Lyrasoft\ShopGo\Service\AddressService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Data\Collection;
@@ -76,35 +77,10 @@ class AddressController
         return $items;
     }
 
-    public function myAddresses(UserService $userService, ORM $orm): iterable
+    public function myAddresses(UserService $userService, AddressService $addressService): iterable
     {
         $user = $userService->getUser();
 
-        $addresses = $orm->from(Address::class)
-            ->leftJoin(
-                Location::class,
-                'location',
-                'location.id',
-                'address.location_id'
-            )
-            ->where('address.user_id', $user->getId())
-            ->order('address.id', 'DESC')
-            ->groupByJoins()
-            ->all(Address::class);
-
-        /** @var NestedSetMapper<Location> $locationMapper */
-        $locationMapper = $orm->mapper(Location::class);
-
-        /** @var Address $address */
-        foreach ($addresses as $address) {
-            $location = $locationMapper->toEntity($address->location);
-            $locationPath = $locationMapper->getPath($location);
-            $locationPath->shift();
-
-            $address->formatted = $address->formatByLocation($location, true);
-            $address->locationPath = $locationPath->column('id')->values();
-        }
-
-        return $addresses;
+        return $addressService->getUserAddresses($user);
     }
 }

@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
-use Lyrasoft\ShopGo\Data\AddressData;
+use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
 use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Repository\AddressRepository;
+use Windwalker\Data\Collection;
+use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\NestedSetMapper;
+use Windwalker\ORM\ORM;
 use Windwalker\Utilities\SimpleTemplate;
 
 /**
@@ -26,6 +31,39 @@ class AddressService
     public const DEFAULT_FORMAT = "{firstname} {lastname}\r\n{company}\r\n{address1}\r\n{address2}\r\n{city}, {zone} {postcode}\r\n{country}";
 
     // phpcs:enable
+    public function __construct(#[Autowire] protected AddressRepository $repository, protected ORM $orm)
+    {
+    }
+
+    /**
+     * @param  User  $user
+     *
+     * @return  Collection<Address>
+     *
+     * @throws \ReflectionException
+     */
+    public function getUserAddresses(User $user): Collection
+    {
+        $addresses = $this->repository->getFrontListSelector()
+            ->where('address.user_id', $user->getId())
+            ->order('address.id', 'DESC')
+            ->all(Address::class);
+
+        /** @var NestedSetMapper<Location> $locationMapper */
+        $locationMapper = $this->orm->mapper(Location::class);
+
+        /** @var Address $address */
+        foreach ($addresses as $address) {
+            $location = $locationMapper->toEntity($address->location);
+            $locationPath = $locationMapper->getPath($location);
+            $locationPath->shift();
+
+            $address->formatted = $address->formatByLocation($location, true);
+            $address->locationPath = $locationPath->column('id')->values();
+        }
+
+        return $addresses;
+    }
 
     public static function format(
         AddressAwareInterface $addressData,
