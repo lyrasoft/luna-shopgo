@@ -191,7 +191,7 @@ class CartStorage
      *
      * @return  static
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.6
      */
     public function addCoupon(int $id): self
     {
@@ -226,7 +226,7 @@ class CartStorage
     /**
      * @return  array
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.6
      */
     public function getCoupons(): array
     {
@@ -238,7 +238,7 @@ class CartStorage
     /**
      * @return  static
      *
-     * @since  __DEPLOY_VERSION__
+     * @since  0.1.6
      */
     public function clearCoupons(): self
     {
