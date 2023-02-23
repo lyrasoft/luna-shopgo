@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Repository;
 
+use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderState;
 use Unicorn\Attributes\ConfigureAction;
@@ -58,6 +59,15 @@ class OrderRepository implements ManageRepositoryInterface, ListRepositoryInterf
                 }
             }
         );
+
+        return $selector;
+    }
+
+    public function getFrontListSelector(User $user): ListSelector
+    {
+        $selector = $this->getListSelector();
+
+        $selector->where('user_id', $user->getId());
 
         return $selector;
     }

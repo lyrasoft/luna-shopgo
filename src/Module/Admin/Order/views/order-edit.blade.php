@@ -39,7 +39,6 @@ $alert = $item->getParams()['alert'] ?? [];
 
 $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
 
-$alert = $item->getParams()['alert'] ?? [];
 ?>
 
 @extends('admin.global.body-edit')
