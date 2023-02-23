@@ -32,19 +32,19 @@ class LocationService
 
     public function formatAddress(AddressAwareInterface $addressData, bool $withName = false): string
     {
-        $location = $this->getLocation($addressData->getLocationId());
+        [$country] = $this->getPathFromLocation($addressData->getLocationId());
 
-        return AddressService::formatByLocation($addressData, $location, $withName);
+        return AddressService::formatByLocation($addressData, $country, $withName);
     }
 
     /**
-     * @param  Location  $location
+     * @param  Location|int  $location
      *
      * @return  array<Location|null>
      *
      * @throws \ReflectionException
      */
-    public function getPathFromLocation(Location $location): array
+    public function getPathFromLocation(Location|int $location): array
     {
         $path = $this->getEntityMapper()->getPath($location);
 

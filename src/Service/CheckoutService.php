@@ -11,9 +11,15 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\Luna\Entity\User;
+use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Data\PaymentData;
+use Lyrasoft\ShopGo\Data\ShippingData;
+use Lyrasoft\ShopGo\Entity\Address;
+use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderHistory;
 use Lyrasoft\ShopGo\Entity\OrderItem;
@@ -22,7 +28,7 @@ use Lyrasoft\ShopGo\Entity\OrderTotal;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
-use Lyrasoft\Sequence\Service\SequenceService;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -39,8 +45,75 @@ class CheckoutService
         protected ORM $orm,
         protected OrderService $orderService,
         protected OrderHistoryService $orderHistoryService,
-        protected SequenceService $sequenceService
+        protected LocationService $locationService,
+        protected AddressService $addressService,
+        protected ?SequenceService $sequenceService = null,
     ) {
+    }
+
+    public function prepareAddressData(
+        ?int $addressId,
+        array $data,
+        PaymentData|ShippingData $addressData,
+        User $user
+    ): Location {
+        if ($addressId) {
+            $address = $this->orm->mustFindOne(Address::class, $addressId);
+
+            if (!$user->isLogin()) {
+                throw new ValidateFailException('Only login user can select address');
+            }
+
+            if ($user->getId() !== $address->getUserId()) {
+                throw new ValidateFailException('This address is not belongs to user');
+            }
+
+            $location = $this->orm->mustFindOne(Location::class, $address->getLocationId());
+            [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
+
+            $addressData
+                ->fillFrom($address)
+                ->setCountry($country?->getTitle() ?? '')
+                ->setState($state?->getTitle() ?? '')
+                ->setCity($city?->getTitle() ?? '')
+                ->setFormatted(
+                    AddressService::formatByLocation($address, $country, true)
+                );
+        } else {
+            $location = $this->orm->mustFindOne(Location::class, $data['location_id']);
+            [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
+
+            $addressData
+                ->setLocationId($location->getId())
+                ->setFirstname($data['firstname'])
+                ->setLastname($data['lastname'])
+                ->setEmail($data['email'])
+                ->setPhone($data['phone'])
+                ->setMobile($data['mobile'])
+                ->setCompany($data['company'])
+                ->setVat($data['vat'])
+                ->setAddress1($data['address1'])
+                ->setAddress2($data['address2'])
+                ->setPostcode($data['postcode'])
+                ->setCountry($country?->getTitle() ?? '')
+                ->setState($state?->getTitle() ?? '')
+                ->setCity($city?->getTitle() ?? '')
+                ->setName(trim($addressData->getFirstname() . ' ' . $addressData->getLastname()))
+                ->setFormatted(
+                    AddressService::formatByLocation($addressData, $country, true)
+                );
+
+            if ($data['save'] ?? false) {
+                $address = new Address();
+                $address->fillFrom($addressData);
+
+                $this->orm->createOne(Address::class, $address);
+
+                $addressData->setAddressId($address->getId());
+            }
+        }
+
+        return $location;
     }
 
     /**
@@ -60,14 +133,6 @@ class CheckoutService
         // Todo: Get state from shipping/payment
         $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);
         $order->setState($state);
-
-        // Todo: calc shipping fee
-        // $shippingFee = $totals['shipping_fee']->toFloat();
-        //
-        // if ($totals->has('free_shipping')) {
-        //     $shippingFee = 0;
-        // }
-        // $order->setShippingFee($shippingFee);
 
         $this->prepareOrderItems($order, $cartData);
         $this->prepareOrderTotals($order, $totals);
@@ -148,7 +213,7 @@ class CheckoutService
             $variant = $item->getVariant()->getData();
             $product = $this->orm->toEntity(
                 Product::class,
-                $variant->getProduct() ?? $this->getProduct($variant->getProductId())
+                $variant->product ?? $this->getProduct($variant->getProductId())
             );
 
             $orderItem = new OrderItem();

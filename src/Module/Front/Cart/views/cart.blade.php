@@ -56,7 +56,7 @@ $uniScript->addRoute('@address_ajax');
 @section('content')
     <div class="l-cart-page container my-5">
         <cart-app v-cloak>
-            <form id="cart-form" ref="form" action="." method="post"
+            <form id="cart-form" ref="form" action="{{ $nav->to('checkout_shipping') }}" method="post"
                 style="--sidebar-offsets-top: 90px; --sidebar-offsets-bottom: 30px">
                 <div class="row">
                     <div class="col-lg-8 l-cart-page__content">
@@ -112,20 +112,18 @@ $uniScript->addRoute('@address_ajax');
                             <div class="l-shippings mb-4">
                                 <h3>貨運方式</h3>
 
-                                <transition name="fade">
-                                    <div v-if="shippings.length > 0" style="animation-duration: .3s">
-                                        <transition-group name="fade">
-                                            <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
-                                                style="animation-duration: .3s"
-                                                :shipping="shipping"
-                                                :i="i"
-                                                :selected="shippingId === shipping.id"
-                                                @selected="shippingId = shipping.id"
-                                            >
-                                            </shipping-item>
-                                        </transition-group>
-                                    </div>
-                                </transition>
+                                <div v-if="shippings.length > 0">
+                                    <transition-group name="fade">
+                                        <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
+                                            style="animation-duration: .3s"
+                                            :shipping="shipping"
+                                            :i="i"
+                                            :selected="shippingId === shipping.id"
+                                            @selected="shippingId = shipping.id"
+                                        >
+                                        </shipping-item>
+                                    </transition-group>
+                                </div>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
                                         <template v-if="loading">
@@ -145,20 +143,18 @@ $uniScript->addRoute('@address_ajax');
                             <div class="l-payments mb-4">
                                 <h3>付款方式</h3>
 
-                                <transition name="fade">
-                                    <div v-if="payments.length > 0" style="animation-duration: .3s">
-                                        <transition-group name="fade">
-                                            <payment-item v-for="(payment, i) of payments" :key="payment.id"
-                                                style="animation-duration: .3s"
-                                                :payment="payment"
-                                                :i="i"
-                                                :selected="paymentId === payment.id"
-                                                @selected="paymentId = payment.id"
-                                            >
-                                            </payment-item>
-                                        </transition-group>
-                                    </div>
-                                </transition>
+                                <div v-if="payments.length > 0">
+                                    <transition-group name="fade">
+                                        <payment-item v-for="(payment, i) of payments" :key="payment.id"
+                                            style="animation-duration: .3s"
+                                            :payment="payment"
+                                            :i="i"
+                                            :selected="paymentId === payment.id"
+                                            @selected="paymentId = payment.id"
+                                        >
+                                        </payment-item>
+                                    </transition-group>
+                                </div>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
                                         <template v-if="loading">
@@ -171,6 +167,22 @@ $uniScript->addRoute('@address_ajax');
                                             請先選擇貨運方式
                                         </template>
                                     </div>
+                                </div>
+                            </div>
+
+                            {{-- Note --}}
+                            <div class="l-checkout-note card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">
+                                        備註
+                                    </h5>
+
+                                    <textarea rows="4"
+                                        class="form-control"
+                                        v-model="note"
+                                        name="checkout[note]"
+                                        placeholder="請填寫訂單備註"
+                                    ></textarea>
                                 </div>
                             </div>
                         </div>
@@ -331,6 +343,10 @@ $uniScript->addRoute('@address_ajax');
                         </div>
                         {{-- End Sidebar--}}
                     </div>
+                </div>
+
+                <div class="d-none">
+                    <x-csrf></x-csrf>
                 </div>
             </form>
         </cart-app>

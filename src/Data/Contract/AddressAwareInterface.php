@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
 
+use Lyrasoft\ShopGo\Entity\Address;
+
 /**
  * Interface AddressAwareInterface
  */
@@ -90,4 +92,23 @@ interface AddressAwareInterface
      * @return int
      */
     public function getLocationId(): int;
+
+    /**
+     * @param  AddressAwareInterface  $address
+     *
+     * @return  static
+     */
+    public function fillFrom(AddressAwareInterface $address): static;
+
+    /**
+     * @return string
+     */
+    public function getFormatted(): string;
+
+    /**
+     * @param  string  $formatted
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setFormatted(string $formatted): static;
 }

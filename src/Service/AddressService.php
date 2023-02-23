@@ -54,7 +54,13 @@ class AddressService
 
         /** @var Address $address */
         foreach ($addresses as $address) {
+            // If location not exists, just ignore.
+            if (!$address->location?->id) {
+                continue;
+            }
+
             $location = $locationMapper->toEntity($address->location);
+
             $locationPath = $locationMapper->getPath($location);
             $locationPath->shift();
 

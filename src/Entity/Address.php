@@ -53,8 +53,8 @@ class Address implements EntityInterface, AddressAwareInterface
     #[Column('lastname')]
     protected string $lastname = '';
 
-    #[Column('fullname')]
-    protected string $fullname = '';
+    #[Column('name')]
+    protected string $name = '';
 
     #[Column('email')]
     protected string $email = '';
@@ -96,6 +96,9 @@ class Address implements EntityInterface, AddressAwareInterface
     #[Column('enabled')]
     #[Cast('bool', 'int')]
     protected bool $enabled = false;
+
+    #[Column('formatted')]
+    protected string $formatted = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
@@ -175,12 +178,12 @@ class Address implements EntityInterface, AddressAwareInterface
 
     public function getName(): string
     {
-        return $this->fullname;
+        return $this->name;
     }
 
-    public function setFullname(string $fullname): static
+    public function setName(string $name): static
     {
-        $this->fullname = $fullname;
+        $this->name = $name;
 
         return $this;
     }
@@ -389,5 +392,44 @@ class Address implements EntityInterface, AddressAwareInterface
     public function formatByLocation(?Location $location = null, bool $withName = false): string
     {
         return AddressService::formatByLocation($this, $location, $withName);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormatted(): string
+    {
+        return $this->formatted;
+    }
+
+    /**
+     * @param  string  $formatted
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setFormatted(string $formatted): static
+    {
+        $this->formatted = $formatted;
+
+        return $this;
+    }
+
+    public function fillFrom(AddressAwareInterface $address): static
+    {
+        return $this->setLocationId($address->getLocationId())
+            ->setFirstname($address->getFirstname())
+            ->setLastname($address->getLastname())
+            ->setEmail($address->getEmail())
+            ->setPhone($address->getPhone())
+            ->setMobile($address->getMobile())
+            ->setCompany($address->getCompany())
+            ->setVat($address->getVat())
+            ->setAddress1($address->getAddress1())
+            ->setAddress2($address->getAddress2())
+            ->setPostcode($address->getPostcode())
+            ->setCountry($address->getCountry())
+            ->setState($address->getState())
+            ->setCity($address->getCity())
+            ->setFormatted($address->getFormatted());
     }
 }

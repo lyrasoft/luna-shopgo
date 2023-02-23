@@ -218,6 +218,7 @@ use Windwalker\Core\Router\SystemUri;
                             <div class="col-9">
                                 <input :id="buildInputId('save')" type="checkbox" class="form-check-input"
                                     :name="buildInputName('save')"
+                                    :value="1"
                                     v-model="data.save" />
                             </div>
                         </div>
@@ -403,6 +404,8 @@ use Windwalker\Core\Router\SystemUri;
 
               return pass;
             }
+
+            return true;
           }
 
           watch(() => state.data, () => {
@@ -449,7 +452,7 @@ use Windwalker\Core\Router\SystemUri;
           }
 
           function buildInputName(name) {
-            return `${props.type}[${name}]`;
+            return `checkout[${props.type}][${name}]`;
           }
 
           function createNew() {

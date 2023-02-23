@@ -39,11 +39,17 @@ const CartApp = {
       state.loading = length > 0;
     });
 
+    function popLoading(wait = 300) {
+      setTimeout(() => {
+        loadingStack.pop();
+      }, wait);
+    }
+
     const afterItemsChanged = u.debounce(function () {
       return loadItems();
     }, 300);
 
-    async function loadItems() {
+    async function loadItems(updateShippings = true) {
       loadingStack.push(true);
 
       try {
@@ -58,23 +64,27 @@ const CartApp = {
           }
         );
 
-        await setCartData(res.data.data);
+        await setCartData(res.data.data, updateShippings);
 
         return res;
       } catch (e) {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        popLoading();
       }
     }
 
-    async function setCartData(data) {
+    async function setCartData(data, updateShippings = true) {
       state.items = data.items;
       state.totals = data.totals;
       state.coupons = data.coupons;
 
-      return await loadShippings();
+      if (updateShippings) {
+        return await loadShippings();
+      }
+
+      return;
     }
 
     init();
@@ -152,7 +162,7 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        popLoading();
       }
     }, 300);
 
@@ -174,7 +184,7 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        popLoading();
       }
     }
 
@@ -189,7 +199,7 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        popLoading();
       }
     }
 
@@ -220,17 +230,18 @@ const CartApp = {
 
     // Shippings
     watch(() => state.shippingData.locationId, () => {
+      console.log(state.shippingData.locationId);
       loadShippings();
     });
-    watch(() => state.shippingId, () => {
-      loadItems();
-    });
+    // watch(() => state.shippingId, () => {
+    //   loadItems(false);
+    // });
 
     const selectedShipping = computed(() => {
       return state.shippings.find(item => item.id === state.shippingId);
     });
 
-    async function loadShippings() {
+    const loadShippings = u.debounce(async function() {
       loadingStack.push(true);
 
       try {
@@ -238,6 +249,7 @@ const CartApp = {
 
         state.shippings = res.data.data;
 
+        await nextTick();
         await nextTick();
 
         if (state.shippings.length > 0) {
@@ -251,15 +263,12 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        setTimeout(() => {
-          // Wait items re-loading
-          loadingStack.pop();
-        }, 100);
+        popLoading();
       }
-    }
+    }, 150);
 
     // Payments
-    watch(() => [state.shippingData.shippingId, state.shippingId], () => {
+    watch(() => [state.shippingData.locationId, state.shippingId], () => {
       loadPayments();
     });
 
@@ -267,7 +276,7 @@ const CartApp = {
       return state.payments.find(item => item.id === state.paymentId);
     });
 
-    async function loadPayments() {
+    const loadPayments = u.debounce(async function () {
       loadingStack.push(true);
 
       try {
@@ -284,6 +293,7 @@ const CartApp = {
         state.payments = res.data.data;
 
         await nextTick();
+        await nextTick();
 
         if (state.payments.length > 0) {
           if (!state.payments.find((payment) => payment.id === state.paymentId)) {
@@ -296,9 +306,9 @@ const CartApp = {
         console.error(e);
         u.alert(e.message, '', 'warning');
       } finally {
-        loadingStack.pop();
+        popLoading();
       }
-    }
+    }, 300);
 
     // Checkout
     const canCheckout = computed(() => {
@@ -334,6 +344,8 @@ const CartApp = {
         console.log('Payment Validate Fail');
         return;
       }
+
+      state.loading = true;
 
       form.value.requestSubmit();
     }

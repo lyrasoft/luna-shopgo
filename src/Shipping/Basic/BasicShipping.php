@@ -11,11 +11,14 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Shipping\Basic;
 
+use Lyrasoft\ShopGo\Cart\Contract\CheckoutProcessLayoutInterface;
 use Lyrasoft\ShopGo\Shipping\AbstractShipping;
 use Lyrasoft\ShopGo\Shipping\PriceRangeTrait;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
+use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Renderer\RendererService;
 use Windwalker\Form\Form;
 
 /**
@@ -53,5 +56,17 @@ class BasicShipping extends AbstractShipping
     public function define(Form $form): void
     {
         $this->registerPricingForm($form);
+    }
+
+    public function renderProcessLayout(AppContext $app): mixed
+    {
+        $rendererService = $app->service(RendererService::class);
+        $renderer = $rendererService->createRenderer(
+            [
+                static::dir() . '/views'
+            ]
+        );
+
+        return $renderer->render('hello');
     }
 }

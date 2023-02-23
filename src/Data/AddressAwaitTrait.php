@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
+use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
+use Lyrasoft\ShopGo\Entity\Address;
+
 /**
  * Trait AddressingDataTrait
  */
@@ -30,6 +33,7 @@ trait AddressAwaitTrait
     public string $address1 = '';
     public string $address2 = '';
     public string $vat = '';
+    public string $formatted = '';
     public int $locationId = 0;
     public int $addressId = 0;
 
@@ -353,6 +357,46 @@ trait AddressAwaitTrait
     public function setPostcode(string $postcode): static
     {
         $this->postcode = $postcode;
+
+        return $this;
+    }
+
+    public function fillFrom(AddressAwareInterface $address): static
+    {
+        return $this->setLocationId($address->getLocationId())
+            ->setFirstname($address->getFirstname())
+            ->setLastname($address->getLastname())
+            ->setEmail($address->getEmail())
+            ->setPhone($address->getPhone())
+            ->setMobile($address->getMobile())
+            ->setCompany($address->getCompany())
+            ->setVat($address->getVat())
+            ->setAddress1($address->getAddress1())
+            ->setAddress2($address->getAddress2())
+            ->setPostcode($address->getPostcode())
+            ->setCountry($address->getCountry())
+            ->setState($address->getState())
+            ->setCity($address->getCity())
+            ->setName(trim($address->getFirstname() . ' ' . $address->getLastname()))
+            ->setFormatted($address->getFormatted());
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormatted(): string
+    {
+        return $this->formatted;
+    }
+
+    /**
+     * @param  string  $formatted
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setFormatted(string $formatted): static
+    {
+        $this->formatted = $formatted;
 
         return $this;
     }

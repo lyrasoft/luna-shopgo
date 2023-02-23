@@ -50,10 +50,6 @@ class CartService
 
     public const FOR_UPDATE = 2 << 0;
 
-    public const INCLUDE_SHIPPING = 2 << 1;
-
-    public const INCLUDE_COUPONS = 2 << 2;
-
     public function __construct(
         protected ApplicationInterface $app,
         protected ShopGoPackage $shopGo,
@@ -71,7 +67,7 @@ class CartService
     {
         $cartItems = $this->getCartItems((bool) ($flags & static::FOR_UPDATE), $params);
 
-        return $this->createCartDataFromItems($cartItems, $params);
+        return $this->createCartDataFromItems($cartItems, $params, $flags);
     }
 
     /**

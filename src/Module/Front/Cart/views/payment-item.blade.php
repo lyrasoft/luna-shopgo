@@ -31,7 +31,8 @@ use Windwalker\Core\Router\SystemUri;
         <div class="form-check">
             <input type="radio"
                 :id="`input-payment-id-${payment.id}`"
-                name="payment[id]"
+                name="checkout[payment][id]"
+                :value="payment.id"
                 class="form-check-input"
                 @change="onSelected"
                 :checked="selected"

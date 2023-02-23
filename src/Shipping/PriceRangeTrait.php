@@ -163,7 +163,6 @@ trait PriceRangeTrait
                                         'location_id' => $location?->getId(),
                                     ]
                                 );
-                                $priceSet['final'] = $priceSet['final']->plus($itemFee);
                                 $cartItem->setPriceSet($priceSet);
                             }
                         }
@@ -201,21 +200,23 @@ trait PriceRangeTrait
                             $fee = BigDecimal::of($pricingSegment['fee'] ?? 0);
                         }
                     }
-
-                    $totals = $cartData->getTotals();
-                    $totals->add(
-                        'shipping_fee',
-                        $fee,
-                        '運費',
-                        [
-                            'id' => $this->getData()->getId(),
-                            'alias' => $this->getData()->getAlias(),
-                            'title' => $this->getData()->getTitle(),
-                            'location_id' => $location?->getId(),
-                        ]
-                    );
                 }
             } // End computing
+
+            if ($fee->isGreaterThan(0)) {
+                $totals = $cartData->getTotals();
+                $totals->add(
+                    'shipping_fee',
+                    $fee,
+                    '運費',
+                    [
+                        'id' => $this->getData()->getId(),
+                        'alias' => $this->getData()->getAlias(),
+                        'title' => $this->getData()->getTitle(),
+                        'location_id' => $location?->getId(),
+                    ]
+                );
+            }
 
             return $fee;
         };
