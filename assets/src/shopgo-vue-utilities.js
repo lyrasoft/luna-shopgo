@@ -173,7 +173,9 @@ window.ShopGoVuePlugin.Tooltip = {
 // Tooltip
 window.ShopGoVuePlugin.TomSelect = {
   async mounted(el, { value }) {
-    const inc = u.$ui.tomSelect(el, value);
+    setTimeout(() => {
+      const inc = u.$ui.tomSelect(el, value);
+    }, 0);
   },
   beforeUnmount(el) {
     const inc = u.$ui.tomSelect(el, value);

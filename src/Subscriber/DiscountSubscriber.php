@@ -39,10 +39,7 @@ class DiscountSubscriber
         if ($context === $event::CART || $context === $event::ORDER) {
             $cartItem = $event->getCartItem();
 
-            $priceSet = $this->discountService->computeSingleProductDiscounts($event, $cartItem->getQuantity())
-                ->getPricing();
-
-            $event->setPricing($priceSet);
+            $this->discountService->computeSingleProductDiscounts($event, $cartItem->getQuantity());
         }
     }
 

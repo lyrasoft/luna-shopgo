@@ -36,7 +36,7 @@ use Windwalker\Core\Router\SystemUri;
                 {{-- Cover --}}
                 <div class="c-cart-item__image">
                     <div style="width: 75px" class="ratio ratio-1x1">
-                        <img :src="item.cover" :alt="item.product.title"
+                        <img class="object-fit-cover" :src="item.cover" :alt="item.product.title"
                             style="">
                     </div>
                 </div>
@@ -124,7 +124,8 @@ use Windwalker\Core\Router\SystemUri;
                     {{-- Cover --}}
                     <div class="c-attachment__image">
                         <div style="width: 45px" class="ratio ratio-1x1">
-                            <img :src="attachment.cover" :alt="attachment.product.title"
+                            <img class="object-fit-cover"
+                                :src="attachment.cover" :alt="attachment.product.title"
                                 style="">
                         </div>
                     </div>

@@ -21,8 +21,10 @@ use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Module\Admin\Product\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ProductRepository;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
@@ -47,12 +49,14 @@ use function Windwalker\collect;
 class ProductEditView implements ViewModelInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     public function __construct(
         protected ORM $orm,
         protected FormFactory $formFactory,
         protected Navigator $nav,
         protected ProductAttributeService $productAttributeService,
+        protected ChronosService $chronosService,
         #[Autowire] protected ProductRepository $repository
     ) {
     }
@@ -113,6 +117,17 @@ class ProductEditView implements ViewModelInterface
                 ->where('type', DiscountType::PRODUCT())
                 ->order('ordering', 'ASC')
                 ->all(Discount::class);
+
+            /** @var Discount $discount */
+            foreach ($discounts as $discount) {
+                $discount->setPublishUp(
+                    $this->chronosService->toLocalFormat($discount->getPublishUp())
+                );
+
+                $discount->setPublishDown(
+                    $this->chronosService->toLocalFormat($discount->getPublishDown())
+                );
+            }
 
             // Sub Categories
             $subCategoryIds = $this->orm->select('category_id')

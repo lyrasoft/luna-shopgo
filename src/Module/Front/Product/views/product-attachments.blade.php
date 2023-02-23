@@ -59,7 +59,7 @@ use Windwalker\Core\Router\SystemUri;
                         <div class="c-additional-purchase-product__cover "
                             style="width: 75px">
                             <div class="ratio ratio-1x1">
-                                <img src="{{ $additionalPurchase->getCover() }}" alt="cover">
+                                <img class="object-fit-cover" src="{{ $additionalPurchase->getCover() }}" alt="cover">
                             </div>
                         </div>
                         <div>

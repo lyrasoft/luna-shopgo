@@ -30,7 +30,7 @@ use Windwalker\Core\Router\SystemUri;
     <div class="c-attachment__product card-header border-bottom d-flex gap-3">
         <div>
             <div class="ratio ratio-1x1" style="width: 55px">
-                <img :src="product.variant.cover" alt="cover">
+                <img class="object-fit-cover" :src="product.variant.cover" alt="cover">
             </div>
         </div>
         <div class="w-100">

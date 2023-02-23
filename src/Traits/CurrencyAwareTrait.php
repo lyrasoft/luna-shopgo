@@ -41,4 +41,9 @@ trait CurrencyAwareTrait
     {
         return $this->currencyService->findCurrencyBy($condition);
     }
+
+    public function getMainInputStep(): string
+    {
+        return $this->getMainCurrency()->getInputStep();
+    }
 }

@@ -89,7 +89,7 @@ class AdditionalPurchaseSubscriber
                 $attachCartItem->setMainVariant($mainVariant);
                 $attachCartItem->setOutOfStock(VariantService::isOutOfStock($attachVariant, $attachProduct));
                 $attachCartItem->setKey((string) $attachmentId);
-                $attachCartItem->setCover($mainVariant->getCover());
+                $attachCartItem->setCover($attachVariant->getCover() ?: $mainVariant->getCover());
                 $attachCartItem->setLink(
                     (string) $product->makeLink($this->nav)
                 );

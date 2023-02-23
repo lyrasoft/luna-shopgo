@@ -36,7 +36,7 @@ use Windwalker\Core\Router\SystemUri;
 
                     <div class="form-check" v-if="syncData">
                         <label :for="`input-${type}-sync`" class="form-check-label">
-                            @{{ syncLabel || '同收件者地址' }}
+                            @{{ syncLabel || '同購買人資訊' }}
                         </label>
                         <input type="checkbox" v-model="sync" :id="`input-${type}-sync`"
                             :name="buildInputName('sync')"

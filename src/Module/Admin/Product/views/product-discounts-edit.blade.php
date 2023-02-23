@@ -8,7 +8,7 @@ namespace App\view;
  * Global variables
  * --------------------------------------------------------------
  * @var $app       AppContext      Application context.
- * @var $vm        object          The view model object.
+ * @var $vm        ProductEditView  The view model object.
  * @var $uri       SystemUri       System Uri information.
  * @var $chronos   ChronosService  The chronos datetime service.
  * @var $nav       Navigator       Navigator object to build route.
@@ -18,6 +18,7 @@ namespace App\view;
 
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Module\Admin\Product\ProductEditView;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
@@ -47,6 +48,7 @@ $uniScript->data('product.discounts.props', [
     'product' => $item,
     'discounts' => $discounts
 ]);
+$uniScript->data('input.step', $vm->getMainInputStep());
 
 ?>
 <product-discounts-edit-app id="product-variants-edit-app" data-novalidate>
@@ -103,18 +105,23 @@ $uniScript->data('product.discounts.props', [
                             handle=".handle"
                             item-key="uid"
                         >
+                            {{-- Discount Item--}}
                             <template #item="{ element: item, index: i }">
                                 <div class="list-group-item c-discount-item"
-                                    :class="{active: current.uid === item.uid}" :key="item.uid"
+                                    :class="{ 'text-bg-dark': current.uid === item.uid }"
+                                    :key="item.uid"
                                     :data-id="item.id"
                                 >
                                     <div class="list-group-item__wrapper d-flex align-items-center gap-2">
+                                        {{-- Checkbox --}}
                                         <div class="c-discount-item__control d-flex flex-nowrap">
                                             <span class="fa fa-fw fa-ellipsis-v handle" style="cursor: move;"></span>
                                             <input type="checkbox" v-model="item.checked"
                                                 class="form-check-input"
                                                 @click="multiCheck($event, item, i)" />
                                         </div>
+
+                                        {{-- Type --}}
                                         <div class="c-discount-item__type flex-fill text-nowrap">
                                             @{{ $lang('shopgo.discount.subtype.' + item.subtype) }}
                                             <div v-if="item.unsave">
@@ -123,14 +130,20 @@ $uniScript->data('product.discounts.props', [
                                                 </span>
                                             </div>
                                         </div>
+
+                                        {{-- Start Qty --}}
                                         <div class="c-discount-item__quantity text-end"
                                             style="width: 100px;">
                                             @{{ item.subtype === 'discount' ? item.minProductQuantity : '-' }}
                                         </div>
+
+                                        {{-- Pricing --}}
                                         <div class="c-discount-item__price text-end flex-fill"
                                             style="width: 100px">
-                                            @{{ $priceOffset(item.price, '$') }}
+                                            @{{ $priceOffset(item.price, item.method) }}
                                         </div>
+
+                                        {{-- Time --}}
                                         <div class="c-discount-item__time-limit text-center"
                                             style="width: 75px;">
                                             <span v-if="item.publishUp || item.publishDown"
@@ -140,6 +153,8 @@ $uniScript->data('product.discounts.props', [
                                             ></span>
                                             <span v-else>-</span>
                                         </div>
+
+                                        {{-- Actions --}}
                                         <div class="c-discount-item__actions text-nowrap text-end"
                                             style="width: 75px">
                                             <button type="button" class="btn btn-sm btn-light border-secondary"
@@ -168,21 +183,12 @@ $uniScript->data('product.discounts.props', [
                         @lang('shopgo.product.discount.edit.title')
                     </div>
                     <div class="c-discount-edit__actions ms-auto">
-                        <button type="button" class="btn btn-primary btn-sm"
-                            style="width: 150px;"
-                            @click="saveItem(current)" :disabled="!currentEditUnsave">
-                            <span class="fa fa-save"></span>
-                            @lang('shopgo.product.button.save')
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                            @click="cancelEdit()">
-                            <span class="fa fa-times"></span>
-                            @lang('shopgo.product.button.cancel')
-                        </button>
+
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex gap-2">
+                        {{-- Mode --}}
                         <div class="form-group mb-4">
                             <label for="input-discount-subtype" class="form-label">
                                 @lang('shopgo.product.discount.field.mode')
@@ -199,6 +205,7 @@ $uniScript->data('product.discounts.props', [
                             </select>
                         </div>
 
+                        {{-- Start Qty --}}
                         <transition name="fade">
                             <div class="form-group mb-4" v-if="current.subtype === 'discount'"
                                 style="animation-duration: .3s">
@@ -212,6 +219,7 @@ $uniScript->data('product.discounts.props', [
                     </div>
 
                     <div class="d-flex gap-2">
+                        {{-- Publish Up --}}
                         <div class="form-group mb-4">
                             <label for="input-discount-start_date" class="form-label">
                                 @lang('shopgo.discount.field.publish.up')
@@ -232,12 +240,15 @@ $uniScript->data('product.discounts.props', [
                                     <button type="button"
                                         class="btn btn-secondary"
                                         data-clear
+                                        @click="current.publishUp = ''"
                                     >
                                         <span class="fa fa-times"></span>
                                     </button>
                                 </div>
                             </uni-flatpickr>
                         </div>
+
+                        {{-- Publish Down --}}
                         <div class="form-group mb-4">
                             <label for="input-discount-end_date" class="form-label">
                                 @lang('shopgo.discount.field.publish.down')
@@ -258,6 +269,7 @@ $uniScript->data('product.discounts.props', [
                                     <button type="button"
                                         class="btn btn-secondary"
                                         data-clear
+                                        @click="current.publishDown = ''"
                                     >
                                         <span class="fa fa-times"></span>
                                     </button>
@@ -267,18 +279,25 @@ $uniScript->data('product.discounts.props', [
                     </div>
 
                     <div class="d-flex gap-2">
+                        {{-- Pricing --}}
                         <div class="form-group mb-4">
                             <label for="input-discount-price" class="form-label">
                                 @lang('shopgo.product.discount.field.price.offsets')
                             </label>
                             <div class="input-group">
                                 <input id="input-discount-price" type="number" class="form-control"
-                                    :value="current.price" @input="current.price = $event.target.value" />
+                                    :value="current.price"
+                                    @input="current.price = $event.target.value"
+                                    @change="correctPriceInput"
+                                    :step="current.method === 'percentage' ? 0.1 : inputStep"
+                                />
                                 <span v-if="current.method === 'percentage'" class="input-group-text">
                                     %
                                 </span>
                             </div>
                         </div>
+
+                        {{-- Pricing Method --}}
                         <div class="form-group mb-4">
                             <label for="input-discount-method" class="form-label">
                                 @lang('shopgo.discount.field.method')
@@ -296,14 +315,6 @@ $uniScript->data('product.discounts.props', [
                                 </option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <button type="button" class="btn btn-primary w-100"
-                            @click="saveItem(current)" :disabled="!currentEditUnsave">
-                            <span class="fa fa-save"></span>
-                            @lang('shopgo.product.button.save')
-                        </button>
                     </div>
                 </div>
             </div>

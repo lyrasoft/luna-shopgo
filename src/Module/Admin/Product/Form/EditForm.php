@@ -16,6 +16,7 @@ use Lyrasoft\ShopGo\Field\ShippingModalField;
 use Lyrasoft\Luna\Field\CategoryListField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\InlineField;
 use Unicorn\Field\MultiUploaderField;
@@ -36,6 +37,7 @@ use Windwalker\Form\Form;
 class EditForm implements FieldDefinitionInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     /**
      * Define the form fields.
@@ -60,13 +62,13 @@ class EditForm implements FieldDefinitionInterface
             function (Form $form) {
                 $form->add('variant/price', NumberField::class)
                     ->label($this->trans('shopgo.product.field.price'))
-                    ->step('0.0001')
+                    ->step($this->getMainInputStep())
                     ->min(0)
                     ->required(true);
 
                 $form->add('origin_price', NumberField::class)
                     ->label($this->trans('shopgo.product.field.origin_price'))
-                    ->step('0.0001')
+                    ->step($this->getMainInputStep())
                     ->min(0);
 
                 $form->add('variant/stock_quantity', NumberField::class)

@@ -17,6 +17,8 @@ const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick } =
 const priceInput = document.querySelector('#input-item-variant-price');
 const form = document.querySelector('#admin-form');
 
+const dateFormat = 'Y-m-d H:i:S';
+
 const app = createApp(
   {
     name: 'ProductDiscountsEditApp',
@@ -29,11 +31,11 @@ const app = createApp(
         items: prepareItems(props.discounts),
         current: {},
         currentIndex: -1,
-        currentCopy: '',
+        currentHash: '',
         lastCheckItemIndex: null,
         flatpickrOptions: JSON.stringify(
           {
-            dateFormat: 'Y-m-d H:i:S',
+            dateFormat,
             enableTime: true,
             enableSeconds: true,
             allowInput: true,
@@ -42,6 +44,7 @@ const app = createApp(
             monthSelect: false,
           }
         ),
+        inputStep: u.data('input.step') || '0.0001',
       });
 
       const mainPrice = ref(priceInput.value);
@@ -49,6 +52,20 @@ const app = createApp(
       priceInput.addEventListener('change', () => {
         mainPrice.value = parseFloat(priceInput.value);
       });
+
+      // Input
+      const itemsJSON = computed(() => JSON.stringify(state.items));
+      const currentItemsHash = computed(() => u.md5(itemsJSON.value));
+
+      function prepareItems(items) {
+        return ShopgoVueUtilities.prepareVueItemList(
+          items,
+          (item) => {
+            item.checked = false;
+            item.unsave = false;
+          }
+        )
+      }
 
       // Unsave
       let formSubmitting = false;
@@ -66,20 +83,6 @@ const app = createApp(
       form.addEventListener('submit', () => {
         formSubmitting = true;
       });
-
-      // Input
-      const itemsJSON = computed(() => JSON.stringify(state.items));
-      const currentItemsHash = computed(() => u.md5(itemsJSON.value));
-
-      function prepareItems(items) {
-        return ShopgoVueUtilities.prepareVueItemList(
-          items,
-          (item) => {
-            item.checked = false;
-            item.unsave = false;
-          }
-        )
-      }
 
       const checkedItems = computed(() => {
         return state.items.filter((item) => item.checked);
@@ -128,7 +131,7 @@ const app = createApp(
           price: '',
           start_date: null,
           end_date: null,
-          method: 'offset',
+          method: 'offsets',
           state: 1
         };
 
@@ -141,71 +144,74 @@ const app = createApp(
 
       const currentEditUnsave = computed(() => state.currentCopy !== JSON.stringify(state.current));
 
-      let unwatchMethodFunc = null;
-
-      function unwatchMethod() {
-        if (unwatchMethodFunc) {
-          unwatchMethodFunc();
-
-          unwatchMethodFunc = null;
-        }
-      }
-
-      async function editItem(item, i) {
-        await cancelEdit();
-
-        state.currentIndex = i;
-        state.currentCopy = JSON.stringify(item);
-        state.current = JSON.parse(state.currentCopy);
-
-        unwatchMethodFunc = watch(() => state.current.method, (method) => {
-          if (['percentage', 'fixed'].indexOf(method) !== -1) {
-            state.current.price = Math.abs(state.current.price);
-          } else {
-            state.current.price = -Math.abs(state.current.price);
-          }
-        });
-      }
-
-      async function cancelEdit() {
-        if (!await confirmLeave()) {
+      watch(() => state.current.method, (method) => {
+        if (state.currentIndex === -1) {
           return;
         }
 
-        unwatchMethod();
+        if (['percentage', 'fixed'].indexOf(method) !== -1) {
+          state.current.price = Math.abs(state.current.price);
+        } else {
+          state.current.price = -Math.abs(state.current.price);
+        }
+      });
 
-        state.currentIndex = -1;
-        state.current = {};
-        state.currentCopy = '';
+      async function editItem(item, i) {
+        item.publishUp = dateToSQLFormat(item.publishUp);
+        item.publishDown = dateToSQLFormat(item.publishDown);
+
+        state.currentHash = hashItem(item);
+
+        state.current = item;
+        state.currentIndex = i;
       }
 
-      async function confirmLeave() {
-        if (state.current.id && currentEditUnsave.value) {
-          const v = await u.confirm(
-            '目前編輯的尚未儲存，確定要取消嗎？'
-          );
+      function hashItem(item) {
+        const newItem ={ ...item };
 
-          if (!v) {
-            return false;
-          }
+        delete newItem.checked;
+        delete newItem.unsave;
+
+        return u.md5(JSON.stringify(newItem));
+      }
+
+      watch(() => state.current, () => {
+        if (
+          state.currentHash !== ''
+          && state.currentHash !== hashItem(state.current)
+        ) {
+          state.items[state.currentIndex].unsave = true;
+        }
+      }, { deep: true });
+
+      function dateToSQLFormat(dateStr) {
+        if (!dateStr) {
+          return dateStr;
         }
 
-        return true;
+        return flatpickr.formatDate(flatpickr.parseDate(dateStr), dateFormat);
       }
 
-      function saveItem() {
-        const i = state.currentIndex;
-
-        state.items[i] = Object.assign(state.items[i], state.current);
-        state.items[i].unsave = true;
-
-        state.currentCopy = JSON.stringify(state.current);
+      function cancelEdit() {
+        state.currentHash = '';
+        state.current = {};
+        state.currentIndex = -1;
       }
 
       function deleteItems(item = null) {
         if (!item) {
-          state.items = state.items.filter(it => !it.checked);
+          state.items = state.items.filter(function (it) {
+            if (it.checked && it.uid === state.current.uid) {
+              cancelEdit();
+            }
+
+            return !it.checked;
+          });
         } else {
+          if (item.uid === state.current.uid) {
+            cancelEdit();
+          }
+
           state.items = state.items.filter(it => it.uid !== item.uid);
         }
       }
@@ -236,11 +242,21 @@ const app = createApp(
         return text;
       }
 
+      function correctPriceInput() {
+        if (state.current.method === 'fixed') {
+          state.current.price = Math.max(state.current.price, 0);
+        } else if (state.current.method === 'offsets') {
+          state.current.price = Math.min(state.current.price, 0);
+        } else {
+          state.current.price = Math.max(state.current.price, 0);
+          state.current.price = Math.min(state.current.price, 100);
+        }
+      }
+
       return {
         ...toRefs(state),
         checkedItems,
         itemsJSON,
-        currentItemsHash,
         saveRequired,
         currentEditUnsave,
 
@@ -250,11 +266,10 @@ const app = createApp(
         newItem,
         editItem,
         cancelEdit,
-        saveItem,
         deleteItems,
         reorder,
         timeLimit,
-
+        correctPriceInput,
       }
     }
   },

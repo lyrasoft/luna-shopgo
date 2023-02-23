@@ -93,18 +93,18 @@ $uniScript->addRoute('@address_ajax');
 
                             {{-- Addresses --}}
                             <div class="">
-                                <address-form type="shipping"
-                                    title="收件者地址"
-                                    :user="user"
-                                    v-model="shippingData"
-                                    ref="shippingForm"
-                                ></address-form>
                                 <address-form type="payment"
-                                    title="購買者地址"
+                                    title="購買人資訊"
                                     :user="user"
-                                    :sync-data="shippingData"
                                     v-model="paymentData"
                                     ref="paymentForm"
+                                ></address-form>
+                                <address-form type="shipping"
+                                    title="收件人資訊"
+                                    :user="user"
+                                    v-model="shippingData"
+                                    :sync-data="paymentData"
+                                    ref="shippingForm"
                                 ></address-form>
                             </div>
 
@@ -112,18 +112,20 @@ $uniScript->addRoute('@address_ajax');
                             <div class="l-shippings mb-4">
                                 <h3>貨運方式</h3>
 
-                                <template v-if="shippings.length > 0">
-                                    <transition-group name="fade">
-                                        <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
-                                            style="animation-duration: .3s"
-                                            :shipping="shipping"
-                                            :i="i"
-                                            :selected="shippingId === shipping.id"
-                                            @selected="shippingId = shipping.id"
-                                        >
-                                        </shipping-item>
-                                    </transition-group>
-                                </template>
+                                <transition name="fade">
+                                    <div v-if="shippings.length > 0" style="animation-duration: .3s">
+                                        <transition-group name="fade">
+                                            <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
+                                                style="animation-duration: .3s"
+                                                :shipping="shipping"
+                                                :i="i"
+                                                :selected="shippingId === shipping.id"
+                                                @selected="shippingId = shipping.id"
+                                            >
+                                            </shipping-item>
+                                        </transition-group>
+                                    </div>
+                                </transition>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
                                         <template v-if="loading">
@@ -143,18 +145,20 @@ $uniScript->addRoute('@address_ajax');
                             <div class="l-payments mb-4">
                                 <h3>付款方式</h3>
 
-                                <template v-if="payments.length > 0">
-                                    <transition-group name="fade">
-                                        <payment-item v-for="(payment, i) of payments" :key="payment.id"
-                                            style="animation-duration: .3s"
-                                            :payment="payment"
-                                            :i="i"
-                                            :selected="paymentId === payment.id"
-                                            @selected="paymentId = payment.id"
-                                        >
-                                        </payment-item>
-                                    </transition-group>
-                                </template>
+                                <transition name="fade">
+                                    <div v-if="payments.length > 0" style="animation-duration: .3s">
+                                        <transition-group name="fade">
+                                            <payment-item v-for="(payment, i) of payments" :key="payment.id"
+                                                style="animation-duration: .3s"
+                                                :payment="payment"
+                                                :i="i"
+                                                :selected="paymentId === payment.id"
+                                                @selected="paymentId = payment.id"
+                                            >
+                                            </payment-item>
+                                        </transition-group>
+                                    </div>
+                                </transition>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
                                         <template v-if="loading">
@@ -311,10 +315,15 @@ $uniScript->addRoute('@address_ajax');
                                         @click="checkout"
                                     >
                                         <div data-cloak>
-                                            @{{ loading ? '載入中' : '結帳' }}
+                                            <template v-if="loading">
+                                                <span class="spinner spinner-grow spinner-grow-sm"></span>
+                                            </template>
+                                            <template v-else>
+                                                結帳
+                                            </template>
                                         </div>
-                                        <div data-loading>
-                                            <span class="spinner spinner-border"></span>
+                                        <div v-if="!loading" data-loading>
+                                            <span class="spinner spinner-grow spinner-grow-sm"></span>
                                         </div>
                                     </button>
                                 </div>

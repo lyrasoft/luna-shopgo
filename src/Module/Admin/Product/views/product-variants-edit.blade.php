@@ -8,7 +8,7 @@ namespace App\view;
  * Global variables
  * --------------------------------------------------------------
  * @var $app       AppContext      Application context.
- * @var $vm        object          The view model object.
+ * @var $vm        ProductEditView  The view model object.
  * @var $uri       SystemUri       System Uri information.
  * @var $chronos   ChronosService  The chronos datetime service.
  * @var $nav       Navigator       Navigator object to build route.
@@ -18,6 +18,7 @@ namespace App\view;
 
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Module\Admin\Product\ProductEditView;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
@@ -45,14 +46,17 @@ $uniScript->data('product.variants.props', [
     'product' => $item,
     'variants' => $variants
 ]);
+$uniScript->data('input.step', $vm->getMainInputStep());
 
 $uniScript->addRoute('@product_ajax');
 $uniScript->addRoute('@file_upload');
 ?>
 <product-variants-edit-app id="product-variants-edit-app" data-novalidate>
     <div class="row">
+        {{-- Variants List --}}
         <div class="col-lg-6 l-product-variant__list">
             <div class="card c-variant-list">
+                {{-- Header --}}
                 <div class="card-header c-variant-list__toolbar d-flex">
                     <div class="ms-auto">
                         <button type="button" class="btn btn-sm btn-outline-danger"
@@ -72,6 +76,7 @@ $uniScript->addRoute('@file_upload');
                 </div>
 
                 <div class="c-variant-list__items list-group list-group-flush">
+                    {{-- Variant List Header --}}
                     <div class="list-group-item c-variant-list__header d-flex"
                         style="margin-bottom: 0;">
                         <div class="me-2">
@@ -93,6 +98,8 @@ $uniScript->addRoute('@file_upload');
                             @lang('shopgo.product.variant.label.actions')
                         </div>
                     </div>
+
+                    {{-- Variants --}}
                     <div class="c-variant-list__scroll list-group list-group-flush"
                         style="overflow-y: scroll; height: 75vh; min-height: 400px">
                         <transition-group name="fade">
@@ -113,6 +120,8 @@ $uniScript->addRoute('@file_upload');
                 </div>
             </div>
         </div>
+
+        {{-- Right --}}
         <div class="col-lg-6 l-product-variant__manage">
             <variant-info-edit v-if="checkedItems.length"
                 ref="variantEdit"

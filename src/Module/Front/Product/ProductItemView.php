@@ -17,6 +17,7 @@ use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductAttribute;
 use Lyrasoft\ShopGo\Entity\ProductTab;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\Shipping;
@@ -158,6 +159,7 @@ class ProductItemView implements ViewModelInterface
             $item
         );
 
+        $attributes = $attributes->filter(fn (ProductAttribute $attribute) => $attribute->shouldDisplay());
         $attributeSet = $attributes->groupBy('categoryId');
 
         foreach ($attrGroups as $group) {

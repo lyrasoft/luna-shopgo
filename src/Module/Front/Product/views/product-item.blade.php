@@ -103,7 +103,7 @@ $shopGoScript->swiper(
             <div class="col-lg-6 l-product-item__images l-product-images mb-4 mb-lg-0">
                 <div class="l-product-images__hero border ratio ratio-1x1"
                     data-cloak>
-                    <img :src="imageView" alt="Cover">
+                    <img class="object-fit-contain" :src="imageView" alt="Cover">
                 </div>
 
                 <div class="l-product-images__nav mt-2 c-product-images swiper"
@@ -115,9 +115,10 @@ $shopGoScript->swiper(
                             data-cloak
                         >
                             <div class="c-product-images__inner ratio ratio-1x1">
-                                <img class=""
+                                <img class="object-fit-cover"
                                     :src="image.url"
-                                    :alt="image.title || 'image'">
+                                    :alt="image.title || 'image'"
+                                >
                             </div>
                         </div>
                     </div>
@@ -175,11 +176,7 @@ $shopGoScript->swiper(
                             </div>
                         </div>
 
-                        <div data-cloak>
-                            <span v-if="outOfStock" class="badge bg-danger">
-                                @{{ currentVariant.outOfStockText || mainVariant.outOfStockText || '庫存不足' }}
-                            </span>
-                        </div>
+                        <div></div>
                     </div>
                 </header>
 
@@ -246,6 +243,9 @@ $shopGoScript->swiper(
                         @php($attributes = $group->getParams()['attributes'] ?? [])
 
                         @foreach ($attributes as $attribute)
+                            @if (!$attribute->shouldDisplay())
+                                @continue
+                            @endif
                             <div class="c-info">
                                 <span class="c-info__label fw-bold">
                                     {{ $attribute->getTitle() }}
@@ -295,6 +295,12 @@ $shopGoScript->swiper(
                         </div>
                     </div>
                 @endif
+
+                <div data-cloak>
+                    <span v-if="outOfStock" class="badge bg-danger">
+                        @{{ currentVariant.outOfStockText || mainVariant.outOfStockText || '庫存不足' }}
+                    </span>
+                </div>
 
                 {{-- Actions --}}
                 <div class="l-product-info__actions l-actions mt-4">

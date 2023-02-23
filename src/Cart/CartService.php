@@ -122,7 +122,7 @@ class CartService
             $cartItem->setMainVariant($mainVariant);
             $cartItem->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
             $cartItem->setKey((string) $k);
-            $cartItem->setCover($mainVariant->getCover());
+            $cartItem->setCover($variant->getCover() ?: $mainVariant->getCover());
             $cartItem->setLink(
                 (string) $product->makeLink($this->nav)
             );

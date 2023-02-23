@@ -32,20 +32,8 @@ use Windwalker\Core\Router\SystemUri;
             <div>
                 @lang('shopgo.product.variant.edit.title')
             </div>
-            <div v-if="unsave">
-                <span class="badge bg-warning">
-                    @lang('shopgo.product.text.save.required')
-                </span>
-            </div>
         </div>
         <div class="c-variant-edit__actions ms-auto">
-            <button type="button" class="btn btn-primary btn-sm"
-                @click="save"
-                :disabled="!unsave"
-            >
-                <span class="fa fa-save"></span>
-                @lang('shopgo.product.button.save')
-            </button>
             <button type="button" class="btn btn-outline-secondary btn-sm"
                 @click="cancelEdit">
                 <span class="fa fa-times"></span>
@@ -55,23 +43,24 @@ use Windwalker\Core\Router\SystemUri;
     </div>
     <div class="card-body">
         <div class="c-variant-edit__title mb-4">
-            <span class="lead">@{{ items.length <= 1 ? current.title : '@lang('shopgo.product.variant.edit.multiple')' }}</span>
+            <span
+                class="lead">@{{ items.length <= 1 ? current.title : '@lang('shopgo.product.variant.edit.multiple')' }}</span>
         </div>
 
 {{--        <div class="d-flex mb-2 align-items-center" v-if="items.length <= 1">--}}
-{{--            <label for="input-variant-default" class="mr-2">設為預設</label>--}}
-{{--            <phoenix-switch name="default" v-model="current.default" size="sm"--}}
-{{--                true-value="1"--}}
-{{--                false-value="0"--}}
-{{--                shape="circle"></phoenix-switch>--}}
-{{--        </div>--}}
+        {{--            <label for="input-variant-default" class="mr-2">設為預設</label>--}}
+        {{--            <phoenix-switch name="default" v-model="current.default" size="sm"--}}
+        {{--                true-value="1"--}}
+        {{--                false-value="0"--}}
+        {{--                shape="circle"></phoenix-switch>--}}
+        {{--        </div>--}}
 
         <div class="d-flex gap-2">
 {{--            <div class="form-group mb-4" v-if="items.length <= 1">--}}
-{{--                <label for="input-variant-model">型號</label>--}}
-{{--                <input id="input-variant-model" type="text" class="form-control"--}}
-{{--                    v-model="current.model" />--}}
-{{--            </div>--}}
+            {{--                <label for="input-variant-model">型號</label>--}}
+            {{--                <input id="input-variant-model" type="text" class="form-control"--}}
+            {{--                    v-model="current.model" />--}}
+            {{--            </div>--}}
             <div class="form-group mb-4" v-if="items.length <= 1">
                 <label for="input-variant-sku" class="form-label">
                     @lang('shopgo.product.field.sku')
@@ -86,7 +75,9 @@ use Windwalker\Core\Router\SystemUri;
                 </label>
                 <input id="input-variant-price" type="number" class="form-control"
                     v-model="current.price"
-                    />
+                    min="0"
+                    :step="inputStep"
+                />
             </div>
         </div>
 
@@ -96,28 +87,36 @@ use Windwalker\Core\Router\SystemUri;
                     @lang('shopgo.product.field.length')
                 </label>
                 <input id="input-variant-length" type="number" class="form-control"
-                    v-model="current.dimension.length" />
+                    v-model="current.dimension.length"
+                    min="0"
+                />
             </div>
             <div class="form-group mb-4">
                 <label for="input-variant-width" class="form-label">
                     @lang('shopgo.product.field.width')
                 </label>
                 <input id="input-variant-width" type="number" class="form-control"
-                    v-model="current.dimension.width" />
+                    v-model="current.dimension.width"
+                    min="0"
+                />
             </div>
             <div class="form-group mb-4">
                 <label for="input-variant-height" class="form-label">
                     @lang('shopgo.product.field.height')
                 </label>
                 <input id="input-variant-height" type="number" class="form-control"
-                    v-model="current.dimension.height" />
+                    v-model="current.dimension.height"
+                    min="0"
+                />
             </div>
             <div class="form-group mb-4">
                 <label for="input-variant-weight" class="form-label">
                     @lang('shopgo.product.field.weight')
                 </label>
                 <input id="input-variant-weight" type="number" class="form-control"
-                    v-model="current.dimension.weight" />
+                    v-model="current.dimension.weight"
+                    min="0"
+                />
             </div>
         </div>
 
@@ -158,134 +157,125 @@ use Windwalker\Core\Router\SystemUri;
             >
             </vue-drag-uploader>
         </div>
-
-        <div class="mt-4">
-            <button type="button" class="btn btn-primary w-100"
-                @click="saveVariant(current)">
-                <span class="fa fa-save"></span>
-                @lang('shopgo.product.button.save')
-            </button>
-        </div>
     </div>
 </div>
 </script>
 
 <script>
     function variantInfoEdit() {
-        const { ref, toRefs, reactive, computed, watch } = Vue;
+      const { ref, toRefs, reactive, computed, watch } = Vue;
 
-        return {
-            name: 'VariantInfoEdit',
-            template: u.selectOne('#c-variant-info-edit').innerHTML,
-            components: {
-                VueDragUploader: VueDragUploader
-            },
-            props: {
-                variants: Array,
-            },
-            setup(props, { emit }) {
-                const state = reactive({
-                    current: {},
-                    items: [],
-                    originCopy: '',
-                    flatpickrOptions: JSON.stringify(
-                        {
-                            dateFormat: 'Y-m-d H:i:S',
-                            enableTime: true,
-                            enableSeconds: true,
-                            allowInput: true,
-                            time_24hr: true,
-                            // wrap: true,
-                            monthSelect: false,
-                        }
-                    ),
-                    stack: u.stack('uploading')
-                });
+      return {
+        name: 'VariantInfoEdit',
+        template: u.selectOne('#c-variant-info-edit').innerHTML,
+        components: {
+          VueDragUploader: VueDragUploader
+        },
+        props: {
+          variants: Array,
+        },
+        setup(props, { emit }) {
+          const state = reactive({
+            current: {},
+            items: [],
+            currentHash: '',
+            flatpickrOptions: JSON.stringify(
+              {
+                dateFormat: 'Y-m-d H:i:S',
+                enableTime: true,
+                enableSeconds: true,
+                allowInput: true,
+                time_24hr: true,
+                // wrap: true,
+                monthSelect: false,
+              }
+            ),
+            stack: u.stack('uploading'),
+            inputStep: u.data('input.step') || '0.0001',
+          });
 
-                watch(() => props.variants, () => {
-                    state.current = {
-                        sku: '',
-                        price: '',
-                        stockQuantity: '',
-                        publishUp: '',
-                        publishDown: '',
-                        images: [],
-                        dimension: {
-                            width: '',
-                            height: '',
-                            length: '',
-                            weight: '',
-                            unitWeight: '',
-                        }
-                    };
-                    state.items = props.variants;
+          watch(() => props.variants, () => {
+            let item = {
+              sku: '',
+              price: '',
+              stockQuantity: '',
+              publishUp: '',
+              publishDown: '',
+              images: [],
+              dimension: {
+                width: '',
+                height: '',
+                length: '',
+                weight: '',
+                unitWeight: '',
+              }
+            };
+            state.items = props.variants;
 
-                    if (state.items.length === 1) {
-                        state.current = JSON.parse(JSON.stringify(state.items[0]));
-                    }
-
-                    state.originCopy = JSON.stringify(state.current);
-                }, { immediate: true });
-
-                const isMultiple = computed(() => state.items.length > 1);
-                const unsave = computed(() => state.originCopy !== JSON.stringify(state.current));
-
-                watch(() => unsave, () => {
-                    emit('unsavechange', unsave.value);
-                });
-
-                // window.addEventListener('beforeunload', (e) => {
-                //     if (unsave.value) {
-                //         e.preventDefault();
-                //         e.stopPropagation();
-                //         e.returnValue = 'Save Required';
-                //     }
-                // });
-
-                function save() {
-                    if (!unsave.value) {
-                        return;
-                    }
-
-                    if (!isMultiple.value) {
-                        state.items[0] = Object.assign(state.items[0], state.current);
-                        state.items[0].unsave = true;
-                    } else {
-                        for (const item of state.items) {
-                            ShopgoVueUtilities.mergeRecursive(
-                                item,
-                                state.current,
-                            );
-
-                            item.unsave = true;
-                        }
-                    }
-
-                    state.originCopy = JSON.stringify(state.current);
-                }
-
-                function cancelEdit() {
-                    emit('cancel');
-                }
-
-                function getImageUploaderUrl() {
-                    return u.route('file_upload', { profile: 'image' });
-                }
-
-                function imagesChange(images) {
-                    console.log(images);
-                }
-
-                return {
-                    ...toRefs(state),
-                    unsave,
-
-                    save,
-                    cancelEdit,
-                    getImageUploaderUrl,
-                    imagesChange,
-                }
+            if (state.items.length === 1) {
+              item = state.items[0];
             }
+
+            state.currentHash = hashItem(item);
+
+            state.current = item;
+          }, { immediate: true });
+
+          function hashItem(item) {
+            const newItem = { ...item };
+
+            delete newItem.checked;
+            delete newItem.unsave;
+
+            return u.md5(JSON.stringify(newItem));
+          }
+
+          const isMultiple = computed(() => state.items.length > 1);
+          // const unsave = computed(() => state.originCopy !== JSON.stringify(state.current));
+
+          watch(() => state.current, () => {
+            if (state.currentHash !== '' && state.currentHash !== hashItem(state.current)) {
+              updateUnsaves();
+            }
+          }, { deep: true });
+
+          watch(() => state.current.price, (v) => {
+            if (v < 0) {
+              state.current.price = 0;
+            }
+          });
+
+          function updateUnsaves() {
+            if (!isMultiple.value) {
+              state.current.cover = state.current.images[0]?.url || '';
+              state.items[0].unsave = true;
+            } else {
+              for (const item of state.items) {
+                ShopgoVueUtilities.mergeRecursive(
+                  item,
+                  state.current,
+                );
+
+                item.unsave = true;
+              }
+            }
+          }
+
+          function cancelEdit() {
+            emit('cancel');
+          }
+
+          function getImageUploaderUrl() {
+            return u.route('file_upload', { profile: 'image' });
+          }
+
+          return {
+            ...toRefs(state),
+
+            cancelEdit,
+            getImageUploaderUrl,
+          };
         }
+      };
     }
 </script>
