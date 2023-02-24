@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Service;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
@@ -64,7 +65,12 @@ class PricingService
             return $newPrice;
         }
 
-        $newPrice = $origin->dividedBy(100, PriceObject::DEFAULT_SCALE)->multipliedBy($modify);
+        $newPrice = $origin->dividedBy(
+            100,
+            PriceObject::DEFAULT_SCALE,
+            RoundingMode::HALF_CEILING
+        )
+            ->multipliedBy($modify);
 
         $diff = $newPrice->minus($origin);
 
