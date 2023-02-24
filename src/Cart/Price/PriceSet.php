@@ -347,6 +347,14 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
+        if (!$value instanceof PriceObject) {
+            if ($this->has($offset)) {
+                $value = $this->modify($offset, (string) $value);
+            } else {
+                $this->set($value = new PriceObject($offset, $value));
+            }
+        }
+
         if ($value->getName() !== $offset) {
             $value = $value->withName((string) $offset);
         }

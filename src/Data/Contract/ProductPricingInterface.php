@@ -73,25 +73,12 @@ interface ProductPricingInterface extends DiscountsAppliedInterface
     /**
      * @return PriceSet
      */
-    public function getPricing(): PriceSet;
+    public function getPriceSet(): PriceSet;
 
     /**
      * @param  PriceSet  $productSet
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPricing(PriceSet $productSet): static;
-
-
-    /**
-     * @return PriceObject
-     */
-    public function getBasePrice(): PriceObject;
-
-    /**
-     * @param  PriceObject  $basePrice
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setBasePrice(PriceObject $basePrice): static;
+    public function setPriceSet(PriceSet $productSet): static;
 }

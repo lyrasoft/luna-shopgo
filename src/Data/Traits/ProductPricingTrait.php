@@ -31,9 +31,7 @@ trait ProductPricingTrait
 
     public ProductVariant $mainVariant;
 
-    public PriceSet $pricing;
-
-    public PriceObject $basePrice;
+    public PriceSet $priceSet;
 
     /**
      * @return string
@@ -118,39 +116,19 @@ trait ProductPricingTrait
     /**
      * @return PriceSet
      */
-    public function getPricing(): PriceSet
+    public function getPriceSet(): PriceSet
     {
-        return $this->pricing;
+        return $this->priceSet;
     }
 
     /**
-     * @param  PriceSet  $pricing
+     * @param  PriceSet  $priceSet
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPricing(PriceSet $pricing): static
+    public function setPriceSet(PriceSet $priceSet): static
     {
-        $this->pricing = $pricing;
-
-        return $this;
-    }
-
-    /**
-     * @return PriceObject
-     */
-    public function getBasePrice(): PriceObject
-    {
-        return $this->basePrice;
-    }
-
-    /**
-     * @param  PriceObject  $basePrice
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setBasePrice(PriceObject $basePrice): static
-    {
-        $this->basePrice = $basePrice;
+        $this->priceSet = $priceSet;
 
         return $this;
     }

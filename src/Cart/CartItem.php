@@ -152,11 +152,13 @@ class CartItem extends ValueObject
     {
         $priceSet = $this->priceSet;
 
-        $originTotal = $priceSet->get('origin')
-            ->clone('base_total', 'Product Base total')
-            ->multiply((string) $this->getQuantity());
+        if ($priceSet->has('base')) {
+            $baseTotal = $priceSet->get('base')
+                ->clone('base_total', 'Product Base total')
+                ->multiply((string) $this->getQuantity());
 
-        $priceSet->set($originTotal);
+            $priceSet->set($baseTotal);
+        }
 
         $finalTotal = $priceSet->get('final')
             ->clone('final_total', 'Product Final Total')

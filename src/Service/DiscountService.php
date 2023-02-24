@@ -91,17 +91,20 @@ class DiscountService
     }
 
     /**
-     * @param  CartTotalsInterface      $pricing
-     * @param  iterable<Discount>|null  $discounts
+     * @param  CartTotalsInterface  $pricing
+     * @param  iterable|null        $discounts
+     * @param  iterable|null        $cartItems
      *
      * @return  void
-     *
      */
-    public function computeProductsGlobalDiscounts(CartTotalsInterface $pricing, ?iterable $discounts = null): void
-    {
+    public function computeProductsGlobalDiscounts(
+        CartTotalsInterface $pricing,
+        ?iterable $discounts = null,
+        ?iterable $cartItems = null
+    ): void {
         $discounts ??= $this->getGlobalDiscounts();
 
-        $this->matchProducts($discounts, $pricing);
+        $this->matchProducts($discounts, $pricing, $cartItems);
 
         $this->applyProductsDiscounts($pricing, $discounts);
     }
@@ -213,9 +216,9 @@ class DiscountService
         ?BigDecimal &$diff = null
     ): PriceSet {
         if (!$discount->isAccumulate() && $discount->getMethod() === DiscountMethod::PERCENTAGE()) {
-            PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
+            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
-            PricingService::pricingByDiscount($priceSet['final'], $discount, $diff);
+            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $discount, $diff);
         }
 
         $priceSet->add(
@@ -229,7 +232,6 @@ class DiscountService
                 'code' => $discount->getCode(),
             ]
         );
-        $priceSet['final'] = $priceSet['final']->plus($diff);
 
         return $priceSet;
     }
@@ -371,19 +373,23 @@ class DiscountService
     /**
      * @param  iterable<Discount>   $discounts
      * @param  CartTotalsInterface  $pricing
+     * @param  iterable|null        $cartItems
      *
      * @return  CartTotalsInterface
      */
-    public function matchProducts(iterable $discounts, CartTotalsInterface $pricing): CartTotalsInterface
-    {
-        $cartData = $pricing->getCartData();
+    public function matchProducts(
+        iterable $discounts,
+        CartTotalsInterface $pricing,
+        ?iterable $cartItems = null
+    ): CartTotalsInterface {
+        $cartItems ??= $pricing->getCartData()->getItems();
 
         foreach ($discounts as $discount) {
             // @ Categories
             if ($discount->getCategories()) {
                 $discountCategoryIds = array_map('intval', $discount->getCategories());
 
-                foreach ($cartData->getItems() as $cartItem) {
+                foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
                     $product = $cartItem->getProduct()->getData();
 
@@ -399,7 +405,7 @@ class DiscountService
             if ($discount->getTags()) {
                 $discountTagIds = array_map('intval', $discount->getTags());
 
-                foreach ($cartData->getItems() as $cartItem) {
+                foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
                     $product = $cartItem->getProduct()->getData();
 
@@ -415,7 +421,7 @@ class DiscountService
             if ($discount->getProducts()) {
                 $productIds = array_map('intval', $discount->getProducts());
 
-                foreach ($cartData->getItems() as $cartItem) {
+                foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
                     $product = $cartItem->getProduct()->getData();
 
@@ -465,10 +471,11 @@ class DiscountService
             return $pricing;
         }
 
-        PricingService::pricingByDiscount($pricing->getBasePrice(), $matchedDiscount, $diff);
+        $priceSet = $pricing->getPriceSet();
 
-        $prices = $pricing->getPricing();
-        $prices->add(
+        $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $matchedDiscount, $diff);
+
+        $priceSet->add(
             'product_discount',
             $diff,
             $this->trans('shopgo.total.product.discount')
@@ -498,7 +505,7 @@ class DiscountService
         }
 
         $product = $pricing->getProduct();
-        $priceSet = $pricing->getPricing();
+        $priceSet = $pricing->getPriceSet();
 
         $specials = $this->getProductSpecials($product->getId());
 
@@ -506,7 +513,7 @@ class DiscountService
         $special = $specials->first();
 
         if ($special) {
-            PricingService::pricingByDiscount($pricing->getBasePrice(), $special, $diff);
+            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $special, $diff);
 
             $priceSet->add(
                 'product_special',
@@ -517,7 +524,7 @@ class DiscountService
             $applied[] = $special;
         }
 
-        $pricing->setPricing($priceSet);
+        $pricing->setPriceSet($priceSet);
 
         return $pricing;
     }

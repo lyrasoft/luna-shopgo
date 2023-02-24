@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Data\ListOption;
@@ -22,6 +23,8 @@ use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
+
+use function Windwalker\collect;
 
 /**
  * The VariantService class.
@@ -78,34 +81,29 @@ class VariantService
         PriceSet $priceSet,
         ?CartItem $cartItem = null,
     ): PriceSet {
-        $pricing = new PriceSet();
-
-        $basePrice = $priceSet['base'];
-
         $event = (new PrepareProductPricesEvent())
             ->setContext($context)
             ->setProduct($product)
             ->setMainVariant($mainVariant)
             ->setVariant($variant)
-            ->setPricing($pricing)
-            ->setBasePrice($basePrice)
+            ->setPriceSet($priceSet)
             ->setCartItem($cartItem)
             ->setAppliedDiscounts($cartItem?->getDiscounts() ?? []);
 
         /** @var PrepareProductPricesEvent $event */
         $event = $this->shopGo->emit($event);
 
-        $pricing = $event->getPricing();
+        // $pricing = $event->getPriceSet();
+        //
+        // foreach ($pricing as $price) {
+        //     $priceSet->set($price);
+        // }
 
-        foreach ($pricing as $price) {
-            $priceSet->set($price);
-        }
-
-        $priceSet->set(
-            $event->getBasePrice()
-                ->plusMultiple(...$pricing)
-                ->withName('final')
-        );
+        // $priceSet->set(
+        //     $event->getBasePrice()
+        //         ->plusMultiple(...$pricing)
+        //         ->withName('final')
+        // );
 
         $cartItem?->setDiscounts($event->getAppliedDiscounts());
         $cartItem?->setPriceSet($priceSet);
