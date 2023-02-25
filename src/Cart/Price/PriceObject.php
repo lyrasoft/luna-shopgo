@@ -439,6 +439,10 @@ class PriceObject implements \JsonSerializable, \Stringable
      */
     public function jsonSerialize(): mixed
     {
-        return $this->toArray();
+        $data = $this->toArray();
+
+        $data['price'] = $data['price']->toScale(static::DEFAULT_SCALE);
+
+        return $data;
     }
 }

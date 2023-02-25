@@ -115,11 +115,15 @@ class AdditionalPurchaseService
     /**
      * @param  AdditionalPurchaseAttachment  $attachment
      * @param  Product                       $targetProduct
+     * @param  bool                          $forUpdate
      *
      * @return  array{ 0: Product, 1: ProductVariant, 2: AdditionalPurchase }
      */
-    public function validateAttachment(AdditionalPurchaseAttachment $attachment, Product $targetProduct): array
-    {
+    public function validateAttachment(
+        AdditionalPurchaseAttachment $attachment,
+        Product $targetProduct,
+        bool $forUpdate = false
+    ): array {
         $ap = $this->getAdditionalPurchase($attachment->getAdditionalPurchaseId());
 
         $now = chronos();
@@ -140,19 +144,19 @@ class AdditionalPurchaseService
             throw new ValidateFailException('The target product not in additional purchase targets');
         }
 
-        $variant = $this->orm->mustFindOne(ProductVariant::class, $attachment->getVariantId());
-        $product = $this->getVariantProduct($variant->getProductId());
+        $variant = $this->orm->from(ProductVariant::class)
+            ->where('id', $attachment->getVariantId())
+            ->tapIf(
+                $forUpdate,
+                fn (Query $query) => $query->forUpdate()
+            )
+            ->get(ProductVariant::class);
 
-        if (VariantService::isOutOfStock($variant, $product)) {
-            throw new ValidateFailException(
-                sprintf(
-                    "Attachment: %s - %s (%d) is out of stock",
-                    $product->getTitle(),
-                    $variant->getTitle(),
-                    $variant->getId()
-                )
-            );
+        if (!$variant) {
+            throw new \RuntimeException('Variant: ' . $attachment->getVariantId() . ' not found.');
         }
+
+        $product = $this->getVariantProduct($variant->getProductId());
 
         return [$product, $variant, $ap];
     }

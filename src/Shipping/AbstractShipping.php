@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Shipping;
 
+use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Shipping;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
@@ -54,32 +59,17 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         static::$type = $type;
     }
 
-    public function getOptionLayout(): ?string
-    {
-        return null;
-    }
+    abstract public function computeShippingFee(CartData $cartData, PriceObject $total): BigDecimal;
 
-    public function renderOptionLayout(CompositeRenderer $renderer, array $data = []): string
-    {
-        $layout = $this->getOptionLayout();
+    abstract public function form(Location $location): string;
 
-        if (!$layout) {
-            return '';
-        }
+    abstract public function prepareOrder(Order $order, CartData $cartData): Order;
 
-        $renderer->addPath(static::dir() . '/views');
+    abstract public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null;
 
-        $data['shipping'] = $this;
+    abstract public function orderInfo(Order $order): string;
 
-        return $renderer->render($layout, $data);
-    }
-
-    public function getCheckoutHandler(RouteUri|string $next): \Closure
-    {
-        return static function (Navigator $nav) use ($next) {
-            return $next;
-        };
-    }
+    abstract public function receiveNotify(AppContext $app, Order $order): void;
 
     /**
      * @return Shipping
@@ -124,8 +114,6 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
         return dirname($ref->getFileName());
     }
-
-    abstract public function getShippingFeeComputer(CartData $cartData, PriceObject $total): \Closure;
 
     // public function computeAndAddShippingFee(ApplicationInterface $app, CartData $cartData, Location $location): void
     // {

@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Payment;
 
+use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
-use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Form\FieldDefinitionInterface;
-use Windwalker\Renderer\CompositeRenderer;
 
 /**
  * The AbstractPayment class.
@@ -51,32 +55,15 @@ abstract class AbstractPayment implements FieldDefinitionInterface
         static::$type = $type;
     }
 
-    public function getOptionLayout(): ?string
-    {
-        return null;
-    }
+    abstract public function form(Location $location): string;
 
-    public function renderOptionLayout(CompositeRenderer $renderer, array $data = []): string
-    {
-        $layout = $this->getOptionLayout();
+    abstract public function prepareOrder(Order $order, CartData $cartData): Order;
 
-        if (!$layout) {
-            return '';
-        }
+    abstract public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null;
 
-        $renderer->addPath(static::dir() . '/views');
+    abstract public function orderInfo(Order $order): string;
 
-        $data['payment'] = $this;
-
-        return $renderer->render($layout, $data);
-    }
-
-    public function getCheckoutHandler(RouteUri|string $next): \Closure
-    {
-        return static function (Navigator $nav) use ($next) {
-            return $next;
-        };
-    }
+    abstract public function receiveNotify(AppContext $app, Order $order): void;
 
     /**
      * @return Payment

@@ -14,7 +14,9 @@ namespace Lyrasoft\ShopGo\Cart;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\Shipping;
+use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Data\Collection;
 use Windwalker\Data\ValueObject;
 
@@ -79,6 +81,40 @@ class CartData extends ValueObject
         $this->items = $items;
 
         return $this;
+    }
+
+    /**
+     * @param  bool  $includeAttachments
+     *
+     * @return  array<int, int>
+     */
+    public function getTotalQuantities(bool $includeAttachments = false): array
+    {
+        $quantities = [];
+
+        foreach ($this->getItems() as $item) {
+            /** @var ProductVariant $variant */
+            $variant = $item->getVariant()->getData();
+            $quantity = $quantities[$variant->getId()] ?? 0;
+
+            $quantity += $item->getQuantity();
+
+            $quantities[$variant->getId()] = $quantity;
+
+            if ($includeAttachments) {
+                foreach ($item->getAttachments() as $attachment) {
+                    /** @var ProductVariant $variant */
+                    $variant = $attachment->getVariant()->getData();
+                    $quantity = $quantities[$variant->getId()] ?? 0;
+
+                    $quantity += ($attachment->getQuantity() * $item->getQuantity());
+
+                    $quantities[$variant->getId()] = $quantity;
+                }
+            }
+        }
+
+        return $quantities;
     }
 
     /**

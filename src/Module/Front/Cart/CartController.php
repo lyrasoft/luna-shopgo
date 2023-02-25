@@ -24,9 +24,11 @@ use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\DiscountService;
+use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Renderer\RendererService;
 use Windwalker\ORM\ORM;
 
@@ -102,12 +104,10 @@ class CartController
         $shippingId = $app->input('shipping_id') ?? 0;
         $paymentId = $app->input('payment_id') ?? 0;
 
-        return $cartService->getCartData(
-            [
-                'location_id' => $locationId,
-                'shipping_id' => $shippingId,
-                'payment_id' => $paymentId,
-            ]
+        return $cartService->getCartDataForCheckout(
+            (int) $locationId,
+            $shippingId,
+            $paymentId,
         );
     }
 
@@ -207,7 +207,18 @@ class CartController
         $attachItems = $orm->findList(AdditionalPurchaseAttachment::class, ['id' => $attachmentIds])->all();
 
         foreach ($attachItems as $attachItem) {
-            $additionalPurchaseService->validateAttachment($attachItem, $targetProduct);
+            [$product, $variant] = $additionalPurchaseService->validateAttachment($attachItem, $targetProduct);
+
+            if (VariantService::isOutOfStock($variant, $product)) {
+                throw new ValidateFailException(
+                    sprintf(
+                        "Attachment: %s - %s (%d) is out of stock",
+                        $product->getTitle(),
+                        $variant->getTitle(),
+                        $variant->getId()
+                    )
+                );
+            }
         }
     }
 
@@ -216,7 +227,6 @@ class CartController
         ORM $orm,
         ShippingService $shippingService,
         CartService $cartService,
-        RendererService $rendererService,
     ): iterable {
         $locationId = (int) $app->input('location_id');
 
@@ -252,15 +262,11 @@ class CartController
                 continue;
             }
 
-            $fee = $app->call($instance->getShippingFeeComputer($cartData, $cartData->getTotals()['total']));
+            $fee = $instance->computeShippingFee($cartData, $cartData->getTotals()['total']);
 
             $shipping->fee = $fee;
 
-            $renderer = $rendererService->createRenderer();
-            $shipping->optionLayout = $instance->renderOptionLayout(
-                $renderer,
-                compact('location')
-            );
+            $shipping->checkoutForm = $instance->form($location);
         }
 
         return $shippings;
@@ -270,7 +276,6 @@ class CartController
         AppContext $app,
         ORM $orm,
         PaymentService $paymentService,
-        RendererService $rendererService,
     ): iterable {
         $locationId = (int) $app->input('location_id');
         $shippingId = (int) $app->input('shipping_id');
@@ -296,11 +301,7 @@ class CartController
                 continue;
             }
 
-            $renderer = $rendererService->createRenderer();
-            $payment->optionLayout = $instance->renderOptionLayout(
-                $renderer,
-                compact('location')
-            );
+            $payment->checkoutForm = $instance->form($location);
         }
 
         return $payments;

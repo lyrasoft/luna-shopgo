@@ -68,7 +68,7 @@ class AdditionalPurchaseSubscriber
                 [
                     $attachProduct,
                     $attachVariant,
-                ] = $this->additionalPurchaseService->validateAttachment($attachment, $product);
+                ] = $this->additionalPurchaseService->validateAttachment($attachment, $product, $event->isForUpdate());
 
                 $attachVariant = $this->additionalPurchaseService->prepareVariantView(
                     $attachVariant,
@@ -139,8 +139,6 @@ class AdditionalPurchaseSubscriber
     {
         $cartData = $event->getCartData();
 
-        $quantities = [];
-
         foreach ($cartData->getItems() as $item) {
             // After discounted, we re-calc products & attachments total
             $priceSet = $item->getPriceSet();
@@ -151,26 +149,9 @@ class AdditionalPurchaseSubscriber
             );
 
             $item->setPriceSet($priceSet);
-
-            // Calc quantities
-            /** @var ProductVariant $variant */
-            $variant = $item->getVariant()->getData();
-            $quantity = $quantities[$variant->getId()] ?? 0;
-
-            $quantity += $item->getQuantity();
-
-            $quantities[$variant->getId()] = $quantity;
-
-            foreach ($item->getAttachments() as $attachment) {
-                /** @var ProductVariant $variant */
-                $variant = $attachment->getVariant()->getData();
-                $quantity = $quantities[$variant->getId()] ?? 0;
-
-                $quantity += ($attachment->getQuantity() * $item->getQuantity());
-
-                $quantities[$variant->getId()] = $quantity;
-            }
         }
+
+        $quantities = $cartData->getTotalQuantities(true);
 
         // Now get out-of-stock items
         foreach ($cartData->getItems() as $item) {

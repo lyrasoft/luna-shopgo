@@ -31,6 +31,8 @@ class PrepareCartItemEvent extends AbstractEvent
 
     public ProductVariant $variant;
 
+    public bool $forUpdate = false;
+
     public array $options = [];
 
     /**
@@ -149,6 +151,26 @@ class PrepareCartItemEvent extends AbstractEvent
     public function setOptions(array $options): static
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForUpdate(): bool
+    {
+        return $this->forUpdate;
+    }
+
+    /**
+     * @param  bool  $forUpdate
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setForUpdate(bool $forUpdate): static
+    {
+        $this->forUpdate = $forUpdate;
 
         return $this;
     }

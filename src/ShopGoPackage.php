@@ -30,6 +30,7 @@ use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Service\OrderStateService;
 use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
+use Lyrasoft\ShopGo\Service\StockService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\ApplicationInterface;
@@ -85,6 +86,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $container->prepareSharedObject(ProductAttributeService::class);
         $container->prepareSharedObject(VariantService::class);
         $container->prepareSharedObject(ShippingService::class);
+        $container->prepareSharedObject(StockService::class);
         $container->prepareSharedObject(ShopGoScript::class);
         $container->bindShared(
             ShopConfig::class,

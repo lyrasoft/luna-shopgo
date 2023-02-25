@@ -14,6 +14,7 @@ namespace Lyrasoft\ShopGo\Service;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Data\PaymentData;
@@ -28,10 +29,18 @@ use Lyrasoft\ShopGo\Entity\OrderTotal;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
+use Lyrasoft\ShopGo\Event\AfterOrderCreateEvent;
+use Lyrasoft\ShopGo\Event\AfterOrderDetailCreatedEvent;
+use Lyrasoft\ShopGo\Event\BeforeOrderCreateEvent;
+use Lyrasoft\ShopGo\Payment\PaymentService;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
+
+use function Windwalker\collect;
 
 /**
  * The CheckoutService class.
@@ -43,10 +52,12 @@ class CheckoutService
 
     public function __construct(
         protected ORM $orm,
+        protected ShopGoPackage $shopGo,
         protected OrderService $orderService,
         protected OrderHistoryService $orderHistoryService,
         protected LocationService $locationService,
         protected AddressService $addressService,
+        protected PaymentService $paymentService,
         protected ?SequenceService $sequenceService = null,
     ) {
     }
@@ -130,12 +141,25 @@ class CheckoutService
 
         $order->setTotal($cartData->getTotals()['grand_total']->getPrice()->toFloat());
 
-        // Todo: Get state from shipping/payment
+        // Pre-set default state to order
         $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);
         $order->setState($state);
 
-        $this->prepareOrderItems($order, $cartData);
-        $this->prepareOrderTotals($order, $totals);
+        $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
+        $order = $paymentInstance->prepareOrder($order, $cartData);
+
+        $event = $this->shopGo->emit(
+            BeforeOrderCreateEvent::class,
+            compact(
+                'order',
+                'cartData',
+                'totals'
+            )
+        );
+
+        $order = $event->getOrder();
+        $cartData = $event->getCartData();
+        $totals = $event->getTotals();
 
         // Create Order
         /** @var Order $order */
@@ -143,9 +167,36 @@ class CheckoutService
 
         $this->prepareOrderAndPaymentNo($order);
 
-        $this->createNewHistory($order);
+        $event = $this->shopGo->emit(
+            AfterOrderCreateEvent::class,
+            compact(
+                'order',
+                'cartData',
+                'totals'
+            )
+        );
 
-        return $order;
+        $order = $event->getOrder();
+        $cartData = $event->getCartData();
+        $totals = $event->getTotals();
+
+        $orderItems = $this->createOrderItemsAndAttachments($order, $cartData);
+        $orderTotals = $this->createOrderTotals($order, $totals);
+        $orderHistory = $this->createNewHistory($order);
+
+        $event = $this->shopGo->emit(
+            AfterOrderDetailCreatedEvent::class,
+            compact(
+                'order',
+                'cartData',
+                'totals',
+                'orderItems',
+                'orderTotals',
+                'orderHistory',
+            )
+        );
+
+        return $event->getOrder();
     }
 
     public function createOrderAndNotify(Order $order, CartData $cartData): Order
@@ -198,40 +249,37 @@ class CheckoutService
      * @param  Order     $order
      * @param  CartData  $cartData
      *
-     * @return  array<OrderItem>
+     * @return  Collection<OrderItem>
      *
      * @throws \ReflectionException
      */
-    public function prepareOrderItems(Order $order, CartData $cartData): array
+    public function createOrderItemsAndAttachments(Order $order, CartData $cartData): Collection
     {
         $items = $cartData->getItems();
 
-        $orderItems = [];
+        $orderItems = collect();
 
         foreach ($items as $item) {
-            /** @var ProductVariant $variant */
-            $variant = $item->getVariant()->getData();
-            $product = $this->orm->toEntity(
-                Product::class,
-                $variant->product ?? $this->getProduct($variant->getProductId())
-            );
+            $orderItem = $this->cartItemToOrderItem($item);
+            $orderItem->setOrderId($order->getId());
 
-            $orderItem = new OrderItem();
-            $orderItem->setProductId($product->getId());
-            $orderItem->setVariantId($variant->getId());
-            $orderItem->setVariantHash($variant->getHash());
-            $orderItem->setTitle($product->getTitle());
-            $orderItem->setVariantTitle($variant->getTitle());
-            $orderItem->setBasePriceUnit($variant->getPrice());
-            $orderItem->setPriceUnit($item->getPriceSet()['final']->toFloat());
-            $orderItem->setQuantity($item->getQuantity());
-            $orderItem->setImage($variant->getCover() ?: $product->getCover());
-            $orderItem->setTotal($item->getPriceSet()['final_total']->toFloat());
-            $orderItem->setPriceSet($item->getPriceSet());
-            $orderItem->setOptions($variant->getOptions());
+            $orderItem = $this->orm->createOne(OrderItem::class, $orderItem);
 
-            $order->getOrderItems()->attach($orderItem);
             $orderItems[] = $orderItem;
+
+            foreach ($item->getAttachments() as $attachment) {
+                $attachItem = $this->cartItemToOrderItem($attachment);
+
+                $attachItem->setOrderId($order->getId());
+                $attachItem->setParentId($orderItem->getId());
+                $attachItem->setAttachmentId((int) $attachment->getKey());
+
+                $attachItem = $this->orm->createOne(OrderItem::class, $attachItem);
+
+                show($orderItem, $attachItem);
+
+                $orderItem->getAttachments()->attach($attachItem);
+            }
         }
 
         return $orderItems;
@@ -247,17 +295,18 @@ class CheckoutService
      * @param  Order     $order
      * @param  PriceSet  $totals
      *
-     * @return array<OrderTotal>
+     * @return Collection<OrderTotal>
      */
-    protected function prepareOrderTotals(Order $order, PriceSet $totals): array
+    protected function createOrderTotals(Order $order, PriceSet $totals): Collection
     {
         $i = 1;
 
-        $orderTotals = [];
+        $orderTotals = collect();
 
         /** @var PriceObject $total */
         foreach ($totals as $total) {
             $orderTotal = new OrderTotal();
+            $orderTotal->setOrderId($order->getId());
             $orderTotal->setTitle($total->getLabel());
             $orderTotal->setType(
                 str_starts_with($total->getName(), 'discount')
@@ -273,8 +322,9 @@ class CheckoutService
             $orderTotal->setOrdering($i);
             $orderTotal->setProtect($orderTotal->getType() === 'total');
 
+            $this->orm->createOne(OrderTotal::class, $orderTotal);
+
             $orderTotals[] = $orderTotal;
-            $order->getTotals()->attach($orderTotal);
 
             $i++;
         }
@@ -303,5 +353,42 @@ class CheckoutService
         $order->setPaymentNo($tradeNo);
 
         return $order;
+    }
+
+    /**
+     * @param  CartItem       $item
+     *
+     * @return  OrderItem
+     *
+     * @throws \ReflectionException
+     */
+    protected function cartItemToOrderItem(CartItem $item): OrderItem
+    {
+        /** @var ProductVariant $variant */
+        $variant = $item->getVariant()->getData();
+        $product = $this->orm->toEntity(
+            Product::class,
+            $variant->product ?? $this->getProduct($variant->getProductId())
+        );
+
+        $orderItem = new OrderItem();
+        $orderItem->setProductId($product->getId());
+        $orderItem->setVariantId($variant->getId());
+        $orderItem->setVariantHash($variant->getHash());
+        $orderItem->setKey($item->getKey());
+        $orderItem->setTitle($product->getTitle());
+        $orderItem->setVariantTitle($variant->getTitle());
+        $orderItem->setBasePriceUnit($variant->getPrice());
+        $orderItem->setPriceUnit($item->getPriceSet()['final']->toFloat());
+        $orderItem->setQuantity($item->getQuantity());
+        $orderItem->setImage($variant->getCover() ?: $product->getCover());
+        $orderItem->setTotal($item->getPriceSet()['final_total']->toFloat());
+        $orderItem->setPriceSet($item->getPriceSet());
+        $orderItem->setProductData(
+            compact('product', 'variant')
+        );
+        $orderItem->setOptions($variant->getOptions());
+
+        return $orderItem;
     }
 }

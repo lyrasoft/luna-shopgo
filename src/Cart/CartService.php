@@ -63,6 +63,22 @@ class CartService
         //
     }
 
+    public function getCartDataForCheckout(
+        int $locationId,
+        int|string $shippingId,
+        int|string $paymentId,
+        bool $lock = false
+    ): CartData {
+        return $this->getCartData(
+            [
+                'shipping_id' => $shippingId,
+                'payment_id' => $paymentId,
+                'location_id' => $locationId,
+            ],
+            $lock ? static::FOR_UPDATE : 0
+        );
+    }
+
     public function getCartData(array $params = [], int $flags = 0): CartData
     {
         $cartItems = $this->getCartItems((bool) ($flags & static::FOR_UPDATE), $params);
@@ -136,6 +152,7 @@ class CartService
                     'product',
                     'variant',
                     'mainVariant',
+                    'forUpdate',
                     'params'
                 )
             );
@@ -321,6 +338,6 @@ class CartService
             return;
         }
 
-        $this->app->call($instance->getShippingFeeComputer($cartData, $total));
+        $instance->computeShippingFee($cartData, $total);
     }
 }

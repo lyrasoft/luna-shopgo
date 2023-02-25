@@ -20,6 +20,7 @@ use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
@@ -32,6 +33,7 @@ class PaymentService
 
     public function __construct(
         protected ApplicationInterface $app,
+        protected ORM $orm,
         protected ShopGoPackage $shopGo,
         #[Autowire]
         protected PaymentRepository $repository
@@ -133,5 +135,12 @@ class PaymentService
     public function getTypeClass(string $type): ?string
     {
         return $this->getTypes()[$type] ?? null;
+    }
+
+    public function getInstanceById(int|string $id): AbstractPayment
+    {
+        $payment = $this->orm->mustFindOne(Payment::class, $id);
+
+        return $this->createTypeInstance($payment);
     }
 }

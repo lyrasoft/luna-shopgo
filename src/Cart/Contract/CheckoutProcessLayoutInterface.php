@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Cart\Contract;
 
-use Windwalker\Core\Application\AppContext;
+use Lyrasoft\ShopGo\Cart\CartData;
 
 /**
  * Interface CheckoutProcessLayoutInterface
  */
 interface CheckoutProcessLayoutInterface
 {
-    public function renderProcessLayout(AppContext $app): mixed;
+    public function checkoutLayout(CartData $cartData): mixed;
 }

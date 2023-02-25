@@ -229,4 +229,11 @@ class ShippingService
     {
         return $this->getTypes()[$type] ?? null;
     }
+
+    public function getInstanceById(int|string $id): AbstractShipping
+    {
+        $shipping = $this->orm->mustFindOne(Shipping::class, $id);
+
+        return $this->createTypeInstance($shipping);
+    }
 }

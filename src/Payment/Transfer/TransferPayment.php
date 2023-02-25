@@ -11,10 +11,17 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Payment\Transfer;
 
+use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Payment\AbstractPayment;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Unicorn\Field\TinymceEditorField;
+use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Form\Form;
 
 /**
@@ -54,5 +61,29 @@ class TransferPayment extends AbstractPayment
                         );
                 }
             ));
+    }
+
+    public function form(Location $location): string
+    {
+        return '';
+    }
+
+    public function prepareOrder(Order $order, CartData $cartData): Order
+    {
+        return $order;
+    }
+
+    public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null
+    {
+        return null;
+    }
+
+    public function orderInfo(Order $order): string
+    {
+        return '';
+    }
+
+    public function receiveNotify(AppContext $app, Order $order): void
+    {
     }
 }
