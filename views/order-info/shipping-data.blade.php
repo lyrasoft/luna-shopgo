@@ -93,10 +93,10 @@ $ddCols = 12 - $dtCols;
 
             {{-- Note --}}
             <dt class="col-lg-{{ $dtCols }}">
-                @lang('shopgo.order.field.shipping.note')
+                @lang('shopgo.order.field.note')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getNote() ?: '-' }}
+                {{ $order->getNote() ?: '-' }}
             </dd>
         </dl>
     </div>

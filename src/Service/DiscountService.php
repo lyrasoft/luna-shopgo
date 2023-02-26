@@ -133,6 +133,7 @@ class DiscountService
                         'type' => $discount->getType(),
                         'subtype' => $discount->getSubtype(),
                         'code' => $discount->getCode(),
+                        'title' => $discount->getTitle(),
                     ]
                 );
                 $pricing->setTotals($totals);
@@ -230,6 +231,7 @@ class DiscountService
                 'type' => $discount->getType(),
                 'subtype' => $discount->getSubtype(),
                 'code' => $discount->getCode(),
+                'title' => $discount->getTitle(),
             ]
         );
 

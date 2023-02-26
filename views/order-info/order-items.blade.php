@@ -16,6 +16,7 @@ namespace App\view;
  * @var $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\OrderItem;
 use Lyrasoft\ShopGo\Service\CurrencyService;
@@ -28,13 +29,15 @@ use Windwalker\Core\Router\SystemUri;
 
 /**
  * @var $orderItems OrderItem[]
- * @var $totals     PriceSet
+ * @var $totals     PriceSet|PriceObject[]
+ * @var $total      PriceObject
+ * @var $grandTotal PriceObject
  */
 
 $currency = $app->service(CurrencyService::class);
 ?>
 
-<div class="l-order-items card mb-5">
+<div class="l-order-items table-responsive mb-5">
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -46,6 +49,9 @@ $currency = $app->service(CurrencyService::class);
             </th>
             <th>
                 @lang('shopgo.order.item.field.product')
+            </th>
+            <th>
+                @lang('shopgo.order.item.field.price.unit')
             </th>
             <th>
                 @lang('shopgo.order.item.field.quantity')
@@ -73,40 +79,91 @@ $currency = $app->service(CurrencyService::class);
                         </div>
                     @endif
                 </td>
+                <td class="text-end" style="width: 200px">
+                    {{ $currency->format($orderItem->getPriceUnit()) }}
+                </td>
                 <td style="width: 200px">{{ $orderItem->getQuantity() }}</td>
                 <td class="text-end" style="width: 200px">
-                    {{ $currency->format($orderItem->getTotal()) }}
+                    {{ $currency->formatWithCode($orderItem->getTotal()) }}
                 </td>
             </tr>
+
+            @if ($attachmentItems = $attachments[$orderItem->getId()] ?? [])
+                @foreach ($attachmentItems as $atachment)
+                    <tr class="bg-light">
+                        <td>{{ $atachment->getId() }}</td>
+                        <td>
+                            <img src="{{ $atachment->getImage() }}" class="me-3" width="75"
+                                alt="Image">
+                        </td>
+                        <td>
+                            <h5>
+                                {{ $atachment->getTitle() }}
+                            </h5>
+                            @if ($atachment->getVariantHash())
+                                <div>
+                                    {{ $atachment->getVariantTitle() }}
+                                </div>
+                            @endif
+
+                            <div>
+                                <span class="badge bg-secondary">
+                                    @lang('shopgo.order.item.label.attachment')
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-end" style="width: 200px">
+                            {{ $currency->format($atachment->getPriceUnit()) }}
+                        </td>
+                        <td style="width: 200px">{{ $atachment->getQuantity() }}</td>
+                        <td class="text-end" style="width: 200px">
+                            {{ $currency->formatWithCode($atachment->getTotal()) }}
+                        </td>
+                    </tr>
+                @endforeach
+
+                <tr class="bg-light fs-5 fw-bold">
+                    <td colspan="5" class="text-end">
+                        @lang('shopgo.order.item.attached.final.total')
+                    </td>
+                    <td class="text-end">
+                        {{ $currency->formatWithCode($orderItem->getPriceSet()['attached_final_total']) }}
+                    </td>
+                </tr>
+            @endif
         @endforeach
         </tbody>
     </table>
 
-    <div class="text-end mb-5">
-        <table class="table">
-            <tr data-type="{{ $totals['total']->getParamValue('code') }}"
-                data-discount-id="{{ $totals['total']->getParamValue('discountId') }}">
+    <div class="text-end">
+        <?php
+        $total = $totals->remove('total');
+        $grandTotal = $totals->remove('grand_total');
+        ?>
+        <table class="table fs-5">
+            <tr>
                 <th style="border: none">
                     <div>
-                        {{ $totals['total']->getLabel() }}
+                        {{ $total->getLabel() }}
                     </div>
                 </th>
                 <td style="border: none; vertical-align: middle; width: 150px;">
-                    {{ $currency->format($totals['total']) }}
+                    {{ $currency->format($total) }}
                 </td>
             </tr>
 
             @foreach ($totals as $total)
-                @if (!str_starts_with($total->getName(), 'discount:'))
-                    @continue
-                @endif
-
-                <tr data-type="{{ $total->getParamValue('code') }}"
-                    data-discount-id="{{ $total->getParamValue('discountId') }}">
+                <tr data-type="{{ $total->getParamValue('type') }}"
+                    data-discount-id="{{ $total->getParamValue('id') }}">
                     <th style="border: none">
                         <div>
                             {{ $total->getLabel() }}
                         </div>
+                        @if (str_starts_with($total->getName(), 'discount:'))
+                        <div class="small">
+                            {{ $total->getParamValue('title') }}
+                        </div>
+                        @endif
                     </th>
                     <td style="border: none; vertical-align: middle" width="150px">
                         {{ $currency->format($total) }}
@@ -114,45 +171,14 @@ $currency = $app->service(CurrencyService::class);
                 </tr>
             @endforeach
 
-            @if (!$totals['shipping_fee']->isZero())
-                <tr data-type="{{ $totals['shipping_fee']->getParamValue('code') }}"
-                    data-discount-id="{{ $totals['shipping_fee']->getParamValue('discountId') }}">
-                    <th style="border: none">
-                        <div>
-                            {{ $totals['shipping_fee']->getLabel() }}
-                        </div>
-                    </th>
-                    <td style="border: none; vertical-align: middle" width="150px">
-                        {{ $currency->format($totals['shipping_fee']) }}
-                    </td>
-                </tr>
-            @endif
-
-            @if ($totals->has('free_shipping'))
-                @if(!$totals['free_shipping']->isZero())
-                    <tr data-type="{{ $totals['free_shipping']->getParamValue('code') }}"
-                        data-discount-id="{{ $totals['free_shipping']->getParamValue('discountId') }}">
-                        <th style="border: none">
-                            <div>
-                                {{ $totals['free_shipping']->getLabel() }}
-                            </div>
-                        </th>
-                        <td style="border: none; vertical-align: middle; width: 150px;">
-                            {{ $currency->format($totals['free_shipping']) }}
-                        </td>
-                    </tr>
-                @endif
-            @endif
-
-            <tr data-type="{{ $totals['grand_total']->getParamValue('code') }}"
-                data-discount-id="{{ $totals['grand_total']->getParamValue('discountId') }}">
+            <tr>
                 <th style="border: none">
                     <div>
-                        {{ $totals['grand_total']->getLabel() }}
+                        {{ $grandTotal->getLabel() }}
                     </div>
                 </th>
-                <td style="border: none; vertical-align: middle; width: 150px;">
-                    {{ $currency->format($totals['grand_total']) }}
+                <td class="fw-bold" style="border: none; vertical-align: middle; width: 150px;">
+                    {{ $currency->formatWithCode($grandTotal) }}
                 </td>
             </tr>
         </table>

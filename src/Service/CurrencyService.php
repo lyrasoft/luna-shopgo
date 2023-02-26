@@ -52,6 +52,13 @@ class CurrencyService
         return $currency->formatPrice($num, $addCode);
     }
 
+    public function formatWithCode(
+        mixed $num,
+        Currency|int|string|null $currency = null
+    ): string {
+        return $this->format($num, null, true);
+    }
+
     public static function formatByCurrency(
         PriceObject|BigDecimal|string|float $num,
         Currency $currency,

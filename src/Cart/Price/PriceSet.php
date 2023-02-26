@@ -41,7 +41,7 @@ use Windwalker\Utilities\Str;
  *
  * @since  0.1.1
  */
-class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
+class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess, \Stringable
 {
     /**
      * Property prices.
@@ -365,5 +365,10 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         $this->remove($offset);
+    }
+
+    public function __toString(): string
+    {
+        return json_encode($this);
     }
 }

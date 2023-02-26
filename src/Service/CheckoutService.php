@@ -196,6 +196,14 @@ class CheckoutService
             )
         );
 
+        // Create note history
+        $this->orderHistoryService->createHistory(
+            $order,
+            null,
+            OrderHistoryType::MEMBER(),
+            $order->getNo()
+        );
+
         return $event->getOrder();
     }
 
@@ -224,11 +232,12 @@ class CheckoutService
     }
 
     /**
-     * @param  Order  $order
+     * @param  Order            $order
+     * @param  OrderState|null  $state
      *
      * @return OrderHistory
      */
-    protected function createNewHistory(Order $order): OrderHistory
+    protected function createNewHistory(Order $order, ?OrderState $state = null): OrderHistory
     {
         $msg = $this->trans('shopgo.order.history.new.message');
 
@@ -236,9 +245,11 @@ class CheckoutService
             $msg .= $this->trans('shopgo.order.history.new.note', note: $order->getNote());
         }
 
+        $state ??= $this->orm->mustFindOne(OrderState::class, $order->getStateId());
+
         return $this->orderHistoryService->createHistory(
             $order,
-            null,
+            $state,
             OrderHistoryType::SYSTEM(),
             $msg,
             true
@@ -275,8 +286,6 @@ class CheckoutService
                 $attachItem->setAttachmentId((int) $attachment->getKey());
 
                 $attachItem = $this->orm->createOne(OrderItem::class, $attachItem);
-
-                show($orderItem, $attachItem);
 
                 $orderItem->getAttachments()->attach($attachItem);
             }
@@ -383,11 +392,18 @@ class CheckoutService
         $orderItem->setQuantity($item->getQuantity());
         $orderItem->setImage($variant->getCover() ?: $product->getCover());
         $orderItem->setTotal($item->getPriceSet()['final_total']->toFloat());
-        $orderItem->setPriceSet($item->getPriceSet());
+        $orderItem->setPriceSet(clone $item->getPriceSet());
         $orderItem->setProductData(
-            compact('product', 'variant')
+            [
+                'product' => $product->toCollection()
+                    ->except(['searchIndex']),
+                'variant' => $variant->toCollection()
+                    ->except(['searchIndex']),
+            ]
         );
         $orderItem->setOptions($variant->getOptions());
+
+        $data = $this->orm->extractEntity($orderItem);
 
         return $orderItem;
     }
