@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Repository;
 
+use Lyrasoft\Favorite\Entity\Favorite;
+use Lyrasoft\Favorite\Repository\FavoriteRepository;
+use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
-use Lyrasoft\Luna\Entity\Category;
-use Lyrasoft\ShopGo\Entity\Wishlist;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -46,13 +47,11 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
         $selector = $this->getListSelector();
 
         if ($user && $user->isLogin()) {
-            $selector->leftJoin(
-                Wishlist::class,
-                'wishlist',
-                [
-                    ['wishlist.product_id', 'product.id'],
-                    ['wishlist.user_id', val($user->getId())],
-                ]
+            FavoriteRepository::joinFavorite(
+                $selector,
+                'product',
+                $user->getId(),
+                'product.id'
             );
         }
 

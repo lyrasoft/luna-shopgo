@@ -46,7 +46,7 @@ $attributes->props(
     'max-price',
     'min-stock',
     'max-stock',
-    'added-wishlist'
+    'favorited'
 );
 
 $orm = $app->service(ORM::class);
@@ -60,7 +60,7 @@ $minPrice ??= $item->min_price ?? 0;
 $maxPrice ??= $item->max_price ?? 0;
 $minStock ??= $item->min_stock ?? 0;
 $maxStock ??= $item->max_stock ?? 0;
-$addedWishlist ??= null;
+$favorited ??= null;
 
 $priceSet = $variant->getPriceSet();
 
@@ -124,10 +124,11 @@ $attributes = $attributes->class('card c-product-card');
                 </button>
             @endif
 
-            <x-wishlist-button :id="$item->getId()"
-                added="{{ $addedWishlist ? 1 : 0 }}"
+            <x-favorite-button :id="$item->getId()"
+                added="{{ $favorited ? 1 : 0 }}"
+                type="product"
                 class="btn btn-outline-primary">
-            </x-wishlist-button>
+            </x-favorite-button>
         </div>
     </div>
 </article>

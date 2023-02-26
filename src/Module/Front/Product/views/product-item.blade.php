@@ -136,11 +136,12 @@ $shopGoScript->swiper(
                         {{-- Title --}}
                         <h1 class="l-product-info__title m-0">{{ $item->getTitle() }}</h1>
 
-                        {{-- Wishlist --}}
+                        {{-- Favorite --}}
                         <div class="ms-auto l-product-info__favorite">
-                            <x-wishlist-button class="fs-4" :id="$item->getId()"
-                                :added="(int) (bool) $wishlist">
-                            </x-wishlist-button>
+                            <x-favorite-button class="fs-4" :id="$item->getId()"
+                                type="product"
+                                :added="(int) (bool) $favorite">
+                            </x-favorite-button>
                         </div>
                     </div>
 

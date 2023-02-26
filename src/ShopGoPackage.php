@@ -103,20 +103,6 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
             Container::MERGE_OVERRIDE
         );
 
-        $container->mergeParameters(
-            'renderer.aliases',
-            [
-                '@wishlist-button' => 'front.wishlist-button',
-            ]
-        );
-
-        $container->mergeParameters(
-            'renderer.edge.components',
-            [
-                'wishlist-button' => '@wishlist-button',
-            ]
-        );
-
         // Assets
         $container->mergeParameters(
             'asset.import_map.imports',
@@ -153,7 +139,6 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $this->installModules($installer, 'product_feature', ['admin', 'model']);
         $this->installModules($installer, 'product_tab', ['admin', 'model']);
         $this->installModules($installer, 'shipping', ['admin', 'model']);
-        $this->installModules($installer, 'wishlist', ['front', 'model']);
 
         $installer->installModules(
             [

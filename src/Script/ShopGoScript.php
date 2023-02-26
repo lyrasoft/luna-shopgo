@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Script;
 
+use Lyrasoft\Favorite\Script\FavoriteScript;
 use Lyrasoft\ShopGo\Service\CurrencyService;
 use Unicorn\Script\UnicornScript;
 use Windwalker\Core\Asset\AbstractScript;
@@ -20,8 +21,12 @@ use Windwalker\Core\Asset\AbstractScript;
  */
 class ShopGoScript extends AbstractScript
 {
-    public function __construct(protected CurrencyService $currencyService, protected UnicornScript $unicornScript)
-    {
+    public function __construct(
+        protected CurrencyService $currencyService,
+        protected FavoriteScript $favoriteScript,
+        protected UnicornScript $unicornScript
+    ) {
+        //
     }
 
     public function vueUtilities(): void
@@ -65,11 +70,7 @@ class ShopGoScript extends AbstractScript
 
     public function wishlistButton(): void
     {
-        if ($this->available()) {
-            $this->unicornScript->addRoute('@wishlist_ajax');
-
-            $this->js('@shopgo/wishlist-button.js');
-        }
+        $this->favoriteScript->favoriteButton();
     }
 
     public function swiper(?string $selector = null, array $options = []): void
@@ -77,7 +78,7 @@ class ShopGoScript extends AbstractScript
         $defaultOptions = [
             'simulateTouch' => true,
             'allowTouchMove' => true,
-            'autoHeight' => true
+            'autoHeight' => true,
         ];
 
         if ($this->available()) {

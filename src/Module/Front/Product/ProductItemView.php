@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Front\Product;
 
+use Lyrasoft\Favorite\Entity\Favorite;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\PageBuilder\PageService;
 use Lyrasoft\Luna\User\UserService;
@@ -22,7 +23,6 @@ use Lyrasoft\ShopGo\Entity\ProductTab;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
-use Lyrasoft\ShopGo\Entity\Wishlist;
 use Lyrasoft\ShopGo\Enum\DiscountType;
 use Lyrasoft\ShopGo\Repository\ProductRepository;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
@@ -30,7 +30,6 @@ use Lyrasoft\ShopGo\Service\ProductAttributeService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Psr\Cache\InvalidArgumentException;
-use Unicorn\Enum\BasicState;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\Attributes\ViewModel;
@@ -181,12 +180,12 @@ class ProductItemView implements ViewModelInterface
         $user = $this->userService->getUser();
 
         if ($user->isLogin()) {
-            $wishlist = $this->orm->findOne(
-                Wishlist::class,
-                ['user_id' => $user->getId(), 'product_id' => $item->getId()]
+            $favorite = $this->orm->findOne(
+                Favorite::class,
+                ['user_id' => $user->getId(), 'target_id' => $item->getId(), 'type' => 'product']
             );
         } else {
-            $wishlist = null;
+            $favorite = null;
         }
 
         return compact(
@@ -202,7 +201,7 @@ class ProductItemView implements ViewModelInterface
             'minPrice',
             'maxPrice',
             'additionalPurchases',
-            'wishlist'
+            'favorite'
         );
     }
 
