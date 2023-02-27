@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Front\Product;
 
 use Lyrasoft\Favorite\Entity\Favorite;
+use Lyrasoft\Favorite\Service\FavoriteService;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\Luna\PageBuilder\PageService;
 use Lyrasoft\Luna\User\UserService;
@@ -74,6 +75,7 @@ class ProductItemView implements ViewModelInterface
         protected VariantService $variantService,
         protected AdditionalPurchaseService $additionalPurchaseService,
         protected ProductAttributeService $productAttributeService,
+        protected FavoriteService $favoriteService,
     ) {
         //
     }
@@ -180,12 +182,9 @@ class ProductItemView implements ViewModelInterface
         $user = $this->userService->getUser();
 
         if ($user->isLogin()) {
-            $favorite = $this->orm->findOne(
-                Favorite::class,
-                ['user_id' => $user->getId(), 'target_id' => $item->getId(), 'type' => 'product']
-            );
+            $favorited = $this->favoriteService->isFavorited('product', $user->getId(), $item->getId());
         } else {
-            $favorite = null;
+            $favorited = false;
         }
 
         return compact(
@@ -201,7 +200,7 @@ class ProductItemView implements ViewModelInterface
             'minPrice',
             'maxPrice',
             'additionalPurchases',
-            'favorite'
+            'favorited'
         );
     }
 

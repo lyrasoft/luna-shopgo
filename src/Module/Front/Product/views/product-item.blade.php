@@ -140,7 +140,8 @@ $shopGoScript->swiper(
                         <div class="ms-auto l-product-info__favorite">
                             <x-favorite-button class="fs-4" :id="$item->getId()"
                                 type="product"
-                                :added="(int) (bool) $favorite">
+                                :added="(int) (bool) $favorited"
+                            >
                             </x-favorite-button>
                         </div>
                     </div>

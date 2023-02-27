@@ -1,2 +1,139 @@
-System.register([],(function(e,o){var t,i,n,l,c,r,a;return{setters:[],execute:function(){({ref:t,onMounted:i,computed:n,createApp:l,toRefs:c,reactive:r}=Vue),a={name:"ShippingPricingApp",props:{pricing:Object},setup(e){var o,i,l;u.$ui.iframeModal();const a=r({global:(null===(o=e.pricing)||void 0===o?void 0:o.global)||{free:!1,pricing:p()},locationCategories:(null===(i=e.pricing)||void 0===i?void 0:i.locationCategories)||[],locations:(null===(l=e.pricing)||void 0===l?void 0:l.locations)||[],currentItem:null}),g=t(null),s=t(null);function p(){const e=d();return e.threshold=0,[e]}function d(){return ShopgoVueUtilities.prepareVueItem({threshold:"",fee:""})}const f=n((()=>JSON.stringify({global:a.global,locationCategories:a.locationCategories,locations:a.locations})));return{...c(a),finalResult:f,selectModal:g,pricingModal:s,openLocationSelector:function(){const e=u.route("location_modal",{callback:"locationSelected"});window.locationSelected=function(e){let{value:o,title:t,path:i}=e;a.locations.push({id:o,title:t,path:i,free:!1,pricing:p()}),g.value.close()},g.value.open(e,{size:"modal-xl"})},openLocationCategorySelector:function(){const e=u.route("category_modal",{callback:"locationCategorySelected"});window.locationCategorySelected=function(e){let{value:o,title:t}=e;a.locationCategories.push({id:o,title:t,free:!1,pricing:p()}),g.value.close()},g.value.open(e,{size:"modal-xl"})},configurePricing:function(e){a.currentItem=e,u.$ui.bootstrap.modal(s.value).show()},addPricingSegment:function(){let e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;a.currentItem.pricing.splice(e+1,0,d())},removePricingSegment:function(e){a.currentItem.pricing.splice(e,1)}}},create(e){const o=e.getAttribute("id"),t=l(this,u.data(o+".props"));t.use(ShopGoVuePlugin),t.component("draggable",vuedraggable),t.mount(e)}},window.ShippingPricing=a}}}));
+System.register([], function (_export, _context) {
+  "use strict";
+
+  var ref, onMounted, computed, createApp, toRefs, reactive, ShippingPricing;
+  return {
+    setters: [],
+    execute: function () {
+      /**
+       * Part of shopgo project.
+       *
+       * @copyright  Copyright (C) 2023 __ORGANIZATION__.
+       * @license    __LICENSE__
+       */
+      // App
+      ({
+        ref,
+        onMounted,
+        computed,
+        createApp,
+        toRefs,
+        reactive
+      } = Vue);
+      ShippingPricing = {
+        name: 'ShippingPricingApp',
+        props: {
+          pricing: Object
+        },
+        setup(props) {
+          var _props$pricing, _props$pricing2, _props$pricing3;
+          u.$ui.iframeModal();
+          const state = reactive({
+            global: ((_props$pricing = props.pricing) === null || _props$pricing === void 0 ? void 0 : _props$pricing.global) || {
+              free: false,
+              pricing: getEmptyPricing()
+            },
+            locationCategories: ((_props$pricing2 = props.pricing) === null || _props$pricing2 === void 0 ? void 0 : _props$pricing2.locationCategories) || [],
+            locations: ((_props$pricing3 = props.pricing) === null || _props$pricing3 === void 0 ? void 0 : _props$pricing3.locations) || [],
+            currentItem: null
+          });
+          const selectModal = ref(null);
+          const pricingModal = ref(null);
+          function openLocationCategorySelector() {
+            const url = u.route('category_modal', {
+              callback: 'locationCategorySelected'
+            });
+            window.locationCategorySelected = function (_ref) {
+              let {
+                value: id,
+                title
+              } = _ref;
+              state.locationCategories.push({
+                id,
+                title,
+                free: false,
+                pricing: getEmptyPricing()
+              });
+              selectModal.value.close();
+            };
+            selectModal.value.open(url, {
+              size: 'modal-xl'
+            });
+          }
+          function openLocationSelector() {
+            const url = u.route('location_modal', {
+              callback: 'locationSelected'
+            });
+            window.locationSelected = function (_ref2) {
+              let {
+                value: id,
+                title,
+                path
+              } = _ref2;
+              state.locations.push({
+                id,
+                title,
+                path,
+                free: false,
+                pricing: getEmptyPricing()
+              });
+              selectModal.value.close();
+            };
+            selectModal.value.open(url, {
+              size: 'modal-xl'
+            });
+          }
+          function configurePricing(item) {
+            state.currentItem = item;
+            u.$ui.bootstrap.modal(pricingModal.value).show();
+          }
+          function getEmptyPricing() {
+            const seg = getEmptyPricingSegment();
+            seg.threshold = 0;
+            return [seg];
+          }
+          function getEmptyPricingSegment() {
+            return ShopgoVueUtilities.prepareVueItem({
+              threshold: '',
+              fee: ''
+            });
+          }
+          function addPricingSegment() {
+            let i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            state.currentItem.pricing.splice(i + 1, 0, getEmptyPricingSegment());
+          }
+          function removePricingSegment(i) {
+            state.currentItem.pricing.splice(i, 1);
+          }
+          const finalResult = computed(() => {
+            return JSON.stringify({
+              global: state.global,
+              locationCategories: state.locationCategories,
+              locations: state.locations
+            });
+          });
+          return {
+            ...toRefs(state),
+            finalResult,
+            selectModal,
+            pricingModal,
+            openLocationSelector,
+            openLocationCategorySelector,
+            configurePricing,
+            addPricingSegment,
+            removePricingSegment
+          };
+        },
+        create(el) {
+          const id = el.getAttribute('id');
+          const app = createApp(this, u.data(id + '.props'));
+          app.use(ShopGoVuePlugin);
+          app.component('draggable', vuedraggable);
+          app.mount(el);
+        }
+      };
+      window.ShippingPricing = ShippingPricing;
+    }
+  };
+});
 //# sourceMappingURL=shipping-pricing.js.map

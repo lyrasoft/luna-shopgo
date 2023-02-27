@@ -8,11 +8,11 @@
 import '@main';
 
 u.delegate(document, '[data-task=add-to-cart]', 'click', (e) => {
-  addToCart(e.target);
+  addToCart(e.currentTarget);
 });
 
 u.delegate(document, '[data-task=buy]', 'click', (e) => {
-  buy(e.target);
+  buy(e.currentTarget);
 });
 
 async function sendAddAction(el) {
