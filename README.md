@@ -203,7 +203,6 @@ class FrontMiddleware extends AbstractLifecycleMiddleware
         // ...
 
         $this->shopGoScript->sweetAlert();
-        $this->shopGoScript->wishlistButton();
         $this->shopGoScript->productCart();
 ```
 
