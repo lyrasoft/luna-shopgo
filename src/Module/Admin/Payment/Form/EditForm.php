@@ -92,6 +92,10 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('shopgo.payment.field.note'))
                     ->maxlength(255);
 
+                $form->add('type', TextField::class)
+                    ->label('shopgo.payment.field.type')
+                    ->readonly(true);
+
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'))
                     ->disabled(true);
@@ -110,7 +114,6 @@ class EditForm implements FieldDefinitionInterface
             }
         );
 
-        $form->add('type', HiddenField::class);
         $form->add('id', HiddenField::class);
     }
 }
