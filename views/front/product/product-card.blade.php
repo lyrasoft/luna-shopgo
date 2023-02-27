@@ -125,7 +125,7 @@ $attributes = $attributes->class('card c-product-card');
             @endif
 
             <x-favorite-button :id="$item->getId()"
-                added="{{ $favorited ? 1 : 0 }}"
+                :added="(bool) $favorited"
                 type="product"
                 class="btn btn-outline-primary">
             </x-favorite-button>

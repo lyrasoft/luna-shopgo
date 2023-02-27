@@ -58,13 +58,25 @@ System.register(["@main"], function (_export, _context) {
     location.href = u.route('cart');
   }
   function updateCartButton(data) {
-    u.trigger('cart.update', data);
+    u.trigger('cart.update', data, count);
+    document.dispatchEvent(new CustomEvent('cart.update', {
+      detail: {
+        data,
+        count
+      }
+    }));
     const count = data.length;
     const $cartButtons = document.querySelectorAll('[data-role=cart-button]');
     for (const $cartButton of $cartButtons) {
       const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');
       $cartButton.classList.toggle('h-has-items', count > 0);
       $cartQuantity.textContent = count;
+      $cartButton.dispatchEvent(new CustomEvent('cart.update', {
+        detail: {
+          data,
+          count
+        }
+      }));
     }
   }
   function findAttachments() {

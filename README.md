@@ -8,6 +8,9 @@ Install from composer
 composer require lyrasoft/shopgo
 ```
 
+ShopGo dependents on [lyrasoft/sequence](https://github.com/lyrasoft/luna-sequence) and
+[lyrasoft/favorite](https://github.com/lyrasoft/luna-favorite) packages. Please read their README and configure them first.
+
 Then copy files to project
 
 ```shell
@@ -118,6 +121,27 @@ And then you can run migtaiotns/seeders, all orders No and faker locale will use
 php windwalker mig:reset -fs
 ```
 
+### Favorites Type
+
+ShopGo will auto install `lyrasoft/favorite` and copy config file. You must add `product` to `allow_types` to allow 
+AJAX call.
+
+```php
+return [
+    'favorite' => [
+        // ...
+
+        'ajax' => [
+            'type_protect' => true,
+            'allow_types' => [
+                'article',
+                'product' // <-- Add this
+            ]
+        ],
+    ]
+];
+```
+
 ### Language Files
 
 Add this line to admin & front middleware if you don't want to override languages:
@@ -134,7 +158,7 @@ php windwalker pkg:install lyrasoft/shopgo -t lang
 
 ### CSS/JS
 
-Add these vendors to `fusionfile.mjs`
+ShopGo dependents on `lyrasoft/favorite`, you must add these vendors to `fusionfile.mjs`
 
 ```javascript
 export async function install() {
@@ -147,8 +171,9 @@ export async function install() {
       'swiper',
     ],
     [
-      // Add this
-      'lyrasoft/shopgo'
+      // Add these 2 lines
+      'lyrasoft/shopgo',
+      'lyrasoft/favorite',
     ]
   );
 }

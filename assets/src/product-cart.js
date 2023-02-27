@@ -93,7 +93,16 @@ function toCartPage() {
 }
 
 function updateCartButton(data) {
-  u.trigger('cart.update', data);
+  u.trigger('cart.update', data, count);
+
+  document.dispatchEvent(
+    new CustomEvent('cart.update', {
+      detail: {
+        data,
+        count
+      }
+    })
+  );
 
   const count = data.length;
 
@@ -104,6 +113,15 @@ function updateCartButton(data) {
 
     $cartButton.classList.toggle('h-has-items', count > 0);
     $cartQuantity.textContent = count;
+
+    $cartButton.dispatchEvent(
+      new CustomEvent('cart.update', {
+        detail: {
+          data,
+          count
+        }
+      })
+    );
   }
 }
 

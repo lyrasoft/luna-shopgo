@@ -60,7 +60,7 @@ $orm = $app->service(ORM::class);
                         :max-price="$maxPrice"
                         :min-stock="$minStock"
                         :max-stock="$maxStock"
-                        :favorited="$item->favorite?->id"
+                        :favorited="$item->favorited"
                     ></x-front.product.product-card>
                 </div>
             @endforeach
