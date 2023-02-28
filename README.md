@@ -121,6 +121,26 @@ And then you can run migtaiotns/seeders, all orders No and faker locale will use
 php windwalker mig:reset -fs
 ```
 
+### Session
+
+As ShopGo may need to redirect to outside Payment service to process checkout, you must disable `SameSite` cookie poilicy
+and set `secure` as `TRUE`.
+
+```php
+// etc/packages/session.php
+
+return [
+    'session' => [
+        // ...
+
+        'cookie_params' => [
+            // ...
+            'secure' => true, // <-- Set this to TRUE
+            // ...
+            'samesite' => CookiesInterface::SAMESITE_NONE, // Set this to `SAMESITE_NONE`
+        ],
+```
+
 ### Favorites Type
 
 ShopGo will auto install `lyrasoft/favorite` and copy config file. You must add `product` to `allow_types` to allow 
