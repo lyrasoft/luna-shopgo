@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Routes;
 
-use App\Module\Front\Wishlist\WishlistListView;
+use Lyrasoft\ShopGo\Module\Front\Wishlist\WishlistListView;
 use Windwalker\Core\Router\RouteCreator;
 
 /** @var RouteCreator $router */
