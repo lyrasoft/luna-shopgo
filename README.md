@@ -1,5 +1,18 @@
 # LYRASOFT ShopGo Package
 
+<!-- TOC -->
+* [Installation](#installation)
+  * [Seeders](#seeders)
+  * [Global Settings](#global-settings)
+  * [Session](#session)
+  * [Favorites Type](#favorites-type)
+  * [Language Files](#language-files)
+  * [CSS/JS](#cssjs)
+  * [Add Cart Button](#add-cart-button)
+* [Register Admin Menu](#register-admin-menu)
+* [Frontend Available Routes](#frontend-available-routes)
+<!-- TOC -->
+
 ## Installation
 
 Install from composer
@@ -368,4 +381,12 @@ $menu->registerChildren(
 );
 
 ```
+
+## Frontend Available Routes
+
+- `product_list`
+- `product_item`
+- `my_wishlist`
+- `my_order_list`
+- `my_order_item`
 
