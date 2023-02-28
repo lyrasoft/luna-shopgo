@@ -103,6 +103,14 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
             Container::MERGE_OVERRIDE
         );
 
+        // View
+        $container->mergeParameters(
+            'renderer.edge.components',
+            [
+                'product-card' => 'front.product.product-card',
+            ],
+        );
+
         // Assets
         $container->mergeParameters(
             'asset.import_map.imports',

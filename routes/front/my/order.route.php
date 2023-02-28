@@ -13,11 +13,11 @@ use Windwalker\Core\Router\RouteCreator;
 
 $router->group('order')
     ->register(function (RouteCreator $router) {
-        $router->any('order_list', '/order/list')
+        $router->any('my_order_list', '/order/list')
             ->controller(OrderController::class)
             ->view(OrderListView::class);
 
-        $router->any('order_item', '/order/item/{no}')
+        $router->any('my_order_item', '/order/item/{no}')
             ->controller(OrderController::class)
             ->view(OrderItemView::class);
     });

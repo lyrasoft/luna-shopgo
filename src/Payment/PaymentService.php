@@ -17,6 +17,7 @@ use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Lyrasoft\ShopGo\ShopGoPackage;
+use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
@@ -76,7 +77,7 @@ class PaymentService
             )
             ->tapIf(
                 $paymentIds !== [],
-                fn (Query $query) => $query->where('payment.id', $paymentIds)
+                fn (ListSelector $query) => $query->where('payment.id', $paymentIds)
             )
             ->all(Payment::class);
     }
@@ -139,7 +140,7 @@ class PaymentService
 
     public function getInstanceById(int|string $id): AbstractPayment
     {
-        $payment = $this->orm->mustFindOne(Payment::class, $id);
+        $payment = $this->once('payment.' . $id, fn () => $this->orm->mustFindOne(Payment::class, $id));
 
         return $this->createTypeInstance($payment);
     }

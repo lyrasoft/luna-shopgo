@@ -28,6 +28,8 @@ use Psr\Http\Message\UriInterface;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Form\Exception\ValidateFailException;
+use Windwalker\Core\Http\RequestAssert;
+use Windwalker\Core\Manager\Logger;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\View\View;
 use Windwalker\Http\Response\RedirectResponse;
@@ -62,7 +64,7 @@ class CheckoutController
         }
 
         $order = $orm->getDb()->transaction(
-            function () use ($stockService, $cartService, $user, $app, $checkoutService) {
+            function () use ($nav, $stockService, $cartService, $user, $app, $checkoutService) {
                 $order = new Order();
 
                 $checkout = (array) $app->input('checkout');
@@ -70,22 +72,25 @@ class CheckoutController
                 $payment = (array) $checkout['payment'];
                 $shipping = (array) $checkout['shipping'];
 
-                if ($shipping['sync'] ?? false) {
-                    $shipping = $payment;
+                $paymentData = (array) $checkout['payment_data'];
+                $shippingData = (array) $checkout['shipping_data'];
+
+                if ($shippingData['sync'] ?? false) {
+                    $shippingData = $paymentData;
                 }
 
-                $addressId = $payment['address_id'] ?? null;
+                $addressId = $paymentData['address_id'] ?? null;
 
                 $paymentLocation = $checkoutService->prepareAddressData(
                     (int) $addressId,
-                    $payment,
+                    $paymentData,
                     $order->getPaymentData(),
                     $user
                 );
 
                 $shippingLocation = $checkoutService->prepareAddressData(
                     (int) $addressId,
-                    $shipping,
+                    $shippingData,
                     $order->getShippingData(),
                     $user
                 );
@@ -112,11 +117,18 @@ class CheckoutController
                     $order->setInvoiceType(InvoiceType::IDV());
                 }
 
-                return $order = $checkoutService->createOrder($order, $cartData);
+                return $checkoutService->createOrder($order, $cartData);
             }
         );
 
-        show($order);
+        $completeUrl = $nav->to('checkout')
+            ->layout('complete')
+            ->var('no', $order->getNo())
+            ->full();
+
+        $res = $checkoutService->processPayment($order, $completeUrl);
+
+        return $res ?? $completeUrl;
     }
 
     public function checkoutShipping(
@@ -203,11 +215,31 @@ class CheckoutController
         return $result;
     }
 
-    public function shippingNotify()
+    public function shippingTask(string $task, AppContext $app, ORM $orm, ShippingService $shippingService)
     {
+        Logger::info('shipping-task', (string) $app->getSystemUri()->full());
+        Logger::info('shipping-task', print_r($app->input()->dump(), true));
+
+        $id = $app->input('id');
+
+        RequestAssert::assert($id, 'No Shipping ID');
+
+        $shipping = $orm->mustFindOne(Shipping::class, $id);
+
+        return $shippingService->createTypeInstance($shipping)->runTask($app, $task);
     }
 
-    public function paymentNotify()
+    public function paymentTask(string $task, AppContext $app, ORM $orm, PaymentService $paymentService)
     {
+        Logger::info('payment-task', (string) $app->getSystemUri()->full());
+        Logger::info('payment-task', print_r($app->input()->dump(), true));
+
+        $id = $app->input('id');
+
+        RequestAssert::assert($id, 'No Payment ID');
+
+        $shipping = $orm->mustFindOne(Payment::class, $id);
+
+        return $paymentService->createTypeInstance($shipping)->runTask($app, $task);
     }
 }

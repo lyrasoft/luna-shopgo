@@ -58,6 +58,7 @@ System.register(["@main"], function (_export, _context) {
     location.href = u.route('cart');
   }
   function updateCartButton(data) {
+    const count = data.length;
     u.trigger('cart.update', data, count);
     document.dispatchEvent(new CustomEvent('cart.update', {
       detail: {
@@ -65,7 +66,6 @@ System.register(["@main"], function (_export, _context) {
         count
       }
     }));
-    const count = data.length;
     const $cartButtons = document.querySelectorAll('[data-role=cart-button]');
     for (const $cartButton of $cartButtons) {
       const $cartQuantity = $cartButton.querySelector('[data-role=cart-quantity]');

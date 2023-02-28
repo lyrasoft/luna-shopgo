@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Front\Checkout;
 
+use Lyrasoft\ShopGo\Entity\Order;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
+use Windwalker\ORM\ORM;
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\count;
@@ -27,6 +30,7 @@ use function Windwalker\count;
         'checkout',
         'shipping',
         'payment',
+        'complete',
     ],
     js: 'checkout.js'
 )]
@@ -35,7 +39,7 @@ class CheckoutView implements ViewModelInterface
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct(protected ORM $orm, protected Navigator $nav)
     {
         //
     }
@@ -48,8 +52,20 @@ class CheckoutView implements ViewModelInterface
      *
      * @return  mixed
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): mixed
     {
+        if ($view->getLayout() === 'complete') {
+            $no = (string) $app->input('no');
+
+            $order = $this->orm->findOne(Order::class, compact('no'));
+
+            if (!$order) {
+                return $this->nav->to('home');
+            }
+
+            return compact('order');
+        }
+
         return [];
     }
 

@@ -45,7 +45,7 @@ use Windwalker\Core\Router\SystemUri;
         <div class="">
             <div class="ratio ratio-1x1"
                 style="width: 45px">
-                <img :src="shipping.image" alt="cover">
+                <img :src="shipping.image || imageDefault" alt="cover">
             </div>
         </div>
         <div>
@@ -73,12 +73,11 @@ use Windwalker\Core\Router\SystemUri;
 
     <transition name="fade" mode="out-in">
         <div
-            ref="optionLayout"
-            style="display: none; overflow: hidden; animation-duration: .3s">
-            <div v-if="shipping.optionLayout && selected"
+            ref="form"
+            style="display: none; postion: relative; z-index: 1; overflow: hidden; animation-duration: .3s">
+            <div v-if="shipping.checkoutForm && selected"
                 class="card-body border-top"
-                v-html="shipping.optionLayout"
-                >
+                v-html="shipping.checkoutForm">
             </div>
         </div>
     </transition>
@@ -101,6 +100,7 @@ use Windwalker\Core\Router\SystemUri;
             uid: u.uid(),
             data: {},
             selected: false,
+            imageDefault: u.data('image.default'),
           });
 
           watch(() => props.selected, () => {
@@ -108,9 +108,14 @@ use Windwalker\Core\Router\SystemUri;
 
             setTimeout(() => {
               if (state.selected) {
-                u.$ui.slideDown(optionLayout.value);
+                const scripts = form.value.querySelectorAll('.card-body script');
+                for (const script of scripts) {
+                  eval(script.textContent);
+                }
+
+                u.$ui.slideDown(form.value);
               } else {
-                u.$ui.slideUp(optionLayout.value);
+                u.$ui.slideUp(form.value);
               }
             }, 0);
           });
@@ -121,11 +126,11 @@ use Windwalker\Core\Router\SystemUri;
             emit('selected');
           }
 
-          const optionLayout = ref(null);
+          const form = ref(null);
 
           return {
             ...toRefs(state),
-            optionLayout,
+            form,
 
             onSelected,
           };

@@ -452,7 +452,7 @@ use Windwalker\Core\Router\SystemUri;
           }
 
           function buildInputName(name) {
-            return `checkout[${props.type}][${name}]`;
+            return `checkout[${props.type}_data][${name}]`;
           }
 
           function createNew() {

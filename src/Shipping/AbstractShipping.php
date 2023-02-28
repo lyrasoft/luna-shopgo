@@ -69,7 +69,12 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
     abstract public function orderInfo(Order $order): string;
 
-    abstract public function receiveNotify(AppContext $app, Order $order): void;
+    abstract public function runTask(AppContext $app, string $task): mixed;
+
+    public function isSupported(CartData $cartData): bool
+    {
+        return true;
+    }
 
     /**
      * @return Shipping

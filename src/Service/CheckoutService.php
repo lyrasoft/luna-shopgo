@@ -33,9 +33,11 @@ use Lyrasoft\ShopGo\Event\AfterOrderCreateEvent;
 use Lyrasoft\ShopGo\Event\AfterOrderDetailCreatedEvent;
 use Lyrasoft\ShopGo\Event\BeforeOrderCreateEvent;
 use Lyrasoft\ShopGo\Payment\PaymentService;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -58,6 +60,7 @@ class CheckoutService
         protected LocationService $locationService,
         protected AddressService $addressService,
         protected PaymentService $paymentService,
+        protected ShippingService $shippingService,
         protected ?SequenceService $sequenceService = null,
     ) {
     }
@@ -141,12 +144,19 @@ class CheckoutService
 
         $order->setTotal($cartData->getTotals()['grand_total']->getPrice()->toFloat());
 
-        // Pre-set default state to order
-        $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);
+        $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
+        $shippingInstance = $this->shippingService->getInstanceById($order->getShippingId());
+
+        $state = $this->orm->mustFindOne(OrderState::class, $paymentInstance->getData()->getOrderStateId());
+
+        if (!$state) {
+            $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);
+        }
+
         $order->setState($state);
 
-        $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
         $order = $paymentInstance->prepareOrder($order, $cartData);
+        $order = $shippingInstance->prepareOrder($order, $cartData);
 
         $event = $this->shopGo->emit(
             BeforeOrderCreateEvent::class,
@@ -165,7 +175,7 @@ class CheckoutService
         /** @var Order $order */
         $order = $this->orm->createOne(Order::class, $order);
 
-        $this->prepareOrderAndPaymentNo($order);
+        $this->prepareOrderAndPaymentNo($order, $paymentInstance->isTest());
 
         $event = $this->shopGo->emit(
             AfterOrderCreateEvent::class,
@@ -276,6 +286,8 @@ class CheckoutService
 
             $orderItem = $this->orm->createOne(OrderItem::class, $orderItem);
 
+            $order->getOrderItems()->attach($orderItem);
+
             $orderItems[] = $orderItem;
 
             foreach ($item->getAttachments() as $attachment) {
@@ -343,13 +355,14 @@ class CheckoutService
 
     /**
      * @param  Order  $order
+     * @param  bool   $test
      *
      * @return Order
      */
-    protected function prepareOrderAndPaymentNo(Order $order): Order
+    protected function prepareOrderAndPaymentNo(Order $order, bool $test = false): Order
     {
         $no = $this->orderService->createOrderNo($order->getId());
-        $tradeNo = $this->orderService->getPaymentNo($no, true);
+        $tradeNo = $this->orderService->getPaymentNo($no, $test);
 
         // Save NO
         $this->orm->updateWhere(
@@ -406,5 +419,12 @@ class CheckoutService
         $data = $this->orm->extractEntity($orderItem);
 
         return $orderItem;
+    }
+
+    public function processPayment(Order $order, RouteUri $completeUrl)
+    {
+        $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
+
+        return $paymentInstance->processCheckout($order, $completeUrl);
     }
 }

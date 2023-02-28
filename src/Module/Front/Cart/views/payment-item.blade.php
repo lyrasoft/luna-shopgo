@@ -45,7 +45,7 @@ use Windwalker\Core\Router\SystemUri;
         <div class="">
             <div class="ratio ratio-1x1"
                 style="width: 45px">
-                <img class="object-fit-cover" :src="payment.image" alt="cover">
+                <img class="object-fit-cover" :src="payment.image || imageDefault" alt="cover">
             </div>
         </div>
         <div>
@@ -99,6 +99,7 @@ use Windwalker\Core\Router\SystemUri;
             uid: u.uid(),
             data: {},
             selected: false,
+            imageDefault: u.data('image.default'),
           });
 
           watch(() => props.selected, () => {

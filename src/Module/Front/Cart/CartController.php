@@ -255,10 +255,16 @@ class CartController
 
         $shippings = $shippingService->getShippings($location, $products);
 
+        $validShippings = [];
+
         foreach ($shippings as $shipping) {
             $instance = $shippingService->createTypeInstance($shipping);
 
             if (!$instance) {
+                continue;
+            }
+
+            if (!$instance->isSupported($cartData)) {
                 continue;
             }
 
@@ -267,15 +273,18 @@ class CartController
             $shipping->fee = $fee;
 
             $shipping->checkoutForm = $instance->form($location);
+
+            $validShippings[] = $shipping;
         }
 
-        return $shippings;
+        return $validShippings;
     }
 
     public function payments(
         AppContext $app,
         ORM $orm,
         PaymentService $paymentService,
+        CartService $cartService,
     ): iterable {
         $locationId = (int) $app->input('location_id');
         $shippingId = (int) $app->input('shipping_id');
@@ -286,6 +295,7 @@ class CartController
             return [];
         }
 
+        $cartData = $cartService->getCartData(['location_id' => $location->getId()]);
         $shipping = $orm->findOne(Shipping::class, $shippingId);
 
         if (!$shipping) {
@@ -293,6 +303,7 @@ class CartController
         }
 
         $payments = $paymentService->getPayments($location, $shipping);
+        $validPayments = [];
 
         foreach ($payments as $payment) {
             $instance = $paymentService->createTypeInstance($payment);
@@ -301,9 +312,15 @@ class CartController
                 continue;
             }
 
+            if (!$instance->isSupported($cartData)) {
+                continue;
+            }
+
             $payment->checkoutForm = $instance->form($location);
+
+            $validPayments[] = $payment;
         }
 
-        return $payments;
+        return $validPayments;
     }
 }

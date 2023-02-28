@@ -29,6 +29,7 @@ const CartApp = {
       shippings: [],
       payments: [],
       code: '',
+      note: '',
       loading: false,
     });
 
@@ -230,12 +231,11 @@ const CartApp = {
 
     // Shippings
     watch(() => state.shippingData.locationId, () => {
-      console.log(state.shippingData.locationId);
       loadShippings();
     });
-    // watch(() => state.shippingId, () => {
-    //   loadItems(false);
-    // });
+    watch(() => state.shippingId, () => {
+      loadItems(false);
+    });
 
     const selectedShipping = computed(() => {
       return state.shippings.find(item => item.id === state.shippingId);
@@ -251,7 +251,7 @@ const CartApp = {
 
         await nextTick();
         await nextTick();
-
+        
         if (state.shippings.length > 0) {
           if (!selectedShipping.value) {
             state.shippingId = state.shippings[0].id;
@@ -265,7 +265,7 @@ const CartApp = {
       } finally {
         popLoading();
       }
-    }, 150);
+    }, 300);
 
     // Payments
     watch(() => [state.shippingData.locationId, state.shippingId], () => {
@@ -345,9 +345,25 @@ const CartApp = {
         return;
       }
 
+      if (!form.value.checkValidity()) {
+        form.value.reportValidity();
+
+        const invalid = form.value.querySelector(':invalid');
+
+        if (invalid && !isVisible(invalid) && invalid.dataset.validationMessage) {
+          u.alert(invalid.dataset.validationMessage);
+        }
+
+        return;;
+      }
+
       state.loading = true;
 
       form.value.requestSubmit();
+    }
+
+    function isVisible(el) {
+      return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
     }
 
     return {

@@ -62,7 +62,8 @@ class EditForm implements FieldDefinitionInterface
                         ->rows(4);
 
                     $form->add('order_state_id', OrderStateListField::class)
-                        ->label($this->trans('shopgo.payment.field.order.state'));
+                        ->label($this->trans('shopgo.payment.field.order.state'))
+                        ->defaultValue(5);
 
                     $form->add('location_category_id', CategoryModalField::class)
                         ->label($this->trans('shopgo.payment.field.location_category'))

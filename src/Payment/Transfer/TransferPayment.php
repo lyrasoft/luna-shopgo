@@ -73,7 +73,7 @@ class TransferPayment extends AbstractPayment
         return $order;
     }
 
-    public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null
+    public function processCheckout(Order $order, RouteUri $completeUrl): mixed
     {
         return null;
     }
@@ -83,7 +83,13 @@ class TransferPayment extends AbstractPayment
         return '';
     }
 
-    public function receiveNotify(AppContext $app, Order $order): void
+    public function runTask(AppContext $app, string $task): mixed
     {
+        return null;
+    }
+
+    public function isTest(): bool
+    {
+        return false;
     }
 }

@@ -56,14 +56,20 @@ trait PriceRangeTrait
 
                     $form->add('depends_on', ButtonRadioField::class)
                         ->label('shopgo.shipping.field.depends.on')
-                        ->option($this->trans('shopgo.shipping.depend.on.option.price'), static::DEPENDS_ON_PRICE)
-                        ->option($this->trans('shopgo.shipping.depend.on.option.weight'), static::DEPENDS_ON_WEIGHT)
+                        ->option($this->trans('shopgo.shipping.depend.on.option.price'), PriceRange::DEPENDS_ON_PRICE)
+                        ->option($this->trans('shopgo.shipping.depend.on.option.weight'), PriceRange::DEPENDS_ON_WEIGHT)
                         ->defaultValue('price');
 
                     $form->add('compute_unit', ButtonRadioField::class)
                         ->label('shopgo.shipping.field.unit')
-                        ->option($this->trans('shopgo.shipping.unit.option.per.order'), static::COMPUTE_UNIT_PER_ORDER)
-                        ->option($this->trans('shopgo.shipping.unit.option.per.item'), static::COMPUTE_UNIT_PER_ITEM)
+                        ->option(
+                            $this->trans('shopgo.shipping.unit.option.per.order'),
+                            PriceRange::COMPUTE_UNIT_PER_ORDER
+                        )
+                        ->option(
+                            $this->trans('shopgo.shipping.unit.option.per.item'),
+                            PriceRange::COMPUTE_UNIT_PER_ITEM
+                        )
                         ->defaultValue('order');
 
                     $form->add('range', ShippingPricingField::class)
@@ -85,8 +91,8 @@ trait PriceRangeTrait
         $location = $cartData->getLocation();
 
         $flatFee = $pricing['flat_fee'] ?? '';
-        $depends = $pricing['depends_no'] ?? static::DEPENDS_ON_PRICE;
-        $computeUnit = $pricing['compute_unit'] ?? static::COMPUTE_UNIT_PER_ORDER;
+        $depends = $pricing['depends_no'] ?? PriceRange::DEPENDS_ON_PRICE;
+        $computeUnit = $pricing['compute_unit'] ?? PriceRange::COMPUTE_UNIT_PER_ORDER;
         $range = $pricing['range'] ?? [];
         $cartItems = $cartData->getItems();
 
@@ -129,14 +135,14 @@ trait PriceRangeTrait
             $matchedPricing = $range['global']['pricing'] ?? [];
         }
 
-        if ($computeUnit === static::COMPUTE_UNIT_PER_ITEM) {
+        if ($computeUnit === PriceRange::COMPUTE_UNIT_PER_ITEM) {
             // Per Item
             foreach ($cartItems as $cartItem) {
                 if ($flatFee) {
                     $fee = $fee->plus($flatFee);
                 } else {
                     // Get depends value
-                    if ($depends === static::DEPENDS_ON_PRICE) {
+                    if ($depends === PriceRange::DEPENDS_ON_PRICE) {
                         $value = BigDecimal::of((string) $cartItem->getPriceSet()['final_total']);
                     } else {
                         /** @var ProductVariant $variant */
@@ -150,10 +156,15 @@ trait PriceRangeTrait
 
                     // Loop ranges
                     foreach ($matchedPricing as $pricingSegment) {
-                        $threshold = $pricingSegment['threshold'] ?? 0;
+                        $shippingFee = $pricingSegment['fee'] ?? '';
+                        $threshold = $pricingSegment['threshold'] ?? '';
 
-                        if ($value->isGreaterThan($threshold)) {
-                            $itemFee = BigDecimal::of($pricingSegment['fee'] ?? 0);
+                        if ($shippingFee === '' || $threshold === '') {
+                            continue;
+                        }
+
+                        if ($value->isGreaterThan((float) $threshold)) {
+                            $itemFee = BigDecimal::of((float) $shippingFee);
                             $priceSet = $cartItem->getPriceSet();
                             $priceSet->add(
                                 'sipping_fee',
@@ -179,7 +190,7 @@ trait PriceRangeTrait
                 $fee = $fee->plus($flatFee);
             } else {
                 // Get depends value
-                if ($depends === static::DEPENDS_ON_PRICE) {
+                if ($depends === PriceRange::DEPENDS_ON_PRICE) {
                     $value = BigDecimal::of((string) $total);
                 } else {
                     $value = BigDecimal::of(0);
@@ -197,10 +208,15 @@ trait PriceRangeTrait
 
                 // Loop ranges
                 foreach ($matchedPricing as $pricingSegment) {
-                    $threshold = $pricingSegment['threshold'] ?? 0;
+                    $shippingFee = $pricingSegment['fee'] ?? '';
+                    $threshold = $pricingSegment['threshold'] ?? '';
 
-                    if ($value->isGreaterThan($threshold)) {
-                        $fee = BigDecimal::of($pricingSegment['fee'] ?? 0);
+                    if ($shippingFee === '' || $threshold === '') {
+                        continue;
+                    }
+
+                    if ($value->isGreaterThan((float) $threshold)) {
+                        $fee = BigDecimal::of((float) $shippingFee);
                     }
                 }
             }

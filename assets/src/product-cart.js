@@ -93,6 +93,8 @@ function toCartPage() {
 }
 
 function updateCartButton(data) {
+  const count = data.length;
+
   u.trigger('cart.update', data, count);
 
   document.dispatchEvent(
@@ -103,8 +105,6 @@ function updateCartButton(data) {
       }
     })
   );
-
-  const count = data.length;
 
   const $cartButtons = document.querySelectorAll('[data-role=cart-button]');
 

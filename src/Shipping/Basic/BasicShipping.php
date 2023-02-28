@@ -36,14 +36,6 @@ class BasicShipping extends AbstractShipping
     use CurrencyAwareTrait;
     use PriceRangeTrait;
 
-    public const COMPUTE_UNIT_PER_ITEM = 'per_item';
-
-    public const COMPUTE_UNIT_PER_ORDER = 'per_order';
-
-    public const DEPENDS_ON_PRICE = 'price';
-
-    public const DEPENDS_ON_WEIGHT = 'weight';
-
     public static function getTypeIcon(): string
     {
         return 'fa fa-truck';
@@ -84,7 +76,8 @@ class BasicShipping extends AbstractShipping
         return '';
     }
 
-    public function receiveNotify(AppContext $app, Order $order): void
+    public function runTask(AppContext $app, string $task): mixed
     {
+        return null;
     }
 }

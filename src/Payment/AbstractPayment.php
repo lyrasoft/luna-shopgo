@@ -59,11 +59,18 @@ abstract class AbstractPayment implements FieldDefinitionInterface
 
     abstract public function prepareOrder(Order $order, CartData $cartData): Order;
 
-    abstract public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null;
+    abstract public function processCheckout(Order $order, RouteUri $completeUrl): mixed;
 
     abstract public function orderInfo(Order $order): string;
 
-    abstract public function receiveNotify(AppContext $app, Order $order): void;
+    abstract public function runTask(AppContext $app, string $task): mixed;
+
+    abstract public function isTest(): bool;
+
+    public function isSupported(CartData $cartData): bool
+    {
+        return true;
+    }
 
     /**
      * @return Payment
