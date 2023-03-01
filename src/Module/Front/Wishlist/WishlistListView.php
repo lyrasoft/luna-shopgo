@@ -16,6 +16,8 @@ use Lyrasoft\ShopGo\Repository\ProductRepository;
 use Psr\Cache\InvalidArgumentException;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\DI\Attributes\Autowire;
@@ -38,6 +40,7 @@ class WishlistListView implements ViewModelInterface
         #[Autowire]
         protected ProductRepository $repository,
         protected UserService $userService,
+        protected Navigator $nav,
     ) {
         //
     }
@@ -48,11 +51,15 @@ class WishlistListView implements ViewModelInterface
      * @param  AppContext  $app   The web app context.
      * @param  View        $view  The view object.
      *
-     * @return  mixed
+     * @return  RouteUri|array
      * @throws InvalidArgumentException
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): RouteUri|array
     {
+        if (!$this->userService->isLogin()) {
+            return $this->nav->to('login');
+        }
+
         $page = $app->input('page');
         $user = $this->userService->getUser();
 
