@@ -29,6 +29,11 @@ return [
             ]
         ],
 
+        'shop' => [
+            'sitename' => 'ShopGo',
+            'logo' => 'assets/images/logo-h.svg'
+        ],
+
         'currency' => [
             'main' => 'USD'
         ],

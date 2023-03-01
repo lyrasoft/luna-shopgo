@@ -1,5 +1,18 @@
 # LYRASOFT ShopGo Package
 
+<!-- TOC -->
+* [Installation](#installation)
+  * [Seeders](#seeders)
+  * [Global Settings](#global-settings)
+  * [Session](#session)
+  * [Favorites Type](#favorites-type)
+  * [Language Files](#language-files)
+  * [CSS/JS](#cssjs)
+  * [Add Cart Button](#add-cart-button)
+* [Register Admin Menu](#register-admin-menu)
+* [Frontend Available Routes](#frontend-available-routes)
+<!-- TOC -->
+
 ## Installation
 
 Install from composer
@@ -15,6 +28,7 @@ Then copy files to project
 
 ```shell
 php windwalker pkg:install lyrasoft/shopgo -t routes -t migrations -t seeders
+php windwalker pkg:install lyrasoft/favorite -t routes -t migrations
 ```
 
 ### Seeders
@@ -121,9 +135,29 @@ And then you can run migtaiotns/seeders, all orders No and faker locale will use
 php windwalker mig:reset -fs
 ```
 
+### Session
+
+As ShopGo may need to redirect to outside Payment service to process checkout, you must disable `SameSite` cookie poilicy
+and set `secure` as `TRUE`.
+
+```php
+// etc/packages/session.php
+
+return [
+    'session' => [
+        // ...
+
+        'cookie_params' => [
+            // ...
+            'secure' => true, // <-- Set this to TRUE
+            // ...
+            'samesite' => CookiesInterface::SAMESITE_NONE, // Set this to `SAMESITE_NONE`
+        ],
+```
+
 ### Favorites Type
 
-ShopGo will auto install `lyrasoft/favorite` and copy config file. You must add `product` to `allow_types` to allow 
+ShopGo will auto install `lyrasoft/favorite` and copy config file. You must add `product` to `allow_types` to allow
 AJAX call.
 
 ```php
@@ -148,12 +182,15 @@ Add this line to admin & front middleware if you don't want to override language
 
 ```php
 $this->lang->loadAllFromVendor('lyrasoft/shopgo', 'ini');
+$this->lang->loadAllFromVendor('lyrasoft/favorite', 'ini');
+
 ```
 
 Or run this command to copy languages files:
 
 ```shell
 php windwalker pkg:install lyrasoft/shopgo -t lang
+php windwalker pkg:install lyrasoft/favorite -t lang
 ```
 
 ### CSS/JS
@@ -162,20 +199,20 @@ ShopGo dependents on `lyrasoft/favorite`, you must add these vendors to `fusionf
 
 ```javascript
 export async function install() {
-  return installVendors(
-    [
-      // ...
-      
-      // Add these below
-      'sweetalert',
-      'swiper',
-    ],
-    [
-      // Add these 2 lines
-      'lyrasoft/shopgo',
-      'lyrasoft/favorite',
-    ]
-  );
+    return installVendors(
+        [
+            // ...
+
+            // Add these below
+            'sweetalert',
+            'swiper',
+        ],
+        [
+            // Add these 2 lines
+            'lyrasoft/shopgo',
+            'lyrasoft/favorite',
+        ]
+    );
 }
 ```
 
@@ -344,4 +381,12 @@ $menu->registerChildren(
 );
 
 ```
+
+## Frontend Available Routes
+
+- `product_list`
+- `product_item`
+- `my_wishlist`
+- `my_order_list`
+- `my_order_item`
 

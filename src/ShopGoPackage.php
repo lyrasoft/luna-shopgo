@@ -134,11 +134,12 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $this->installModules($installer, 'additional_purchase', ['admin']);
         $this->installModules($installer, 'config', ['admin']);
         $this->installModules($installer, 'cart', ['front']);
+        $this->installModules($installer, 'checkout', ['front']);
         $this->installModules($installer, 'currency', ['admin', 'model']);
         $this->installModules($installer, 'discount', ['admin', 'model']);
         $this->installModules($installer, 'location', ['admin', 'model']);
         $this->installModules($installer, 'manufacturer', ['admin', 'model']);
-        $this->installModules($installer, 'order', ['admin', 'model']);
+        $this->installModules($installer, 'order');
         $this->installModules($installer, 'order_state', ['admin', 'model']);
         $this->installModules($installer, 'payment', ['admin', 'model']);
         $this->installModules($installer, 'product');
@@ -147,6 +148,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $this->installModules($installer, 'product_feature', ['admin', 'model']);
         $this->installModules($installer, 'product_tab', ['admin', 'model']);
         $this->installModules($installer, 'shipping', ['admin', 'model']);
+        $this->installModules($installer, 'wishlist', ['front']);
 
         $installer->installModules(
             [

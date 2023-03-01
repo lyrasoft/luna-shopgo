@@ -113,16 +113,14 @@ $uniScript->addRoute('@address_ajax');
                                 <h3>貨運方式</h3>
 
                                 <div v-if="shippings.length > 0">
-                                    <transition-group name="fade">
-                                        <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
-                                            style="animation-duration: .3s"
-                                            :shipping="shipping"
-                                            :i="i"
-                                            :selected="shippingId === shipping.id"
-                                            @selected="shippingId = shipping.id"
-                                        >
-                                        </shipping-item>
-                                    </transition-group>
+                                    <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
+                                        style="animation-duration: .1s"
+                                        :shipping="shipping"
+                                        :i="i"
+                                        :selected="shippingId === shipping.id"
+                                        @selected="shippingId = shipping.id"
+                                    >
+                                    </shipping-item>
                                 </div>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
@@ -144,16 +142,14 @@ $uniScript->addRoute('@address_ajax');
                                 <h3>付款方式</h3>
 
                                 <div v-if="payments.length > 0">
-                                    <transition-group name="fade">
-                                        <payment-item v-for="(payment, i) of payments" :key="payment.id"
-                                            style="animation-duration: .3s"
-                                            :payment="payment"
-                                            :i="i"
-                                            :selected="paymentId === payment.id"
-                                            @selected="paymentId = payment.id"
-                                        >
-                                        </payment-item>
-                                    </transition-group>
+                                    <payment-item v-for="(payment, i) of payments" :key="payment.id"
+                                        style="animation-duration: .1s"
+                                        :payment="payment"
+                                        :i="i"
+                                        :selected="paymentId === payment.id"
+                                        @selected="paymentId = payment.id"
+                                    >
+                                    </payment-item>
                                 </div>
                                 <div v-else class="card bg-light">
                                     <div class="card-body py-5 text-center">
