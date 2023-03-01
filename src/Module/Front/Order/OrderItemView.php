@@ -24,8 +24,8 @@ use Lyrasoft\ShopGo\Repository\OrderRepository;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
-use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Router\Exception\RouteNotFoundException;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Security\Exception\UnauthorizedException;
 use Windwalker\Core\View\View;
@@ -83,7 +83,7 @@ class OrderItemView implements ViewModelInterface
         $user = $this->userService->getUser();
 
         if ($item->getUserId() !== $user->getId()) {
-            throw new ValidateFailException();
+            throw new RouteNotFoundException('Order not found');
         }
 
         // Totals
@@ -94,12 +94,12 @@ class OrderItemView implements ViewModelInterface
             ->all(OrderTotal::class)
             ->map(
                 function (OrderTotal $total) {
-                    return PriceObject::create(
+                    return new PriceObject(
                         $total->getCode(),
                         (string) $total->getValue(),
-                        $total->getTitle()
-                    )
-                        ->widthParams($total->dump());
+                        $total->getTitle(),
+                        $total->getParams()
+                    );
                 }
             );
 

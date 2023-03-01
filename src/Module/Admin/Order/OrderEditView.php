@@ -87,12 +87,12 @@ class OrderEditView implements ViewModelInterface
             ->all(OrderTotal::class)
             ->map(
                 function (OrderTotal $total) {
-                    return PriceObject::create(
+                    return new PriceObject(
                         $total->getCode(),
                         (string) $total->getValue(),
-                        $total->getTitle()
-                    )
-                        ->widthParams($total->dump());
+                        $total->getTitle(),
+                        $total->getParams()
+                    );
                 }
             );
 

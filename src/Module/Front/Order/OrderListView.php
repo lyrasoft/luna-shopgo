@@ -17,6 +17,8 @@ use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Router\Navigator;
+use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\Security\Exception\UnauthorizedException;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
@@ -44,6 +46,7 @@ class OrderListView implements ViewModelInterface
         #[Autowire]
         protected OrderRepository $repository,
         protected UserService $userService,
+        protected Navigator $nav,
     ) {
         //
     }
@@ -54,12 +57,12 @@ class OrderListView implements ViewModelInterface
      * @param  AppContext  $app   The web app context.
      * @param  View        $view  The view object.
      *
-     * @return  mixed
+     * @return  RouteUri|array
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): RouteUri|array
     {
         if (!$this->userService->isLogin()) {
-            throw new UnauthorizedException('Forbidden', 401);
+            return $this->nav->to('login')->withReturn();
         }
 
         // Prepare Items
