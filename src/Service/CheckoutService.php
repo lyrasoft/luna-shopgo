@@ -138,7 +138,7 @@ class CheckoutService
      *
      * @throws \ReflectionException
      */
-    public function createOrder(Order $order, CartData $cartData): Order
+    public function createOrder(Order $order, CartData $cartData, array $checkoutData = []): Order
     {
         $totals = $cartData->getTotals();
 
@@ -155,8 +155,8 @@ class CheckoutService
 
         $order->setState($state);
 
-        $order = $paymentInstance->prepareOrder($order, $cartData);
-        $order = $shippingInstance->prepareOrder($order, $cartData);
+        $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
+        $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);
 
         $event = $this->shopGo->emit(
             BeforeOrderCreateEvent::class,

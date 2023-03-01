@@ -24,6 +24,7 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Form\FieldDefinitionInterface;
+use Windwalker\Form\Form;
 use Windwalker\Renderer\CompositeRenderer;
 
 /**
@@ -63,13 +64,26 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
     abstract public function form(Location $location): string;
 
-    abstract public function prepareOrder(Order $order, CartData $cartData): Order;
+    abstract public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order;
 
     abstract public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null;
 
     abstract public function orderInfo(Order $order): string;
 
     abstract public function runTask(AppContext $app, string $task): mixed;
+
+    public function getDefaultParams(): array
+    {
+        $form = new Form();
+
+        $form->defineFormFields($this);
+
+        $data = $form->filter([]);
+
+        show($data);
+exit(' @Checkpoint');
+        return $data;
+    }
 
     public function isSupported(CartData $cartData): bool
     {

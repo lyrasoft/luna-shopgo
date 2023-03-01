@@ -68,7 +68,7 @@ class TransferPayment extends AbstractPayment
         return '';
     }
 
-    public function prepareOrder(Order $order, CartData $cartData): Order
+    public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order
     {
         return $order;
     }

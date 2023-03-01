@@ -117,7 +117,7 @@ class CheckoutController
                     $order->setInvoiceType(InvoiceType::IDV());
                 }
 
-                return $checkoutService->createOrder($order, $cartData);
+                return $checkoutService->createOrder($order, $cartData, $checkout);
             }
         );
 

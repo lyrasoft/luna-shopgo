@@ -57,7 +57,7 @@ abstract class AbstractPayment implements FieldDefinitionInterface
 
     abstract public function form(Location $location): string;
 
-    abstract public function prepareOrder(Order $order, CartData $cartData): Order;
+    abstract public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order;
 
     abstract public function processCheckout(Order $order, RouteUri $completeUrl): mixed;
 
