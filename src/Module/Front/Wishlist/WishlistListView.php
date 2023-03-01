@@ -57,7 +57,7 @@ class WishlistListView implements ViewModelInterface
     public function prepare(AppContext $app, View $view): RouteUri|array
     {
         if (!$this->userService->isLogin()) {
-            return $this->nav->to('login');
+            return $this->nav->to('login')->withReturn();
         }
 
         $page = $app->input('page');
