@@ -80,8 +80,6 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
         $data = $form->filter([]);
 
-        show($data);
-exit(' @Checkpoint');
         return $data;
     }
 

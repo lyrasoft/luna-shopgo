@@ -63,11 +63,6 @@ class ShippingEditView implements ViewModelInterface
 
         $typeClass = $this->shippingService->getTypeClass($type);
         $typeInstance = $this->shippingService->createTypeInstance($type);
-        
-        show(
-            $typeInstance->getDefaultParams()
-        );
-        exit(' @Checkpoint');
 
         $form = $this->formFactory
             ->create(EditForm::class)
