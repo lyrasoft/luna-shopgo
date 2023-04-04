@@ -47,13 +47,13 @@ class OrderService
         bool $notify = false
     ): ?OrderHistory {
         if (!$order instanceof Order) {
-            $order = $this->orm->findOne(Order::class, $order);
+            $order = $this->orm->mustFindOne(Order::class, $order);
         }
 
         if (is_int($to)) {
-            $to = $this->orm->findOne(OrderState::class, $to);
+            $to = $this->orm->mustFindOne(OrderState::class, $to);
         } elseif (is_string($to)) {
-            $to = $this->orm->findOne(OrderState::class, ['alias' => $to]);
+            $to = $this->orm->mustFindOne(OrderState::class, ['alias' => $to]);
         }
 
         return $this->orm->getDb()->transaction(

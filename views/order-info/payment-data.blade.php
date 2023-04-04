@@ -17,6 +17,7 @@ namespace App\view;
  */
 
 use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Service\LocationService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -32,6 +33,11 @@ use Windwalker\Core\Router\SystemUri;
 $paymentData = $order->getPaymentData();
 $locationService = $app->service(LocationService::class);
 
+$paymentService = $app->service(PaymentService::class);
+$typeInstance = $paymentService->createTypeInstance($order->getPayment());
+
+$orderInfo = trim($typeInstance?->orderInfo($order) ?? '');
+
 $dtCols = 3;
 $ddCols = 12 - $dtCols;
 ?>
@@ -42,6 +48,14 @@ $ddCols = 12 - $dtCols;
     </div>
     <div class="card-body">
         <dl class="row mb-0">
+            {{-- Payment --}}
+            <dt class="col-{{ $dtCols }}">
+                @lang('shopgo.order.field.payment')
+            </dt>
+            <dd class="col-{{ $ddCols }}">
+                {{ $order->getPayment()->getTitle() }}
+            </dd>
+
             {{-- Name --}}
             <dt class="col-lg-{{ $dtCols }}">
                 @lang('shopgo.address.field.name')
@@ -108,4 +122,10 @@ $ddCols = 12 - $dtCols;
             </dd>
         </dl>
     </div>
+
+    @if ($orderInfo)
+        <div class="card-body border-top">
+            {!! $orderInfo !!}
+        </div>
+    @endif
 </div>

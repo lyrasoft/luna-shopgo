@@ -154,6 +154,9 @@ class CheckoutService
         }
 
         $order->setState($state);
+        $order->setExpiryOn(
+            $this->shopGo->config('checkout.default_expiry') ?? '+7days'
+        );
 
         $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
         $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);
@@ -207,12 +210,14 @@ class CheckoutService
         );
 
         // Create note history
-        $this->orderHistoryService->createHistory(
-            $order,
-            null,
-            OrderHistoryType::MEMBER(),
-            $order->getNo()
-        );
+        if ($order->getNote() !== '') {
+            $this->orderHistoryService->createHistory(
+                $order,
+                null,
+                OrderHistoryType::MEMBER(),
+                $order->getNote()
+            );
+        }
 
         return $event->getOrder();
     }

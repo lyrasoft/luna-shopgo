@@ -79,7 +79,17 @@ $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
                     <x-order-info.payment-data :order="$item"></x-order-info.payment-data>
                 </div>
                 <div class="col-md-6">
-                    <x-order-info.shipping-data :order="$item"></x-order-info.shipping-data>
+                    <x-order-info.shipping-data :order="$item">
+                        <x-slot name="headerEnd">
+                            <a href="javascript://"
+                                data-bs-toggle="modal"
+                                data-bs-target="#shipping-history-modal"
+                            >
+                                <i class="fa fa-clock"></i>
+                                @lang('shopgo.order.button.shipping.histories')
+                            </a>
+                        </x-slot>
+                    </x-order-info.shipping-data>
                 </div>
             </div>
 
@@ -125,4 +135,6 @@ $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
     </form>
 
     <x-state-change-modal id="state-change-modal" :order="$item"></x-state-change-modal>
+
+    <x-shipping-history-modal id="shipping-history-modal" :order="$item"></x-shipping-history-modal>
 @stop

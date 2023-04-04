@@ -18,6 +18,16 @@ use Windwalker\Data\Collection;
  */
 class ShippingHistoryCollection extends Collection
 {
+    /**
+     * ArrayObject constructor.
+     *
+     * @param  array  $storage
+     */
+    public function __construct($storage = [])
+    {
+        $this->fill($storage);
+    }
+
     public function fill(mixed $data, array $options = []): static
     {
         $data = array_map(

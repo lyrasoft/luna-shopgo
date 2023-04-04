@@ -45,6 +45,24 @@ use Windwalker\Core\Router\SystemUri;
     {{--        @lang('unicorn.toolbar.save2close')--}}
     {{--    </button>--}}
 
+    <button type="button"
+        class="btn btn-primary btn-sm"
+        data-task="create_shipping"
+        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'create_shipping', id: '{{ $item->getId() }}' });"
+    >
+        <i class="fa fa-truck-clock"></i>
+        @lang('shopgo.order.button.create.shipping')
+    </button>
+
+    <button type="button"
+        class="btn btn-info btn-sm"
+        data-task="update_shipping"
+        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'update_shipping', id: '{{ $item->getId() }}' });"
+    >
+        <i class="fa fa-truck-fast"></i>
+        @lang('shopgo.order.button.update.shipping')
+    </button>
+
     {{-- Cancel --}}
     <a class="btn btn-default btn-outline-secondary btn-sm uni-btn-cancel"
         href="{{ $nav->to('order_list') }}">

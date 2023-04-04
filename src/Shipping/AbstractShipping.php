@@ -70,6 +70,10 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
     abstract public function orderInfo(Order $order): string;
 
+    abstract public function createShippingBill(Order $order): void;
+
+    abstract public function updateShippingStatus(Order $order): void;
+
     abstract public function runTask(AppContext $app, string $task): mixed;
 
     public function getDefaultParams(): array

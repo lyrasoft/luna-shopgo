@@ -34,17 +34,17 @@ use Windwalker\Core\Router\SystemUri;
     <div class="card-body">
         <dl class="row p-2 mb-0">
             <dt class="col-4">
-                @lang('shopgo.order.field.shipping')
+                @lang('shopgo.order.field.payment.no')
             </dt>
             <dd class="col-8">
-                {{ $order->getShipping()->getTitle() }}
+                {{ $order->getPaymentNo() ?: '-' }}
             </dd>
 
             <dt class="col-4">
-                @lang('shopgo.order.field.payment')
+                @lang('shopgo.order.field.shipping.no')
             </dt>
             <dd class="col-8">
-                {{ $order->getPayment()->getTitle() }}
+                {{ $order->getShippingNo() ?: '-' }}
             </dd>
 
             <dt class="col-4">

@@ -98,13 +98,13 @@ class ShippingHistory extends ValueObject
     }
 
     /**
-     * @param  Chronos|null  $time
+     * @param  \DateTimeInterface|string|null  $time
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTime(?Chronos $time): static
+    public function setTime(\DateTimeInterface|string|null $time): static
     {
-        $this->time = $time;
+        $this->time = Chronos::wrapOrNull($time);
 
         return $this;
     }

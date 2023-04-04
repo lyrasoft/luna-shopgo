@@ -111,4 +111,14 @@ class BasicShipping extends AbstractShipping
     {
         return null;
     }
+
+    public function createShippingBill(Order $order): void
+    {
+        //
+    }
+
+    public function updateShippingStatus(Order $order): void
+    {
+        //
+    }
 }

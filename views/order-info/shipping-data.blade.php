@@ -18,6 +18,7 @@ namespace App\view;
 
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Service\LocationService;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -32,16 +33,34 @@ use Windwalker\Core\Router\SystemUri;
 $shippingData = $order->getShippingData();
 $locationService = $app->service(LocationService::class);
 
+$shippingService = $app->service(ShippingService::class);
+$typeInstance = $shippingService->createTypeInstance($order->getShipping());
+$orderInfo = trim($typeInstance?->orderInfo($order) ?? '');
+
 $dtCols = 3;
 $ddCols = 12 - $dtCols;
 ?>
 
 <div class="l-payment-data card">
-    <div class="card-header">
-        @lang('shopgo.order.shipping.data.title')
+    <div class="card-header d-flex justify-content-between">
+        <div>
+            @lang('shopgo.order.shipping.data.title')
+        </div>
+
+        <div>
+            {!! $headerEnd ?? '' !!}
+        </div>
     </div>
     <div class="card-body">
         <dl class="row mb-0">
+            {{-- Shipping --}}
+            <dt class="col-lg-{{ $dtCols }}">
+                @lang('shopgo.order.field.shipping')
+            </dt>
+            <dd class="col-lg-{{ $ddCols }}">
+                {{ $order->getShipping()->getTitle() }}
+            </dd>
+
             {{-- Name --}}
             <dt class="col-lg-{{ $dtCols }}">
                 @lang('shopgo.address.field.name')
@@ -92,12 +111,18 @@ $ddCols = 12 - $dtCols;
             </dd>
 
             {{-- Note --}}
-            <dt class="col-lg-{{ $dtCols }}">
-                @lang('shopgo.order.field.note')
-            </dt>
-            <dd class="col-lg-{{ $ddCols }}">
-                {{ $order->getNote() ?: '-' }}
-            </dd>
+{{--            <dt class="col-lg-{{ $dtCols }}">--}}
+{{--                @lang('shopgo.order.field.note')--}}
+{{--            </dt>--}}
+{{--            <dd class="col-lg-{{ $ddCols }}">--}}
+{{--                {{ $order->getNote() ?: '-' }}--}}
+{{--            </dd>--}}
         </dl>
     </div>
+
+    @if ($orderInfo)
+        <div class="card-body border-top">
+            {!! $orderInfo !!}
+        </div>
+    @endif
 </div>

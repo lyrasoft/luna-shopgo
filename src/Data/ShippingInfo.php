@@ -20,7 +20,7 @@ use Windwalker\ORM\Attributes\CastNullable;
  */
 class ShippingInfo extends ValueObject
 {
-    public string $shippingNo = '';
+    public string $shipmentNo = '';
 
     public string $tradeNo = '';
 
@@ -43,19 +43,19 @@ class ShippingInfo extends ValueObject
     /**
      * @return string
      */
-    public function getShippingNo(): string
+    public function getShipmentNo(): string
     {
-        return $this->shippingNo;
+        return $this->shipmentNo;
     }
 
     /**
-     * @param  string  $shippingNo
+     * @param  string  $shipmentNo
      *
      * @return  static  Return self to support chaining.
      */
-    public function setShippingNo(string $shippingNo): static
+    public function setShipmentNo(string $shipmentNo): static
     {
-        $this->shippingNo = $shippingNo;
+        $this->shipmentNo = $shipmentNo;
 
         return $this;
     }
