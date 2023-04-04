@@ -79,7 +79,6 @@ class AddressController
 
     public function myAddresses(UserService $userService, AddressService $addressService): iterable
     {
-        return [];
         $user = $userService->getUser();
 
         return $addressService->getUserAddresses($user);

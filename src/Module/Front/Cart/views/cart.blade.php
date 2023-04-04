@@ -18,6 +18,8 @@ namespace App\View;
 
 use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
+use Lyrasoft\ShopGo\Service\LocationService;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Script\UnicornScript;
 use Unicorn\Script\VueScript;
@@ -39,12 +41,15 @@ $vueScript = $app->service(VueScript::class);
 $vueScript->vue();
 $vueScript->animate();
 
+$locationService = $app->service(LocationService::class);
+
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('cart.props', [
     'user' => $userService->isLogin() ? $userService->getUser() : null,
     'checkoutData' => $checkoutData ?: new \stdClass(),
 ]);
 $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
+$uniScript->data('location.labels', $locationService->getSelectorLabels());
 
 $uniScript->addRoute('@home');
 $uniScript->addRoute('@cart_ajax');
@@ -259,7 +264,8 @@ $uniScript->addRoute('@address_ajax');
                                             <div>
                                                 @{{ total.label }}
                                             </div>
-                                            <div v-if="total.params.type === 'coupon' || total.params.subtype === 'code'">
+                                            <div
+                                                v-if="total.params.type === 'coupon' || total.params.subtype === 'code'">
                                                 <small>(@{{ total.params.code }})</small>
                                             </div>
                                         </div>
@@ -276,7 +282,8 @@ $uniScript->addRoute('@address_ajax');
                                 style="bottom: 0;">
                                 <div class="card-body d-grid gap-3">
                                     {{-- Grand Total --}}
-                                    <div v-if="loaded" class="l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold"
+                                    <div v-if="loaded"
+                                        class="l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold"
                                         data-cloak>
                                         <div class="l-cart-total__label">
                                             訂單總計
@@ -304,7 +311,7 @@ $uniScript->addRoute('@address_ajax');
                                     {{-- Loading --}}
                                     <div v-if="!loaded">
                                         <div class="card-text placeholder-glow d-flex mb-1" style="height: 1.25rem;">
-                                            <span class="placeholder col-3" ></span>
+                                            <span class="placeholder col-3"></span>
                                             <span class="placeholder col-4 ms-auto"></span>
                                         </div>
                                     </div>

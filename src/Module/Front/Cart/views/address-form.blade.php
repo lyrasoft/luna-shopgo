@@ -328,12 +328,7 @@ use Windwalker\Core\Router\SystemUri;
             locationPath: [],
             cascadeOptions: {
               ajaxUrl: u.route('@address_ajax/locationOptions'),
-              labels: [
-                '洲',
-                '國家',
-                '州/縣市',
-                '區'
-              ],
+              labels: u.data('location.labels') || [],
               placeholder: '- 請選擇 -',
               onSelectInit(e) {
                 const select = e.detail.el;

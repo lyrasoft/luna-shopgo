@@ -14,6 +14,8 @@ namespace Lyrasoft\ShopGo\Service;
 use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Enum\LocationType;
+use Lyrasoft\ShopGo\ShopGoPackage;
+use Windwalker\DI\Container;
 use Windwalker\ORM\Nested\Position;
 use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
@@ -26,7 +28,7 @@ class LocationService
 {
     use InstanceCacheTrait;
 
-    public function __construct(protected ORM $orm)
+    public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo, protected Container $container)
     {
     }
 
@@ -124,6 +126,26 @@ class LocationService
     {
         return $this->cacheStorage['location.' . $id]
             ??= $this->orm->findOne(Location::class, $id);
+    }
+
+    public function getSelectorLabels(): array
+    {
+        $labels = $this->shopGo->config('shipping.location_labels');
+
+        if (!$labels) {
+            return [
+                '洲',
+                '國家',
+                '州/縣市',
+                '區'
+            ];
+        }
+
+        if (is_callable($labels)) {
+            return $this->container->call($labels);
+        }
+
+        return $labels;
     }
 
     /**

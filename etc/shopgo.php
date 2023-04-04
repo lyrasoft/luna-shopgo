@@ -71,15 +71,16 @@ return [
         ],
 
         'shipping' => [
-            'default_location_id' => null,
+            'default_location_id' => env('SHOPGO_DEFAULT_LOCATION_ID'),
+            'location_labels' => null,
             'types' => [
-                'basic' => BasicShipping::class
+                'basic' => BasicShipping::class,
             ]
         ],
 
         'payment' => [
             'types' => [
-                'transfer' => TransferPayment::class
+                'transfer' => TransferPayment::class,
             ]
         ],
     ]
