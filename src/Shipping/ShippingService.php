@@ -225,6 +225,11 @@ class ShippingService
         );
     }
 
+    /**
+     * @param  string  $type
+     *
+     * @return  class-string<AbstractShipping>|null
+     */
     public function getTypeClass(string $type): ?string
     {
         return $this->getTypes()[$type] ?? null;

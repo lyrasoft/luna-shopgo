@@ -42,6 +42,7 @@ $vueScript->animate();
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('cart.props', [
     'user' => $userService->isLogin() ? $userService->getUser() : null,
+    'checkoutData' => $checkoutData ?: new \stdClass(),
 ]);
 $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
 

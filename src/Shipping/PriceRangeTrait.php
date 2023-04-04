@@ -45,17 +45,17 @@ trait PriceRangeTrait
             ->register(
                 fn(Form $form) => $form->ns('pricing', function (Form $form) {
                     $form->add('free', SwitcherField::class)
-                        ->label('shopgo.shipping.field.free')
+                        ->label($this->trans('shopgo.shipping.field.free'))
                         ->color('primary')
                         ->circle(true);
 
                     $form->add('flat_fee', NumberField::class)
-                        ->label('shopgo.shipping.field.flat.fee')
+                        ->label($this->trans('shopgo.shipping.field.flat.fee'))
                         ->min(0, false)
                         ->step($this->getMainCurrency()->getInputStep());
 
                     $form->add('depends_on', ButtonRadioField::class)
-                        ->label('shopgo.shipping.field.depends.on')
+                        ->label($this->trans('shopgo.shipping.field.depends.on'))
                         ->option($this->trans('shopgo.shipping.depend.on.option.price'), PriceRange::DEPENDS_ON_PRICE)
                         ->option($this->trans('shopgo.shipping.depend.on.option.weight'), PriceRange::DEPENDS_ON_WEIGHT)
                         ->defaultValue('price');
@@ -73,7 +73,7 @@ trait PriceRangeTrait
                         ->defaultValue('order');
 
                     $form->add('range', ShippingPricingField::class)
-                        ->label('shopgo.shipping.field.range');
+                        ->label($this->trans('shopgo.shipping.field.range'));
                 })
             );
     }

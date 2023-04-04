@@ -14,7 +14,8 @@ const CartApp = {
     'payment-item': paymentItem(),
   },
   props: {
-    user: Object
+    user: Object,
+    checkoutData: Object
   },
   setup(props) {
     const state = reactive({
@@ -22,14 +23,15 @@ const CartApp = {
       items: [],
       totals: [],
       coupons: [],
-      paymentId: '',
-      paymentData: {},
-      shippingId: '',
-      shippingData: {},
+      paymentId: props.checkoutData?.payment?.id || '',
+      paymentData: props.checkoutData?.payment_data || {},
+      shippingId: props.checkoutData?.shipping?.id || '',
+      shippingData: props.checkoutData?.shipping_data || {},
       shippings: [],
       payments: [],
+      receiptData: {},
       code: '',
-      note: '',
+      note: props.checkoutData?.note || '',
       loading: false,
     });
 
@@ -58,7 +60,7 @@ const CartApp = {
           '@cart_ajax/getItems',
           {
             params: {
-              location_id: state.shippingData.locationId,
+              location_id: state.shippingData.location_id,
               shipping_id: state.shippingId,
               payment_id: state.paymentId,
             }
@@ -230,7 +232,7 @@ const CartApp = {
     });
 
     // Shippings
-    watch(() => state.shippingData.locationId, () => {
+    watch(() => state.shippingData.location_id, () => {
       loadShippings();
     });
     watch(() => state.shippingId, () => {
@@ -245,7 +247,7 @@ const CartApp = {
       loadingStack.push(true);
 
       try {
-        const res = await u.$http.get(`@cart_ajax/shippings?location_id=${state.shippingData.locationId}`);
+        const res = await u.$http.get(`@cart_ajax/shippings?location_id=${state.shippingData.location_id}`);
 
         state.shippings = res.data.data;
 
@@ -268,7 +270,7 @@ const CartApp = {
     }, 300);
 
     // Payments
-    watch(() => [state.shippingData.locationId, state.shippingId], () => {
+    watch(() => [state.shippingData.location_id, state.shippingId], () => {
       loadPayments();
     });
 
@@ -284,7 +286,7 @@ const CartApp = {
           `@cart_ajax/payments`,
           {
             params: {
-              location_id: state.shippingData.locationId,
+              location_id: state.shippingData.location_id,
               shipping_id: state.shippingId
             }
           }
@@ -312,11 +314,11 @@ const CartApp = {
 
     // Checkout
     const canCheckout = computed(() => {
-      if (!state.shippingData.locationId) {
+      if (!state.shippingData.location_id) {
         return false;
       }
 
-      if (!state.paymentData.locationId) {
+      if (!state.paymentData.location_id) {
         return false;
       }
 
@@ -335,12 +337,12 @@ const CartApp = {
     const paymentForm = ref(null);
 
     function checkout() {
-      if (!shippingForm.value.validate()) {
+      if (shippingForm.value && !shippingForm.value.validate()) {
         console.log('Shipping Validate Fail');
         return;
       }
 
-      if (!paymentForm.value.validate()) {
+      if (paymentForm.value && !paymentForm.value.validate()) {
         console.log('Payment Validate Fail');
         return;
       }

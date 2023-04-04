@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Shipping;
 
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Module\Admin\Shipping\Form\GridForm;
 use Lyrasoft\ShopGo\Repository\ShippingRepository;
+use Lyrasoft\ShopGo\Shipping\AbstractShipping;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\Form\FormFactory;
@@ -41,7 +44,8 @@ class ShippingListView implements ViewModelInterface
         protected ORM $orm,
         #[Autowire]
         protected ShippingRepository $repository,
-        protected FormFactory $formFactory
+        protected FormFactory $formFactory,
+        protected ShippingService $shippingService,
     ) {
     }
 
@@ -160,5 +164,19 @@ class ShippingListView implements ViewModelInterface
             ->setTitle(
                 $this->trans('unicorn.title.grid', title: $this->trans('luna.shipping.title'))
             );
+    }
+
+    public function getTypeName(Shipping $item): string
+    {
+        $type = $item->getType();
+
+        /** @var class-string<AbstractShipping> $typeClass */
+        $typeClass = $this->shippingService->getTypeClass($type);
+
+        if (!$typeClass) {
+            return '??';
+        }
+
+        return $typeClass::getTypeTitle($this->lang);
     }
 }

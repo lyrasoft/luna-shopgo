@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Entity;
 
 use DateTimeInterface;
-use Lyrasoft\ShopGo\Enum\LocationType;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
+use Lyrasoft\ShopGo\Enum\LocationType;
 use Unicorn\Enum\BasicState;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\ORM\Attributes\AutoIncrement;
@@ -95,6 +95,10 @@ class Location implements NestedEntityInterface
     #[Column('created_by')]
     #[Author]
     protected int $createdBy = 0;
+
+    #[Column('can_ship')]
+    #[Cast('bool', 'int')]
+    protected bool $canShip = false;
 
     #[Column('modified_by')]
     #[Modifier]
@@ -344,6 +348,18 @@ class Location implements NestedEntityInterface
     public function setState(int|BasicState $state): static
     {
         $this->state = BasicState::wrap($state);
+
+        return $this;
+    }
+
+    public function canShip(): bool
+    {
+        return $this->canShip;
+    }
+
+    public function setCanShip(bool $canShip): static
+    {
+        $this->canShip = $canShip;
 
         return $this;
     }

@@ -55,6 +55,10 @@ class CheckoutController
         CartService $cartService,
         CheckoutService $checkoutService
     ) {
+        $checkout = (array) $app->input('checkout');
+
+        $app->state->remember('checkout.data', $checkout);
+
         $allowAnonymous = $shopGo->config('checkout.allow_anonymous') ?? false;
         /** @var User $user */
         $user = $userService->getUser();
@@ -64,10 +68,8 @@ class CheckoutController
         }
 
         $order = $orm->getDb()->transaction(
-            function () use ($nav, $stockService, $cartService, $user, $app, $checkoutService) {
+            function () use ($checkout, $nav, $stockService, $cartService, $user, $app, $checkoutService) {
                 $order = new Order();
-
-                $checkout = (array) $app->input('checkout');
 
                 $payment = (array) $checkout['payment'];
                 $shipping = (array) $checkout['shipping'];

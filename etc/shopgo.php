@@ -71,6 +71,7 @@ return [
         ],
 
         'shipping' => [
+            'default_location_id' => null,
             'types' => [
                 'basic' => BasicShipping::class
             ]

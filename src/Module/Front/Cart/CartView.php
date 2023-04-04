@@ -23,6 +23,7 @@ use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
+use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
 
 use function Windwalker\collect;
@@ -70,6 +71,24 @@ class CartView implements ViewModelInterface
             return $this->nav->to('home');
         }
 
-        return [];
+        $checkoutData = $app->state->getAndForget('checkout.data');
+
+        /** @var NestedSetMapper $locationMapper */
+        $locationMapper = $this->orm->mapper(Location::class);
+
+        $defaultLocationId = $this->shopGo->config('shipping.default_location_id');
+
+        if ($defaultLocationId) {
+            $checkoutData['payment_data']['location_id'] = $defaultLocationId;
+            $checkoutData['payment_data']['locationPath'] = $locationMapper->getPath(
+                $checkoutData['payment_data']['location_id']
+            )
+                ->map(fn (Location $location) => $location->getId())
+                ->map('strval')
+                ->slice(1)
+                ->dump();
+        }
+
+        return compact('checkoutData');
     }
 }

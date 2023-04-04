@@ -147,7 +147,7 @@ class CheckoutService
         $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
         $shippingInstance = $this->shippingService->getInstanceById($order->getShippingId());
 
-        $state = $this->orm->mustFindOne(OrderState::class, $paymentInstance->getData()->getOrderStateId());
+        $state = $this->orm->findOne(OrderState::class, $paymentInstance->getData()->getOrderStateId());
 
         if (!$state) {
             $state = $this->orm->mustFindOne(OrderState::class, ['default' => 1]);

@@ -162,6 +162,12 @@ class EditForm implements FieldDefinitionInterface
                     ->color('success')
                     ->defaultValue('1');
 
+                $form->add('can_ship', SwitcherField::class)
+                    ->label($this->trans('shopgo.location.field.can.ship'))
+                    ->circle(true)
+                    ->color('primary')
+                    ->defaultValue('1');
+
                 $form->add('created', CalendarField::class)
                     ->label($this->trans('unicorn.field.created'))
                     ->disabled(true);

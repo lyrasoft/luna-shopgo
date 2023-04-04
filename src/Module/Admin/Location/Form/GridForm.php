@@ -62,6 +62,12 @@ class GridForm implements FieldDefinitionInterface
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.no.change'), '')
                     ->registerOptions(BasicState::getTransItems($this->lang));
+
+                $form->add('can_ship', ListField::class)
+                    ->label($this->trans('shopgo.location.field.can.ship'))
+                    ->option($this->trans('unicorn.select.no.change'), '')
+                    ->option($this->trans('unicorn.core.yes'), '1')
+                    ->option($this->trans('unicorn.core.no'), '0');
             }
         );
     }

@@ -82,6 +82,13 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                             </x-sort>
                         </th>
 
+                        {{-- Type --}}
+                        <th class="text-nowrap">
+                            <x-sort field="shipping.type">
+                                @lang('shopgo.shipping.field.type')
+                            </x-sort>
+                        </th>
+
                         {{-- Location / Category --}}
                         <th style="width: 10%;" class="text-nowrap">
                             <x-sort field="payment.title">
@@ -141,6 +148,7 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                                     :workflow="$workflow"
                                     :id="$entity->getId()"
                                     :value="$item->state"
+                                    no-title
                                 ></x-state-dropdown>
                             </td>
 
@@ -165,6 +173,16 @@ $imagePlaceholder = $app->service(ImagePlaceholder::class);
                                         {{ $entity->getNote() }}
                                     </div>
                                 @endif
+                            </td>
+
+                            {{-- Type --}}
+                            <td>
+                                <div class="mb-1">
+                                    {{ $vm->getTypeName($entity) }}
+                                </div>
+                                <div class="small">
+                                    {{ $entity->getType() }}
+                                </div>
                             </td>
 
                             <td>

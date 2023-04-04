@@ -222,6 +222,13 @@ class CartController
         }
     }
 
+    public function getLocation(AppContext $app, ORM $orm): ?Location
+    {
+        $id = $app->input('id');
+
+        return $orm->findOne(Location::class, $id);
+    }
+
     public function shippings(
         AppContext $app,
         ORM $orm,
@@ -232,7 +239,7 @@ class CartController
 
         $location = $orm->findOne(Location::class, $locationId);
 
-        if (!$location || !$location->isLeaf()) {
+        if (!$location || !$location->canShip()) {
             return [];
         }
 
@@ -291,7 +298,7 @@ class CartController
 
         $location = $orm->findOne(Location::class, $locationId);
 
-        if (!$location || !$location->isLeaf()) {
+        if (!$location || !$location->canShip()) {
             return [];
         }
 

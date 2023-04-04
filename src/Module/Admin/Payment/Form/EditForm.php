@@ -94,7 +94,7 @@ class EditForm implements FieldDefinitionInterface
                     ->maxlength(255);
 
                 $form->add('type', TextField::class)
-                    ->label('shopgo.payment.field.type')
+                    ->label($this->trans('shopgo.payment.field.type'))
                     ->readonly(true);
 
                 $form->add('created', CalendarField::class)

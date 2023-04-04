@@ -31,6 +31,8 @@ class TransferPayment extends AbstractPayment
 {
     use TranslatorTrait;
 
+    protected static string $type = '';
+
     public static function getTypeIcon(): string
     {
         return 'fa fa-money-bill-transfer';

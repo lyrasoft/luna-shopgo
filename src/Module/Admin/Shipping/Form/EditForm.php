@@ -111,7 +111,7 @@ class EditForm implements FieldDefinitionInterface
                     ->maxlength(255);
 
                 $form->add('type', TextField::class)
-                    ->label('shopgo.shipping.field.type')
+                    ->label($this->trans('shopgo.shipping.field.type'))
                     ->readonly(true);
 
                 $form->add('created', CalendarField::class)

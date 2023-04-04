@@ -70,11 +70,11 @@ use Windwalker\Core\Router\SystemUri;
                         <span class="placeholder col-7"></span>
                     </div>
                 </div>
-                <div v-else-if="!sync && data.addressId" class="mt-3"
+                <div v-else-if="!sync && data.address_id" class="mt-3"
                     style="animation-duration: .3s">
                     @{{ data.formatted }}
                 </div>
-                <div v-else-if="!sync && !data.addressId" class="row mt-3" style="animation-duration: .3s"
+                <div v-else-if="!sync && !data.address_id" class="row mt-3" style="animation-duration: .3s"
                     ref="form">
                     <div class="col-lg-5">
                         {{-- First Name --}}
@@ -230,7 +230,7 @@ use Windwalker\Core\Router\SystemUri;
             <div class="d-none">
                 <input :id="buildInputId('address_id')" type="hidden"
                     :name="buildInputName('address_id')"
-                    v-model="data.addressId"
+                    v-model="data.address_id"
                 />
             </div>
         </div>
@@ -286,8 +286,8 @@ use Windwalker\Core\Router\SystemUri;
       const { ref, toRefs, reactive, computed, watch, onMounted, inject, nextTick } = Vue;
 
       const defaultAddress = {
-        addressId: '',
-        locationId: '',
+        address_id: '',
+        location_id: '',
         firstname: '',
         lastname: '',
         name: '',
@@ -345,9 +345,9 @@ use Windwalker\Core\Router\SystemUri;
               {},
               defaultAddress,
               {
-                firstName: this.user?.firstname || '',
-                lastName: this.user?.lastname || '',
-                name: this.user?.name || '',
+                firstName: props.user?.firstname || '',
+                lastName: props.user?.lastname || '',
+                name: props.user?.name || '',
               },
               props.modelValue
             ),
@@ -355,7 +355,7 @@ use Windwalker\Core\Router\SystemUri;
             currentAddressHash: '',
             sync: props.syncData != null
           });
-
+          
           const form = ref(null);
 
           if (Object.keys(props.modelValue).length === 0) {
@@ -367,10 +367,20 @@ use Windwalker\Core\Router\SystemUri;
           }
 
           onMounted(async () => {
-            if (!state.sync && Object.keys(props.modelValue).length === 0) {
+            if (!state.sync) {
+              // if (Object.keys(props.modelValue).length === 0) {
+              //
+              // }
               const addresses = await findMyAddress();
+              let address;
+              
+              if (state.data.address_id) {
+                address = addresses.find((addr) => String(addr.id) === String(state.data.address_id));
+              }
 
-              const address = addresses[0];
+              if (!address) {
+                address = addresses[0];
+              }
 
               if (address) {
                 setAddressToData(address);
@@ -380,6 +390,8 @@ use Windwalker\Core\Router\SystemUri;
             } else {
               state.currentState = 'form';
             }
+
+            updateLocationList();
           });
 
           function validate() {
@@ -421,7 +433,7 @@ use Windwalker\Core\Router\SystemUri;
           watch(() => state.sync, (v) => {
             if (!v) {
               state.currentState = 'form';
-              state.data.addressId = null;
+              state.data.address_id = null;
             } else if (props.syncData) {
               state.currentState = 'sync';
               syncAddressFromOutside();
@@ -442,7 +454,7 @@ use Windwalker\Core\Router\SystemUri;
 
           function locationChanged(e) {
             if (e.detail) {
-              state.data.locationId = e.detail.value;
+              state.data.location_id = e.detail.value;
               state.locationPath = e.detail.path;
             }
           }
@@ -508,8 +520,8 @@ use Windwalker\Core\Router\SystemUri;
 
             state.data.locationPath = state.data.locationPath.map(v => String(v));
 
-            state.data.addressId = String(address.id);
-            state.data.locationId = String(state.data.locationId);
+            state.data.address_id = String(address.id);
+            state.data.location_id = String(address.locationId);
 
             u.$ui.bootstrap.modal(modal.value).hide();
 

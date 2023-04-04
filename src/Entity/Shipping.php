@@ -30,8 +30,10 @@ use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Event\BeforeCopyEvent;
 use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\Utilities\Str;
 
 /**
  * The Shipping class.
@@ -142,6 +144,25 @@ class Shipping implements EntityInterface
         if ($exists) {
             throw new ValidateFailException('Duplicated alias');
         }
+    }
+
+    #[BeforeCopyEvent]
+    public static function beforeCopy(BeforeCopyEvent $event): void
+    {
+        $orm = $event->getORM();
+        $data = &$event->getData();
+
+        do {
+            $data['title'] = Str::increment($data['title']);
+
+            $exists = $orm->findOne(static::class, ['title' => $data['title']]);
+        } while ($exists !== null);
+
+        do {
+            $data['alias'] = Str::increment($data['alias'], '%s-%d');
+
+            $exists = $orm->findOne(static::class, ['alias' => $data['alias']]);
+        } while ($exists !== null);
     }
 
     public function getId(): ?int

@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Payment;
 
+use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Module\Admin\Payment\Form\GridForm;
+use Lyrasoft\ShopGo\Payment\AbstractPayment;
+use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
@@ -41,7 +44,8 @@ class PaymentListView implements ViewModelInterface
         protected ORM $orm,
         #[Autowire]
         protected PaymentRepository $repository,
-        protected FormFactory $formFactory
+        protected FormFactory $formFactory,
+        protected PaymentService $paymentService,
     ) {
     }
 
@@ -160,5 +164,19 @@ class PaymentListView implements ViewModelInterface
             ->setTitle(
                 $this->trans('unicorn.title.grid', title: $this->trans('luna.payment.title='))
             );
+    }
+
+    public function getTypeName(Payment $item): string
+    {
+        $type = $item->getType();
+
+        /** @var class-string<AbstractPayment> $typeClass */
+        $typeClass = $this->paymentService->getTypeClass($type);
+
+        if (!$typeClass) {
+            return '??';
+        }
+
+        return $typeClass::getTypeTitle($this->lang);
     }
 }

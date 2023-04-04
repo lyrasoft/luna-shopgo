@@ -73,13 +73,15 @@ $orders = [];
         <x-filter-bar :form="$form" :open="$showFilters">
             <x-slot name="end">
                 @if (!$current->isRoot())
-                    <div class="d-flex gap-3">
-                        <a href="{{ $nav->self()->var('current_id', $current->getParentId()) }}"
-                            class="btn btn-outline-primary btn-sm">
-                            <i class="fa fa-chevron-left"></i>
-                            @lang('shopgo.location.button.back')
-                        </a>
-                        {!! $breadcrumb->render() !!}
+                    <div class="d-flex gap-3 align-items-center">
+                        <div>
+                            <a href="{{ $nav->self()->var('current_id', $current->getParentId()) }}"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="fa fa-chevron-left"></i>
+                                @lang('shopgo.location.button.back')
+                            </a>
+                        </div>
+                        <x-breadcrumb :breadcrumb="$breadcrumb" class="m-0 py-0 px-2"></x-breadcrumb>
                     </div>
                 @endif
             </x-slot>
@@ -133,6 +135,14 @@ $orders = [];
                             </x-sort>
                         </th>
 
+                        {{-- Can Ship --}}
+                        <th class="text-nowrap text-center">
+                            <x-sort field="location.can_ship">
+                                @lang('shopgo.location.field.can.ship')
+                            </x-sort>
+                        </th>
+
+                        {{-- Children --}}
                         <th>
 
                         </th>
@@ -188,6 +198,7 @@ $orders = [];
                                     :workflow="$workflow"
                                     :id="$entity->getId()"
                                     :value="$item->state"
+                                    no-title
                                 ></x-state-dropdown>
                             </td>
 
@@ -219,6 +230,14 @@ $orders = [];
                                 $codes = [$entity->getCode(), $entity->getCode3()];
                                 echo implode(' / ', array_filter($codes));
                                 ?>
+                            </td>
+
+                            <td class="text-center">
+                                @if ($entity->canShip())
+                                    <i class="fa fa-check"></i>
+                                @else
+                                    -
+                                @endif
                             </td>
 
                             <td style="width: 3%" class="text-nowrap">

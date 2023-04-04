@@ -245,7 +245,7 @@ class PriceObject implements \JsonSerializable, \Stringable
      *
      * @since  0.1.1
      */
-    public function widthParams(array $params): static
+    public function withParams(array $params): static
     {
         return $this->cloneInstance(function (PriceObject $new) use ($params) {
             $new->params = $params;
@@ -441,7 +441,7 @@ class PriceObject implements \JsonSerializable, \Stringable
     {
         $data = $this->toArray();
 
-        $data['price'] = $data['price']->toScale(static::DEFAULT_SCALE);
+        $data['price'] = $data['price']->toScale(static::DEFAULT_SCALE, RoundingMode::HALF_CEILING);
 
         return $data;
     }
