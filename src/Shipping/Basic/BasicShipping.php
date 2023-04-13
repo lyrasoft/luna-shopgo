@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Shipping\Basic;
 
 use Lyrasoft\ShopGo\Cart\CartData;
-use Lyrasoft\ShopGo\Cart\Contract\CheckoutProcessLayoutInterface;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Shipping\AbstractShipping;
 use Lyrasoft\ShopGo\Shipping\PriceRangeTrait;
+use Lyrasoft\ShopGo\Shipping\ShipmentPrintableInterface;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Lyrasoft\ShopGo\Traits\LayoutAwareTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -25,17 +25,14 @@ use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Language\TranslatorTrait;
-use Windwalker\Core\Renderer\RendererService;
 use Windwalker\Core\Router\RouteUri;
-use Windwalker\DI\Attributes\Inject;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\Form;
-use Windwalker\Renderer\CompositeRenderer;
 
 /**
  * The BasicShipping class.
  */
-class BasicShipping extends AbstractShipping
+class BasicShipping extends AbstractShipping implements ShipmentPrintableInterface
 {
     use TranslatorTrait;
     use CurrencyAwareTrait;
@@ -63,12 +60,15 @@ class BasicShipping extends AbstractShipping
     {
         $form->ns(
             'params',
-            fn (Form $form) => $form->fieldset('layout')
+            fn(Form $form) => $form->fieldset('layout')
                 ->title($this->trans('shopgo.shipping.fieldset.layout'))
                 ->register(
                     function (Form $form) {
                         $form->add('checkout_form_layout', TextField::class)
                             ->label($this->trans('shopgo.shipping.field.checkout.form.layout'));
+
+                        $form->add('print_shipment_layout', TextField::class)
+                            ->label($this->trans('shopgo.shipping.field.print.shipment.layout'));
                     }
                 )
         );
@@ -112,7 +112,7 @@ class BasicShipping extends AbstractShipping
         return null;
     }
 
-    public function createShippingBill(Order $order): void
+    public function createShipment(Order $order): void
     {
         //
     }
@@ -120,5 +120,22 @@ class BasicShipping extends AbstractShipping
     public function updateShippingStatus(Order $order): void
     {
         //
+    }
+
+    public function printShipments(ApplicationInterface $app, iterable $orders): string
+    {
+        $layout = $this->getParams()['print_shipment_layout'] ?? '';
+
+        if (!$layout) {
+            return '';
+        }
+
+        return $this->renderLayout(
+            $layout,
+            [
+                'shipping' => $this,
+                'orders' => $orders
+            ]
+        );
     }
 }

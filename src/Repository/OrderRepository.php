@@ -14,6 +14,8 @@ namespace Lyrasoft\ShopGo\Repository;
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Entity\Payment;
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Unicorn\Attributes\ConfigureAction;
 use Unicorn\Attributes\Repository;
 use Unicorn\Repository\Actions\BatchAction;
@@ -40,7 +42,14 @@ class OrderRepository implements ManageRepositoryInterface, ListRepositoryInterf
         $selector = $this->createSelector();
 
         $selector->from(Order::class)
-            ->leftJoin(OrderState::class);
+            ->leftJoin(OrderState::class)
+            ->leftJoin(
+                Shipping::class,
+                'ship',
+                'ship.id',
+                'order.shipping_id'
+            )
+            ->leftJoin(Payment::class, 'pay');
 
         $selector->addFilterHandler(
             'start_date',

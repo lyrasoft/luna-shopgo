@@ -11,18 +11,27 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\Order;
 
+use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Module\Admin\Order\Form\GridForm;
 use Lyrasoft\ShopGo\Repository\OrderRepository;
+use Lyrasoft\ShopGo\Shipping\ShipmentCreatingInterface;
+use Lyrasoft\ShopGo\Shipping\ShipmentPrintableInterface;
+use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
+use Unicorn\Selector\ListSelector;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+
+use function Windwalker\response;
 
 /**
  * The OrderListView class.
@@ -53,9 +62,9 @@ class OrderListView implements ViewModelInterface
      * @param  AppContext  $app   The request app context.
      * @param  View        $view  The view object.
      *
-     * @return  array
+     * @return  mixed
      */
-    public function prepare(AppContext $app, View $view): array
+    public function prepare(AppContext $app, View $view): mixed
     {
         $state = $this->repository->getState();
 
@@ -75,6 +84,14 @@ class OrderListView implements ViewModelInterface
             ->ordering($ordering)
             ->page($page)
             ->limit($limit);
+
+        if ($app->input('task') === 'print_shipments') {
+            return $this->printShipments($app, $items);
+        }
+
+        if ($app->input('task') === 'print_packaging') {
+            return $this->printPackingList($app, $view, $items);
+        }
 
         $pagination = $items->getPagination();
 
@@ -170,5 +187,80 @@ class OrderListView implements ViewModelInterface
             ->setTitle(
                 $this->trans('unicorn.title.grid', title: $this->trans('shopgo.order.title'))
             );
+    }
+
+    protected function printShipments(AppContext $app, ListSelector $items): mixed
+    {
+        $nav = $app->service(Navigator::class);
+        $shippingService = $app->service(ShippingService::class);
+
+        $items->page(1)->limit(0);
+
+        $ids = (array) $app->input('id');
+
+        if ($ids !== []) {
+            $items->where('order.id', $ids);
+        }
+
+        $items->setDefaultItemClass(Order::class);
+        $orders = [];
+        $shipping = null;
+
+        foreach ($items as $item) {
+            $orders[] = $item;
+
+            if (!$shipping) {
+                $shipping = $item->getShipping();
+            } elseif ($shipping->getType() !== $item->getShipping()?->getType()) {
+                throw new ValidateFailException(
+                    $this->trans(
+                        'shopgo.order.message.print.shipment.should.be.same.shipping.type'
+                    )
+                );
+            }
+        }
+
+        if (!$shipping) {
+            return $nav->back();
+        }
+
+        $shippingInstance = $shippingService->createTypeInstance($shipping);
+
+        if (!$shippingInstance) {
+            throw new \RuntimeException(
+                "Shipping type: `{$shipping->getType()}` not found."
+            );
+        }
+
+        if ($shippingInstance instanceof ShipmentPrintableInterface) {
+            $res = $shippingInstance->printShipments($app, $orders);
+
+            if (!is_string($res)) {
+                return $res;
+            }
+
+            if (trim($res) !== '') {
+                return response()->html($res);
+            }
+        }
+
+        return $nav->back();
+    }
+
+    public function printPackingList(AppContext $app, View $view, ListSelector $listSelector): mixed
+    {
+        $listSelector->page(1)->limit(0);
+
+        $ids = (array) $app->input('id');
+
+        if ($ids !== []) {
+            $listSelector->where('order.id', $ids);
+        }
+
+        $orders = $listSelector->all(Order::class);
+
+        $view->setLayout('packaging-list');
+
+        return compact('orders');
     }
 }

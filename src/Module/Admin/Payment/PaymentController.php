@@ -17,11 +17,15 @@ use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Repository\PaymentRepository;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
+use Unicorn\Upload\FileUploadManager;
+use Unicorn\Upload\FileUploadService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Form\FormFactory;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\DI\Attributes\Autowire;
+use Windwalker\DI\Attributes\Service;
+use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\ORM;
 
 /**
@@ -35,6 +39,8 @@ class PaymentController
         CrudController $controller,
         Navigator $nav,
         #[Autowire] PaymentRepository $repository,
+        #[Service(FileUploadManager::class, 'image')]
+        FileUploadService $fileUploadService,
         FormFactory $formFactory,
         PaymentService $paymentService,
     ): mixed {
@@ -46,6 +52,19 @@ class PaymentController
 
         $form = $formFactory->create(EditForm::class)
             ->defineFormFields($typeInstance);
+
+        $controller->afterSave(
+            function (AfterSaveEvent $event) use ($repository, $app, $fileUploadService) {
+                $data = $event->getData();
+
+                $data['image'] = $fileUploadService->handleFileIfUploaded(
+                    $app->file('item')['image'] ?? null,
+                    'images/shopgo/payment/' . md5((string) $data['id']) . '.{ext}'
+                )?->getUri(true) ?? $data['image'];
+
+                $repository->save($data);
+            }
+        );
 
         $uri = $app->call([$controller, 'save'], compact('repository', 'form'));
 

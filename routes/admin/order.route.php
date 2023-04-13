@@ -24,4 +24,7 @@ $router->group('order')
         $router->any('order_edit', '/order/edit[/{id}]')
             ->controller(OrderController::class)
             ->view(OrderEditView::class);
+
+        $router->any('order_print_shipments', '/order/print/shipments')
+            ->controller(OrderController::class, 'printShipments');
     });

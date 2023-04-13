@@ -33,6 +33,26 @@ use Windwalker\Form\Form;
 
 <div x-title="toolbar" x-data="{ form: $store.grid.form, grid: $store.grid }" class="l-toolbar">
 
+    @if ($form->getField('filter/order.shipping_id')?->getValue())
+        {{-- Shipments --}}
+        <button type="button" class="btn btn-warning btn-sm uni-btn-print"
+            data-task="print_list"
+            data-uri="{{ $nav->to('order_list')->task('print_shipments') }}"
+        >
+            <i class="fa fa-print"></i>
+            @lang('shopgo.order.button.print.shipment')
+        </button>
+    @endif
+
+    {{-- Packing --}}
+    <button type="button" class="btn btn-info btn-sm uni-btn-print"
+        data-task="print_list"
+        data-uri="{{ $nav->to('order_list')->task('print_packaging') }}"
+    >
+        <i class="fa fa-box-open"></i>
+        @lang('shopgo.order.button.print.packaging.list')
+    </button>
+
     @if ($form?->countFields(null, 'batch'))
         {{-- Batch --}}
         <button type="button" class="btn btn-dark btn-sm uni-btn-batch"

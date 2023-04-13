@@ -36,10 +36,29 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
     protected Shipping $data;
 
+    /**
+     * Get type icon.
+     *
+     * @return  string
+     */
     abstract public static function getTypeIcon(): string;
 
+    /**
+     * Get type title.
+     *
+     * @param  LangService  $lang
+     *
+     * @return  string
+     */
     abstract public static function getTypeTitle(LangService $lang): string;
 
+    /**
+     * Get type description.
+     *
+     * @param  LangService  $lang
+     *
+     * @return  string
+     */
     abstract public static function getTypeDescription(LangService $lang): string;
 
     /**
@@ -60,22 +79,74 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         static::$type = $type;
     }
 
+    /**
+     * Compute shipping fee for cart.
+     *
+     * @param  CartData     $cartData
+     * @param  PriceObject  $total
+     *
+     * @return  BigDecimal
+     */
     abstract public function computeShippingFee(CartData $cartData, PriceObject $total): BigDecimal;
 
+    /**
+     * The form at cart when selecting shippings.
+     *
+     * @param  Location  $location
+     *
+     * @return  string
+     */
     abstract public function form(Location $location): string;
 
+    /**
+     * Prepare order data before create when checkout processing.
+     *
+     * @param  Order     $order
+     * @param  CartData  $cartData
+     * @param  array     $checkoutData
+     *
+     * @return  Order
+     */
     abstract public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order;
 
+    /**
+     * Return a uri or page response to handle shipping.
+     *
+     * Return NULL to skip this process.
+     *
+     * @param  Order     $order
+     * @param  RouteUri  $notifyUrl
+     *
+     * @return  UriInterface|ResponseInterface|null
+     */
     abstract public function processCheckout(Order $order, RouteUri $notifyUrl): UriInterface|ResponseInterface|null;
 
+    /**
+     * Show shipping info in order page. Can be HTML string.
+     *
+     * @param  Order  $order
+     *
+     * @return  string
+     */
     abstract public function orderInfo(Order $order): string;
 
-    abstract public function createShippingBill(Order $order): void;
-
-    abstract public function updateShippingStatus(Order $order): void;
-
+    /**
+     * Run any task to support shipping provider's custom process.
+     *
+     * @param  AppContext  $app
+     * @param  string      $task
+     *
+     * @return  mixed
+     */
     abstract public function runTask(AppContext $app, string $task): mixed;
 
+    /**
+     * Get default params for this shipping.
+     *
+     * @return  array
+     *
+     * @throws \ReflectionException
+     */
     public function getDefaultParams(): array
     {
         $form = new Form();
@@ -87,12 +158,21 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         return $data;
     }
 
+    /**
+     * Check that this shipping should show or not in shipping select list of cart.
+     *
+     * @param  CartData  $cartData
+     *
+     * @return  bool
+     */
     public function isSupported(CartData $cartData): bool
     {
         return true;
     }
 
     /**
+     * Get shipping entity data.
+     *
      * @return Shipping
      */
     public function getData(): Shipping
@@ -112,11 +192,21 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         return $this;
     }
 
+    /**
+     * Get pricing matrix.
+     *
+     * @return  array
+     */
     public function getPricing(): array
     {
         return $this->getData()->getPricing();
     }
 
+    /**
+     * Get params.
+     *
+     * @return  array
+     */
     public function &getParams(): array
     {
         $params = &$this->getData()->getParams();
@@ -129,11 +219,21 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         return $this->getData()->$name(...$args);
     }
 
+    /**
+     * GEt dir of this shipping.
+     *
+     * @return  string
+     */
     public static function dir(): string
     {
         $ref = new \ReflectionClass(static::class);
 
         return dirname($ref->getFileName());
+    }
+
+    public static function filePath(): string
+    {
+        return (new \ReflectionClass(static::class))->getFileName();
     }
 
     // public function computeAndAddShippingFee(ApplicationInterface $app, CartData $cartData, Location $location): void

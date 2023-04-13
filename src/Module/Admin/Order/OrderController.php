@@ -17,11 +17,15 @@ use Lyrasoft\ShopGo\Enum\OrderHistoryType;
 use Lyrasoft\ShopGo\Module\Admin\Order\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\OrderRepository;
 use Lyrasoft\ShopGo\Service\OrderService;
+use Lyrasoft\ShopGo\Shipping\ShipmentCreatingInterface;
+use Lyrasoft\ShopGo\Shipping\ShipmentPrintableInterface;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
+use Lyrasoft\ShopGo\Shipping\ShippingStatusInterface;
 use Unicorn\Controller\CrudController;
 use Unicorn\Controller\GridController;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
@@ -87,16 +91,16 @@ class OrderController
     ): mixed {
         $task = $app->input('task');
 
-        if ($task === 'create_shipping') {
-            return $app->call([$this, 'createShippingBills']);
+        if ($task === 'create_shipments') {
+            return $app->call([$this, 'createShipments']);
         }
 
-        if ($task === 'update_shipping') {
-            return $app->call([$this, 'updateShippingStatus']);
+        if ($task === 'update_shippings') {
+            return $app->call([$this, 'updateShippingStatuses']);
         }
 
-        if ($task === 'create_invoice') {
-            return $app->call([$this, 'createInvoice']);
+        if ($task === 'create_invoices') {
+            return $app->call([$this, 'createInvoices']);
         }
 
         if ($task === 'transition') {
@@ -112,7 +116,7 @@ class OrderController
         return $app->call([$controller, 'batch'], compact('repository', 'data'));
     }
 
-    public function createShippingBills(
+    public function createShipments(
         AppContext $app,
         ORM $orm,
         Navigator $nav,
@@ -127,11 +131,13 @@ class OrderController
 
             if (!$shippingInstance) {
                 throw new \RuntimeException(
-                    "Order: `{$order->getNote()}` shipping type: `{$order->getShipping()->getType()}` not found."
+                    "Order: `{$order->getNo()}` shipping type: `{$order->getShipping()->getType()}` not found."
                 );
             }
 
-            $shippingInstance->createShippingBill($order);
+            if ($shippingInstance instanceof ShipmentCreatingInterface) {
+                $shippingInstance->createShipment($order);
+            }
         }
 
         $app->addMessage(
@@ -145,12 +151,12 @@ class OrderController
         return $nav->back();
     }
 
-    public function updateShippingStatus(
+    public function updateShippingStatuses(
         AppContext $app,
         ORM $orm,
         Navigator $nav,
         ShippingService $shippingService,
-    ) {
+    ): RouteUri {
         $ids = (array) $app->input('id');
 
         foreach ($ids as $id) {
@@ -160,11 +166,13 @@ class OrderController
 
             if (!$shippingInstance) {
                 throw new \RuntimeException(
-                    "Order: `{$order->getNote()}` shipping type: `{$order->getShipping()->getType()}` not found."
+                    "Order: `{$order->getNo()}` shipping type: `{$order->getShipping()->getType()}` not found."
                 );
             }
 
-            $shippingInstance->updateShippingStatus($order);
+            if ($shippingInstance instanceof ShippingStatusInterface) {
+                $shippingInstance->updateShippingStatus($order);
+            }
         }
 
         $app->addMessage(
@@ -174,6 +182,50 @@ class OrderController
             ),
             'success'
         );
+
+        return $nav->back();
+    }
+
+    public function printShipments(
+        AppContext $app,
+        ORM $orm,
+        Navigator $nav,
+        ShippingService $shippingService,
+    ): mixed {
+        $ids = (array) $app->input('id');
+
+        $orders = [];
+        $shipping = null;
+
+        foreach ($ids as $id) {
+            $orders[] = $order = $orm->mustFindOne(Order::class, $id);
+
+            if (!$shipping) {
+                $shipping = $order->getShipping();
+            } elseif ($shipping->getType() !== $order->getShipping()?->getType()) {
+                throw new ValidateFailException(
+                    $this->trans(
+                        'shopgo.order.message.print.shipment.should.be.same.shipping.type'
+                    )
+                );
+            }
+        }
+
+        if (!$shipping) {
+            return $nav->back();
+        }
+
+        $shippingInstance = $shippingService->createTypeInstance($shipping);
+
+        if (!$shippingInstance) {
+            throw new \RuntimeException(
+                "Order: `{$order->getNote()}` shipping type: `{$shipping->getType()}` not found."
+            );
+        }
+
+        if ($shippingInstance instanceof ShipmentPrintableInterface) {
+            return $shippingInstance->printShipments($app, $orders);
+        }
 
         return $nav->back();
     }

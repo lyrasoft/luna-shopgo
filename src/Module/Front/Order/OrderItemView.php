@@ -72,7 +72,7 @@ class OrderItemView implements ViewModelInterface
     public function prepare(AppContext $app, View $view): mixed
     {
         if (!$this->userService->isLogin()) {
-            throw new UnauthorizedException('Forbidden', 401);
+            return $this->nav->to('login')->withReturn();
         }
 
         $no = $app->input('no');
@@ -82,8 +82,8 @@ class OrderItemView implements ViewModelInterface
 
         $user = $this->userService->getUser();
 
-        if ($item->getUserId() !== $user->getId()) {
-            throw new RouteNotFoundException('Order not found');
+        if (!$item || $item->getUserId() !== $user->getId()) {
+            return $this->nav->to('my_order_list');
         }
 
         // Totals

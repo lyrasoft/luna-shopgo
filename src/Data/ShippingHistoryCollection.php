@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Data;
 
 use Windwalker\Data\Collection;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The ListOptionCollection class.
@@ -32,7 +33,7 @@ class ShippingHistoryCollection extends Collection
     {
         $data = array_map(
             static fn ($item) => ShippingHistory::wrap($item),
-            $data
+            TypeCast::toArray($data)
         );
 
         return parent::fill($data, $options);

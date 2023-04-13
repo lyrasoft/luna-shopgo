@@ -85,7 +85,7 @@ $orm = $app->service(ORM::class);
                             </div>
 
                             <div>
-                                <a href="{{ $nav->to('order_item')->var('no', $entity->getNo()) }}"
+                                <a href="{{ $nav->to('my_order_item')->var('no', $entity->getNo()) }}"
                                     class="btn btn-secondary stretched-link"
                                     style="min-width: 150px">
                                     訂單詳情

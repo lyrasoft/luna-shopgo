@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Admin\Order\Form;
 
 use Lyrasoft\ShopGo\Field\OrderStateListField;
+use Lyrasoft\ShopGo\Field\PaymentModalField;
+use Lyrasoft\ShopGo\Field\ShippingModalField;
 use Unicorn\Field\CalendarField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\SearchField;
@@ -49,6 +51,16 @@ class GridForm implements FieldDefinitionInterface
             function (Form $form) {
                 $form->add('order.state', OrderStateListField::class)
                     ->label($this->trans('unicorn.field.state'))
+                    ->option($this->trans('unicorn.select.placeholder'), '')
+                    ->onchange('this.form.submit()');
+
+                $form->add('order.shipping_id', ShippingModalField::class)
+                    ->label($this->trans('shopgo.order.filter.shipping'))
+                    ->option($this->trans('unicorn.select.placeholder'), '')
+                    ->onchange('this.form.submit()');
+
+                $form->add('order.payment_id', PaymentModalField::class)
+                    ->label($this->trans('shopgo.order.filter.payment'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->onchange('this.form.submit()');
 

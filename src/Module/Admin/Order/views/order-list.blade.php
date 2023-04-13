@@ -177,7 +177,7 @@ $orm = $app->service(ORM::class);
                                 </span>
                             </td>
 
-                            {{-- Title --}}
+                            {{-- No --}}
                             <td>
                                 <div>
                                     <a href="{{ $nav->to('order_edit')->id($entity->getId()) }}">
@@ -189,6 +189,17 @@ $orm = $app->service(ORM::class);
                             {{-- User --}}
                             <td class="text-nowrap">
                                 {{ $entity->getPaymentData()->getName() }}
+
+                                <div class="mt-1">
+                                    <div class="text-info small">
+                                        <i class="far fa-truck"></i>
+                                        {{ $item->ship->title }}
+                                    </div>
+                                    <div class="text-warning small">
+                                        <i class="far fa-credit-card"></i>
+                                        {{ $item->pay->title }}
+                                    </div>
+                                </div>
                             </td>
 
                             {{-- Total --}}
@@ -199,7 +210,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getPaidAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getPaidAt()) }}">
+                                        title="@lang('shopgo.order.state.field.paid'): {{ $chronos->toLocalFormat($entity->getPaidAt()) }}">
                                         <i class="fa fa-clock text-info"></i>
                                     </div>
                                 @else
@@ -210,7 +221,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getShippedAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getShippedAt()) }}">
+                                        title="@lang('shopgo.order.state.field.shipped'): {{ $chronos->toLocalFormat($entity->getShippedAt()) }}">
                                         <i class="fa fa-clock text-info"></i>
                                     </div>
                                 @else
@@ -221,7 +232,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getDoneAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getDoneAt()) }}">
+                                        title="@lang('shopgo.order.state.field.done'): {{ $chronos->toLocalFormat($entity->getDoneAt()) }}">
                                         <i class="fa fa-clock text-success"></i>
                                     </div>
                                 @else
@@ -232,7 +243,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getCancelledAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getCancelledAt()) }}">
+                                        title="@lang('shopgo.order.state.field.cancel'): {{ $chronos->toLocalFormat($entity->getCancelledAt()) }}">
                                         <i class="fa fa-clock text-secondary"></i>
                                     </div>
                                 @else
@@ -243,7 +254,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getReturnedAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getReturnedAt()) }}">
+                                        title="@lang('shopgo.order.state.field.returned'): {{ $chronos->toLocalFormat($entity->getReturnedAt()) }}">
                                         <i class="fa fa-clock text-danger"></i>
                                     </div>
                                 @else
@@ -254,7 +265,7 @@ $orm = $app->service(ORM::class);
                             <td class="text-center">
                                 @if ($entity->getRollbackAt())
                                     <div data-bs-toggle="tooltip"
-                                        title="{{ $chronos->toLocalFormat($entity->getRollbackAt()) }}">
+                                        title="@lang('shopgo.order.state.field.rollback'): {{ $chronos->toLocalFormat($entity->getRollbackAt()) }}">
                                         <i class="fa fa-clock text-warning"></i>
                                     </div>
                                 @else
