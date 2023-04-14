@@ -161,8 +161,8 @@ class CheckoutService
         $paymentData = $order->getPaymentData();
         $shippingData = $order->getShippingData();
 
-        $paymentData->setPaymentTitle($order->getPayment()->getTitle());
-        $shippingData->setShippingTitle($order->getShipping()->getTitle());
+        $paymentData->setPaymentTitle($paymentInstance->getData()->getTitle());
+        $shippingData->setShippingTitle($shippingInstance->getData()->getTitle());
 
         $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
         $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);

@@ -21,6 +21,7 @@ use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Form\FieldDefinitionInterface;
+use Windwalker\Form\Form;
 
 /**
  * The AbstractPayment class.
@@ -66,6 +67,24 @@ abstract class AbstractPayment implements FieldDefinitionInterface
     abstract public function runTask(AppContext $app, string $task): mixed;
 
     abstract public function isTest(): bool;
+
+    /**
+     * Get default params for this shipping.
+     *
+     * @return  array
+     *
+     * @throws \ReflectionException
+     */
+    public function getDefaultParams(): array
+    {
+        $form = new Form();
+
+        $form->defineFormFields($this);
+
+        $data = $form->filter([]);
+
+        return $data;
+    }
 
     public function isSupported(CartData $cartData): bool
     {
