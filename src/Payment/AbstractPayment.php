@@ -15,13 +15,13 @@ use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
+use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The AbstractPayment class.
@@ -69,19 +69,40 @@ abstract class AbstractPayment implements FieldDefinitionInterface
     abstract public function isTest(): bool;
 
     /**
-     * Get default params for this shipping.
+     * Get default form values for this shipping.
      *
      * @return  array
      *
      * @throws \ReflectionException
      */
-    public function getDefaultParams(): array
+    public function getDefaultFormValues(): array
     {
         $form = new Form();
 
         $form->defineFormFields($this);
 
-        $data = $form->filter([]);
+        $data = [];
+
+        $handleDefaults = static function (Form $form) use (&$data, &$handleDefaults) {
+            foreach ($form->getFields() as $name => $field) {
+                if (method_exists($field, 'getSubForm')) {
+                    /** @var Form $form */
+                    $subForm = $field->getSubForm();
+
+                    $handleDefaults($subForm);
+                } else {
+                    $name = $field->getNamespaceName(true);
+
+                    $value = Arr::get($data, $name, '/');
+
+                    if (TypeCast::tryString($value) === '') {
+                        $data = Arr::set($data, $name, $field->getDefaultValue(), '/');
+                    }
+                }
+            }
+        };
+
+        $handleDefaults($form);
 
         return $data;
     }
