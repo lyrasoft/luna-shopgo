@@ -176,15 +176,18 @@ class DiscountService
                     $priceSet = $this->addDiscountToProductPrice($priceSet, $discount, $diff);
 
                     $cartItem->setPriceSet($priceSet);
-                    $total = $total->plus($diff->multipliedBy($cartItem->getQuantity()));
-                    $itemApplied[] = $discount;
+
+                    if ($cartItem->isChecked()) {
+                        $total = $total->plus($diff->multipliedBy($cartItem->getQuantity()));
+                        $itemApplied[] = $discount;
+                    }
                 }
             } elseif ($discount->getApplyTo() === DiscountApplyTo::PRODUCTS()) {
                 foreach ($discount->getApplyProducts() as $applyTarget) {
                     $applyTarget = (int) $applyTarget;
                     $cartData = $pricing->getCartData();
 
-                    foreach ($cartData->getItems() as $cartItem) {
+                    foreach ($cartData->getCheckedItems() as $cartItem) {
                         /** @var Product $product */
                         $product = $cartItem->getProduct()->getData();
 
@@ -285,7 +288,7 @@ class DiscountService
         // @ Minimum Cart Items
         if ($discount->getMinCartItems()) {
             $cartData = $pricing->getCartData();
-            $count = count($cartData->getItems());
+            $count = count($cartData->getCheckedItems());
 
             if ($count < $discount->getMinCartItems()) {
                 return false;
@@ -448,7 +451,8 @@ class DiscountService
      */
     public function computeSingleProductDiscounts(
         ProductPricingInterface $pricing,
-        int $quantity
+        int $quantity,
+        bool $logDiscounts = true,
     ): ProductPricingInterface {
         // Do not work with other discount.
         $applied = &$pricing->getAppliedDiscounts();
@@ -483,7 +487,9 @@ class DiscountService
             $this->trans('shopgo.total.product.discount')
         );
 
-        $applied[] = $matchedDiscount;
+        if ($logDiscounts) {
+            $applied[] = $matchedDiscount;
+        }
 
         return $pricing;
     }

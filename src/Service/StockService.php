@@ -29,9 +29,20 @@ class StockService
     {
     }
 
-    public function checkStock(CartData $cartData): void
+    public function checkAndReduceStocks(CartData $cartData): void
     {
-        foreach ($cartData->getItems() as $item) {
+        $this->checkStockOrReport($cartData);
+        $this->reduceStocks($cartData);
+    }
+
+    /**
+     * @param  CartData  $cartData
+     *
+     * @return  void
+     */
+    public function checkStockOrReport(CartData $cartData): void
+    {
+        foreach ($cartData->getCheckedItems() as $item) {
             if ($item->isOutOfStock()) {
                 /** @var Product $product */
                 $title = $this->getTitleFromCartItem($item);
@@ -78,11 +89,11 @@ class StockService
     {
         $mapper = $this->orm->mapper(ProductVariant::class);
 
-        $quantities = $cartData->getTotalQuantities(true);
+        $quantities = $cartData->getTotalQuantities(false, true);
 
         $variants = [];
 
-        foreach ($cartData->getItems() as $item) {
+        foreach ($cartData->getCheckedItems() as $item) {
             /** @var ProductVariant $variant */
             $variant = $item->getVariant()->getData();
 

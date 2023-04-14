@@ -67,14 +67,18 @@ class CartService
         int $locationId,
         int|string $shippingId,
         int|string $paymentId,
+        array $options = [],
         bool $lock = false
     ): CartData {
         return $this->getCartData(
-            [
-                'shipping_id' => $shippingId,
-                'payment_id' => $paymentId,
-                'location_id' => $locationId,
-            ],
+            array_merge(
+                [
+                    'shipping_id' => $shippingId,
+                    'payment_id' => $paymentId,
+                    'location_id' => $locationId,
+                ],
+                $options
+            ),
             $lock ? static::FOR_UPDATE : 0
         );
     }
@@ -140,6 +144,7 @@ class CartService
             );
             $cartItem->setQuantity($quantity);
             $cartItem->setPayload($storageItem['payload'] ?? []);
+            $cartItem->setOptions($storageItem['options'] ?? []);
 
             $cartItem->setPriceSet($variant->getPriceSet());
 
@@ -184,9 +189,14 @@ class CartService
         $totals = new PriceSet();
         $total = PriceObject::create('products_total', '0');
 
+        /** @var CartItem[] $cartItems */
         $cartItems = TypeCast::toArray($cartItems);
 
         foreach ($cartItems as $item) {
+            if (!$item->isChecked()) {
+                continue;
+            }
+
             $total = $total->plus($item->getPriceSet()['final_total']);
         }
 
@@ -225,7 +235,9 @@ class CartService
                 $cartItem,
             );
 
-            $finalTotal = $finalTotal->plus($priceSet['final_total']);
+            if ($cartItem->isChecked()) {
+                $finalTotal = $finalTotal->plus($priceSet['final_total']);
+            }
         }
 
         $total = $finalTotal;

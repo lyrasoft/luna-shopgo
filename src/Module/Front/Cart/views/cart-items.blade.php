@@ -33,6 +33,14 @@ use Windwalker\Core\Router\SystemUri;
     >
         <div class="card-body d-grid d-lg-flex gap-3">
             <div class="d-flex gap-3 me-auto">
+                {{-- Checkbox --}}
+                <div class="c-cart-item__checkbox">
+                    <input type="checkbox" class="form-check-input"
+                        v-model="item.options.checked"
+                        @change="updateChecks"
+                    />
+                </div>
+
                 {{-- Cover --}}
                 <div class="c-cart-item__image">
                     <div style="width: 75px" class="ratio ratio-1x1">

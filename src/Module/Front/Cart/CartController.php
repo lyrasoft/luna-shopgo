@@ -89,11 +89,20 @@ class CartController
         return true;
     }
 
-    public function updateQuantities(AppContext $app, CartStorage $cartStorage, CartService $cartService): bool
+    public function updateQuantities(AppContext $app, CartStorage $cartStorage): bool
     {
         $values = (array) $app->input('values');
 
         $cartStorage->updateQuantities($values);
+
+        return true;
+    }
+
+    public function updateChecks(AppContext $app, CartStorage $cartStorage): bool
+    {
+        $checks = (array) $app->input('checks');
+
+        $cartStorage->updateChecks($checks);
 
         return true;
     }
@@ -248,7 +257,7 @@ class CartController
         /** @var Product[] $products */
         $products = [];
 
-        foreach ($cartData->getItems() as $item) {
+        foreach ($cartData->getCheckedItems() as $item) {
             /** @var Product $product */
             $product = $item->getProduct()->getData();
             $products[$product->getId()] = $product;

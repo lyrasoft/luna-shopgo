@@ -287,7 +287,7 @@ class CheckoutService
      */
     public function createOrderItemsAndAttachments(Order $order, CartData $cartData): Collection
     {
-        $items = $cartData->getItems();
+        $items = $cartData->getCheckedItems();
 
         $orderItems = collect();
 

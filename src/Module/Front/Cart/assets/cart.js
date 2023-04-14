@@ -36,11 +36,14 @@ const CartApp = {
     });
 
     const form = ref(null);
+    const toggleAllInput = ref(null);
     const loadingStack = u.stack('loading');
 
     loadingStack.observe((stack, length) => {
       state.loading = length > 0;
     });
+
+    init();
 
     function popLoading(wait = 300) {
       setTimeout(() => {
@@ -90,7 +93,65 @@ const CartApp = {
       return;
     }
 
-    init();
+    // Toggle checks
+    watch(() => state.items, () => {
+      updateToggleAll(state.items);
+    }, { deep: true });
+
+    const itemChecks = computed(() => {
+      return state.items.map((item) => {
+        if (item.options.checked == null) {
+          return true;
+        }
+
+        return item.options.checked;
+      });
+    });
+
+    const checks = computed(() => itemChecks.value.filter(checked => checked === true).length);
+    const unchecks = computed(() => itemChecks.value.filter(checked => checked === false).length);
+
+    function updateToggleAll() {
+      toggleAllInput.value.checked = false;
+      toggleAllInput.value.indeterminate = false;
+
+      if (checks.value > 0 && unchecks.value === 0) {
+        toggleAllInput.value.checked = true;
+      } else if (unchecks.value > 0 && checks.value === 0) {
+        toggleAllInput.value.checked = false;
+      } else if (checks.value > 0 && unchecks.value > 0) {
+        toggleAllInput.value.indeterminate = true;
+      }
+    }
+
+    function toggleChecked() {
+      for (const item of state.items) {
+        item.options.checked = toggleAllInput.value.checked;
+      }
+
+      updateChecks();
+    }
+
+    const updateChecks = u.debounce(async (item) => {
+      const checks = {};
+
+      for (const item of state.items) {
+        checks[item.key] = item.options.checked ? '1' : '0';
+      }
+
+      loadingStack.push(true);
+
+      try {
+        const res = await u.$http.post('@cart_ajax/updateChecks', { checks });
+
+        return await loadItems();
+      } catch (e) {
+        console.error(e);
+        u.alert(e.message, '', 'warning');
+      } finally {
+        popLoading();
+      }
+    }, 300);
 
     onMounted(() => {
       calcNavAndStickySidebar(form.value);
@@ -314,6 +375,10 @@ const CartApp = {
 
     // Checkout
     const canCheckout = computed(() => {
+      if (checks.value === 0) {
+        return false;
+      }
+
       if (!state.shippingData.location_id) {
         return false;
       }
@@ -337,6 +402,10 @@ const CartApp = {
     const paymentForm = ref(null);
 
     function checkout() {
+      if (checks.value === 0) {
+        return;
+      }
+
       if (shippingForm.value && !shippingForm.value.validate()) {
         console.log('Shipping Validate Fail');
         return;
@@ -372,6 +441,7 @@ const CartApp = {
       ...toRefs(state),
       filteredTotals,
       form,
+      toggleAllInput,
       canCheckout,
       selectedShipping,
       selectedPayment,
@@ -384,6 +454,8 @@ const CartApp = {
       addCode,
       removeCode,
       updateQuantities,
+      updateChecks,
+      toggleChecked,
       checkout,
     };
   }

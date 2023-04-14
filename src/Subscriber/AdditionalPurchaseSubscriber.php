@@ -151,7 +151,7 @@ class AdditionalPurchaseSubscriber
             $item->setPriceSet($priceSet);
         }
 
-        $quantities = $cartData->getTotalQuantities(true);
+        $quantities = $cartData->getTotalQuantities(true, true);
 
         // Now get out-of-stock items
         foreach ($cartData->getItems() as $item) {

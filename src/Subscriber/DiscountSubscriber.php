@@ -44,7 +44,11 @@ class DiscountSubscriber
         if ($context === $event::CART || $context === $event::ORDER) {
             $cartItem = $event->getCartItem();
 
-            $this->discountService->computeSingleProductDiscounts($event, $cartItem->getQuantity());
+            $this->discountService->computeSingleProductDiscounts(
+                $event,
+                $cartItem->getQuantity(),
+                $cartItem->isChecked()
+            );
         }
 
         if ($context === $event::PRODUCT_VIEW) {

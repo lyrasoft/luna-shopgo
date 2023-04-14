@@ -18,7 +18,7 @@ use Windwalker\Utilities\Arr;
 /**
  * The CartStorage class.
  *
- * @psalm-type CartStorageItem = array{ variantId: int, attachments: ?array<int, int>, quantity: int }
+ * @psalm-type CartStorageItem = array{ variantId: int, attachments: ?array<int, int>, quantity: int, options: array }
  */
 class CartStorage
 {
@@ -29,7 +29,7 @@ class CartStorage
     {
     }
 
-    public function addToCart(int $variantId, int $quantity = 1, array $payload = []): void
+    public function addToCart(int $variantId, int $quantity = 1, array $payload = [], array $options = []): void
     {
         $items = $this->getStoredItems();
 
@@ -38,11 +38,35 @@ class CartStorage
         if (isset($items[$key])) {
             $items[$key]['quantity'] += $quantity;
         } else {
+            $options['checked'] ??= true;
             $items[$key] = array_merge(
-                compact('variantId', 'quantity', 'key'),
+                compact('variantId', 'quantity', 'key', 'options'),
                 $payload
             );
         }
+
+        $this->setStoredItems($items);
+    }
+
+    public function getStoredItemByPayload(int $variantId, array $payload = []): ?array
+    {
+        $key = $this->getKeyName($variantId, $payload);
+
+        return $this->getStoredItem($key);
+    }
+
+    public function getStoredItem(string $key): ?array
+    {
+        $items = $this->getStoredItems();
+
+        return $items[$key] ?? null;
+    }
+
+    public function setStoredItem(string $key, array $item): void
+    {
+        $items = $this->getStoredItems();
+
+        $items[$key] = $item;
 
         $this->setStoredItems($items);
     }
@@ -124,6 +148,32 @@ class CartStorage
     public function getStoredItems(): array
     {
         return (array) $this->state->get(static::CART_ITEMS_KEY);
+    }
+
+    /**
+     * @return  array<CartStorageItem>
+     */
+    public function getCheckedItems(): array
+    {
+        return array_filter(
+            $this->getStoredItems(),
+            static fn (array $item) => $item['options']['checked'] ?? true
+        );
+    }
+
+    public function updateChecks(array $checks): void
+    {
+        $items = $this->getStoredItems();
+
+        foreach ($checks as $key => $check) {
+            if (!isset($items[$key])) {
+                continue;
+            }
+
+            $items[$key]['options']['checked'] = (bool) $check;
+        }
+
+        $this->setStoredItems($items);
     }
 
     /**

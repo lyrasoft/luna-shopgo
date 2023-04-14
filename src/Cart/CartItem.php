@@ -45,6 +45,8 @@ class CartItem extends ValueObject
 
     public array $payload = [];
 
+    public array $options = [];
+
     public array $attachments = [];
 
     public PriceSet $priceSet;
@@ -359,6 +361,31 @@ class CartItem extends ValueObject
     public function setOutOfStock(bool $outOfStock): static
     {
         $this->outOfStock = $outOfStock;
+
+        return $this;
+    }
+
+    public function isChecked(): bool
+    {
+        return $this->getOptions()['checked'] ?? true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param  array  $options
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOptions(array $options): static
+    {
+        $this->options = $options;
 
         return $this;
     }

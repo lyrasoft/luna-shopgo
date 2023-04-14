@@ -70,6 +70,13 @@ $uniScript->addRoute('@address_ajax');
                         <header class="d-flex align-items-center justify-content-between mb-4">
                             <div class="d-flex align-items-center gap-2">
                                 <h3 class="m-0">購物車</h3>
+                                <div class="form-check">
+                                    <input id="input-toggle-all" type="checkbox" class="form-check-input"
+                                        ref="toggleAllInput"
+                                        @click="toggleChecked"
+                                    />
+                                    <label for="input-toggle-all" class="form-check-label">全選</label>
+                                </div>
                                 <div v-if="loading" class="spinner spinner-border-sm spinner-border"
                                     data-cloak>
 

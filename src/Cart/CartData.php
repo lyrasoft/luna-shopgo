@@ -64,15 +64,33 @@ class CartData extends ValueObject
     }
 
     /**
-     * @return CartItem[]|Collection
+     * @param  bool  $onlyChecked
+     *
+     * @return Collection
      */
-    public function getItems(): Collection
+    public function getItems(bool $onlyChecked = false): Collection
     {
-        return $this->items;
+        $items = $this->items;
+
+        if ($onlyChecked) {
+            $items = $items->filter(
+                fn (CartItem $item) => $item->isChecked()
+            );
+        }
+
+        return $items;
     }
 
     /**
-     * @param  CartItem[]|Collection  $items
+     * @return Collection<CartItem>
+     */
+    public function getCheckedItems(): Collection
+    {
+        return $this->getItems(true);
+    }
+
+    /**
+     * @param  Collection<CartItem>  $items
      *
      * @return  static  Return self to support chaining.
      */
@@ -84,15 +102,22 @@ class CartData extends ValueObject
     }
 
     /**
+     * @param  bool  $onlyChecked
      * @param  bool  $includeAttachments
      *
      * @return  array<int, int>
      */
-    public function getTotalQuantities(bool $includeAttachments = false): array
+    public function getTotalQuantities(bool $onlyChecked = false, bool $includeAttachments = false): array
     {
         $quantities = [];
 
-        foreach ($this->getItems() as $item) {
+        if ($onlyChecked) {
+            $items = $this->getCheckedItems();
+        } else {
+            $items = $this->getItems();
+        }
+
+        foreach ($items as $item) {
             /** @var ProductVariant $variant */
             $variant = $item->getVariant()->getData();
             $quantity = $quantities[$variant->getId()] ?? 0;

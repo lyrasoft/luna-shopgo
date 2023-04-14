@@ -94,7 +94,7 @@ trait PriceRangeTrait
         $depends = $pricing['depends_no'] ?? PriceRange::DEPENDS_ON_PRICE;
         $computeUnit = $pricing['compute_unit'] ?? PriceRange::COMPUTE_UNIT_PER_ORDER;
         $range = $pricing['range'] ?? [];
-        $cartItems = $cartData->getItems();
+        $cartItems = $cartData->getCheckedItems();
 
         // Find matched location
         $matchedPricing = null;
@@ -195,7 +195,7 @@ trait PriceRangeTrait
                 } else {
                     $value = BigDecimal::of(0);
 
-                    foreach ($cartData->getItems() as $cartItem) {
+                    foreach ($cartItems as $cartItem) {
                         /** @var ProductVariant $variant */
                         $variant = $cartItem->getVariant()->getData();
 

@@ -101,12 +101,11 @@ class CheckoutController
                     $shippingLocation->getId(),
                     $shipping['id'] ?? 0,
                     $payment['id'] ?? 0,
+                    [],
                     true
                 );
 
-                $stockService->checkStock($cartData);
-
-                $stockService->reduceStocks($cartData);
+                $stockService->checkAndReduceStocks($cartData);
 
                 $order->setUserId($user->getId());
                 $order->setPaymentId((int) $payment['id']);
