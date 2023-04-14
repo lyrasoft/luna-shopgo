@@ -20,4 +20,26 @@ use Windwalker\Data\ValueObject;
 class PaymentData extends ValueObject implements AddressAwareInterface
 {
     use AddressAwaitTrait;
+
+    public string $paymentTitle = '';
+
+    /**
+     * @return string
+     */
+    public function getPaymentTitle(): string
+    {
+        return $this->paymentTitle;
+    }
+
+    /**
+     * @param  string  $paymentTitle
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPaymentTitle(string $paymentTitle): static
+    {
+        $this->paymentTitle = $paymentTitle;
+
+        return $this;
+    }
 }

@@ -21,6 +21,8 @@ class ShippingData extends ValueObject implements AddressAwareInterface
 {
     use AddressAwaitTrait;
 
+    public string $shippingTitle = '';
+
     public string $note = '';
 
     /**
@@ -39,6 +41,26 @@ class ShippingData extends ValueObject implements AddressAwareInterface
     public function setNote(string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getShippingTitle(): string
+    {
+        return $this->shippingTitle;
+    }
+
+    /**
+     * @param  string  $shippingTitle
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setShippingTitle(string $shippingTitle): static
+    {
+        $this->shippingTitle = $shippingTitle;
 
         return $this;
     }

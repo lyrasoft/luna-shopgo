@@ -94,7 +94,7 @@ class OrderService
 
             $availableLength = $this->getAvailableNoLength($prefix);
 
-            return $prefix . $sequenceService->getNextSerialAndPadZero('order_no', $prefix, $availableLength);
+            return $prefix . $sequenceService->getNextSerialAndPadZero('shopgo_order', $prefix, $availableLength);
         }
 
         if ($mode === OrderNoMode::SEQUENCE_HASHES()) {

@@ -24,6 +24,7 @@ use Lyrasoft\ShopGo\Service\CouponService;
 use Lyrasoft\ShopGo\Service\CurrencyService;
 use Lyrasoft\ShopGo\Service\DiscountService;
 use Lyrasoft\ShopGo\Service\DiscountUsageService;
+use Lyrasoft\ShopGo\Service\InvoiceService;
 use Lyrasoft\ShopGo\Service\LocationService;
 use Lyrasoft\ShopGo\Service\OrderHistoryService;
 use Lyrasoft\ShopGo\Service\OrderService;
@@ -81,6 +82,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $container->prepareSharedObject(LocationService::class);
         $container->prepareSharedObject(PaymentService::class);
         $container->prepareSharedObject(PricingService::class);
+        $container->prepareSharedObject(InvoiceService::class);
         $container->prepareSharedObject(OrderHistoryService::class);
         $container->prepareSharedObject(OrderService::class);
         $container->prepareSharedObject(OrderStateService::class);

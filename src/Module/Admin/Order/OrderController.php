@@ -16,6 +16,7 @@ use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
 use Lyrasoft\ShopGo\Module\Admin\Order\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\OrderRepository;
+use Lyrasoft\ShopGo\Service\InvoiceService;
 use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Shipping\ShipmentCreatingInterface;
 use Lyrasoft\ShopGo\Shipping\ShipmentPrintableInterface;

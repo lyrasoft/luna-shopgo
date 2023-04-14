@@ -158,6 +158,12 @@ class CheckoutService
             $this->shopGo->config('checkout.default_expiry') ?? '+7days'
         );
 
+        $paymentData = $order->getPaymentData();
+        $shippingData = $order->getShippingData();
+
+        $paymentData->setPaymentTitle($order->getPayment()->getTitle());
+        $shippingData->setShippingTitle($order->getShipping()->getTitle());
+
         $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
         $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);
 

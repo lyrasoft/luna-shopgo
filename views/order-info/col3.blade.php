@@ -51,7 +51,18 @@ use Windwalker\Core\Router\SystemUri;
                 @lang('shopgo.order.field.invoice.no')
             </dt>
             <dd class="col-8">
-                {{ $order->getInvoiceNo() ?: '-' }}
+                <div class="d-flex">
+                    <div>
+                        @if ($order->getInvoiceNo())
+                            #{{ $order->getInvoiceNo() }}
+                        @else
+                            -
+                        @endif
+                    </div>
+                    <div class="ms-auto">
+                        {!! $invoiceControl ?? '' !!}
+                    </div>
+                </div>
             </dd>
         </dl>
     </div>

@@ -30,8 +30,8 @@ use Windwalker\ORM\ORM;
 use function Windwalker\value;
 
 /**
- * @var $orders    Order[]
- * @var $orderItem OrderItem
+ * @var $orders     Order[]
+ * @var $orderItem  OrderItem
  * @var $attachment OrderItem
  */
 
@@ -46,21 +46,21 @@ $siteName = value($shopGo->config('shop.sitename'));
 
 @section('body')
     <style>
-        .h-page-break {
-          page-break-after: always;
-        }
+      .h-page-break {
+        page-break-after: always;
+      }
 
-        .c-order-table thead tr > th {
-          border-top: 2px solid #333;
-          border-bottom: 2px solid #333;
-          font-weight: bolder;
-        }
+      .c-order-table thead tr > th {
+        border-top: 2px solid #333;
+        border-bottom: 2px solid #333;
+        font-weight: bolder;
+      }
 
-        @media print {
-          .ww-debug-console {
-            display: none !important;
-          }
+      @media print {
+        .ww-debug-console {
+          display: none !important;
         }
+      }
     </style>
     <div class="l-packaging-list container-fluid">
         <div class="l-packaging-list__toolbar card mb-5 d-print-none">
@@ -106,9 +106,9 @@ $siteName = value($shopGo->config('shop.sitename'));
                             <div>
                                 <strong>@lang('shopgo.order.field.shipment.no'):</strong> {{ $order->getShippingInfo()->getShipmentNo() }}
                             </div>
-{{--                            <div>--}}
-{{--                                <strong>@lang('shopgo.order.field.payment'):</strong> {{ $order->getPayment()?->getTitle() }}--}}
-{{--                            </div>--}}
+                            {{--                            <div>--}}
+                            {{--                                <strong>@lang('shopgo.order.field.payment'):</strong> {{ $order->getPayment()?->getTitle() }}--}}
+                            {{--                            </div>--}}
                             <div>
                                 <strong>@lang('shopgo.order.field.shipping'):</strong> {{ $order->getShipping()?->getTitle() }}
                             </div>
@@ -119,15 +119,20 @@ $siteName = value($shopGo->config('shop.sitename'));
 
                             <table class="c-order-table table">
                                 <thead>
-                                <th>
-                                    @lang('shopgo.order.item.field.product')
-                                </th>
-                                <th style="width: 15%">
-                                    @lang('shopgo.order.item.field.model')
-                                </th>
-                                <th class="text-end">
-                                    @lang('shopgo.order.item.field.quantity')
-                                </th>
+                                <tr>
+                                    <th>
+                                        @lang('shopgo.order.item.field.product')
+                                    </th>
+                                    <th style="width: 15%">
+                                        @lang('shopgo.order.item.field.model')
+                                    </th>
+                                    <th style="width: 15%">
+                                        @lang('shopgo.order.item.field.sku')
+                                    </th>
+                                    <th class="text-end">
+                                        @lang('shopgo.order.item.field.quantity')
+                                    </th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($orderItems as $orderItem)
@@ -146,28 +151,31 @@ $siteName = value($shopGo->config('shop.sitename'));
                                         <td class="text-nowrap">
                                             {{ $orderItem->getProductData()['product']['model'] ?? '' }}
                                         </td>
+                                        <td class="text-nowrap">
+                                            {{ $orderItem->getProductData()['variant']['sku'] ?? '' }}
+                                        </td>
                                         <td class="text-end">
                                             {{ $orderItem->getQuantity() }}
                                         </td>
                                     </tr>
 
-                                    @foreach ($attachments as $pattachment)
+                                    @foreach ($attachments as $attachment)
                                         <tr>
                                             <td>
                                                 <div>
-                                                    {{ $pattachment->getTitle() }}
+                                                    {{ $attachment->getTitle() }}
                                                 </div>
-                                                @if ($pattachment->getVariantHash())
+                                                @if ($attachment->getVariantHash())
                                                     <div>
-                                                        {{ $pattachment->getVariantTitle() }}
+                                                        {{ $attachment->getVariantTitle() }}
                                                     </div>
                                                 @endif
                                             </td>
                                             <td class="text-nowrap">
-                                                {{ $pattachment->getProductData()['product']['model'] ?? '' }}
+                                                {{ $attachment->getProductData()['product']['model'] ?? '' }}
                                             </td>
                                             <td class="text-end">
-                                                {{ $pattachment->getQuantity() }}
+                                                {{ $attachment->getQuantity() }}
                                             </td>
                                         </tr>
                                     @endforeach

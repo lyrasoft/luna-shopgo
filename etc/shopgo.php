@@ -31,7 +31,7 @@ return [
 
         'shop' => [
             'sitename' => 'ShopGo',
-            'logo' => 'assets/images/logo-h.svg'
+            'logo' => 'assets/vendor/lyrasoft/shopgo/images/simular-logo.png'
         ],
 
         'currency' => [
@@ -59,11 +59,12 @@ return [
         ],
 
         'payment_no' => [
-            'maxlength' => 20,
+            'maxlength' => 20, // Digits length will be maxlength - 9
         ],
 
         'invoice_no' => [
-            'prefix' => 'INV'
+            'prefix' => 'INV-',
+            'length' => 11
         ],
 
         'checkout' => [
@@ -84,5 +85,22 @@ return [
                 'transfer' => TransferPayment::class,
             ]
         ],
+
+        'mpdf' => [
+            'font_dirs' => [
+                env('SHOPGO_MPDF_FONT_DIR', '/Library/Fonts/')
+            ],
+            'font_data' => [
+                'taipei' => [
+
+                    // Regular 標準字體
+                    'R' => 'TaipeiSansTCBeta-Regular.ttf',
+
+                    // Bold 粗體
+                    'B' => 'TaipeiSansTCBeta-Bold.ttf',
+                ],
+            ],
+            'font_family' => 'taipei, sans-serif'
+        ]
     ]
 ];

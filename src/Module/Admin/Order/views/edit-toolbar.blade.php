@@ -123,7 +123,15 @@ $hasUpdateShipping = $typeInstance instanceof ShipmentCreatingInterface;
         </div>
     </div>
 
-
+    @if (!$item->getInvoiceNo())
+        <button type="button"
+            class="btn btn-success btn-sm"
+            @click="form.post('{{ $nav->to('invoice') }}', { id: '{{ $item->getId() }}' })"
+        >
+            <i class="fa fa-file-invoice"></i>
+            @lang('shopgo.order.button.invoice.create')
+        </button>
+    @endif
 
     {{-- Cancel --}}
     <a class="btn btn-default btn-outline-secondary btn-sm uni-btn-cancel"
