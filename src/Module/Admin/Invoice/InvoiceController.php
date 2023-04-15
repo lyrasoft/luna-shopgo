@@ -61,13 +61,14 @@ class InvoiceController
 
     public function index(AppContext $app, string $view): ResponseInterface
     {
+        $id = (int) $app->input('id');
+
         /** @var View $viewInstance */
         $viewInstance = $app->make($view);
 
-        $res = $viewInstance->render();
+        $res = $viewInstance->render(['id' => $id]);
 
         $pdf = $app->input('pdf');
-        $id = $app->input('id');
 
         if ($pdf) {
             $html = (string) $res->getBody();

@@ -15,14 +15,11 @@ use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderHistory;
 use Lyrasoft\ShopGo\Entity\OrderState;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
-use Lyrasoft\ShopGo\Module\Admin\Invoice\InvoiceView;
 use Lyrasoft\ShopGo\Repository\OrderHistoryRepository;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Mailer\MailerInterface;
-use Windwalker\Core\Mailer\MailMessage;
-use Windwalker\Core\View\View;
 use Windwalker\DI\Attributes\Autowire;
 
 /**
@@ -130,13 +127,8 @@ class OrderHistoryService
             $shopGo = $this->app->service(ShopGoPackage::class);
             $invoiceService = $this->app->service(InvoiceService::class);
 
-            /** @var View $view */
-            $view = $this->app->make(InvoiceView::class);
-            $res = $view->render(['id' => $order->getId()]);
-            $html = (string) $res->getBody();
-
             $message->attach(
-                $invoiceService->renderPdf($html),
+                $invoiceService->createAndRenderInvoicePdf($order),
                 sprintf(
                     '[%s] Invoice-%s.pdf',
                     $shopGo->config('shop.sitename') ?: 'ShopGo',

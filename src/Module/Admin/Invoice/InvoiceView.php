@@ -21,6 +21,7 @@ use Windwalker\Core\Attributes\ViewModel;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Attributes\Prop;
 
 /**
  * The InvoiceView class.
@@ -31,6 +32,9 @@ use Windwalker\ORM\ORM;
 )]
 class InvoiceView implements ViewModelInterface
 {
+    #[Prop]
+    protected int $id;
+
     /**
      * Constructor.
      */
@@ -46,10 +50,11 @@ class InvoiceView implements ViewModelInterface
      * @param  View        $view  The view object.
      *
      * @return  mixed
+     * @throws \ReflectionException
      */
     public function prepare(AppContext $app, View $view): array
     {
-        $id = $app->input('id');
+        $id = $this->id;
 
         $order = $this->orm->mustFindOne(Order::class, $id);
 

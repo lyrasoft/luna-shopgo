@@ -13,19 +13,26 @@ namespace Lyrasoft\ShopGo\Service;
 
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Module\Admin\Invoice\InvoiceView;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Mpdf\Config\ConfigVariables;
 use Mpdf\Config\FontVariables;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
+use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\View\View;
+use Windwalker\ORM\ORM;
 
 /**
  * The InvoiceService class.
  */
 class InvoiceService
 {
-    public function __construct(protected SequenceService $sequenceService, protected ShopGoPackage $shopGo)
-    {
+    public function __construct(
+        protected ApplicationInterface $app,
+        protected SequenceService $sequenceService,
+        protected ShopGoPackage $shopGo
+    ) {
     }
 
     public function getPrefix(): string
@@ -40,11 +47,29 @@ class InvoiceService
 
     public function genInvoiceNumber(): string
     {
-        return $this->getPrefix() . $this->sequenceService->getNextSerialAndPadZero(
-            'shopgo_invoice',
-            $this->getPrefix(),
-            $this->getLength()
-        );
+        return $this->getPrefix()
+            . $this->sequenceService->getNextSerialAndPadZero(
+                'shopgo_invoice',
+                $this->getPrefix(),
+                $this->getLength()
+            );
+    }
+
+    public function createAndRenderInvoice(Order $order): string
+    {
+        if (!$order->getInvoiceNo()) {
+            $this->genAndSaveInvoiceNoForOrder($order);
+        }
+
+        /** @var View $view */
+        $view = $this->app->make(InvoiceView::class);
+        $res = $view->render(['id' => $order->getId()]);
+        return (string) $res->getBody();
+    }
+
+    public function createAndRenderInvoicePdf(Order $order): string
+    {
+        return $this->renderPdf($this->createAndRenderInvoice($order));
     }
 
     public function renderPdf(string $html): string
@@ -79,12 +104,32 @@ class InvoiceService
         $mpdf = new Mpdf(
             [
                 'fontDir' => $fontDirs,
-                'fontdata' => $fontData
+                'fontdata' => $fontData,
             ]
         );
 
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
+    /**
+     * @param  Order  $order
+     *
+     * @return  void
+     */
+    protected function genAndSaveInvoiceNoForOrder(Order $order): void
+    {
+        $orm = $this->app->service(ORM::class);
+
+        $no = $this->genInvoiceNumber();
+
+        $order->setInvoiceNo($no);
+
+        $orm->updateBatch(
+            Order::class,
+            ['invoice_no' => $no],
+            ['id' => $order->getId()]
+        );
     }
 }
