@@ -34,7 +34,7 @@ $paymentData = $order->getPaymentData();
 $locationService = $app->service(LocationService::class);
 
 $paymentService = $app->service(PaymentService::class);
-$typeInstance = $paymentService->createTypeInstance($order->getPayment());
+$typeInstance = $paymentService->getInstanceById($order->getPaymentId());
 
 $orderInfo = trim($typeInstance?->orderInfo($order) ?? '');
 
@@ -53,7 +53,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.order.field.payment')
             </dt>
             <dd class="col-{{ $ddCols }}">
-                {{ $order->getPayment()->getTitle() }}
+                {{ $order->getPaymentData()->getPaymentTitle() }}
             </dd>
 
             {{-- Name --}}

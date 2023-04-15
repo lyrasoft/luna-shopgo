@@ -11,7 +11,11 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
+use Lyrasoft\Luna\Access\AccessService;
 use Lyrasoft\Luna\Entity\User;
+use Lyrasoft\Luna\Entity\UserRole;
+use Lyrasoft\Luna\Entity\UserRoleMap;
+use Lyrasoft\Luna\Repository\UserRepository;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartItem;
@@ -35,11 +39,15 @@ use Lyrasoft\ShopGo\Event\BeforeOrderCreateEvent;
 use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\ShopGoPackage;
+use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Mailer\MailerInterface;
+use Windwalker\Core\Mailer\MailMessage;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
+use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 use function Windwalker\collect;
@@ -53,6 +61,7 @@ class CheckoutService
     use TranslatorTrait;
 
     public function __construct(
+        protected ApplicationInterface $app,
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
         protected OrderService $orderService,
@@ -61,6 +70,8 @@ class CheckoutService
         protected AddressService $addressService,
         protected PaymentService $paymentService,
         protected ShippingService $shippingService,
+        protected MailerInterface $mailer,
+        protected AccessService $accessService,
         protected ?SequenceService $sequenceService = null,
     ) {
     }
@@ -228,28 +239,105 @@ class CheckoutService
         return $event->getOrder();
     }
 
-    public function createOrderAndNotify(Order $order, CartData $cartData): Order
+    public function notifyForCheckout(Order $order, CartData $cartData): Order
     {
-        $order = $this->createOrder($order, $cartData);
+        $userMail = $order->getPaymentData()->getEmail();
 
-        // Todo: Notify user
-        // $this->mailer->createMessage('訂單已成立，感謝您的訂購！')
-        //     ->to($order->getEmail())
-        //     ->renderBody(
-        //         'mail.order.new-order',
-        //         compact('order', 'subOrders', 'user', 'cartData')
-        //     )
-        //     ->send();
-        //
-        // Todo: Notify admin
-        // // Notify vendor picking
-        // if ($order->getShipping()->isCod()) {
-        //     foreach ($subOrders as $subOrder) {
-        //         $this->orderService->notifyVendor($subOrder, $subOrder->getState());
-        //     }
-        // }
+        if ($userMail) {
+            $this->notifyBuyer($order, $cartData);
+        }
+
+        // Notify admins
+        $this->notifyAdmins($order, $cartData);
 
         return $order;
+    }
+
+    /**
+     * @param  Order     $order
+     * @param  CartData  $cartData
+     *
+     * @return  void
+     */
+    protected function notifyBuyer(Order $order, CartData $cartData): void
+    {
+        $isAdmin = false;
+        $this->mailer->createMessage(
+            $this->trans(
+                'shopgo.mail.new.order.subject.for.buyer',
+                no: $order->getNo(),
+                sitename: $this->shopGo->config('shop.sitename'),
+            )
+        )
+            ->to($order->getPaymentData()->getEmail())
+            ->renderBody(
+                'mail.order.new-order',
+                compact('order', 'cartData', 'isAdmin')
+            )
+            ->send();
+    }
+
+    /**
+     * @param  Order     $order
+     * @param  CartData  $cartData
+     *
+     * @return  void
+     */
+    protected function notifyAdmins(Order $order, CartData $cartData): void
+    {
+        $adminRoles = $this->accessService->getRolesAllowAction(AccessService::ADMIN_ACCESS_ACTION);
+        $notifyRoles = collect($adminRoles)
+            ->filter(
+                function (UserRole $role) {
+                    return $this->accessService->checkRoleAllowAction(
+                        $role,
+                        'shopgo.order.notify'
+                    );
+                }
+            )
+            ->column('id')
+            ->dump();
+
+        if ($notifyRoles !== []) {
+            $isAdmin = true;
+            $userRepository = $this->app->service(UserRepository::class);
+            $users = $userRepository->getListSelector()
+                ->where('user.receive_mail', 1)
+                ->where('user.enabled', 1)
+                ->where('user.verified', 1)
+                ->modifyQuery(
+                    fn(Query $query) => $query->where(
+                        $query->expr(
+                            'EXISTS()',
+                            $query->createSubQuery()
+                                ->select('*')
+                                ->from(UserRoleMap::class)
+                                ->whereRaw('user_id = user.id')
+                                ->whereRaw('role_id IN(%r)', implode(',', $query->quote($notifyRoles)))
+                        )
+                    )
+                )
+                ->all(User::class);
+
+            if (count($users)) {
+                $emails = $users->column('email')->dump();
+
+                $this->mailer->createMessage(
+                    $this->trans(
+                        'shopgo.mail.new.order.subject.for.admin',
+                        no:       $order->getNo(),
+                        buyer:    $order->getPaymentData()->getName(),
+                        sitename: $this->shopGo->config('shop.sitename'),
+                    )
+                )
+                    ->bcc(...$emails)
+                    ->renderBody(
+                        'mail.order.new-order',
+                        compact('order', 'cartData', 'isAdmin')
+                    )
+                    ->send();
+            }
+        }
     }
 
     /**
@@ -389,7 +477,7 @@ class CheckoutService
     }
 
     /**
-     * @param  CartItem       $item
+     * @param  CartItem  $item
      *
      * @return  OrderItem
      *

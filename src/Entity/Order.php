@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
 
+use Lyrasoft\Luna\Attributes\Author;
+use Lyrasoft\Luna\Attributes\Modifier;
 use Lyrasoft\ShopGo\Data\InvoiceData;
 use Lyrasoft\ShopGo\Data\PaymentData;
 use Lyrasoft\ShopGo\Data\PaymentInfo;
@@ -19,8 +21,6 @@ use Lyrasoft\ShopGo\Data\ShippingHistoryCollection;
 use Lyrasoft\ShopGo\Data\ShippingInfo;
 use Lyrasoft\ShopGo\Enum\InvoiceType;
 use Lyrasoft\ShopGo\Workflow\OrderStateWorkflow;
-use Lyrasoft\Luna\Attributes\Author;
-use Lyrasoft\Luna\Attributes\Modifier;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
@@ -279,9 +279,11 @@ class Order implements EntityInterface
     protected RelationCollection|null $orderItems = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata, #[Autowire] OrderStateWorkflow $workflow): void
-    {
-        $workflow->listen($metadata);
+    public static function setup(
+        EntityMetadata $metadata,
+        // #[Autowire] OrderStateWorkflow $workflow
+    ): void {
+        // $workflow->listen($metadata);
     }
 
     #[BeforeSaveEvent]

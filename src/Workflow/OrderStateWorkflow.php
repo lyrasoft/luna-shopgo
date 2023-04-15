@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Workflow;
 
+use Lyrasoft\ShopGo\Entity\OrderState;
 use Lyrasoft\ShopGo\Service\OrderStateService;
 use Unicorn\Attributes\StateMachine;
 use Unicorn\Workflow\AbstractWorkflow;
@@ -20,7 +21,7 @@ use Unicorn\Workflow\WorkflowController;
  * The OrderStateWorkflow class.
  */
 #[StateMachine(
-    field: 'state',
+    field: 'state_id',
     // Set to FALSE to allow free transition.
     strict: false
 )]
@@ -34,21 +35,22 @@ class OrderStateWorkflow extends AbstractWorkflow
     {
         $states = $this->orderStateService->getOrderStates();
 
-        // /** @var OrderState[] $states */
-        // foreach ($states as $state) {
-        //     $workflow->addState(
-        //         (string) $state->getId(),
-        //         $state->getTitle(),
-        //         true
-        //     );
-        // }
+        /** @var OrderState[] $states */
+        foreach ($states as $state) {
+            $workflow->addState(
+                (string) $state->getId(),
+                $state->getTitle(),
+                true
+            );
+        }
 
-        // $workflow->onAfterChanged(
-        //     [],
-        //     [],
-        //     function () {
-        //         //
-        //     }
-        // );
+        $workflow->onAfterChanged(
+            [],
+            [],
+            function ($event) {
+                show($event);
+                exit(' @Checkpoint');
+            }
+        );
     }
 }

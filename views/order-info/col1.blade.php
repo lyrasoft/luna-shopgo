@@ -17,17 +17,21 @@ namespace App\View;
  */
 
 use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderState;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
+use Windwalker\ORM\ORM;
 
 /**
  * @var Order $order
  */
 
+$orm = $app->service(ORM::class);
+$state = $orm->findOne(OrderState::class, $order->getStateId());
 ?>
 
 <div class="card">
@@ -43,10 +47,9 @@ use Windwalker\Core\Router\SystemUri;
                 @lang('shopgo.order.field.state')
             </dt>
             <dd class="col-8">
-                @php($state = $order->getState())
                 <span class="badge px-2 py-1"
-                    style="font-size: .875rem; {{ $state->getColorCSS() }}">
-                    {{ $order->getState()->getTitle() }}
+                    style="font-size: .875rem; {{ $state?->getColorCSS() }}">
+                    {{ $order->getStateText() ?: $state?->getTitle() }}
                 </span>
             </dd>
             <dt class="col-4">
@@ -55,16 +58,14 @@ use Windwalker\Core\Router\SystemUri;
             <dd class="col-8">
                 {{ $chronos->toLocalFormat($order->getCreated()) }}
             </dd>
-            <dt class="col-4">
-                @lang('shopgo.order.field.paid.at')
-            </dt>
-            <dd class="col-8">
-                @if ($order->getPaidAt())
+            @if ($order->getPaidAt())
+                <dt class="col-4">
+                    @lang('shopgo.order.field.paid.at')
+                </dt>
+                <dd class="col-8">
                     {{ $chronos->toLocalFormat($order->getPaidAt()) }}
-                @else
-                    -
-                @endif
-            </dd>
+                </dd>
+            @endif
         </dl>
     </div>
 </div>

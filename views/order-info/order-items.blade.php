@@ -35,28 +35,34 @@ use Windwalker\Core\Router\SystemUri;
  */
 
 $currency = $app->service(CurrencyService::class);
+
+$simple ??= false;
 ?>
 
 <div class="l-order-items table-responsive mb-5">
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th style="width: 5%">
-                @lang('unicorn.field.id')
-            </th>
-            <th style="width: 5%">
-                @lang('shopgo.order.item.field.image')
-            </th>
+            @if (!$simple)
+                <th style="width: 5%">
+                    @lang('unicorn.field.id')
+                </th>
+                <th style="width: 5%">
+                    @lang('shopgo.order.item.field.image')
+                </th>
+            @endif
             <th>
                 @lang('shopgo.order.item.field.product')
             </th>
-            <th>
-                @lang('shopgo.order.item.field.price.unit')
-            </th>
-            <th>
+            @if (!$simple)
+                <th class="text-end">
+                    @lang('shopgo.order.item.field.price.unit')
+                </th>
+            @endif
+            <th class="text-end">
                 @lang('shopgo.order.item.field.quantity')
             </th>
-            <th>
+            <th class="text-end">
                 @lang('shopgo.order.item.field.total')
             </th>
         </tr>
@@ -64,11 +70,13 @@ $currency = $app->service(CurrencyService::class);
         <tbody>
         @foreach($orderItems as $orderItem)
             <tr>
-                <td>{{ $orderItem->getId() }}</td>
-                <td>
-                    <img src="{{ $orderItem->getImage() }}" class="me-3" width="100"
-                        alt="Image">
-                </td>
+                @if (!$simple)
+                    <td>{{ $orderItem->getId() }}</td>
+                    <td>
+                        <img src="{{ $orderItem->getImage() }}" class="me-3" width="100"
+                            alt="Image">
+                    </td>
+                @endif
                 <td>
                     <h4>
                         {{ $orderItem->getTitle() }}
@@ -79,10 +87,12 @@ $currency = $app->service(CurrencyService::class);
                         </div>
                     @endif
                 </td>
-                <td class="text-end" style="width: 200px">
-                    {{ $currency->format($orderItem->getPriceUnit()) }}
-                </td>
-                <td style="width: 200px">{{ $orderItem->getQuantity() }}</td>
+                @if (!$simple)
+                    <td class="text-end" style="width: 200px">
+                        {{ $currency->format($orderItem->getPriceUnit()) }}
+                    </td>
+                @endif
+                <td class="text-end" style="width: 200px">{{ $orderItem->getQuantity() }}</td>
                 <td class="text-end" style="width: 200px">
                     {{ $currency->formatWithCode($orderItem->getTotal()) }}
                 </td>
@@ -91,11 +101,13 @@ $currency = $app->service(CurrencyService::class);
             @if ($attachmentItems = $attachments[$orderItem->getId()] ?? [])
                 @foreach ($attachmentItems as $atachment)
                     <tr class="bg-light">
+                        @if (!$simple)
                         <td>{{ $atachment->getId() }}</td>
                         <td>
                             <img src="{{ $atachment->getImage() }}" class="me-3" width="75"
                                 alt="Image">
                         </td>
+                        @endif
                         <td>
                             <h5>
                                 {{ $atachment->getTitle() }}
@@ -112,10 +124,12 @@ $currency = $app->service(CurrencyService::class);
                                 </span>
                             </div>
                         </td>
+                        @if (!$simple)
                         <td class="text-end" style="width: 200px">
                             {{ $currency->format($atachment->getPriceUnit()) }}
                         </td>
-                        <td style="width: 200px">{{ $atachment->getQuantity() }}</td>
+                        @endif
+                        <td class="text-end" style="width: 200px">{{ $atachment->getQuantity() }}</td>
                         <td class="text-end" style="width: 200px">
                             {{ $currency->formatWithCode($atachment->getTotal()) }}
                         </td>

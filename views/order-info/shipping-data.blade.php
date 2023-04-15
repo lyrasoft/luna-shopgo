@@ -34,7 +34,7 @@ $shippingData = $order->getShippingData();
 $locationService = $app->service(LocationService::class);
 
 $shippingService = $app->service(ShippingService::class);
-$typeInstance = $shippingService->createTypeInstance($order->getShipping());
+$typeInstance = $shippingService->getInstanceById($order->getShippingId());
 $orderInfo = trim($typeInstance?->orderInfo($order) ?? '');
 
 $dtCols = 3;
@@ -58,7 +58,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.order.field.shipping')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $order->getShipping()->getTitle() }}
+                {{ $order->getShippingData()->getShippingTitle() }}
             </dd>
 
             {{-- Name --}}

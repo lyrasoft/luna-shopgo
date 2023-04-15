@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Checkout;
 
 use Lyrasoft\Luna\Entity\User;
 use Lyrasoft\Luna\User\UserService;
+use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\Contract\CheckoutProcessLayoutInterface;
 use Lyrasoft\ShopGo\Entity\Order;
@@ -67,8 +68,12 @@ class CheckoutController
             return $nav->to('cart');
         }
 
-        $order = $orm->getDb()->transaction(
-            function () use ($checkout, $nav, $stockService, $cartService, $user, $app, $checkoutService) {
+        /**
+         * @var Order $order
+         * @var CartData $cartData
+         */
+        [$order, $cartData] = $orm->getDb()->transaction(
+            function () use ($checkout, $stockService, $cartService, $user, $checkoutService) {
                 $order = new Order();
 
                 $payment = (array) $checkout['payment'];
@@ -118,9 +123,14 @@ class CheckoutController
                     $order->setInvoiceType(InvoiceType::IDV());
                 }
 
-                return $checkoutService->createOrder($order, $cartData, $checkout);
+                return [
+                    $checkoutService->createOrder($order, $cartData, $checkout),
+                    $cartData
+                ];
             }
         );
+
+        $checkoutService->notifyForCheckout($order, $cartData, $user);
 
         $completeUrl = $nav->to('checkout')
             ->layout('complete')
