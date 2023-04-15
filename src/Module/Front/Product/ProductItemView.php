@@ -14,6 +14,8 @@ namespace Lyrasoft\ShopGo\Module\Front\Product;
 use Lyrasoft\Favorite\Entity\Favorite;
 use Lyrasoft\Favorite\Service\FavoriteService;
 use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\Luna\Entity\Tag;
+use Lyrasoft\Luna\Entity\TagMap;
 use Lyrasoft\Luna\PageBuilder\PageService;
 use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
@@ -48,6 +50,7 @@ use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 
 use function Windwalker\collect;
+use function Windwalker\Query\val;
 use function Windwalker\str;
 
 /**
@@ -173,6 +176,21 @@ class ProductItemView implements ViewModelInterface
         // Additional Purchases
         $additionalPurchases = $this->additionalPurchaseService->getAvailableVariants($item->getId());
 
+        // Tags
+        $tags = $this->orm->select('tag.*')
+            ->from(Tag::class)
+            ->leftJoin(
+                TagMap::class,
+                'tag_map',
+                [
+                    ['tag_map.tag_id', 'tag.id'],
+                    ['tag_map.type', val('product')]
+                ]
+            )
+            ->where('tag_map.target_id', $item->getId())
+            ->order('tag.title')
+            ->all(Tag::class);
+
         // Tabs
         $tabs = $this->getTabsByCategoryId($category->getId());
 
@@ -197,6 +215,7 @@ class ProductItemView implements ViewModelInterface
             'attrGroups',
             'attributeSet',
             'tabs',
+            'tags',
             'minPrice',
             'maxPrice',
             'additionalPurchases',

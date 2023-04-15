@@ -107,7 +107,7 @@ class ProductListView implements ViewModelInterface
                     [
                         ['tag_map.type', '=', val('product')],
                         ['tag_map.target_id', '=', 'product.id'],
-                        ['tag_map.category_id', '=', val($tag->getId())],
+                        ['tag_map.tag_id', '=', val($tag->getId())],
                     ]
                 )
             )

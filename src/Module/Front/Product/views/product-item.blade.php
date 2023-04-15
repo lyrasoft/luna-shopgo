@@ -16,6 +16,7 @@ namespace App\View;
  * @var $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\Luna\Entity\Tag;
 use Lyrasoft\ShopGo\Module\Front\Product\ProductItemView;
 use Lyrasoft\Luna\Entity\Category;
 use Lyrasoft\ShopGo\Entity\Discount;
@@ -49,6 +50,7 @@ use Windwalker\Session\Session;
  * @var $attribute            ProductAttribute
  * @var $tabs                 ProductTab[]
  * @var $features             ProductFeature[]
+ * @var $tags                 Tag[]
  */
 
 $imagePlaceholder = $app->service(ImagePlaceholder::class);
@@ -130,7 +132,20 @@ $shopGoScript->swiper(
             <div class="col-lg-6 l-product-item__info l-product-info">
                 {{-- Header --}}
                 <header class="l-product-info__header d-flex flex-column gap-2">
-                    {{-- Todo: tags --}}
+                    {{-- Tags --}}
+                    @if (count($tags))
+                        <div class="l-product-info__tags d-flex gap-2">
+                            @foreach ($tags as $tag)
+                                <a href="{{ $nav->to('product_list')->var('tag', $tag->getAlias()) }}"
+                                    class="c-tag-badge"
+                                    target="_blank">
+                                    <span class="badge bg-primary">
+                                        {{ $tag->getTitle() }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
 
                     <div class="d-flex align-items-center">
                         {{-- Title --}}
