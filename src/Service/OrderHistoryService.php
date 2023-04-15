@@ -15,7 +15,14 @@ use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderHistory;
 use Lyrasoft\ShopGo\Entity\OrderState;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
+use Lyrasoft\ShopGo\Module\Admin\Invoice\InvoiceView;
 use Lyrasoft\ShopGo\Repository\OrderHistoryRepository;
+use Lyrasoft\ShopGo\ShopGoPackage;
+use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\Language\TranslatorTrait;
+use Windwalker\Core\Mailer\MailerInterface;
+use Windwalker\Core\Mailer\MailMessage;
+use Windwalker\Core\View\View;
 use Windwalker\DI\Attributes\Autowire;
 
 /**
@@ -23,9 +30,14 @@ use Windwalker\DI\Attributes\Autowire;
  */
 class OrderHistoryService
 {
+    use TranslatorTrait;
+
+    protected ?\Closure $shouldNoticeAdminCallback = null;
+
     public function __construct(
+        protected ApplicationInterface $app,
         #[Autowire]
-        protected OrderHistoryRepository $repository
+        protected OrderHistoryRepository $repository,
     ) {
     }
 
@@ -78,17 +90,137 @@ class OrderHistoryService
             $notify
         );
 
-        if ($notify) {
-            $this->notifyFor($order, $history);
+        if ($notify && ($type === OrderHistoryType::SYSTEM() || $type === OrderHistoryType::ADMIN())) {
+            $this->notifyToMember($order, $state, $history);
         }
 
         return $history;
     }
 
-    public function notifyFor(
+    public function notifyToMember(
         Order $order,
+        ?OrderState $state,
         OrderHistory $history,
     ): void {
-        // Todo: Notify
+        $paymentData = $order->getPaymentData();
+        $email = $paymentData->getEmail();
+
+        if (!$email) {
+            return;
+        }
+
+        $isAdmin = false;
+
+        $mailer = $this->app->service(MailerInterface::class);
+        $message = $mailer->createMessage(
+            $this->trans(
+                'shopgo.order.changed.notify.subject',
+                state: $order->getStateText(),
+                no: $order->getNo()
+            )
+        )
+            ->to($email)
+            ->renderBody(
+                'mail.order.order-changed',
+                compact('order', 'history', 'state', 'isAdmin')
+            );
+
+        // Attach invoice
+        if ($order->getPaidAt() && $state?->shouldAttachInvoice()) {
+            $shopGo = $this->app->service(ShopGoPackage::class);
+            $invoiceService = $this->app->service(InvoiceService::class);
+
+            /** @var View $view */
+            $view = $this->app->make(InvoiceView::class);
+            $res = $view->render(['id' => $order->getId()]);
+            $html = (string) $res->getBody();
+
+            $message->attach(
+                $invoiceService->renderPdf($html),
+                sprintf(
+                    '[%s] Invoice-%s.pdf',
+                    $shopGo->config('shop.sitename') ?: 'ShopGo',
+                    $order->getInvoiceNo()
+                ),
+                'application/pdf'
+            );
+        }
+
+        $message->send();
+    }
+
+    public function notifyToAdmin(
+        Order $order,
+        OrderState|null $state,
+        OrderHistory $history
+    ): void {
+        $mailNotifyService = $this->app->service(MailNotifyService::class);
+
+        $users = $mailNotifyService->getAdminOrderNotifyReceivers();
+
+        if (count($users)) {
+            $isAdmin = true;
+            $emails = $users->column('email')->dump();
+
+            $mailer = $this->app->service(MailerInterface::class);
+            $mailer->createMessage(
+                $this->trans(
+                    'shopgo.order.changed.notify.subject',
+                    state: $order->getStateText(),
+                    no: $order->getNo()
+                )
+            )
+                ->bcc(...$emails)
+                ->renderBody(
+                    'mail.order.order-changed',
+                    compact('order', 'history', 'state', 'isAdmin')
+                )
+                ->send();
+        }
+    }
+
+    public function shouldNoticeAdmin(Order $order, OrderState|null $to): bool
+    {
+        if (!$to) {
+            return false;
+        }
+
+        $callback = $this->getShouldNoticeAdminCallback();
+
+        return $callback($order, $to);
+    }
+
+    /**
+     * @return \Closure|null
+     */
+    public function getShouldNoticeAdminCallback(): ?\Closure
+    {
+        return $this->shouldNoticeAdminCallback ??= static function (Order $order, OrderState $state) {
+            if ($state->isPaid() && !$order->getPaidAt()) {
+                return true;
+            }
+
+            if ($state->isDone() && !$order->getDoneAt()) {
+                return true;
+            }
+
+            if ($state->isCancel() && !$order->getCancelledAt()) {
+                return true;
+            }
+
+            return false;
+        };
+    }
+
+    /**
+     * @param  \Closure|null  $shouldNoticeAdminCallback
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function shouldNoticeAdminCallback(?\Closure $shouldNoticeAdminCallback): static
+    {
+        $this->shouldNoticeAdminCallback = $shouldNoticeAdminCallback;
+
+        return $this;
     }
 }

@@ -20,6 +20,7 @@ use Lyrasoft\ShopGo\ShopGoPackage;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\Toolkit\Encode\BaseConvert;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Str;
 
@@ -30,6 +31,8 @@ use function Windwalker\now;
  */
 class OrderService
 {
+    use TranslatorTrait;
+
     public function __construct(
         protected ApplicationInterface $app,
         protected ORM $orm,
@@ -41,7 +44,7 @@ class OrderService
 
     public function transition(
         Order|int $order,
-        OrderState|string|int $to,
+        OrderState|string|int|null $to,
         OrderHistoryType $type,
         string $message = '',
         bool $notify = false
@@ -50,26 +53,49 @@ class OrderService
             $order = $this->orm->mustFindOne(Order::class, $order);
         }
 
-        if (is_int($to)) {
-            $to = $this->orm->mustFindOne(OrderState::class, $to);
-        } elseif (is_string($to)) {
-            $to = $this->orm->mustFindOne(OrderState::class, ['alias' => $to]);
+        if ($to) {
+            if (is_int($to)) {
+                $to = $this->orm->mustFindOne(OrderState::class, $to);
+            } elseif (is_string($to)) {
+                $to = $this->orm->mustFindOne(OrderState::class, ['alias' => $to]);
+            }
+
+            $hasChange = $to->getId() !== $order->getStateId();
+        } else {
+            $hasChange = false;
+        }
+
+        if (!$hasChange) {
+            $to = null;
         }
 
         return $this->orm->getDb()->transaction(
-            function () use ($notify, $message, $type, $to, $order) {
-                $order = $this->orderStateService->changeState(
-                    $order,
-                    $to
-                );
+            function () use ($hasChange, $notify, $message, $type, $to, $order) {
+                $shouldNoticeAdmin = $type === OrderHistoryType::SYSTEM()
+                    && $this->orderHistoryService->shouldNoticeAdmin($order, $to);
 
-                return $this->orderHistoryService->createHistoryAndNotify(
+                if ($hasChange) {
+                    $order = $this->orderStateService->changeState(
+                        $order,
+                        $to
+                    );
+                }
+
+                if (!$notify) {
+                    $notify = $to?->shouldNotice() ?? false;
+                }
+
+                $history = $this->orderHistoryService->createHistoryAndNotify(
                     $order,
                     $to,
                     $type,
                     $message,
                     $notify,
                 );
+
+                if ($shouldNoticeAdmin) {
+                    $this->orderHistoryService->notifyToAdmin($order, $to, $history);
+                }
             }
         );
     }

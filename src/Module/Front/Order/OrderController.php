@@ -49,15 +49,15 @@ class OrderController
             throw new UnauthorizedException('Forbidden');
         }
 
-        $orderHistoryService->createHistory(
+        $history = $orderHistoryService->createHistory(
             $order,
             null,
             OrderHistoryType::MEMBER(),
             $note
         );
 
-        // Todo: notice admin
+        $orderHistoryService->notifyToAdmin($order, null, $history);
 
-        return $nav->to('order_item')->var('no', $order->getNo());
+        return $nav->to('my_order_item')->var('no', $order->getNo());
     }
 }

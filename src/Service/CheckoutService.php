@@ -11,11 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Service;
 
-use Lyrasoft\Luna\Access\AccessService;
 use Lyrasoft\Luna\Entity\User;
-use Lyrasoft\Luna\Entity\UserRole;
-use Lyrasoft\Luna\Entity\UserRoleMap;
-use Lyrasoft\Luna\Repository\UserRepository;
 use Lyrasoft\Sequence\Service\SequenceService;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartItem;
@@ -43,11 +39,9 @@ use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Form\Exception\ValidateFailException;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Mailer\MailerInterface;
-use Windwalker\Core\Mailer\MailMessage;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
-use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 use function Windwalker\collect;
@@ -71,7 +65,6 @@ class CheckoutService
         protected PaymentService $paymentService,
         protected ShippingService $shippingService,
         protected MailerInterface $mailer,
-        protected AccessService $accessService,
         protected ?SequenceService $sequenceService = null,
     ) {
     }
@@ -285,58 +278,28 @@ class CheckoutService
      */
     protected function notifyAdmins(Order $order, CartData $cartData): void
     {
-        $adminRoles = $this->accessService->getRolesAllowAction(AccessService::ADMIN_ACCESS_ACTION);
-        $notifyRoles = collect($adminRoles)
-            ->filter(
-                function (UserRole $role) {
-                    return $this->accessService->checkRoleAllowAction(
-                        $role,
-                        'shopgo.order.notify'
-                    );
-                }
+        $mailNotifyService = $this->app->service(MailNotifyService::class);
+
+        $users = $mailNotifyService->getAdminOrderNotifyReceivers();
+        $isAdmin = true;
+
+        if (count($users)) {
+            $emails = $users->column('email')->dump();
+
+            $this->mailer->createMessage(
+                $this->trans(
+                    'shopgo.mail.new.order.subject.for.admin',
+                    no:       $order->getNo(),
+                    buyer:    $order->getPaymentData()->getName(),
+                    sitename: $this->shopGo->config('shop.sitename'),
+                )
             )
-            ->column('id')
-            ->dump();
-
-        if ($notifyRoles !== []) {
-            $isAdmin = true;
-            $userRepository = $this->app->service(UserRepository::class);
-            $users = $userRepository->getListSelector()
-                ->where('user.receive_mail', 1)
-                ->where('user.enabled', 1)
-                ->where('user.verified', 1)
-                ->modifyQuery(
-                    fn(Query $query) => $query->where(
-                        $query->expr(
-                            'EXISTS()',
-                            $query->createSubQuery()
-                                ->select('*')
-                                ->from(UserRoleMap::class)
-                                ->whereRaw('user_id = user.id')
-                                ->whereRaw('role_id IN(%r)', implode(',', $query->quote($notifyRoles)))
-                        )
-                    )
+                ->bcc(...$emails)
+                ->renderBody(
+                    'mail.order.new-order',
+                    compact('order', 'cartData', 'isAdmin')
                 )
-                ->all(User::class);
-
-            if (count($users)) {
-                $emails = $users->column('email')->dump();
-
-                $this->mailer->createMessage(
-                    $this->trans(
-                        'shopgo.mail.new.order.subject.for.admin',
-                        no:       $order->getNo(),
-                        buyer:    $order->getPaymentData()->getName(),
-                        sitename: $this->shopGo->config('shop.sitename'),
-                    )
-                )
-                    ->bcc(...$emails)
-                    ->renderBody(
-                        'mail.order.new-order',
-                        compact('order', 'cartData', 'isAdmin')
-                    )
-                    ->send();
-            }
+                ->send();
         }
     }
 

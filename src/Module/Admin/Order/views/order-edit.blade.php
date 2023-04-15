@@ -136,12 +136,16 @@ $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
                     </div>
                 </div>
                 <div class="col-lg-8">
-                    {{-- Order Items--}}
-                    <x-order-info.order-items
-                        :order="$item"
-                        :order-items="$orderItems"
-                        :totals="$totals"
-                    ></x-order-info.order-items>
+                    <div class="card">
+                        <div class="card-body">
+                            {{-- Order Items--}}
+                            <x-order-info.order-items
+                                :order="$item"
+                                :order-items="$orderItems"
+                                :totals="$totals"
+                            ></x-order-info.order-items>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

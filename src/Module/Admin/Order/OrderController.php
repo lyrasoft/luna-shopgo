@@ -243,7 +243,7 @@ class OrderController
 
         $orderService->transition(
             (int) $id,
-            (int) $stateId,
+            ((int) $stateId) ?: null,
             OrderHistoryType::ADMIN(),
             $message,
             (bool) $notify

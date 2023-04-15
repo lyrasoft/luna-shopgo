@@ -20,6 +20,7 @@ use Lyrasoft\ShopGo\Data\ShippingData;
 use Lyrasoft\ShopGo\Data\ShippingHistoryCollection;
 use Lyrasoft\ShopGo\Data\ShippingInfo;
 use Lyrasoft\ShopGo\Enum\InvoiceType;
+use Lyrasoft\ShopGo\Service\OrderStateService;
 use Lyrasoft\ShopGo\Workflow\OrderStateWorkflow;
 use Windwalker\Core\DateTime\Chronos;
 use Windwalker\Data\Collection;
@@ -38,10 +39,12 @@ use Windwalker\ORM\Attributes\OnUpdate;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Attributes\TargetTo;
+use Windwalker\ORM\Attributes\Watch;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Event\BeforeSaveEvent;
+use Windwalker\ORM\Event\WatchEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
@@ -314,6 +317,18 @@ class Order implements EntityInterface
         );
 
         $data['search_index'] = $searchIndex->filter()->implode('|');
+    }
+
+    #[Watch('state')]
+    public static function watchState(WatchEvent $event, OrderStateService $orderStateService)
+    {
+        $orm = $event->getORM();
+
+        $orderStateService->handleStateChanged(
+            $orm->toEntity(static::class, $event->getData()),
+            (int) $event->getOldValue(),
+            (int) $event->getValue()
+        );
     }
 
     /**

@@ -157,7 +157,7 @@ $paymentData = $item->getPaymentData();
                 @lang('shopgo.mail.new.order.button.go.manage')
             </a>
         @else
-            <a href="{{ $nav->to('front::my_order_item')->var('no', $item->getId())->full() }}"
+            <a href="{{ $nav->to('front::my_order_item')->var('no', $item->getNo())->full() }}"
                 class="btn btn-primary"
                 target="_blank"
                 style="width: 100%"

@@ -138,7 +138,7 @@ $orm = $app->service(ORM::class);
             </div>
         </div>
 
-        <form action="{{ $nav->to('order_item', ['no' => $item->getNo()]) }}" method="post">
+        <form action="{{ $nav->to('my_order_item', ['no' => $item->getNo()]) }}" method="post">
             <div class="l-order-note mt-5">
                 <div class="l-order-note__title mb-3">
                     <h4>訂單備註</h4>
@@ -156,7 +156,7 @@ $orm = $app->service(ORM::class);
             </div>
 
             <div class="text-center mt-4">
-                <button class="btn btn-primary w-100">確定送出</button>
+                <button type="submit" class="btn btn-primary w-100">確定送出</button>
             </div>
 
             <div class="d-none">

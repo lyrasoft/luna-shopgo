@@ -26,6 +26,7 @@ use Lyrasoft\ShopGo\Service\DiscountService;
 use Lyrasoft\ShopGo\Service\DiscountUsageService;
 use Lyrasoft\ShopGo\Service\InvoiceService;
 use Lyrasoft\ShopGo\Service\LocationService;
+use Lyrasoft\ShopGo\Service\MailNotifyService;
 use Lyrasoft\ShopGo\Service\OrderHistoryService;
 use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Service\OrderStateService;
@@ -74,24 +75,25 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);
         $container->prepareSharedObject(CartStorage::class);
-        $container->prepareSharedObject(CouponService::class);
         $container->prepareSharedObject(CheckoutService::class);
+        $container->prepareSharedObject(CouponService::class);
         $container->prepareSharedObject(CurrencyService::class);
         $container->prepareSharedObject(DiscountService::class);
         $container->prepareSharedObject(DiscountUsageService::class);
-        $container->prepareSharedObject(LocationService::class);
-        $container->prepareSharedObject(PaymentService::class);
-        $container->prepareSharedObject(PricingService::class);
         $container->prepareSharedObject(InvoiceService::class);
+        $container->prepareSharedObject(LocationService::class);
+        $container->prepareSharedObject(MailNotifyService::class);
         $container->prepareSharedObject(OrderHistoryService::class);
         $container->prepareSharedObject(OrderService::class);
         $container->prepareSharedObject(OrderStateService::class);
+        $container->prepareSharedObject(PaymentService::class);
+        $container->prepareSharedObject(PricingService::class);
         $container->prepareSharedObject(ProductAttributeService::class);
-        $container->prepareSharedObject(VariantService::class);
-        $container->prepareSharedObject(ShippingService::class);
         $container->prepareSharedObject(ShipmentService::class);
-        $container->prepareSharedObject(StockService::class);
+        $container->prepareSharedObject(ShippingService::class);
         $container->prepareSharedObject(ShopGoScript::class);
+        $container->prepareSharedObject(StockService::class);
+        $container->prepareSharedObject(VariantService::class);
         $container->bindShared(
             ShopConfig::class,
             static fn(Container $container) => $container->get(ConfigService::class)

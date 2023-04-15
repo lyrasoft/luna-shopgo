@@ -13,6 +13,8 @@ namespace Lyrasoft\ShopGo\Service;
 
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Event\AfterOrderStateChangedEvent;
+use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -26,7 +28,7 @@ class OrderStateService
 {
     use InstanceCacheTrait;
 
-    public function __construct(protected ORM $orm)
+    public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo)
     {
     }
 
@@ -110,5 +112,22 @@ class OrderStateService
         $contrast = static::colorToContrast($color, $sep);
 
         return "background-color: $color; color: $contrast;";
+    }
+
+    public function handleStateChanged(Order $order, int $from, int $to): void
+    {
+        if ($from === $to) {
+            return;
+        }
+
+        $fromState = $this->orm->findOne(OrderState::class, $from);
+        $toState = $this->orm->findOne(OrderState::class, $to);
+
+        $orderStateService = $this;
+
+        $this->shopGo->emit(
+            AfterOrderStateChangedEvent::class,
+            compact('order', 'from', 'to', 'fromState', 'toState', 'orderStateService')
+        );
     }
 }
