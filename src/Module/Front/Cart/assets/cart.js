@@ -33,6 +33,7 @@ const CartApp = {
       code: '',
       note: props.checkoutData?.note || '',
       loading: false,
+      partialCheckout: u.data('partial.checkout'),
     });
 
     const form = ref(null);

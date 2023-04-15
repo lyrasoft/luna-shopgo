@@ -17,7 +17,7 @@ $router->group('product')
             ->controller(ProductController::class)
             ->view(ProductListView::class);
 
-        $router->any('product_item', '/product/item/{id:\d+}-{alias}')
+        $router->any('product_item', '/product/item/{id:\d+}[-{alias}]')
             ->controller(ProductController::class)
             ->view(ProductItemView::class);
 

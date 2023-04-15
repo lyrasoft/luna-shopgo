@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
         <div class="card-body d-grid d-lg-flex gap-3">
             <div class="d-flex gap-3 me-auto">
                 {{-- Checkbox --}}
-                <div class="c-cart-item__checkbox">
+                <div v-if="partialCheckout" class="c-cart-item__checkbox">
                     <input type="checkbox" class="form-check-input"
                         v-model="item.options.checked"
                         @change="updateChecks"

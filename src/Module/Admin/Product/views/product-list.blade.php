@@ -200,8 +200,8 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </td>
 
                             {{-- Model --}}
-                            <td>
-                                {{ $entity->getModel() ?: '=' }}
+                            <td class="text-nowrap">
+                                {{ $entity->getModel() ?: '-' }}
                             </td>
 
                             {{-- Price --}}

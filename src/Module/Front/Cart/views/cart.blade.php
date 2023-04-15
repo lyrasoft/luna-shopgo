@@ -30,6 +30,7 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 
+$shopGo = $app->service(ShopGoPackage::class);
 $imagePlaceholder = $app->service(ImagePlaceholder::class);
 $userService = $app->service(UserService::class);
 
@@ -50,6 +51,7 @@ $uniScript->data('cart.props', [
 ]);
 $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
 $uniScript->data('location.labels', $locationService->getSelectorLabels());
+$uniScript->data('partial.checkout', (bool) $shopGo->config('checkout.partial_checkout'));
 
 $uniScript->addRoute('@home');
 $uniScript->addRoute('@cart_ajax');
@@ -70,7 +72,7 @@ $uniScript->addRoute('@address_ajax');
                         <header class="d-flex align-items-center justify-content-between mb-4">
                             <div class="d-flex align-items-center gap-2">
                                 <h3 class="m-0">購物車</h3>
-                                <div class="form-check">
+                                <div v-if="partialCheckout" class="form-check">
                                     <input id="input-toggle-all" type="checkbox" class="form-check-input"
                                         ref="toggleAllInput"
                                         @click="toggleChecked"
