@@ -20,6 +20,8 @@ use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Enum\InvoiceType;
+use Lyrasoft\ShopGo\Event\AfterCheckoutEvent;
+use Lyrasoft\ShopGo\Event\BeforeCheckoutEvent;
 use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Service\CheckoutService;
 use Lyrasoft\ShopGo\Service\StockService;
@@ -56,9 +58,9 @@ class CheckoutController
         CartService $cartService,
         CheckoutService $checkoutService
     ) {
-        $checkout = (array) $app->input('checkout');
+        $input = (array) $app->input('checkout');
 
-        $app->state->remember('checkout.data', $checkout);
+        $app->state->remember('checkout.data', $input);
 
         $allowAnonymous = $shopGo->config('checkout.allow_anonymous') ?? false;
         /** @var User $user */
@@ -73,14 +75,33 @@ class CheckoutController
          * @var CartData $cartData
          */
         [$order, $cartData] = $orm->getDb()->transaction(
-            function () use ($checkout, $stockService, $cartService, $user, $checkoutService) {
+            function () use ($shopGo, $input, $stockService, $cartService, $user, $checkoutService) {
                 $order = new Order();
 
-                $payment = (array) $checkout['payment'];
-                $shipping = (array) $checkout['shipping'];
+                $payment = (array) $input['payment'];
+                $shipping = (array) $input['shipping'];
 
-                $paymentData = (array) $checkout['payment_data'];
-                $shippingData = (array) $checkout['shipping_data'];
+                $paymentData = (array) $input['payment_data'];
+                $shippingData = (array) $input['shipping_data'];
+
+                $event = $shopGo->emit(
+                    BeforeCheckoutEvent::class,
+                    compact(
+                        'order',
+                        'payment',
+                        'shipping',
+                        'paymentData',
+                        'shippingData',
+                        'input'
+                    )
+                );
+
+                $order = $event->getOrder();
+                $shipping = $event->getShipping();
+                $payment = $event->getPayment();
+                $shippingData = $event->getShippingData();
+                $paymentData = $event->getPaymentData();
+                $input = $event->getInput();
 
                 if ($shippingData['sync'] ?? false) {
                     $shippingData = $paymentData;
@@ -115,7 +136,7 @@ class CheckoutController
                 $order->setUserId($user->getId());
                 $order->setPaymentId((int) $payment['id']);
                 $order->setShippingId((int) $shipping['id']);
-                $order->setNote($checkout['note'] ?? '');
+                $order->setNote($input['note'] ?? '');
 
                 if ($order->getPaymentData()->getVat()) {
                     $order->setInvoiceType(InvoiceType::COMPANY());
@@ -124,13 +145,28 @@ class CheckoutController
                 }
 
                 return [
-                    $checkoutService->createOrder($order, $cartData, $checkout),
+                    $checkoutService->createOrder($order, $cartData, $input),
                     $cartData
                 ];
             }
         );
 
-        $checkoutService->notifyForCheckout($order, $cartData, $user);
+        $orderItems = $order->getOrderItems();
+
+        $event = $shopGo->emit(
+            AfterCheckoutEvent::class,
+            compact(
+                'order',
+                'cartData',
+                'orderItems',
+                'input',
+            )
+        );
+
+        $order = $event->getOrder();
+        $cartData = $event->getCartData();
+
+        $checkoutService->notifyForCheckout($order, $cartData);
 
         $completeUrl = $nav->to('checkout')
             ->layout('complete')

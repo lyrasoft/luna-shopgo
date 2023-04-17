@@ -19,7 +19,7 @@ $router->group('order')
             ->view(OrderListView::class);
 
         $router->any('my_order_item', '/order/item/{no}')
-            ->alias('my_order_item')
+            ->alias('order_item')
             ->controller(OrderController::class)
             ->view(OrderItemView::class);
     });
