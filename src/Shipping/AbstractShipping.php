@@ -143,11 +143,13 @@ abstract class AbstractShipping implements FieldDefinitionInterface
     /**
      * Get default form values for this shipping.
      *
+     * @param  array  $override
+     *
      * @return  array
      *
      * @throws \ReflectionException
      */
-    public function getDefaultFormValues(): array
+    public function getDefaultFormValues(array $override = []): array
     {
         $form = new Form();
 
@@ -176,7 +178,10 @@ abstract class AbstractShipping implements FieldDefinitionInterface
 
         $handleDefaults($form);
 
-        return $data;
+        return array_merge(
+            $data,
+            $override
+        );
     }
 
     /**
