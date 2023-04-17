@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity\Traits;
 
+use Brick\Math\Exception\MathException;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
@@ -32,6 +33,7 @@ trait ProductVariantTrait
 
     /**
      * @return PriceSet
+     * @throws MathException
      */
     public function getPriceSet(): PriceSet
     {

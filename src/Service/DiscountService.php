@@ -220,10 +220,12 @@ class DiscountService
         ?BigDecimal &$diff = null
     ): PriceSet {
         if (!$discount->isAccumulate() && $discount->getMethod() === DiscountMethod::PERCENTAGE()) {
-            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
+            PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
-            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $discount, $diff);
+            PricingService::pricingByDiscount($priceSet['final'], $discount, $diff);
         }
+
+        $priceSet['final'] = $priceSet['final']->plus($diff);
 
         $priceSet->add(
             'discount:' . $discount->getId(),
