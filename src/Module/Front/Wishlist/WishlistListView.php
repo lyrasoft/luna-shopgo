@@ -16,6 +16,7 @@ use Lyrasoft\ShopGo\Repository\ProductRepository;
 use Psr\Cache\InvalidArgumentException;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
@@ -32,6 +33,8 @@ use Windwalker\ORM\ORM;
 )]
 class WishlistListView implements ViewModelInterface
 {
+    use TranslatorTrait;
+
     /**
      * Constructor.
      */
@@ -68,6 +71,15 @@ class WishlistListView implements ViewModelInterface
             ->page($page)
             ->all();
 
+        $this->prepareMetadata($app, $view);
+
         return compact('items');
+    }
+
+    protected function prepareMetadata(AppContext $app, View $view): void
+    {
+        $view->setTitle(
+            $this->trans('shopgo.wishlist.title')
+        );
     }
 }

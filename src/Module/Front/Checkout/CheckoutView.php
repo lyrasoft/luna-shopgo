@@ -14,6 +14,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Checkout;
 use Lyrasoft\ShopGo\Entity\Order;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\View\View;
 use Windwalker\Core\View\ViewModelInterface;
@@ -36,6 +37,8 @@ use function Windwalker\count;
 )]
 class CheckoutView implements ViewModelInterface
 {
+    use TranslatorTrait;
+
     /**
      * Constructor.
      */
@@ -92,5 +95,12 @@ class CheckoutView implements ViewModelInterface
         }
 
         return [];
+    }
+
+    protected function prepareMetadata(AppContext $app, View $view): void
+    {
+        $view->setTitle(
+            $this->trans('shopgo.checkout.page.title')
+        );
     }
 }

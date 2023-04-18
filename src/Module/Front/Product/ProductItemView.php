@@ -226,23 +226,29 @@ class ProductItemView implements ViewModelInterface
     protected function prepareMetadata(AppContext $app, View $view, Product $item, ProductVariant $variant): void
     {
         $asset = $app->service(AssetService::class);
-        $view->setTitle($item->getTitle());
-
-        $htmlFrame = $view->getHtmlFrame();
         $metadata = $item->getMeta();
 
+        $view->setTitle($metadata->getOgTitle() ?: $metadata->getTitle() ?: $item->getTitle());
+
+        $htmlFrame = $view->getHtmlFrame();
         $htmlFrame->setDescription(
             (string) str($metadata->getDescription() ?: $item->getDescription())->stripHtmlTags()
                 ->truncate(200, '...')
         );
 
-        $images[] = $asset->addAssetBase($variant->getCover());
+        $images[] = $asset->addAssetBase(
+            $metadata->getOgImage() ?: $metadata->getCover() ?: $variant->getCover()
+        );
 
         foreach ($variant->getImages() as $image) {
             $images[] = $asset->addAssetBase($image['url']);
         }
 
         $htmlFrame->setCoverImages(...$images);
+
+        if ($metadata->getKeywords()) {
+            $htmlFrame->addMetadata('keywords', $metadata->getKeywords());
+        }
 
         // Canonical
         $htmlFrame->addLink('canonical', (string) $item->makeLink($this->nav)->full());

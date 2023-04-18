@@ -19,6 +19,7 @@ use Lyrasoft\ShopGo\ShopGoPackage;
 use Psr\Cache\InvalidArgumentException;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\RouteUri;
 use Windwalker\Core\View\View;
@@ -37,6 +38,8 @@ use function Windwalker\collect;
 )]
 class CartView implements ViewModelInterface
 {
+    use TranslatorTrait;
+
     /**
      * Constructor.
      */
@@ -89,6 +92,15 @@ class CartView implements ViewModelInterface
                 ->dump();
         }
 
+        $this->prepareMetadata($app, $view);
+
         return compact('checkoutData');
+    }
+
+    protected function prepareMetadata(AppContext $app, View $view): void
+    {
+        $view->setTitle(
+            $this->trans('shopgo.cart.page.title')
+        );
     }
 }

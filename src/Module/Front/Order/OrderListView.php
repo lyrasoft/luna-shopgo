@@ -87,8 +87,10 @@ class OrderListView implements ViewModelInterface
         return $this->repository->getEntityMapper()->toEntity($item);
     }
 
-    protected function prepareMetadata(AppContext $app, View $view)
+    protected function prepareMetadata(AppContext $app, View $view): void
     {
-        //
+        $view->setTitle(
+            $this->trans('shopgo.order.my.list.title')
+        );
     }
 }
