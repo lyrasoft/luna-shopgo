@@ -113,6 +113,10 @@ const CartApp = {
     const unchecks = computed(() => itemChecks.value.filter(checked => checked === false).length);
 
     function updateToggleAll() {
+      if (!toggleAllInput.value) {
+        return;
+      }
+
       toggleAllInput.value.checked = false;
       toggleAllInput.value.indeterminate = false;
 
@@ -126,6 +130,10 @@ const CartApp = {
     }
 
     function toggleChecked() {
+      if (!toggleAllInput.value) {
+        return;
+      }
+
       for (const item of state.items) {
         item.options.checked = toggleAllInput.value.checked;
       }
@@ -406,6 +414,25 @@ const CartApp = {
       if (checks.value === 0) {
         return;
       }
+
+      if (Number(state.totals.grand_total.price) < 0) {
+        swal('Cannot process cart with negative prices.', '', 'warning');
+        return;
+      }
+
+      for (const item of state.items) {
+        if (Number(item.priceSet.final_total.price) < 0) {
+          swal('Cannot process product items with negative prices.', '', 'warning');
+          return;
+        }
+
+        if (Number(item.priceSet.attached_final_total.price) < 0) {
+          swal('Cannot process product items with negative prices.', '', 'warning');
+          return;
+        }
+      }
+
+      return;
 
       if (shippingForm.value && !shippingForm.value.validate()) {
         console.log('Shipping Validate Fail');

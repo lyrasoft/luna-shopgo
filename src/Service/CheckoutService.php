@@ -145,8 +145,13 @@ class CheckoutService
     public function createOrder(Order $order, CartData $cartData, array $checkoutData = []): Order
     {
         $totals = $cartData->getTotals();
+        $grandTotal = $cartData->getTotals()['grand_total']->getPrice()->toFloat();
 
-        $order->setTotal($cartData->getTotals()['grand_total']->getPrice()->toFloat());
+        if ($grandTotal < 0) {
+            throw new ValidateFailException('Cannot process checkout for negative price.');
+        }
+
+        $order->setTotal($grandTotal);
 
         $paymentInstance = $this->paymentService->getInstanceById($order->getPaymentId());
         $shippingInstance = $this->shippingService->getInstanceById($order->getShippingId());
@@ -341,6 +346,17 @@ class CheckoutService
         $items = $cartData->getCheckedItems();
 
         $orderItems = collect();
+
+        // Check prices
+        foreach ($items as $item) {
+            if ($item->getPriceSet()['final_total']->lt('0')) {
+                throw new ValidateFailException('Cannot process product item with negative prices.');
+            }
+
+            if ($item->getPriceSet()['attached_final_total']->lt('0')) {
+                throw new ValidateFailException('Cannot process product item with negative prices.');
+            }
+        }
 
         foreach ($items as $item) {
             $orderItem = $this->cartItemToOrderItem($item);
