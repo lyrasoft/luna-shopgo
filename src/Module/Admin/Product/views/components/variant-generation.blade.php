@@ -171,7 +171,7 @@ use Windwalker\Core\Application\AppContext;
             // Prevent too many selected
             if (combinationCount.value >= 100) {
               u.alert(
-                '您選擇了過多選項', `這樣會產生 ${combinationCount.value} 個組合，系統與瀏覽器會無法負擔，請控制在 100 個以下`,
+                u.__('shopgo.product.message.too.many.features.selected', combinationCount.value, 100),
                 'warning'
               );
               return;

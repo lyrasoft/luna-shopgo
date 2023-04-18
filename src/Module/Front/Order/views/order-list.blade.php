@@ -40,7 +40,7 @@ $orm = $app->service(ORM::class);
     <div class="container l-order-list my-5">
 
         <h2>
-            我的訂單
+            @lang('shopgo.order.my.list.title')
         </h2>
 
         <div class="l-order-items">
@@ -73,14 +73,15 @@ $orm = $app->service(ORM::class);
                         <div class="mt-3">
                             <div class="d-flex gap-3">
                                 <div>
-                                    下單日期: {{ $chronos->toLocalFormat($entity->getCreated(), 'Y/m/d') }}
+                                    @lang('shopgo.order.field.order.time'):
+                                    {{ $chronos->toLocalFormat($entity->getCreated(), 'Y/m/d') }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-lg-flex d-grid gap-3 justify-content-between mt-3">
                             <div class=" ">
-                                <span class="">訂單金額: </span>
+                                <span class="">@lang('shopgo.order.field.total'): </span>
                                 <span class="fs-5 fw-bold">{{ $vm->formatPrice($entity->getTotal(), true) }}</span>
                             </div>
 
@@ -88,7 +89,7 @@ $orm = $app->service(ORM::class);
                                 <a href="{{ $nav->to('my_order_item')->var('no', $entity->getNo()) }}"
                                     class="btn btn-secondary stretched-link"
                                     style="min-width: 150px">
-                                    訂單詳情
+                                    @lang('shopgo.order.button.details')
                                 </a>
                             </div>
                         </div>

@@ -46,7 +46,7 @@ trait PriceRangeTrait
                 fn(Form $form) => $form->ns('pricing', function (Form $form) {
                     $form->add('free', SwitcherField::class)
                         ->label($this->trans('shopgo.shipping.field.free'))
-                        ->color('primary')
+                        ->color('danger')
                         ->circle(true)
                         ->defaultValue('0');
 
@@ -63,7 +63,9 @@ trait PriceRangeTrait
                         ->defaultValue('price');
 
                     $form->add('compute_unit', ButtonRadioField::class)
-                        ->label('shopgo.shipping.field.unit')
+                        ->label(
+                            $this->trans('shopgo.shipping.field.unit')
+                        )
                         ->option(
                             $this->trans('shopgo.shipping.unit.option.per.order'),
                             PriceRange::COMPUTE_UNIT_PER_ORDER
@@ -72,7 +74,7 @@ trait PriceRangeTrait
                             $this->trans('shopgo.shipping.unit.option.per.item'),
                             PriceRange::COMPUTE_UNIT_PER_ITEM
                         )
-                        ->defaultValue('order');
+                        ->defaultValue(PriceRange::COMPUTE_UNIT_PER_ORDER);
 
                     $form->add('range', ShippingPricingField::class)
                         ->label($this->trans('shopgo.shipping.field.range'))
@@ -172,7 +174,7 @@ trait PriceRangeTrait
                             $priceSet->add(
                                 'sipping_fee',
                                 $itemFee,
-                                '運費',
+                                $this->trans('shopgo.order.field.shipping.fee'),
                                 [
                                     'id' => $this->getData()->getId(),
                                     'alias' => $this->getData()->getAlias(),
@@ -230,7 +232,7 @@ trait PriceRangeTrait
             $totals->add(
                 'shipping_fee',
                 $fee,
-                '運費',
+                $this->trans('shopgo.order.field.shipping.fee'),
                 [
                     'id' => $this->getData()->getId(),
                     'alias' => $this->getData()->getAlias(),

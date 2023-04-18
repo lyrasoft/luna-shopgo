@@ -528,7 +528,7 @@ class DiscountService
             $priceSet->add(
                 'product_special',
                 $diff,
-                $this->trans('shopgo.total.product.special')
+                $this->trans('shopgo.order.total.product.special')
             );
 
             $applied[] = $special;

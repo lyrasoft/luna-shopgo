@@ -151,7 +151,7 @@ class CheckoutController
             }
         );
 
-        $orderItems = $order->getOrderItems();
+        $orderItems = $order->getOrderItems()->getAttachedEntities();
 
         $event = $shopGo->emit(
             AfterCheckoutEvent::class,

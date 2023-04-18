@@ -29,6 +29,7 @@ use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
 use Windwalker\Core\Form\Exception\ValidateFailException;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Core\Renderer\RendererService;
 use Windwalker\ORM\ORM;
 
@@ -38,6 +39,8 @@ use Windwalker\ORM\ORM;
 #[Controller]
 class CartController
 {
+    use TranslatorTrait;
+
     public function ajax(AppContext $app): mixed
     {
         $task = $app->input('task');
@@ -138,13 +141,15 @@ class CartController
         $code = $app->input('code');
 
         if (!$code) {
-            throw new \RuntimeException('沒有序號');
+            throw new \RuntimeException(
+                $this->trans('shopgo.cart.message.code.not.found')
+            );
         }
 
         $cartData = $cartService->getCartData();
 
         if (!count($cartData->getItems())) {
-            throw new \RuntimeException('購物車沒有商品', 403);
+            throw new \RuntimeException($this->trans('shopgo.cart.message.no.products'), 403);
         }
 
         $user = $userService->getUser();
@@ -168,7 +173,7 @@ class CartController
         }
 
         if (!$matched) {
-            throw new \RuntimeException('找不到合適的優惠券', 404);
+            throw new \RuntimeException($this->trans('shopgo.cart.message.no.available.codes'), 404);
         }
 
         $cartStorage->addCoupon($matched->getId());

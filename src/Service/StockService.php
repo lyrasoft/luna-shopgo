@@ -18,6 +18,7 @@ use Lyrasoft\ShopGo\Entity\OrderItem;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Core\Form\Exception\ValidateFailException;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\ORM\ORM;
 
 /**
@@ -25,6 +26,8 @@ use Windwalker\ORM\ORM;
  */
 class StockService
 {
+    use TranslatorTrait;
+
     public function __construct(protected ORM $orm)
     {
     }
@@ -48,7 +51,7 @@ class StockService
                 $title = $this->getTitleFromCartItem($item);
 
                 throw new ValidateFailException(
-                    '商品: ' . $title . ' 庫存不足'
+                    $this->trans('shopgo.message.product.out.of.stock', title: $title)
                 );
             }
 
@@ -57,7 +60,7 @@ class StockService
 
                 if ($attachment->isOutOfStock()) {
                     throw new ValidateFailException(
-                        '商品: ' . $title . ' 庫存不足'
+                        $this->trans('shopgo.message.product.out.of.stock', title: $title)
                     );
                 }
             }

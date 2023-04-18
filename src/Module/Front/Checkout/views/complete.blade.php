@@ -33,7 +33,7 @@ use Windwalker\Core\Router\SystemUri;
         <div class="d-flex my-5">
             <div class="card mx-auto" style="min-width: 450px">
                 <div class="card-body text-center p-4">
-                    <h3>訂單已建立</h3>
+                    <h3>@lang('shopgo.checkout.text.order.created')</h3>
 
                     <div class="fw-bold fs-5">
                         #{{ $order->getNo() }}
@@ -42,7 +42,7 @@ use Windwalker\Core\Router\SystemUri;
                     <div class="mt-4">
                         <a href="{{ $nav->to('my_order_item')->var('no', $order->getNo()) }}"
                             class="btn btn-primary w-100">
-                            前往訂單
+                            @lang('shopgo.cart.text.to.my.order')
                         </a>
                     </div>
                 </div>

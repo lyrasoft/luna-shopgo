@@ -36,7 +36,7 @@ use Windwalker\Core\Router\SystemUri;
 
                     <div class="form-check" v-if="syncData">
                         <label :for="`input-${type}-sync`" class="form-check-label">
-                            @{{ syncLabel || '同購買人資訊' }}
+                            @{{ syncLabel || '@lang('shopgo.cart.address.form.same.with.buyer')' }}
                         </label>
                         <input type="checkbox" v-model="sync" :id="`input-${type}-sync`"
                             :name="buildInputName('sync')"
@@ -49,17 +49,17 @@ use Windwalker\Core\Router\SystemUri;
                 <div v-if="user && !sync">
                     <button type="button"
                         class="btn btn-outline-success btn-sm"
-                        style="width: 100px"
+                        style="min-width: 100px"
                         @click="createNew"
                     >
-                        新地址
+                        @lang('shopgo.cart.address.form.new.address')
                     </button>
                     <button type="button"
                         class="btn btn-outline-primary btn-sm"
-                        style="width: 100px"
+                        style="min-width: 100px"
                         @click="openAddressSelector"
                     >
-                        選擇
+                        @lang('shopgo.cart.address.form.select')
                     </button>
                 </div>
             </div>
@@ -80,7 +80,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- First Name --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('firstname')" class="form-label col-3">
-                                名
+                                @lang('shopgo.address.field.firstname')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('firstname')" type="text" class="form-control"
@@ -93,7 +93,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- Last Name --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('lastname')" class="form-label col-3">
-                                姓
+                                @lang('shopgo.address.field.lastname')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('lastname')" type="text" class="form-control"
@@ -106,7 +106,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- Email --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('email')" class="form-label col-3">
-                                Email
+                                @lang('shopgo.address.field.email')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('email')" type="text" class="form-control"
@@ -119,7 +119,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- Phone --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('phone')" class="form-label col-3">
-                                電話
+                                @lang('shopgo.address.field.phone')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('phone')" type="text" class="form-control"
@@ -131,7 +131,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- Mobile --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('mobile')" class="form-label col-3">
-                                手機
+                                @lang('shopgo.address.field.mobile')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('mobile')" type="text" class="form-control"
@@ -144,7 +144,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- Company --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('company')" class="form-label col-3">
-                                公司
+                                @lang('shopgo.address.field.company')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('company')" type="text" class="form-control"
@@ -156,7 +156,7 @@ use Windwalker\Core\Router\SystemUri;
                         {{-- VAT --}}
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('vat')" class="form-label col-3">
-                                統編
+                                @lang('shopgo.address.field.vat')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('vat')" type="text" class="form-control"
@@ -169,7 +169,7 @@ use Windwalker\Core\Router\SystemUri;
                     <div class="col-lg-7 mb-4 mb-lg-0">
                         <div class="form-group mb-4">
                             <label :for="buildInputId('country')" class="form-label">
-                                國家/地區
+                                @lang('shopgo.address.field.country')
                             </label>
                             <cascade-select :options="cascadeOptions"
                                 v-model="locationPath"
@@ -182,7 +182,7 @@ use Windwalker\Core\Router\SystemUri;
                         </div>
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('postcode')" class="form-label col-3">
-                                郵遞區號
+                                @lang('shopgo.address.field.postcode')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('postcode')" type="text" class="form-control"
@@ -192,7 +192,7 @@ use Windwalker\Core\Router\SystemUri;
                         </div>
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('address1')" class="form-label col-3">
-                                地址1
+                                @lang('shopgo.address.field.address1')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('address1')" type="text" class="form-control"
@@ -203,7 +203,7 @@ use Windwalker\Core\Router\SystemUri;
                         </div>
                         <div class="form-group row mb-4">
                             <label :for="buildInputId('address2')" class="form-label col-3">
-                                地址2
+                                @lang('shopgo.address.field.address2')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('address2')" type="text" class="form-control"
@@ -213,7 +213,7 @@ use Windwalker\Core\Router\SystemUri;
                         </div>
                         <div v-if="showSaveButton" class="form-group row mb-4">
                             <label :for="buildInputId('save')" class="form-label col-3">
-                                儲存供下次使用
+                                @lang('shopgo.cart.address.form.save.for.next')
                             </label>
                             <div class="col-9">
                                 <input :id="buildInputId('save')" type="checkbox" class="form-check-input"
@@ -242,7 +242,7 @@ use Windwalker\Core\Router\SystemUri;
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="address-modal-label">
-                            我的地址
+                            @lang('shopgo.cart.address.form.modal.title')
                         </h4>
                         <button type="button" class="close btn-close" data-bs-dismiss="modal" data-dismiss="modal"
                             aria-label="Close">
@@ -261,7 +261,7 @@ use Windwalker\Core\Router\SystemUri;
                                 </div>
                                 <div>
                                     <span class="btn btn-outline-secondary btn-sm text-nowrap">
-                                        使用
+                                        @lang('shopgo.cart.address.form.button.select')
                                     </span>
                                 </div>
                             </a>
@@ -271,7 +271,7 @@ use Windwalker\Core\Router\SystemUri;
                                 <span class="spinner spinner-border mx-auto"></span>
                             </template>
                             <template v-else>
-                                您目前沒有儲存的地址
+                                @lang('shopgo.cart.address.form.no.addresses')
                             </template>
                         </div>
                     </div>
@@ -329,7 +329,7 @@ use Windwalker\Core\Router\SystemUri;
             cascadeOptions: {
               ajaxUrl: u.route('@address_ajax/locationOptions'),
               labels: u.data('location.labels') || [],
-              placeholder: '- 請選擇 -',
+              placeholder: u.__('unicorn.select.placeholder'),
               onSelectInit(e) {
                 const select = e.detail.el;
 

@@ -57,6 +57,7 @@ $uniScript->addRoute('@home');
 $uniScript->addRoute('@cart_ajax');
 $uniScript->addRoute('@address_ajax');
 
+$uniScript->translate('unicorn.select.placeholder');
 ?>
 
 @extends('global.body')
@@ -71,13 +72,15 @@ $uniScript->addRoute('@address_ajax');
                         {{-- Header --}}
                         <header class="d-flex align-items-center justify-content-between mb-4">
                             <div class="d-flex align-items-center gap-2">
-                                <h3 class="m-0">購物車</h3>
+                                <h3 class="m-0">@lang('shopgo.cart.title')</h3>
                                 <div v-if="partialCheckout" class="form-check">
                                     <input id="input-toggle-all" type="checkbox" class="form-check-input"
                                         ref="toggleAllInput"
                                         @click="toggleChecked"
                                     />
-                                    <label for="input-toggle-all" class="form-check-label">全選</label>
+                                    <label for="input-toggle-all" class="form-check-label">
+                                        @lang('shopgo.cart.toggle.all')
+                                    </label>
                                 </div>
                                 <div v-if="loading" class="spinner spinner-border-sm spinner-border"
                                     data-cloak>
@@ -89,7 +92,7 @@ $uniScript->addRoute('@address_ajax');
                                 <a href="javascript://"
                                     @click="clearCart">
                                     <i class="fa fa-times"></i>
-                                    移除所有商品
+                                    @lang('shopgo.cart.button.remove.all')
                                 </a>
                             </div>
                         </header>
@@ -109,13 +112,13 @@ $uniScript->addRoute('@address_ajax');
                             {{-- Addresses --}}
                             <div class="">
                                 <address-form type="payment"
-                                    title="購買人資訊"
+                                    title="@lang('shopgo.cart.payment.data.title')"
                                     :user="user"
                                     v-model="paymentData"
                                     ref="paymentForm"
                                 ></address-form>
                                 <address-form type="shipping"
-                                    title="收件人資訊"
+                                    title="@lang('shopgo.cart.shipping.data.title')"
                                     :user="user"
                                     v-model="shippingData"
                                     :sync-data="paymentData"
@@ -125,7 +128,7 @@ $uniScript->addRoute('@address_ajax');
 
                             {{-- Shippings --}}
                             <div class="l-shippings mb-4">
-                                <h3>貨運方式</h3>
+                                <h3>@lang('shopgo.cart.shipping.title')</h3>
 
                                 <div v-if="shippings.length > 0">
                                     <shipping-item v-for="(shipping, i) of shippings" :key="shipping.id"
@@ -143,10 +146,10 @@ $uniScript->addRoute('@address_ajax');
                                             <span class="spinner spinner-border"></span>
                                         </template>
                                         <template v-else-if="shippingData.locationId">
-                                            目前沒有合適的貨運方式
+                                            @lang('shopgo.cart.text.no.shippings')
                                         </template>
                                         <template v-else>
-                                            請先選擇送貨地區
+                                            @lang('shopgo.cart.text.select.location.first')
                                         </template>
                                     </div>
                                 </div>
@@ -154,7 +157,7 @@ $uniScript->addRoute('@address_ajax');
 
                             {{-- Payments --}}
                             <div class="l-payments mb-4">
-                                <h3>付款方式</h3>
+                                <h3>@lang('shopgo.cart.payment.data.title')</h3>
 
                                 <div v-if="payments.length > 0">
                                     <payment-item v-for="(payment, i) of payments" :key="payment.id"
@@ -172,10 +175,10 @@ $uniScript->addRoute('@address_ajax');
                                             <span class="spinner spinner-border"></span>
                                         </template>
                                         <template v-else-if="shippingData.shippingId">
-                                            目前沒有合適的付款方式
+                                            @lang('shopgo.cart.text.no.payments')
                                         </template>
                                         <template v-else>
-                                            請先選擇貨運方式
+                                            @lang('shopgo.cart.text.select.shipping.first')
                                         </template>
                                     </div>
                                 </div>
@@ -185,14 +188,14 @@ $uniScript->addRoute('@address_ajax');
                             <div class="l-checkout-note card mb-4">
                                 <div class="card-body">
                                     <h5 class="card-title mb-3">
-                                        備註
+                                        @lang('shopgo.cart.field.note')
                                     </h5>
 
                                     <textarea rows="4"
                                         class="form-control"
                                         v-model="note"
                                         name="checkout[note]"
-                                        placeholder="請填寫訂單備註"
+                                        placeholder="@lang('shopgo.cart.field.note.placeholder')"
                                     ></textarea>
                                 </div>
                             </div>
@@ -207,7 +210,7 @@ $uniScript->addRoute('@address_ajax');
                             <div class="card">
                                 {{-- Code Input --}}
                                 <div class="card-body l-cart-coupons border-bottom">
-                                    <h5>優惠碼</h5>
+                                    <h5>@lang('shopgo.cart.label.discount.code')</h5>
                                     <div class="d-flex gap-2">
                                         <input type="text" class="form-control" v-model="code" />
                                         <button type="button" class="btn btn-secondary text-nowrap"
@@ -216,7 +219,7 @@ $uniScript->addRoute('@address_ajax');
                                             :disabled="code === '' || loading"
                                             disabled
                                         >
-                                            使用
+                                            @lang('shopgo.cart.button.use.discount.code')
                                         </button>
                                     </div>
 
@@ -238,7 +241,7 @@ $uniScript->addRoute('@address_ajax');
                                                 <a href="javascript://"
                                                     class="link-secondary"
                                                     v-tooltip
-                                                    title="取消使用優惠碼"
+                                                    title="@lang('shopgo.cart.button.remove.discount.code')"
                                                     @click="removeCode(coupon.id)">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
@@ -259,7 +262,7 @@ $uniScript->addRoute('@address_ajax');
                                 <div v-if="loaded" data-cloak class="card-body l-cart-totals text-end">
                                     <div class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100">
                                         <div class="l-cart-total__label">
-                                            訂單小計
+                                            @lang('shopgo.cart.label.total')
                                         </div>
 
                                         <div v-if="totals.total" class="l-cart-total__value">
@@ -295,7 +298,7 @@ $uniScript->addRoute('@address_ajax');
                                         class="l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold"
                                         data-cloak>
                                         <div class="l-cart-total__label">
-                                            訂單總計
+                                            @lang('shopgo.cart.label.grand.total')
                                         </div>
 
                                         <div v-if="totals.grand_total" class="l-cart-total__value text-end">
@@ -313,12 +316,12 @@ $uniScript->addRoute('@address_ajax');
                                         data-cloak>
                                         <div>
                                             <i class="fa fa-truck"></i>
-                                            @{{ selectedShipping?.title || '尚未選擇貨運方式' }}
+                                            @{{ selectedShipping?.title || '@lang('shopgo.message.no.shipping.selected')' }}
                                         </div>
 
                                         <div>
                                             <i class="fa fa-credit-card"></i>
-                                            @{{ selectedPayment?.title || '尚未選擇付款方式' }}
+                                            @{{ selectedPayment?.title || '@lang('shopgo.message.no.payment.selected')' }}
                                         </div>
                                     </div>
 
@@ -349,7 +352,7 @@ $uniScript->addRoute('@address_ajax');
                                                 <span class="spinner spinner-grow spinner-grow-sm"></span>
                                             </template>
                                             <template v-else>
-                                                結帳
+                                                @lang('shopgo.cart.button.process.checkout')
                                             </template>
                                         </div>
                                         <div v-if="!loading" data-loading>

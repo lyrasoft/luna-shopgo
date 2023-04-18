@@ -87,11 +87,17 @@ $orm = $app->service(ORM::class);
                 <table class="table mb-0">
                     <thead>
                     <tr>
-                        <th>更新日期</th>
-                        <th class="text-nowrap">訂單狀況</th>
-                        <th>備註</th>
-                        {{--                        <th class="text-nowrap">發信通知</th>--}}
-                        <th class="text-nowrap">操作人員</th>
+                        <th>@lang('shopgo.order.history.field.modified')</th>
+                        <th class="text-nowrap">
+                            @lang('shopgo.order.history.field.state')
+                        </th>
+                        <th>
+                            @lang('shopgo.order.history.field.comment')
+                        </th>
+                        {{--                        <th class="text-nowrap">@lang('shopgo.order.history.field.notify')</th>--}}
+                        <th class="text-nowrap">
+                            @lang('shopgo.order.history.field.operator')
+                        </th>
                     </tr>
                     </thead>
 
@@ -124,11 +130,11 @@ $orm = $app->service(ORM::class);
                             {{--                            </td>--}}
                             <td>
                                 @if ($history->getType() === OrderHistoryType::ADMIN())
-                                    管理員
+                                    {{ $history->getType()->getTitle($lang) }}
                                 @elseif ($history->getType() === OrderHistoryType::SYSTEM())
-                                    系統
+                                    {{ $history->getType()->getTitle($lang) }}
                                 @else
-                                    您
+                                    @lang('shopgo.cart.order.historty.text.you')
                                 @endif
                             </td>
                         </tr>
@@ -141,7 +147,7 @@ $orm = $app->service(ORM::class);
         <form action="{{ $nav->to('my_order_item', ['no' => $item->getNo()]) }}" method="post">
             <div class="l-order-note mt-5">
                 <div class="l-order-note__title mb-3">
-                    <h4>訂單備註</h4>
+                    <h4>@lang('shopgo.order.field.comment')</h4>
                 </div>
 
                 <div class="l-order-note__content">
@@ -156,7 +162,9 @@ $orm = $app->service(ORM::class);
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary w-100">確定送出</button>
+                <button type="submit" class="btn btn-primary w-100">
+                    @lang('shopgo.order.button.comment.submit')
+                </button>
             </div>
 
             <div class="d-none">

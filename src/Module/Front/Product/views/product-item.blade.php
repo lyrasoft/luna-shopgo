@@ -75,6 +75,8 @@ $uniScript->data('product.item.props', [
 ]);
 $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
 
+$uniScript->translate('shopgo.product.discount.item');
+
 $uniScript->addRoute('@product_ajax');
 
 $shopGoScript = $app->service(ShopGoScript::class);
@@ -173,7 +175,7 @@ $shopGoScript->swiper(
                             {{-- Model --}}
                             <div class="l-product-info__model c-info d-inline-block">
                                 <span class="c-info__label fw-bold">
-                                    型號
+                                    @lang('shopgo.product.field.model')
                                 </span>
 
                                 <span class="c-info__value">
@@ -184,7 +186,7 @@ $shopGoScript->swiper(
                             {{-- SKU --}}
                             <div class="l-product-info__sku c-info d-inline-block">
                                 <span class="c-info__label fw-bold">
-                                    SKU
+                                    @lang('shopgo.product.field.sku')
                                 </span>
 
                                 <span class="c-info__value">
@@ -202,7 +204,7 @@ $shopGoScript->swiper(
                     @if ($item->getOriginPrice())
                         <div class="l-pricing__final c-price--origin fs-5">
                             <span class="c-price__label">
-                                市價
+                                @lang('shopgo.product.field.origin.price')
                             </span>
                             <del class="c-price__value">
                                 {{ $vm->formatPrice($item->getOriginPrice()) }}
@@ -224,7 +226,7 @@ $shopGoScript->swiper(
                             data-cloak
                             v-if="hasDiscount">
                             <span class="c-price__label">
-                                售價
+                                @lang('shopgo.product.field.price')
                             </span>
                             <del class="c-price__value">
                                 @{{ $formatPrice(currentVariant.priceSet.base.price, true) }}
@@ -234,7 +236,7 @@ $shopGoScript->swiper(
                         <div class="l-pricing__final c-price c-price--final fs-4 fw-bold"
                             data-cloak>
                             <span class="c-price__label">
-                                @{{ hasDiscount ? '優惠價' : '售價' }}
+                                @{{ hasDiscount ? '@lang('shopgo.product.field.discounted.price')' : '@lang('shopgo.product.field.price')' }}
                             </span>
                             <span class="c-price__value">
                                 @{{ $formatPrice(currentVariant.priceSet.final.price, true) }}
@@ -279,18 +281,17 @@ $shopGoScript->swiper(
                 {{-- Discounts --}}
                 <div v-if="discounts.length" class="l-product-info__discounts l-discounts mt-4"
                     data-cloak>
-                    <h5>多件折扣</h5>
+                    <h5>@lang('shopgo.product.discounts.title')</h5>
 
                     <div v-if="currentVariant">
                         <div v-for="discount of discountNotices">
                             <div>
-                                購買 @{{ discount.minProductQuantity }} 件以上，每個只要
-                                @{{ $formatPrice(discount.price, true) }}
+                                @{{ $lang('shopgo.product.discount.item', $formatPrice(discount.price, true), discount.minProductQuantity) }}
                             </div>
                         </div>
                     </div>
                     <div v-else>
-                        請先選擇規格
+                        @lang('shopgo.product.text.select.features.first')
                     </div>
                 </div>
 
@@ -315,7 +316,7 @@ $shopGoScript->swiper(
 
                 <div data-cloak>
                     <span v-if="outOfStock" class="badge bg-danger">
-                        @{{ currentVariant.outOfStockText || mainVariant.outOfStockText || '庫存不足' }}
+                        @{{ currentVariant.outOfStockText || mainVariant.outOfStockText || '@lang('shopgo.message.out.of.stock')' }}
                     </span>
                 </div>
 
@@ -347,7 +348,7 @@ $shopGoScript->swiper(
                             :data-variant-id="currentVariant?.id"
                             :disabled="!currentVariant || outOfStock">
                             <i class="fa fa-cart-shopping"></i>
-                            立即購買
+                            @lang('shopgo.cart.button.buy.instant')
                         </button>
 
                         <button type="button" class="btn btn-outline-primary btn-lg flex-fill"
@@ -356,7 +357,7 @@ $shopGoScript->swiper(
                             :data-variant-id="currentVariant?.id"
                             :disabled="!currentVariant || outOfStock">
                             <i class="fa fa-cart-plus"></i>
-                            加入購物車
+                            @lang('shopgo.cart.button.add.to.cart')
                         </button>
                     </div>
                 </div>
@@ -372,11 +373,11 @@ $shopGoScript->swiper(
         <div class="mt-5">
             <x-tabs>
 
-                <x-tab name="description" title="商品介紹">
+                <x-tab name="description" title="@lang('shopgo.product.tab.description')">
                     {!! $item->getDescription() !!}
                 </x-tab>
 
-                <x-tab name="attributes" title="商品規格">
+                <x-tab name="attributes" title="@lang('shopgo.product.tab.attributes')">
                     @include('product-attributes')
                 </x-tab>
 

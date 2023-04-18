@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
  */
 ?>
 <div class="l-additional-purchases mt-5">
-    <h3>加價購</h3>
+    <h3>@lang('shopgo.product.attachments.title')</h3>
 
     <div class="l-additional-purchases__slides swiper">
         <div class="l-additional-purchases__wrapper swiper-wrapper">
@@ -93,7 +93,7 @@ use Windwalker\Core\Router\SystemUri;
                                     />
                                     <label for="input-attachment-{{ $attachment->getId() }}"
                                         class="stretched-link">
-                                        加購
+                                        @lang('shopgo.product.button.add.attachment')
                                     </label>
                                 </div>
 

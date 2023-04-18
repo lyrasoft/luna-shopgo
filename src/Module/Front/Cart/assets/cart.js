@@ -196,7 +196,11 @@ const CartApp = {
 
         await loadItems();
 
-        await u.alert('已移除所有商品', '將回到首頁', 'success');
+        await u.alert(
+          u.__('shopgo.cart.message.items.removed'),
+          u.__('shopgo.cart.message.will.back.to.home'),
+          'success'
+        );
 
         location.href = u.route('home');
       } catch (e) {
@@ -412,6 +416,7 @@ const CartApp = {
 
     function checkout() {
       if (checks.value === 0) {
+        console.warn('No checked items');
         return;
       }
 
@@ -431,8 +436,6 @@ const CartApp = {
           return;
         }
       }
-
-      return;
 
       if (shippingForm.value && !shippingForm.value.validate()) {
         console.log('Shipping Validate Fail');
@@ -475,6 +478,7 @@ const CartApp = {
       selectedPayment,
       shippingForm,
       paymentForm,
+      checks,
 
       removeItem,
       clearCart,

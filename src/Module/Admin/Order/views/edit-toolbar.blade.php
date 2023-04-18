@@ -65,7 +65,7 @@ $hasUpdateShipping = $typeInstance instanceof ShipmentCreatingInterface;
             <button class="btn btn-dark btn-sm dropdown-toggle"
                 data-bs-toggle="dropdown">
                 <i class="fa fa-truck"></i>
-                @lang('shogo.order.toolbar.button.shipping.control')
+                @lang('shopgo.order.toolbar.button.shipping.control')
             </button>
             <div class="dropdown-menu">
                 @if ($typeInstance instanceof ShipmentCreatingInterface)
@@ -98,7 +98,7 @@ $hasUpdateShipping = $typeInstance instanceof ShipmentCreatingInterface;
         <button class="btn btn-info btn-sm dropdown-toggle"
             data-bs-toggle="dropdown">
             <i class="fa fa-print"></i>
-            @lang('shogo.order.toolbar.button.print.control')
+            @lang('shopgo.order.toolbar.button.print.control')
         </button>
         <div class="dropdown-menu">
             <a class="dropdown-item"

@@ -70,13 +70,15 @@ $uniScript->importMainThen(
         <div class="card c-pricing c-pricing--location-categories mb-5">
             <div class="card-body p-2 d-flex gap-3 align-items-center">
                 <div class="me-auto">
-                    <h5 class="m-0">全域</h5>
+                    <h5 class="m-0">
+                        @lang('shopgo.shipping.pricing.global.title')
+                    </h5>
                 </div>
                 <div class="form-check form-switch">
                     <label for="input-free-global"
                         class="form-check-label"
                     >
-                        免運
+                        @lang('shopgo.shipping.field.free')
                     </label>
                     <input type="checkbox" id="input-free-global"
                         v-model="global.free"
@@ -88,7 +90,7 @@ $uniScript->importMainThen(
                         style="min-width: 150px"
                         @click="configurePricing(global)"
                     >
-                        運費設定 (@{{ global.pricing.length }})
+                        @lang('shopgo.shipping.pricing.configuration') (@{{ global.pricing.length }})
                     </button>
                 </div>
             </div>
@@ -98,7 +100,9 @@ $uniScript->importMainThen(
         <div class="card c-pricing c-pricing--location-categories mb-5">
             <div class="card-body p-2 d-flex align-items-center">
                 <div>
-                    <h5 class="m-0">地區分類</h5>
+                    <h5 class="m-0">
+                        @lang('shopgo.shipping.pricing.location.categories')
+                    </h5>
                 </div>
                 <div class="ms-auto">
                     <button type="button" class="btn btn-outline-primary"
@@ -106,7 +110,7 @@ $uniScript->importMainThen(
                         @click="openLocationCategorySelector"
                     >
                         <i class="fa fa-plus"></i>
-                        選擇分類
+                        @lang('shopgo.shipping.pricing.button.select.location.category')
                     </button>
                 </div>
             </div>
@@ -129,7 +133,7 @@ $uniScript->importMainThen(
                         <label :for="`input-free-category-${category.id}`"
                             class="form-check-label"
                         >
-                            免運
+                            @lang('shopgo.shipping.field.free')
                         </label>
                         <input type="checkbox" :id="`input-free-category-${category.id}`"
                             v-model="category.free"
@@ -140,7 +144,7 @@ $uniScript->importMainThen(
                     <div>
                         <button type="button" class="btn btn-primary btn-sm"
                             @click="configurePricing(category)">
-                            運費設定
+                            @lang('shopgo.shipping.pricing.configuration')
                             (@{{ category.pricing.length }})
                         </button>
                         <button type="button" class="btn btn-danger btn-sm ms-3"
@@ -156,7 +160,9 @@ $uniScript->importMainThen(
         <div class="card c-pricing c-pricing--locations mb-5">
             <div class="card-body p-2 d-flex align-items-center">
                 <div>
-                    <h5 class="m-0">地區</h5>
+                    <h5 class="m-0">
+                        @lang('shopgo.shipping.pricing.location')
+                    </h5>
                 </div>
                 <div class="ms-auto">
                     <button type="button" class="btn btn-outline-primary"
@@ -164,7 +170,7 @@ $uniScript->importMainThen(
                         @click="openLocationSelector"
                     >
                         <i class="fa fa-plus"></i>
-                        選擇地區
+                        @lang('shopgo.shipping.pricing.button.select.location')
                     </button>
                 </div>
             </div>
@@ -190,7 +196,7 @@ $uniScript->importMainThen(
                         <label :for="`input-free-location-${location.id}`"
                             class="form-check-label"
                         >
-                            免運
+                            @lang('shopgo.shipping.field.free')
                         </label>
                         <input type="checkbox" :id="`input-free-location-${location.id}`" v-model="location.free"
                             class="form-check-input"
@@ -200,7 +206,7 @@ $uniScript->importMainThen(
                     <div>
                         <button type="button" class="btn btn-primary btn-sm"
                             @click="configurePricing(location)">
-                            運費設定
+                            @lang('shopgo.shipping.pricing.configuration')
                             (@{{ location.pricing.length }})
                         </button>
                         <button type="button" class="btn btn-danger btn-sm ms-3"
@@ -231,7 +237,7 @@ $uniScript->importMainThen(
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="pricing-modal-label">
-                            價格設定
+                            @lang('shopgo.shipping.pricing.configure.modal.title')
                         </h4>
                         <button type="button" class="close btn-close" data-bs-dismiss="modal" data-dismiss="modal"
                             aria-label="Close">
@@ -243,10 +249,10 @@ $uniScript->importMainThen(
                             <thead>
                             <tr>
                                 <th>
-                                    價格
+                                    @lang('shopgo.shipping.pricing.product.price')
                                 </th>
                                 <th>
-                                    運費
+                                    @lang('shopgo.shipping.field.shipping.fee')
                                 </th>
                                 <th class="text-end">
                                     #

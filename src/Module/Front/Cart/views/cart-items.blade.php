@@ -67,7 +67,7 @@ use Windwalker\Core\Router\SystemUri;
                 <div v-if="item.outOfStock">
                     <span
                         class="badge bg-danger">
-                        庫存不足
+                        @lang('shopgo.message.out.of.stock')
                     </span>
                 </div>
             </div>
@@ -120,7 +120,7 @@ use Windwalker\Core\Router\SystemUri;
 
         {{-- Attachments --}}
         <div v-if="item.attachments.length > 0" class="card-footer py-4 px-3 px-lg-5">
-            <h6>加價購</h6>
+            <h6>@lang('shopgo.cart.title.attachments')</h6>
 
             <div v-for="attachment of item.attachments"
                 class="c-attachment w-100 d-grid d-lg-flex gap-3 align-items-center py-2 border-bottom"
@@ -148,7 +148,7 @@ use Windwalker\Core\Router\SystemUri;
 
                     <span v-if="attachment.outOfStock"
                         class="badge bg-danger">
-                        庫存不足
+                        @lang('shopgo.message.out.of.stock')
                     </span>
 
                     <div class="c-attachment__quantity ms-auto">
@@ -177,7 +177,7 @@ use Windwalker\Core\Router\SystemUri;
 
             {{-- Product Total --}}
             <div class="mt-3 text-end fs-5">
-                <strong>商品總價</strong>
+                <strong>@lang('shopgo.cart.label.attached.product.total')</strong>
 
                 <span class="">
                     @{{ $formatPrice(item.priceSet.attached_final_total.price, true) }}

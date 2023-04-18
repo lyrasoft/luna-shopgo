@@ -15,6 +15,7 @@ use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Enum\LocationType;
 use Lyrasoft\ShopGo\ShopGoPackage;
+use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\DI\Container;
 use Windwalker\ORM\Nested\Position;
 use Windwalker\ORM\NestedSetMapper;
@@ -27,6 +28,7 @@ use Windwalker\Utilities\Cache\InstanceCacheTrait;
 class LocationService
 {
     use InstanceCacheTrait;
+    use TranslatorTrait;
 
     public function __construct(protected ORM $orm, protected ShopGoPackage $shopGo, protected Container $container)
     {
@@ -134,10 +136,10 @@ class LocationService
 
         if (!$labels) {
             return [
-                '洲',
-                '國家',
-                '州/縣市',
-                '區'
+                $this->trans('shopgo.location.type.continent'),
+                $this->trans('shopgo.location.type.country'),
+                $this->trans('shopgo.location.type.state'),
+                $this->trans('shopgo.location.type.city')
             ];
         }
 

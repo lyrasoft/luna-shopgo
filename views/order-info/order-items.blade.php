@@ -37,6 +37,8 @@ use Windwalker\Core\Router\SystemUri;
 $currency = $app->service(CurrencyService::class);
 
 $simple ??= false;
+
+$totals = clone $totals;
 ?>
 
 <div class="l-order-items table-responsive mb-5">

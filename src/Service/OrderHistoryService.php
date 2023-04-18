@@ -107,11 +107,14 @@ class OrderHistoryService
         }
 
         $isAdmin = false;
+        $shopGo = $this->app->service(ShopGoPackage::class);
+        $sitename = $shopGo->config('shop.sitename') ?: 'ShopGo';
 
         $mailer = $this->app->service(MailerInterface::class);
         $message = $mailer->createMessage(
             $this->trans(
-                'shopgo.order.changed.notify.subject',
+                'shopgo.order.mail.changed.notify.subject',
+                sitename: $sitename,
                 state: $order->getStateText(),
                 no: $order->getNo()
             )
@@ -152,12 +155,15 @@ class OrderHistoryService
 
         if (count($users)) {
             $isAdmin = true;
+            $shopGo = $this->app->service(ShopGoPackage::class);
+            $sitename = $shopGo->config('shop.sitename') ?: 'ShopGo';
             $emails = $users->column('email')->dump();
 
             $mailer = $this->app->service(MailerInterface::class);
             $mailer->createMessage(
                 $this->trans(
-                    'shopgo.order.changed.notify.subject',
+                    'shopgo.order.mail.changed.notify.subject',
+                    sitename: $sitename,
                     state: $order->getStateText(),
                     no: $order->getNo()
                 )

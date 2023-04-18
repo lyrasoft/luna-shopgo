@@ -106,7 +106,7 @@ $attributes = $attributes->class('card c-product-card');
             @if ($item->variants_count > 1)
                 <a href="{{ $item->makeLink($nav) }}" class="btn btn-primary flex-grow-1">
                     <i class="fa fa-eye"></i>
-                    觀看此商品
+                    @lang('shopgo.product.button.see.detail')
                 </a>
             @else
                 <button type="button" class="btn btn-primary flex-grow-1"
@@ -117,9 +117,9 @@ $attributes = $attributes->class('card c-product-card');
                 >
                     <i class="fa fa-cart-plus"></i>
                     @if ($isOutOfStock)
-                        {{ $variant->getOutOfStockText() ?: '庫存不足' }}
+                        {{ $variant->getOutOfStockText() ?: $lang('shopgo.message.out.of.stock') }}
                     @else
-                        加入購物車
+                        @lang('shopgo.cart.button.add.to.cart')
                     @endif
                 </button>
             @endif

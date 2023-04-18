@@ -172,7 +172,7 @@ const app = createApp(
       async function confirmLeave() {
         if (variantEdit.value) {
           if (variantEdit.value.unsave) {
-            const v = await u.confirm('尚未儲存，您確定要離開嗎？');
+            const v = await u.confirm(u.__('shopgo.message.save.required'));
 
             if (!v) {
               return false;

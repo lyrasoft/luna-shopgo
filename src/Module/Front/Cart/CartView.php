@@ -100,7 +100,7 @@ class CartView implements ViewModelInterface
     protected function prepareMetadata(AppContext $app, View $view): void
     {
         $view->setTitle(
-            $this->trans('shopgo.cart.page.title')
+            $this->trans('shopgo.cart.title')
         );
     }
 }

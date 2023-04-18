@@ -30,7 +30,7 @@ use Windwalker\Core\Router\SystemUri;
 
 @section('content')
     <div class="container l-wishlist my-5">
-        <h2>待買清單</h2>
+        <h2>@lang('shopgo.wishlist.title')</h2>
 
         <div class="l-wishlist__items row">
             @foreach ($items as $item)

@@ -13,6 +13,7 @@ namespace Lyrasoft\ShopGo\Event;
 
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderItem;
 use Windwalker\Event\AbstractEvent;
 
 /**
@@ -69,15 +70,15 @@ class AfterCheckoutEvent extends AbstractEvent
     }
 
     /**
-     * @return array
+     * @return array<OrderItem>
      */
-    public function getOrderItems(): array
+    public function &getOrderItems(): array
     {
         return $this->orderItems;
     }
 
     /**
-     * @param  array  $orderItems
+     * @param  array<OrderItem>  $orderItems
      *
      * @return  static  Return self to support chaining.
      */
@@ -91,7 +92,7 @@ class AfterCheckoutEvent extends AbstractEvent
     /**
      * @return array
      */
-    public function getInput(): array
+    public function &getInput(): array
     {
         return $this->input;
     }
