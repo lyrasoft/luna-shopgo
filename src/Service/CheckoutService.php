@@ -58,6 +58,7 @@ class CheckoutService
         protected ApplicationInterface $app,
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
+        protected CurrencyService $currencyService,
         protected OrderService $orderService,
         protected OrderHistoryService $orderHistoryService,
         protected LocationService $locationService,
@@ -137,6 +138,7 @@ class CheckoutService
     /**
      * @param  Order     $order
      * @param  CartData  $cartData
+     * @param  array     $checkoutData
      *
      * @return  Order
      *
@@ -470,6 +472,7 @@ class CheckoutService
             Product::class,
             $variant->product ?? $this->getProduct($variant->getProductId())
         );
+        $currency = $this->currencyService->getCurrentCurrency();
 
         $orderItem = new OrderItem();
         $orderItem->setProductId($product->getId());
@@ -490,6 +493,8 @@ class CheckoutService
                     ->except(['searchIndex']),
                 'variant' => $variant->toCollection()
                     ->except(['searchIndex']),
+                'currency' => $currency->toCollection()
+                    ->only(['id', 'code', 'exchangeRate', 'codeNum']),
             ]
         );
         $orderItem->setOptions($variant->getOptions());

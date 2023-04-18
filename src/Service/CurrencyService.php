@@ -17,6 +17,7 @@ use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\State\AppState;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
 use Windwalker\Session\Session;
@@ -36,6 +37,17 @@ class CurrencyService
     ) {
     }
 
+    public function exchangeFromMainCurrency(mixed $num, Currency $toCurrency): BigDecimal
+    {
+        $n = BigDecimal::of((string) $num);
+
+        if ($toCurrency->getExchangeRate() === 1.0) {
+            return $n;
+        }
+
+        return $n->multipliedBy($toCurrency->getExchangeRate());
+    }
+
     public function format(
         mixed $num,
         Currency|int|string|null $currency = null,
@@ -48,6 +60,8 @@ class CurrencyService
                 $currency = $this->findCurrencyBy($currency);
             }
         }
+
+        $num = $this->exchangeFromMainCurrency($num, $currency);
 
         return $currency->formatPrice($num, $addCode);
     }
@@ -79,15 +93,15 @@ class CurrencyService
             return $this->getMainCurrency();
         }
 
-        $session = $this->app->service(Session::class);
+        $session = $this->app->service(AppState::class);
 
-        $currencyId = $session->get('currency');
+        $code = $session->get('current_currency');
 
-        if (!$currencyId) {
+        if (!$code) {
             return $this->getMainCurrency();
         }
 
-        return $this->findCurrencyBy($currencyId);
+        return $this->findCurrencyBy($code);
     }
 
     public function getMainCurrency(): Currency
@@ -145,5 +159,16 @@ class CurrencyService
                 ->where('state', 1)
                 ->all(Currency::class)
         );
+    }
+
+    public function rememberCurrentCurrency(string|Currency $currency): void
+    {
+        $state = $this->app->service(AppState::class);
+
+        if ($currency instanceof Currency) {
+            $currency = $currency->getCode();
+        }
+
+        $state->remember('current_currency', $currency);
     }
 }

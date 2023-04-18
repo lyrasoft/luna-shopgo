@@ -128,8 +128,10 @@ window.ShopGoVuePlugin = function (app) {
   };
 
   app.config.globalProperties.$formatPrice = (num, addCode = false) => {
-    return Currency.format(num, addCode);
+    return Currency.format(num, undefined, addCode);
   };
+
+  app.config.globalProperties.$currency = Currency;
 };
 
 // Directive

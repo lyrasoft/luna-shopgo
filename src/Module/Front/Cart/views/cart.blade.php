@@ -298,8 +298,13 @@ $uniScript->addRoute('@address_ajax');
                                             訂單總計
                                         </div>
 
-                                        <div v-if="totals.grand_total" class="l-cart-total__value">
-                                            @{{ $formatPrice(totals.grand_total.price, true) }}
+                                        <div v-if="totals.grand_total" class="l-cart-total__value text-end">
+                                            <div>
+                                                @{{ $formatPrice(totals.grand_total.price, true) }}
+                                            </div>
+                                            <div v-if="$currency.isSubCurrency()" class="mt-1 small text-muted fw-normal">
+                                                (@{{ $currency.formatMainCurrency(totals.grand_total.price, true) }})
+                                            </div>
                                         </div>
                                     </div>
 

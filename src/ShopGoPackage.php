@@ -114,6 +114,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
             'renderer.edge.components',
             [
                 'product-card' => 'front.product.product-card',
+                'currency-dropdown' => 'front.components.currency-dropdown',
             ],
         );
 

@@ -41,9 +41,13 @@ class ShopGoScript extends AbstractScript
     public function currency(): void
     {
         if ($this->available()) {
-            $currency = $this->currencyService->getCurrentCurrency();
-
-            $this->unicornScript->data('currency', $currency);
+            $this->unicornScript->data(
+                'currency',
+                [
+                    'main' => $this->currencyService->getMainCurrency(),
+                    'current' => $this->currencyService->getCurrentCurrency()
+                ]
+            );
 
             $this->js('@shopgo/currency.js');
         }
