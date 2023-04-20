@@ -94,7 +94,7 @@ class AdditionalPurchaseEditView implements ViewModelInterface
         $productIds = $attachments->column('productId')->unique()->dump();
 
         $variants = $this->orm->from(ProductVariant::class, 'variant')
-            ->where('product_id', $productIds)
+            ->where('product_id', $productIds ?: [0])
             ->all(ProductVariant::class);
 
         /** @var ProductVariant $variant */
