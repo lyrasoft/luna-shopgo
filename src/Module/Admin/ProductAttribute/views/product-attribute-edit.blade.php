@@ -96,7 +96,7 @@ $uniScript->data('options', $item?->getOptions() ?? []);
                                     <draggable v-model="items" handle=".handle" item-key="uid">
                                         <template #item="{ element: item, index }">
                                             <div class="list-group-item c-option-item"
-                                                :class="[{active: current === item}]"
+                                                :style="[ current === item ? 'background: rgba(var(--bs-primary-rgb), .3)' : '' ]"
                                                 @click="selectItem(item)"
                                                 style="cursor: pointer;"
                                             >

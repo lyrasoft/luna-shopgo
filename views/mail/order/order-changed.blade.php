@@ -49,7 +49,7 @@ $paymentData = $order->getPaymentData();
 
     @if ($state)
         <p>
-            @lang('shopgo.order.mail.changed.to'):
+            @lang('shopgo.order.mail.changed.to', no: $order->getNo()):
             <span
                 style="padding: .25em .5em; {{ $state->getColorCSS() }}; color: {{ $state->getContrastColor() }}; border-radius: 3px;">
                 {{ $state->getTitle() }}

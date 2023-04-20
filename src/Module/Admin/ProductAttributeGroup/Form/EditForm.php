@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\ProductAttributeGroup\Form;
 
-use App\Enum\AttributePosition;
 use Lyrasoft\Luna\Field\UserModalField;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\CategoryFlatListField;
