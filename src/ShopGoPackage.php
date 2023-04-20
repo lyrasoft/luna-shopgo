@@ -137,19 +137,22 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
         $installer->installRoutes(static::path('routes/**/*.php'), 'routes');
         $installer->installViews(static::path('views/*.blade.php'), 'views');
 
+        $this->installModules($installer, 'additional_purchase', ['admin', 'model']);
         $this->installModules($installer, 'address', ['front', 'model']);
-        $this->installModules($installer, 'additional_purchase', ['admin']);
-        $this->installModules($installer, 'config', ['admin']);
         $this->installModules($installer, 'cart', ['front']);
         $this->installModules($installer, 'checkout', ['front']);
-        $this->installModules($installer, 'currency', ['admin', 'model']);
+        $this->installModules($installer, 'config', ['admin']);
+        $this->installModules($installer, 'currency');
         $this->installModules($installer, 'discount', ['admin', 'model']);
+        $this->installModules($installer, 'invoice', ['admin']);
         $this->installModules($installer, 'location', ['admin', 'model']);
         $this->installModules($installer, 'manufacturer', ['admin', 'model']);
         $this->installModules($installer, 'order');
         $this->installModules($installer, 'order_state', ['admin', 'model']);
+        $this->installModules($installer, 'order_history', ['model']);
         $this->installModules($installer, 'payment', ['admin', 'model']);
         $this->installModules($installer, 'product');
+        $this->installModules($installer, 'product_variant', ['model']);
         $this->installModules($installer, 'product_attribute', ['admin', 'model']);
         $this->installModules($installer, 'product_attribute_group', ['admin', 'model']);
         $this->installModules($installer, 'product_feature', ['admin', 'model']);
