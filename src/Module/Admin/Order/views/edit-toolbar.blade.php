@@ -37,7 +37,7 @@ $shippingService = $app->service(ShippingService::class);
 $typeInstance = $shippingService->createTypeInstance($item->getShipping());
 
 $hasCreatShipment = $typeInstance instanceof ShipmentCreatingInterface;
-$hasUpdateShipping = $typeInstance instanceof ShipmentCreatingInterface;
+$hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
 
 ?>
 

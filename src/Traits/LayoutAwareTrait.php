@@ -30,7 +30,7 @@ trait LayoutAwareTrait
 
     protected function registerRendererPaths(CompositeRenderer $renderer): CompositeRenderer
     {
-        $renderer->addPath(WINDWALKER_VIEWS . '/shipping/basic');
+        $renderer->addPath(WINDWALKER_VIEWS . '/shipping/' . $this::getType());
         $renderer->addPath($this->getBasePath());
 
         return $renderer;

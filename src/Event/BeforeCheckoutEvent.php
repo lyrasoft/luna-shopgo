@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Event;
 
+use Lyrasoft\ShopGo\Data\PaymentData;
+use Lyrasoft\ShopGo\Data\ShippingData;
 use Lyrasoft\ShopGo\Entity\Order;
 use Windwalker\Event\AbstractEvent;
 
@@ -25,11 +27,15 @@ class BeforeCheckoutEvent extends AbstractEvent
 
     protected array $shipping = [];
 
-    protected array $paymentData = [];
+    protected array $paymentData;
 
-    protected array $shippingData = [];
+    protected array $shippingData;
 
     protected array $input = [];
+
+    protected bool $overridePaymentDataProcess = false;
+
+    protected bool $overrideShippingDataProcess = false;
 
     /**
      * @return Order
@@ -94,6 +100,26 @@ class BeforeCheckoutEvent extends AbstractEvent
     /**
      * @return array
      */
+    public function &getInput(): array
+    {
+        return $this->input;
+    }
+
+    /**
+     * @param  array  $input
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setInput(array $input): static
+    {
+        $this->input = $input;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
     public function &getPaymentData(): array
     {
         return $this->paymentData;
@@ -132,21 +158,41 @@ class BeforeCheckoutEvent extends AbstractEvent
     }
 
     /**
-     * @return array
+     * @return bool
      */
-    public function &getInput(): array
+    public function isOverridePaymentDataProcess(): bool
     {
-        return $this->input;
+        return $this->overridePaymentDataProcess;
     }
 
     /**
-     * @param  array  $input
+     * @param  bool  $overridePaymentDataProcess
      *
      * @return  static  Return self to support chaining.
      */
-    public function setInput(array $input): static
+    public function overridePaymentDataProcess(bool $overridePaymentDataProcess): static
     {
-        $this->input = $input;
+        $this->overridePaymentDataProcess = $overridePaymentDataProcess;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOverrideShippingDataProcess(): bool
+    {
+        return $this->overrideShippingDataProcess;
+    }
+
+    /**
+     * @param  bool  $overrideShippingDataProcess
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function overrideShippingDataProcess(bool $overrideShippingDataProcess): static
+    {
+        $this->overrideShippingDataProcess = $overrideShippingDataProcess;
 
         return $this;
     }

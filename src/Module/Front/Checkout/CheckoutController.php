@@ -16,6 +16,7 @@ use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\Contract\CheckoutProcessLayoutInterface;
+use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
 use Lyrasoft\ShopGo\Entity\Shipping;
@@ -75,14 +76,14 @@ class CheckoutController
          * @var CartData $cartData
          */
         [$order, $cartData] = $orm->getDb()->transaction(
-            function () use ($shopGo, $input, $stockService, $cartService, $user, $checkoutService) {
+            function () use ($shopGo, $orm, $input, $stockService, $cartService, $user, $checkoutService) {
                 $order = new Order();
 
-                $payment = (array) $input['payment'];
-                $shipping = (array) $input['shipping'];
+                $payment = $input['payment'] ?? [];
+                $shipping = $input['shipping'] ?? [];
 
-                $paymentData = (array) $input['payment_data'];
-                $shippingData = (array) $input['shipping_data'];
+                $paymentData = $input['payment_data'] ?? [];
+                $shippingData = $input['shipping_data'] ?? [];
 
                 $event = $shopGo->emit(
                     BeforeCheckoutEvent::class,
@@ -107,21 +108,32 @@ class CheckoutController
                     $shippingData = $paymentData;
                 }
 
-                $addressId = $paymentData['address_id'] ?? null;
+                if (!$event->isOverridePaymentDataProcess()) {
+                    $addressId = $paymentData['address_id'] ?? null;
 
-                $paymentLocation = $checkoutService->prepareAddressData(
-                    (int) $addressId,
-                    $paymentData,
-                    $order->getPaymentData(),
-                    $user
-                );
+                    $paymentLocation = $checkoutService->prepareAddressData(
+                        (int) $addressId,
+                        $paymentData,
+                        $order->getPaymentData(),
+                        $user
+                    );
+                }
 
-                $shippingLocation = $checkoutService->prepareAddressData(
-                    (int) $addressId,
-                    $shippingData,
-                    $order->getShippingData(),
-                    $user
-                );
+                if (!$event->isOverridePaymentDataProcess()) {
+                    $addressId = $shippingData['address_id'] ?? null;
+
+                    $shippingLocation = $checkoutService->prepareAddressData(
+                        (int) $addressId,
+                        $shippingData,
+                        $order->getShippingData(),
+                        $user
+                    );
+                } else {
+                    $shippingLocation = $orm->mustFindOne(
+                        Location::class,
+                        $order->getShippingData()->getLocationId()
+                    );
+                }
 
                 $cartData = $cartService->getCartDataForCheckout(
                     $shippingLocation->getId(),
@@ -143,7 +155,7 @@ class CheckoutController
                 } else {
                     $order->setInvoiceType(InvoiceType::IDV());
                 }
-
+                
                 return [
                     $checkoutService->createOrder($order, $cartData, $input),
                     $cartData
