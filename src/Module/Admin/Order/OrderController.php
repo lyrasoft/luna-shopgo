@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Admin\Order;
 
 use App\Enum\OrderState;
+use App\Service\ReceiptService;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Enum\OrderHistoryType;
 use Lyrasoft\ShopGo\Module\Admin\Order\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\OrderRepository;
-use Lyrasoft\ShopGo\Service\InvoiceService;
 use Lyrasoft\ShopGo\Service\OrderService;
 use Lyrasoft\ShopGo\Shipping\ShipmentCreatingInterface;
 use Lyrasoft\ShopGo\Shipping\ShipmentPrintableInterface;
@@ -100,8 +100,12 @@ class OrderController
             return $app->call([$this, 'updateShippingStatuses']);
         }
 
-        if ($task === 'create_invoices') {
-            return $app->call([$this, 'createInvoices']);
+        // if ($task === 'create_invoices') {
+        //     return $app->call([$this, 'createInvoices']);
+        // }
+
+        if ($task === 'createReceipt') {
+            return $app->call([$this, 'createReceipt']);
         }
 
         if ($task === 'transition') {
@@ -143,7 +147,7 @@ class OrderController
 
         $app->addMessage(
             $this->trans(
-                'shopgo.order.message.create.shipping.bill.success',
+                       'shopgo.order.message.create.shipment.success',
                 count: count($ids)
             ),
             'success'
@@ -178,7 +182,7 @@ class OrderController
 
         $app->addMessage(
             $this->trans(
-                'shopgo.order.message.update.shipping.status.success',
+                       'shopgo.order.message.update.shipping.status.success',
                 count: count($ids)
             ),
             'success'
@@ -227,6 +231,23 @@ class OrderController
         if ($shippingInstance instanceof ShipmentPrintableInterface) {
             return $shippingInstance->printShipments($app, $orders);
         }
+
+        return $nav->back();
+    }
+
+    public function createReceipt(
+        AppContext $app,
+        #[Autowire] ReceiptService $receiptService,
+        Navigator $nav,
+        ORM $orm
+    ): RouteUri {
+        $ids = (array) $app->input('id');
+
+        foreach ($ids as $id) {
+            $receiptService->createReceipt((int) $id);
+        }
+
+        $app->addMessage('開立發票完成', 'success');
 
         return $nav->back();
     }

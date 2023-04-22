@@ -117,9 +117,15 @@ class CheckoutController
                         $order->getPaymentData(),
                         $user
                     );
+
+                    if ($order->getPaymentData()->getVat()) {
+                        $order->setInvoiceType(InvoiceType::COMPANY());
+                    } else {
+                        $order->setInvoiceType(InvoiceType::IDV());
+                    }
                 }
 
-                if (!$event->isOverridePaymentDataProcess()) {
+                if (!$event->isOverrideShippingDataProcess()) {
                     $addressId = $shippingData['address_id'] ?? null;
 
                     $shippingLocation = $checkoutService->prepareAddressData(
@@ -149,12 +155,6 @@ class CheckoutController
                 $order->setPaymentId((int) $payment['id']);
                 $order->setShippingId((int) $shipping['id']);
                 $order->setNote($input['note'] ?? '');
-
-                if ($order->getPaymentData()->getVat()) {
-                    $order->setInvoiceType(InvoiceType::COMPANY());
-                } else {
-                    $order->setInvoiceType(InvoiceType::IDV());
-                }
                 
                 return [
                     $checkoutService->createOrder($order, $cartData, $input),

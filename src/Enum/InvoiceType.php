@@ -39,7 +39,7 @@ class InvoiceType extends EnumSingleton implements EnumTranslatableInterface
      */
     protected function __construct(mixed $value)
     {
-        parent::__construct($value);
+        parent::__construct($value ?: static::IDV);
     }
 
     public function trans(LanguageInterface $lang, ...$args): string

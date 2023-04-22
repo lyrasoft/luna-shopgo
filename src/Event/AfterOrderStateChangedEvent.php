@@ -23,6 +23,8 @@ class AfterOrderStateChangedEvent extends AbstractEvent
 {
     protected Order $order;
 
+    protected Order $oldOrder;
+
     protected int $from;
 
     protected int $to = 0;
@@ -149,6 +151,26 @@ class AfterOrderStateChangedEvent extends AbstractEvent
     public function setOrderStateService(OrderStateService $orderStateService): static
     {
         $this->orderStateService = $orderStateService;
+
+        return $this;
+    }
+
+    /**
+     * @return Order
+     */
+    public function getOldOrder(): Order
+    {
+        return $this->oldOrder;
+    }
+
+    /**
+     * @param  Order  $oldOrder
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOldOrder(Order $oldOrder): static
+    {
+        $this->oldOrder = $oldOrder;
 
         return $this;
     }

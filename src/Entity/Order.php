@@ -319,15 +319,16 @@ class Order implements EntityInterface
         $data['search_index'] = $searchIndex->filter()->implode('|');
     }
 
-    #[Watch('state')]
-    public static function watchState(WatchEvent $event, OrderStateService $orderStateService)
+    #[Watch('state_id')]
+    public static function watchState(WatchEvent $event, OrderStateService $orderStateService): void
     {
         $orm = $event->getORM();
 
         $orderStateService->handleStateChanged(
             $orm->toEntity(static::class, $event->getData()),
             (int) $event->getOldValue(),
-            (int) $event->getValue()
+            (int) $event->getValue(),
+            $orm->toEntity(static::class, $event->getOldData())
         );
     }
 

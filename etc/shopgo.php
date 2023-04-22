@@ -91,17 +91,8 @@ return [
             'font_dirs' => [
                 env('SHOPGO_MPDF_FONT_DIR', '/Library/Fonts/')
             ],
-            'font_data' => [
-                'taipei' => [
-
-                    // Regular 標準字體
-                    'R' => 'TaipeiSansTCBeta-Regular.ttf',
-
-                    // Bold 粗體
-                    'B' => 'TaipeiSansTCBeta-Bold.ttf',
-                ],
-            ],
-            'font_family' => 'taipei, sans-serif'
+            'font_data' => [],
+            'font_family' => ''
         ]
     ]
 ];

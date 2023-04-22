@@ -216,6 +216,15 @@ class OrderItem implements EntityInterface
         return $this;
     }
 
+    public function getFullTitle(string $delimiter = ' | '): string
+    {
+        if ($this->getVariantHash()) {
+            return $this->getTitle() . $delimiter . $this->getVariantTitle();
+        }
+
+        return $this->getTitle();
+    }
+
     public function getImage(): string
     {
         return $this->image;

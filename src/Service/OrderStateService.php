@@ -114,7 +114,7 @@ class OrderStateService
         return "background-color: $color; color: $contrast;";
     }
 
-    public function handleStateChanged(Order $order, int $from, int $to): void
+    public function handleStateChanged(Order $order, int $from, int $to, Order $oldOrder): void
     {
         if ($from === $to) {
             return;
@@ -127,7 +127,7 @@ class OrderStateService
 
         $this->shopGo->emit(
             AfterOrderStateChangedEvent::class,
-            compact('order', 'from', 'to', 'fromState', 'toState', 'orderStateService')
+            compact('order', 'oldOrder', 'from', 'to', 'fromState', 'toState', 'orderStateService')
         );
     }
 }

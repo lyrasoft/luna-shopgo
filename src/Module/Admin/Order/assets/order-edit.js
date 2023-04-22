@@ -14,6 +14,7 @@ const formSelector = '#admin-form';
 // Validation
 u.formValidation().then(() => {
   u.$ui.disableOnSubmit(formSelector);
+  u.$ui.disableOnSubmit('#state-form');
 });
 
 // Init form

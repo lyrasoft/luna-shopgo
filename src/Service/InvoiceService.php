@@ -74,6 +74,12 @@ class InvoiceService
 
     public function renderPdf(string $html): string
     {
+        if (!class_exists(Mpdf::class)) {
+            throw new \DomainException(
+                'Please install `mpdf/mpdf psr/log:^2.0` first.'
+            );
+        }
+
         $shopGo = $this->shopGo;
 
         // Get default config
