@@ -58,6 +58,14 @@ class OrderStateService
                 ->all(OrderState::class);
     }
 
+    /**
+     * @return  Collection<OrderState>|OrderState[]
+     */
+    public function getStatesKeyByAlias(): Collection
+    {
+        return $this->getOrderStates()->keyBy('alias');
+    }
+
     public function getDefaultState(): OrderState
     {
         return $this->getOrderStates()

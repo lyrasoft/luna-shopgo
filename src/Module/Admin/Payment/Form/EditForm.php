@@ -63,7 +63,8 @@ class EditForm implements FieldDefinitionInterface
 
                     $form->add('order_state_id', OrderStateListField::class)
                         ->label($this->trans('shopgo.payment.field.order.state'))
-                        ->defaultValue(5);
+                        ->option($this->trans('unicorn.select.placeholder'))
+                        ->defaultValue('');
 
                     $form->add('location_category_id', CategoryModalField::class)
                         ->label($this->trans('shopgo.payment.field.location_category'))
