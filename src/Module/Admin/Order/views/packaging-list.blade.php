@@ -97,7 +97,7 @@ $siteName = value($shopGo->config('shop.sitename'));
                     <tbody>
                     <tr>
                         <td valign="middle">
-                            <img src="{{ $logo }}" alt="{{ $siteName }}" style="width: 300px">
+                            <img src="{{ $asset->path($logo) }}" alt="{{ $siteName }}" style="width: 300px">
                         </td>
                         <td class="" style="width: 40%">
                             <div>

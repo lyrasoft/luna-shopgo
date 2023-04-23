@@ -31,7 +31,7 @@ return [
 
         'shop' => [
             'sitename' => 'ShopGo',
-            'logo' => 'assets/vendor/lyrasoft/shopgo/images/simular-logo.png'
+            'logo' => 'vendor/lyrasoft/shopgo/images/simular-logo.png'
         ],
 
         'currency' => [

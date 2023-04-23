@@ -118,7 +118,7 @@ $currency = $app->service(CurrencyService::class);
                 <tbody>
                 <tr>
                     <td class="l-header-table__logo" style="width: 50%">
-                        <img src="{{ $uri->path($logo) }}" alt="{{ $siteName }}"
+                        <img src="{{ $asset->path($logo) }}" alt="{{ $siteName }}"
                             style="max-width: 350px; max-height: 70px">
                     </td>
                     <td class="l-header-table__info" style="text-align: right; font-size: .875rem">
