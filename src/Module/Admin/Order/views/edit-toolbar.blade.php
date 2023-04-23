@@ -68,11 +68,11 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
                 @lang('shopgo.order.toolbar.button.shipping.control')
             </button>
             <div class="dropdown-menu">
-                @if ($typeInstance instanceof ShipmentCreatingInterface)
+                @if ($hasCreatShipment)
                     <button type="button"
                         class="dropdown-item"
                         data-task="create_shipments"
-                        @attr('disabled', !WINDWALKER_DEBUG || $item->getShippingNo() ?: null)
+                        @attr('disabled', !WINDWALKER_DEBUG && $item->getShippingNo())
                         @click="form.patch('{{ $nav->to('order_list') }}', { task: 'create_shipments', id: '{{ $item->getId() }}' });"
                     >
                         <i class="fa fa-fw fa-truck-clock"></i>
@@ -80,7 +80,7 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
                     </button>
                 @endif
 
-                @if ($typeInstance instanceof ShippingStatusInterface)
+                @if ($hasUpdateShipping)
                     <button type="button"
                         class="dropdown-item"
                         data-task="update_shippings"
