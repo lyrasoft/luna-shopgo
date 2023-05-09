@@ -36,6 +36,7 @@ use Windwalker\Core\Http\RequestAssert;
 use Windwalker\Core\Manager\Logger;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\View\View;
+use Windwalker\Http\HttpClient;
 use Windwalker\Http\Response\RedirectResponse;
 use Windwalker\ORM\ORM;
 
@@ -155,7 +156,7 @@ class CheckoutController
                 $order->setPaymentId((int) $payment['id']);
                 $order->setShippingId((int) $shipping['id']);
                 $order->setNote($input['note'] ?? '');
-                
+
                 return [
                     $checkoutService->createOrder($order, $cartData, $input),
                     $cartData
@@ -276,8 +277,14 @@ class CheckoutController
 
     public function shippingTask(string $task, AppContext $app, ORM $orm, ShippingService $shippingService)
     {
-        Logger::info('shipping-task', (string) $app->getSystemUri()->full());
+        Logger::info('shipping-task', $uri = $app->getSystemUri()->full());
         Logger::info('shipping-task', print_r($app->input()->dump(), true));
+
+        $http = new HttpClient();
+        Logger::info(
+            'shipping-task',
+            $http->toCurlCmd('POST', $uri, HttpClient::formData($app->input()->dump()))
+        );
 
         $id = $app->input('id');
 
@@ -290,8 +297,14 @@ class CheckoutController
 
     public function paymentTask(string $task, AppContext $app, ORM $orm, PaymentService $paymentService)
     {
-        Logger::info('payment-task', (string) $app->getSystemUri()->full());
+        Logger::info('payment-task', $uri = $app->getSystemUri()->full());
         Logger::info('payment-task', print_r($app->input()->dump(), true));
+
+        $http = new HttpClient();
+        Logger::info(
+            'payment-task',
+            $http->toCurlCmd('POST', $uri, HttpClient::formData($app->input()->dump()))
+        );
 
         $id = $app->input('id');
 
