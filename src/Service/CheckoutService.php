@@ -472,6 +472,7 @@ class CheckoutService
             Product::class,
             $variant->product ?? $this->getProduct($variant->getProductId())
         );
+        $mainVariant = $item->getMainVariant();
         $currency = $this->currencyService->getCurrentCurrency();
 
         $orderItem = new OrderItem();
@@ -484,7 +485,7 @@ class CheckoutService
         $orderItem->setBasePriceUnit($variant->getPrice());
         $orderItem->setPriceUnit($item->getPriceSet()['final']->toFloat());
         $orderItem->setQuantity($item->getQuantity());
-        $orderItem->setImage($variant->getCover() ?: $product->getCover());
+        $orderItem->setImage($variant->getCover() ?: $mainVariant->getCover());
         $orderItem->setTotal($item->getPriceSet()['final_total']->toFloat());
         $orderItem->setPriceSet(clone $item->getPriceSet());
         $orderItem->setProductData(
