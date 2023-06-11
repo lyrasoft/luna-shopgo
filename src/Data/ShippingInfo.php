@@ -32,6 +32,10 @@ class ShippingInfo extends ValueObject
 
     public string $targetAddress = '';
 
+    public string $status = '';
+
+    public string $statusText = '';
+
     public bool $isCod = false;
 
     #[CastNullable(Chronos::class)]
@@ -216,6 +220,46 @@ class ShippingInfo extends ValueObject
     public function setExpired(?Chronos $expired): static
     {
         $this->expired = $expired;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param  string  $status
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusText(): string
+    {
+        return $this->statusText;
+    }
+
+    /**
+     * @param  string  $statusText
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStatusText(string $statusText): static
+    {
+        $this->statusText = $statusText;
 
         return $this;
     }
