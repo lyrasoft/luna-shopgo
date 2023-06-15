@@ -53,6 +53,7 @@ class DiscountService
         protected DiscountUsageService $discountUsageService,
         protected UserService $userService,
         protected ORM $orm,
+        protected PricingService $pricingService,
     ) {
         //
     }
@@ -119,9 +120,9 @@ class DiscountService
                 if ($discount->isAccumulate()) {
                     $grandTotal = PricingService::calcAmount($pricing->getTotal(), $totals);
 
-                    PricingService::pricingByDiscount($grandTotal, $discount, $diff);
+                    $this->pricingService->pricingByDiscount($grandTotal, $discount, $diff);
                 } else {
-                    PricingService::pricingByDiscount($pricing->getTotal(), $discount, $diff);
+                    $this->pricingService->pricingByDiscount($pricing->getTotal(), $discount, $diff);
                 }
 
                 $totals->add(
@@ -220,9 +221,9 @@ class DiscountService
         ?BigDecimal &$diff = null
     ): PriceSet {
         if (!$discount->isAccumulate() && $discount->getMethod() === DiscountMethod::PERCENTAGE()) {
-            PricingService::pricingByDiscount($priceSet['base'], $discount, $diff);
+            $this->pricingService->pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
-            PricingService::pricingByDiscount($priceSet['final'], $discount, $diff);
+            $this->pricingService->pricingByDiscount($priceSet['final'], $discount, $diff);
         }
 
         $priceSet['final'] = $priceSet['final']->plus($diff);
@@ -481,7 +482,7 @@ class DiscountService
 
         $priceSet = $pricing->getPriceSet();
 
-        $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $matchedDiscount, $diff);
+        $priceSet['final'] = $this->pricingService->pricingByDiscount($priceSet['final'], $matchedDiscount, $diff);
 
         $priceSet->add(
             'product_discount',
@@ -523,7 +524,7 @@ class DiscountService
         $special = $specials->first();
 
         if ($special) {
-            $priceSet['final'] = PricingService::pricingByDiscount($priceSet['final'], $special, $diff);
+            $priceSet['final'] = $this->pricingService->pricingByDiscount($priceSet['final'], $special, $diff);
 
             $priceSet->add(
                 'product_special',

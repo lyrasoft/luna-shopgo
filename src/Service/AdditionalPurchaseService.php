@@ -32,7 +32,7 @@ class AdditionalPurchaseService
 {
     use InstanceCacheTrait;
 
-    public function __construct(protected ORM $orm)
+    public function __construct(protected ORM $orm, protected PricingService $pricingService)
     {
     }
 
@@ -43,7 +43,7 @@ class AdditionalPurchaseService
     ): ProductVariant {
         $priceSet = $variant->getPriceSet();
 
-        $newPrice = PricingService::pricingByMethod(
+        $newPrice = $this->pricingService->pricingByMethod(
             $priceSet['final'],
             $attachment->getPrice(),
             $attachment->getMethod()

@@ -18,30 +18,39 @@ use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
+use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 /**
  * The PricingService class.
  */
 class PricingService
 {
-    use CurrencyAwareTrait;
+    use InstanceCacheTrait;
 
-    public static function pricingByMethod(
+    public function __construct(protected ApplicationInterface $app)
+    {
+    }
+
+    public function pricingByMethod(
         mixed $origin,
         mixed $modify,
         DiscountMethod|string $method,
         ?BigDecimal &$diff = null,
     ): BigDecimal {
+        $scale = $this->getScale();
+
         /** @var DiscountMethod $method */
         $method = DiscountMethod::wrap($method);
         $diff = BigDecimal::of(0);
 
         if ($method === DiscountMethod::NONE()) {
-            return BigDecimal::of((string) $origin);
+            return BigDecimal::of((string) $origin)
+                ->toScale($scale, RoundingMode::HALF_UP);
         }
 
-        $origin = BigDecimal::of((string) $origin);
-        $modify = BigDecimal::of((string) $modify);
+        $origin = BigDecimal::of((string) $origin)->toScale($scale, RoundingMode::HALF_UP);
+        $modify = BigDecimal::of((string) $modify)->toScale($scale, RoundingMode::HALF_UP);
 
         if ($method === DiscountMethod::FIXED()) {
             // New price should not greater than origin.
@@ -54,7 +63,8 @@ class PricingService
         }
 
         if ($method === DiscountMethod::OFFSETS()) {
-            $newPrice = $origin->plus($modify);
+            $newPrice = $origin->plus($modify)
+                ->toScale($scale, RoundingMode::HALF_UP);
 
             if ($newPrice->isLessThan(0)) {
                 $newPrice = BigDecimal::of(0);
@@ -70,19 +80,20 @@ class PricingService
             PriceObject::DEFAULT_SCALE,
             RoundingMode::HALF_CEILING
         )
-            ->multipliedBy($modify);
+            ->multipliedBy($modify)
+            ->toScale($scale, RoundingMode::HALF_UP);
 
         $diff = $newPrice->minus($origin);
 
         return $newPrice;
     }
 
-    public static function pricingByDiscount(
+    public function pricingByDiscount(
         mixed $price,
         Discount $discount,
         ?BigDecimal &$diff = null,
     ): BigDecimal {
-        return static::pricingByMethod($price, $discount->getPrice(), $discount->getMethod(), $diff);
+        return $this->pricingByMethod($price, $discount->getPrice(), $discount->getMethod(), $diff);
     }
 
     public function pricingByMethodAndFormat(
@@ -91,7 +102,7 @@ class PricingService
         DiscountMethod|string $method,
         bool $addCode = false
     ): string {
-        $price = static::pricingByMethod($price, $offsets, $method);
+        $price = $this->pricingByMethod($price, $offsets, $method);
 
         return $this->formatPrice($price, $addCode);
     }
@@ -105,5 +116,15 @@ class PricingService
         }
 
         return $amount;
+    }
+
+    /**
+     * @return  int
+     */
+    protected function getScale(): int
+    {
+        return $this->cacheStorage['scale'] ??= $this->app->service(CurrencyService::class)
+            ->getMainCurrency()
+            ->getDecimalPlace();
     }
 }
