@@ -135,6 +135,19 @@ And then you can run migtaiotns/seeders, all orders No and faker locale will use
 php windwalker mig:reset -fs
 ```
 
+### Env
+
+You can add `SHOPGO_MPDF_FONT_DIR` to configure Invoice PDF fonts position.
+
+In developing, provide Mac default font dir:
+
+```
+SHOPGO_MPDF_FONT_DIR=/Library/Fonts/
+```
+
+You can change this dir after deployed to server. 
+
+
 ### Session
 
 As ShopGo may need to redirect to outside Payment service to process checkout, you must disable `SameSite` cookie poilicy

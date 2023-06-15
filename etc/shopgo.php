@@ -89,7 +89,7 @@ return [
 
         'mpdf' => [
             'font_dirs' => [
-                env('SHOPGO_MPDF_FONT_DIR', '/Library/Fonts/')
+                env('SHOPGO_MPDF_FONT_DIR')
             ],
             'font_data' => [],
             'font_family' => ''
