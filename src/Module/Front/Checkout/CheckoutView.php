@@ -64,6 +64,7 @@ class CheckoutView implements ViewModelInterface
             if (!$cleared) {
                 if (!WINDWALKER_DEBUG) {
                     $this->cartStorage->clearChecked();
+                    $app->state->forget('checkout.data');
                 }
 
                 return $this->nav->self()->var('cleared', '1');
