@@ -140,6 +140,15 @@ class CartStorage
         $this->state->remember(static::CART_ITEMS_KEY, []);
     }
 
+    public function clearChecked(): void
+    {
+        $items = $this->getCheckedItems();
+
+        foreach ($items as $key => $item) {
+            $this->removeByKey($key);
+        }
+    }
+
     /**
      * getStoredItems
      *

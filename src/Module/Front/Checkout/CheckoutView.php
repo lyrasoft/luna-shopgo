@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Front\Checkout;
 
+use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Entity\Order;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\ViewModel;
@@ -42,7 +43,7 @@ class CheckoutView implements ViewModelInterface
     /**
      * Constructor.
      */
-    public function __construct(protected ORM $orm, protected Navigator $nav)
+    public function __construct(protected ORM $orm, protected Navigator $nav, protected CartStorage $cartStorage)
     {
         //
     }
@@ -58,6 +59,16 @@ class CheckoutView implements ViewModelInterface
     public function prepare(AppContext $app, View $view): mixed
     {
         if ($view->getLayout() === 'complete') {
+            $cleared = $app->input('cleared');
+
+            if (!$cleared) {
+                if (!WINDWALKER_DEBUG) {
+                    $this->cartStorage->clearChecked();
+                }
+
+                return $this->nav->self()->var('cleared', '1');
+            }
+
             $no = (string) $app->input('no');
 
             $order = $this->orm->findOne(Order::class, compact('no'));
