@@ -112,6 +112,7 @@ class CartService
                 $forUpdate,
                 fn (ListSelector $selector) => $selector->forUpdate()
             )
+            ->limit(0)
             ->all(ProductVariant::class)
             ->keyBy('id');
 
