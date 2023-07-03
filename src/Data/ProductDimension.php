@@ -16,6 +16,7 @@ use Windwalker\Data\ValueObject;
 /**
  * The ProductDimension class.
  */
+#[\AllowDynamicProperties]
 class ProductDimension extends ValueObject
 {
     public float $width = 0;

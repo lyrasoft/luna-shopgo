@@ -18,6 +18,7 @@ use Windwalker\ORM\Attributes\CastNullable;
 /**
  * The ShippingHistory class.
  */
+#[\AllowDynamicProperties]
 class ShippingHistory extends ValueObject
 {
     public string $statusCode = '';

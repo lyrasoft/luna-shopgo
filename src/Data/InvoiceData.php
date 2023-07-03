@@ -16,6 +16,7 @@ use Windwalker\Data\ValueObject;
 /**
  * The InvoiceData class.
  */
+#[\AllowDynamicProperties]
 class InvoiceData extends ValueObject
 {
     public string $title = '';

@@ -17,6 +17,7 @@ use Windwalker\Data\ValueObject;
 /**
  * The PaymentData class.
  */
+#[\AllowDynamicProperties]
 class PaymentData extends ValueObject implements AddressAwareInterface
 {
     use AddressAwaitTrait;

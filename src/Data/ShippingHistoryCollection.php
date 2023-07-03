@@ -17,6 +17,7 @@ use Windwalker\Utilities\TypeCast;
 /**
  * The ListOptionCollection class.
  */
+#[\AllowDynamicProperties]
 class ShippingHistoryCollection extends Collection
 {
     /**

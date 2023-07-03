@@ -16,6 +16,7 @@ use Windwalker\Data\ValueObject;
 /**
  * The AddressData class.
  */
+#[\AllowDynamicProperties]
 class AddressData extends ValueObject
 {
     protected int $locationId = 0;

@@ -17,6 +17,7 @@ use Lyrasoft\ShopGo\Data\Traits\ProductPricingTrait;
 /**
  * The ProductPricingData class.
  */
+#[\AllowDynamicProperties]
 class ProductPricingData implements ProductPricingInterface
 {
     use ProductPricingTrait;

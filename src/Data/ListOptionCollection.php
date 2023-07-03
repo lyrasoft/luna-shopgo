@@ -19,6 +19,7 @@ use Windwalker\Utilities\TypeCast;
  *
  * @template-extends \IteratorAggregate<int, ListOption>
  */
+#[\AllowDynamicProperties]
 class ListOptionCollection extends Collection
 {
     /**

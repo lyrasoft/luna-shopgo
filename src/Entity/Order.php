@@ -55,6 +55,7 @@ use function Windwalker\collect;
  * The Order class.
  */
 #[Table('orders', 'order')]
+#[\AllowDynamicProperties]
 class Order implements EntityInterface
 {
     use EntityTrait;

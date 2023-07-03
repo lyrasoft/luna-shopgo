@@ -18,6 +18,7 @@ use Windwalker\ORM\Attributes\CastNullable;
 /**
  * The ShippingInfo class.
  */
+#[\AllowDynamicProperties]
 class ShippingInfo extends ValueObject
 {
     public string $shipmentNo = '';

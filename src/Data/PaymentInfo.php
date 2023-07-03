@@ -18,6 +18,7 @@ use Windwalker\ORM\Attributes\CastNullable;
 /**
  * The PaymentInfo class.
  */
+#[\AllowDynamicProperties]
 class PaymentInfo extends ValueObject
 {
     public string $tradeNo = '';

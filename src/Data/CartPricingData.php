@@ -17,6 +17,7 @@ use Lyrasoft\ShopGo\Data\Traits\CartDataAwareTrait;
 /**
  * The CartPricingData class.
  */
+#[\AllowDynamicProperties]
 class CartPricingData implements CartTotalsInterface
 {
     use CartDataAwareTrait;

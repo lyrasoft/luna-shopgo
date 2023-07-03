@@ -16,6 +16,7 @@ use Windwalker\Data\ValueObject;
 /**
  * The ListOption class.
  */
+#[\AllowDynamicProperties]
 class ListOption extends ValueObject
 {
     public int $parentId = 0;
