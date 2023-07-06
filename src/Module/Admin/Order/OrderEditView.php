@@ -31,6 +31,7 @@ use Windwalker\Core\View\ViewModelInterface;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 /**
  * The OrderEditView class.
@@ -43,6 +44,7 @@ class OrderEditView implements ViewModelInterface
 {
     use TranslatorTrait;
     use CurrencyAwareTrait;
+    use InstanceCacheTrait;
 
     public function __construct(
         protected ORM $orm,

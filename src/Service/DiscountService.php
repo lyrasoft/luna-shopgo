@@ -643,8 +643,31 @@ class DiscountService
     {
         return $this->once(
             'discount.groups.' . $productId,
-            fn() => $this->discountRepository->getProductDiscountGroups($productId)
+            function () use ($productId) {
+                return $this->discountRepository->groupProductDiscounts(
+                    $this->discountRepository->getProductDiscounts($productId)
+                );
+            }
         );
+    }
+
+    public function preloadProductDiscounts(array $productIds): void
+    {
+        if ($productIds === []) {
+            return;
+        }
+
+        $productIds = array_unique($productIds);
+        
+        $discountGroup = $this->discountRepository->getProductDiscounts($productIds)
+            ->groupBy('discountId');
+
+        foreach ($productIds as $productId) {
+            $discounts = $discountGroup[$productId] ?? collect();
+
+            $this->cacheStorage['discount.groups.' . $productId]
+                = $this->discountRepository->groupProductDiscounts($discounts);
+        }
     }
 
     /**

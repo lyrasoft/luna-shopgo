@@ -27,9 +27,11 @@ use Unicorn\Repository\ListRepositoryTrait;
 use Unicorn\Repository\ManageRepositoryInterface;
 use Unicorn\Repository\ManageRepositoryTrait;
 use Unicorn\Selector\ListSelector;
+use Windwalker\Data\Collection;
 use Windwalker\Query\Query;
 
 use function Windwalker\chronos;
+use function Windwalker\collect;
 
 /**
  * The DiscountRepository class.
@@ -141,6 +143,47 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
         }
 
         return [$productDiscounts, $productSpecials];
+    }
+
+    /**
+     * @return  array{ 0: Discount[], 1: Discount[] }
+     */
+    public function groupProductDiscounts(iterable $discounts): array
+    {
+        $productDiscounts = [];
+        $productSpecials = [];
+
+        /** @var Discount $discount */
+        foreach ($discounts as $discount) {
+            if ($discount->getSubtype() === 'discount') {
+                $productDiscounts[] = $discount;
+            } else {
+                $productSpecials[] = $discount;
+            }
+        }
+
+        return [$productDiscounts, $productSpecials];
+    }
+
+    /**
+     * @param  array  $productIds
+     *
+     * @return  Collection<Discount>
+     */
+    public function getProductDiscounts(array|int $productIds = []): Collection
+    {
+        if (is_array($productIds)) {
+            if ($productIds === []) {
+                return collect();
+            }
+
+            $productIds = array_unique($productIds);
+        }
+
+        return $this->getAvailableSelector(DiscountType::PRODUCT())
+            ->where('subtype', ['discount', 'special'])
+            ->where('product_id', $productIds)
+            ->all(Discount::class);
     }
 
     public function getCouponListSelector(): ListSelector
