@@ -373,11 +373,11 @@ $shopGoScript->swiper(
         <div class="mt-5">
             <x-tabs>
 
-                <x-tab name="description" title="@lang('shopgo.product.tab.description')">
+                <x-tab name="description" :title="$lang('shopgo.product.tab.description')">
                     {!! $item->getDescription() !!}
                 </x-tab>
 
-                <x-tab name="attributes" title="@lang('shopgo.product.tab.attributes')">
+                <x-tab name="attributes" :title="$lang('shopgo.product.tab.attributes')">
                     @include('product-attributes')
                 </x-tab>
 
