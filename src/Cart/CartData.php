@@ -66,7 +66,7 @@ class CartData extends ValueObject
     /**
      * @param  bool  $onlyChecked
      *
-     * @return Collection
+     * @return Collection<CartItem>
      */
     public function getItems(bool $onlyChecked = false): Collection
     {
