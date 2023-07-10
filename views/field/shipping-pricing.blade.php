@@ -57,9 +57,10 @@ $uniScript->data(
 $uniScript->addRoute('location_modal', $nav->to('location_list')->layout('modal'));
 $uniScript->addRoute('category_modal', $nav->to('category_list')->var('type', 'location')->layout('modal'));
 
-$asset->js('@shopgo/field/shipping-pricing.js');
-$uniScript->importMainThen(
-    "u.module('#$id', 'shipping.pricing', (el) => ShippingPricing.create(el))"
+$uniScript->importThen(
+    '@shopgo/field/shipping-pricing.js',
+    "u.module('#$id', 'shipping.pricing', (el) => ShippingPricing.create(el))",
+    true
 );
 ?>
 
