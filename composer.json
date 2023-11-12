@@ -4,7 +4,7 @@
     "type": "luna-package",
     "require": {
         "brick/math": "^0.11.0",
-        "lyrasoft/favorite": "^1.0"
+        "lyrasoft/favorite": "^1.0||^2.0"
     },
     "require-dev": {
         "lyrasoft/sequence": "^1.0"
