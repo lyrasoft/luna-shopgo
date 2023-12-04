@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Admin\ProductTab;
 
 use Lyrasoft\ShopGo\Entity\ProductTab;
+use Lyrasoft\ShopGo\Entity\ShopCategoryMap;
 use Lyrasoft\ShopGo\Module\Admin\ProductTab\Form\EditForm;
 use Lyrasoft\ShopGo\Repository\ProductTabRepository;
 use Windwalker\Core\Application\AppContext;
@@ -58,12 +59,26 @@ class ProductTabEditView implements ViewModelInterface
         /** @var ProductTab $item */
         $item = $this->repository->getItem($id);
 
+        $categoryIds = $this->orm->findColumn(
+            ShopCategoryMap::class,
+            'category_id',
+            [
+                'type' => 'tab',
+                'target_id' => $item?->getId()
+            ]
+        )->dump();
+
         $form = $this->formFactory
             ->create(EditForm::class)
             ->setNamespace('item')
             ->fill(
                 $this->repository->getState()->getAndForget('edit.data')
                     ?: $this->orm->extractEntity($item)
+            )
+            ->fill(
+                [
+                    'categories' => $categoryIds
+                ]
             );
 
         $this->prepareMetadata($app, $view);

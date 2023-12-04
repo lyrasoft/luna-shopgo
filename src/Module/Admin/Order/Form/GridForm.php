@@ -49,7 +49,7 @@ class GridForm implements FieldDefinitionInterface
         $form->ns(
             'filter',
             function (Form $form) {
-                $form->add('order.state', OrderStateListField::class)
+                $form->add('order.state_id', OrderStateListField::class)
                     ->label($this->trans('unicorn.field.state'))
                     ->option($this->trans('unicorn.select.placeholder'), '')
                     ->onchange('this.form.submit()');
