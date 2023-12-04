@@ -74,7 +74,7 @@ class DiscountUsageService
     {
         return $this->once(
             'user.usage.groups.' . $userId,
-            fn () => $this->getUserUsages($userId)->groupBy('discountId')
+            fn () => $this->getUserUsages($userId)
         );
     }
 
@@ -86,6 +86,6 @@ class DiscountUsageService
      */
     public function getUserUsagesOfDiscount(int $userId, int $discountId): int
     {
-        return $this->getUserUsageGroups($userId)[$discountId] ?? 0;
+        return (int) $this->getUserUsageGroups($userId)[$discountId] ?? 0;
     }
 }
