@@ -53,11 +53,11 @@ class ProductTabController
                     $maps[] = $map;
                 }
 
-                $orm->flush(
+                $orm->sync(
                     ShopCategoryMap::class,
                     $maps,
                     ['type' => 'tab', 'target_id' => $data['id']],
-                    ['type', 'category_id']
+                    ['type', 'category_id', 'target_id']
                 );
             }
         );

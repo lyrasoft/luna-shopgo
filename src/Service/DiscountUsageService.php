@@ -15,6 +15,7 @@ use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\DiscountUsage;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
+use Windwalker\ORM\SelectorQuery;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
@@ -41,24 +42,8 @@ class DiscountUsageService
     {
         return $this->once(
             'user.usages.' . $userId,
-            fn() => $this->orm->select('discount_usage.discount_id')
+            fn() => $this->loadUserUsage($userId)
                 ->selectRaw('COUNT(discount_usage.id) AS count')
-                ->from(DiscountUsage::class, 'discount_usage')
-                ->leftJoin(Discount::class, 'discount')
-                ->where('discount.state', 1)
-                ->orWhere(
-                    function (Query $query) {
-                        $query->where('discount.publish_up', null);
-                        $query->where('discount.publish_up', '<', chronos());
-                    }
-                )
-                ->orWhere(
-                    function (Query $query) {
-                        $query->where('discount.publish_down', null);
-                        $query->where('discount.publish_down', '>=', chronos());
-                    }
-                )
-                ->where('discount_usage.user_id', $userId)
                 ->group('discount_usage.discount_id')
                 ->all()
                 ->mapWithKeys(fn ($item) => [$item->discount_id => $item->count])
@@ -74,7 +59,9 @@ class DiscountUsageService
     {
         return $this->once(
             'user.usage.groups.' . $userId,
-            fn () => $this->getUserUsages($userId)
+            fn () => $this->loadUserUsage($userId)
+                ->all()
+                ->groupBy('discount_id')
         );
     }
 
@@ -87,5 +74,31 @@ class DiscountUsageService
     public function getUserUsagesOfDiscount(int $userId, int $discountId): int
     {
         return (int) $this->getUserUsageGroups($userId)[$discountId] ?? 0;
+    }
+
+    /**
+     * @param  int  $userId
+     *
+     * @return  SelectorQuery
+     */
+    protected function loadUserUsage(int $userId): SelectorQuery
+    {
+        return $this->orm->select('discount_usage.discount_id')
+            ->from(DiscountUsage::class, 'discount_usage')
+            ->leftJoin(Discount::class, 'discount')
+            ->where('discount.state', 1)
+            ->orWhere(
+                function (Query $query) {
+                    $query->where('discount.publish_up', null);
+                    $query->where('discount.publish_up', '<', chronos());
+                }
+            )
+            ->orWhere(
+                function (Query $query) {
+                    $query->where('discount.publish_down', null);
+                    $query->where('discount.publish_down', '>=', chronos());
+                }
+            )
+            ->where('discount_usage.user_id', $userId);
     }
 }
