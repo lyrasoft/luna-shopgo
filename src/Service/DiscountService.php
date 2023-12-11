@@ -313,8 +313,8 @@ class DiscountService
                 return false;
             }
 
-            $usages = $this->discountUsageService->getUserUsageGroups($user->getId());
-            $usage = $usages[$discount->getId()] ?? 0;
+            $usages = $this->discountUsageService->getUserUsages($user->getId());
+            $usage = (int) $usages[$discount->getId()] ?? 0;
 
             if ($usage >= $discount->getTimesPerUser()) {
                 return false;
