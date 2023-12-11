@@ -196,6 +196,24 @@ abstract class AbstractShipping implements FieldDefinitionInterface
         return true;
     }
 
+    public function inPriceRange(PriceObject $total): bool
+    {
+        $params = $this->getParams();
+
+        $totalGt = $params['total_gt'] ?? '';
+        $totalLt = $params['total_lt'] ?? '';
+
+        if (((string) $totalGt !== '') && $total->lte($totalGt)) {
+            return false;
+        }
+
+        if (((string) $totalLt !== '') && $total->gte($totalLt)) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Get shipping entity data.
      *
@@ -261,9 +279,9 @@ abstract class AbstractShipping implements FieldDefinitionInterface
     {
         return (new \ReflectionClass(static::class))->getFileName();
     }
-
     // public function computeAndAddShippingFee(ApplicationInterface $app, CartData $cartData, Location $location): void
     // {
     //     $fee = $this->computeShippingFee($app, $cartData, $location);
+
     // }
 }

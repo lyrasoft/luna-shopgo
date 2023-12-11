@@ -11,21 +11,15 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Module\Admin\AdditionalPurchase\Form;
 
-use Lyrasoft\ShopGo\Entity\Product;
-use Lyrasoft\ShopGo\Field\ProductModalField;
-use Lyrasoft\ShopGo\Field\ProductVariantListField;
-use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Lyrasoft\Luna\Field\UserModalField;
+use Lyrasoft\ShopGo\Field\ProductModalField;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
-use Windwalker\Form\Field\ListField;
-use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
 use Windwalker\Form\Form;
-use Windwalker\Query\Query;
 
 /**
  * The EditForm class.

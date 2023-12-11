@@ -15,11 +15,13 @@ use Lyrasoft\ShopGo\Field\LocationModalField;
 use Lyrasoft\ShopGo\Field\OrderStateListField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\SingleImageDragField;
 use Unicorn\Field\SwitcherField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
+use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\TextareaField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
@@ -31,6 +33,7 @@ use Windwalker\Form\Form;
 class EditForm implements FieldDefinitionInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     /**
      * Define the form fields.
@@ -64,6 +67,16 @@ class EditForm implements FieldDefinitionInterface
                     $form->add('order_state_id', OrderStateListField::class)
                         ->label($this->trans('shopgo.payment.field.order.state'))
                         ->option($this->trans('unicorn.select.placeholder'))
+                        ->defaultValue('');
+
+                    $form->add('params/total_gt', NumberField::class)
+                        ->label($this->trans('shopgo.payment.field.total.gt'))
+                        ->step($this->getMainInputStep())
+                        ->defaultValue('');
+
+                    $form->add('params/total_lt', NumberField::class)
+                        ->label($this->trans('shopgo.payment.field.total.lt'))
+                        ->step($this->getMainInputStep())
                         ->defaultValue('');
 
                     $form->add('location_category_id', CategoryModalField::class)

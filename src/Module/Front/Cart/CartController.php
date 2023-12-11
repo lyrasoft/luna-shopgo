@@ -285,6 +285,10 @@ class CartController
                 continue;
             }
 
+            if (!$instance->inPriceRange($cartData->getTotals()['total'])) {
+                continue;
+            }
+
             if (!$instance->isSupported($cartData)) {
                 continue;
             }
@@ -330,6 +334,10 @@ class CartController
             $instance = $paymentService->createTypeInstance($payment);
 
             if (!$instance) {
+                continue;
+            }
+
+            if (!$instance->inPriceRange($cartData->getTotals()['total'])) {
                 continue;
             }
 

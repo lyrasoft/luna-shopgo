@@ -16,12 +16,14 @@ use Lyrasoft\ShopGo\Field\LocationModalField;
 use Lyrasoft\ShopGo\Field\PaymentModalField;
 use Lyrasoft\Luna\Field\CategoryModalField;
 use Lyrasoft\Luna\Field\UserModalField;
+use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
 use Unicorn\Field\CalendarField;
 use Unicorn\Field\SingleImageDragField;
 use Unicorn\Field\SwitcherField;
 use Unicorn\Field\TinymceEditorField;
 use Windwalker\Core\Language\TranslatorTrait;
 use Windwalker\Form\Field\HiddenField;
+use Windwalker\Form\Field\NumberField;
 use Windwalker\Form\Field\TextareaField;
 use Windwalker\Form\Field\TextField;
 use Windwalker\Form\FieldDefinitionInterface;
@@ -33,6 +35,7 @@ use Windwalker\Form\Form;
 class EditForm implements FieldDefinitionInterface
 {
     use TranslatorTrait;
+    use CurrencyAwareTrait;
 
     /**
      * Define the form fields.
@@ -68,12 +71,22 @@ class EditForm implements FieldDefinitionInterface
                         )
                         ->rows(4);
 
+                    $form->add('params/total_gt', NumberField::class)
+                        ->label($this->trans('shopgo.shipping.field.total.gt'))
+                        ->step($this->getMainInputStep())
+                        ->defaultValue('');
+
+                    $form->add('params/total_lt', NumberField::class)
+                        ->label($this->trans('shopgo.shipping.field.total.lt'))
+                        ->step($this->getMainInputStep())
+                        ->defaultValue('');
+
                     $form->add('location_category_id', CategoryModalField::class)
-                        ->label($this->trans('shopgo.payment.field.location_category'))
+                        ->label($this->trans('shopgo.shipping.field.location_category'))
                         ->categoryType('location');
 
                     $form->add('location_id', LocationModalField::class)
-                        ->label($this->trans('shopgo.payment.field.location'));
+                        ->label($this->trans('shopgo.shipping.field.location'));
 
                     $form->add('allow_tags', TagListField::class)
                         ->label($this->trans('shopgo.shipping.field.allow.tags'))

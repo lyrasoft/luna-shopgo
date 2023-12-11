@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Payment;
 
 use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
@@ -114,6 +115,24 @@ abstract class AbstractPayment implements FieldDefinitionInterface
 
     public function isSupported(CartData $cartData): bool
     {
+        return true;
+    }
+
+    public function inPriceRange(PriceObject $total): bool
+    {
+        $params = $this->getParams();
+
+        $totalGt = $params['total_gt'] ?? '';
+        $totalLt = $params['total_lt'] ?? '';
+
+        if (((string) $totalGt !== '') && $total->lte($totalGt)) {
+            return false;
+        }
+
+        if (((string) $totalLt !== '') && $total->gte($totalLt)) {
+            return false;
+        }
+
         return true;
     }
 
