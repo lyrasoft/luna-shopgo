@@ -57,7 +57,7 @@ class ProductTabController
                     ShopCategoryMap::class,
                     $maps,
                     ['type' => 'tab', 'target_id' => $data['id']],
-                    ['type', 'category_id']
+                    ['type', 'category_id', 'target_id']
                 );
             }
         );

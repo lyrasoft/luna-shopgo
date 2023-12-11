@@ -88,7 +88,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
             function (Query $query) {
                 $query->where('discount.quantity', null);
                 $query->where('discount.quantity', 0);
-                $query->whereRaw('usage.count < discount.quantity');
+                $query->whereRaw('IFNULL(usage.count, 0) < discount.quantity');
             }
         );
 
