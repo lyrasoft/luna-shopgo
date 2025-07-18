@@ -70,7 +70,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
     {
         class_alias(Collection::class, ShopConfig::class);
 
-        $container->share(self::class, $this);
+        $container->share(self::class, fn () => $this);
         $container->prepareSharedObject(AdditionalPurchaseService::class);
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);
