@@ -3,7 +3,7 @@
     "description": "Luna ShopGo package",
     "type": "luna-package",
     "require": {
-        "brick/math": "^0.11.0",
+        "brick/math": "*",
         "lyrasoft/favorite": "^1.0||^2.0"
     },
     "require-dev": {
