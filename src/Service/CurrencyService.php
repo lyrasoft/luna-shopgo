@@ -17,6 +17,7 @@ use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Currency;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\Application\AppType;
 use Windwalker\Core\State\AppState;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\ORM;
@@ -83,7 +84,7 @@ class CurrencyService
 
     public function getCurrentCurrency(): Currency
     {
-        if ($this->app->getClientType() === 'console') {
+        if ($this->isConsole()) {
             return $this->getMainCurrency();
         }
 
@@ -170,5 +171,17 @@ class CurrencyService
         }
 
         $state->remember('current_currency', $currency);
+    }
+
+    /**
+     * @return  bool
+     */
+    public function isConsole(): bool
+    {
+        if (method_exists($this->app, 'getClientType')) {
+            return $this->app->getClientType() === 'console';
+        }
+
+        return $this->app->getType() === AppType::CONSOLE;
     }
 }
