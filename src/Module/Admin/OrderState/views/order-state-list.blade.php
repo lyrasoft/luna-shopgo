@@ -184,7 +184,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->shouldAttachInvoice())
+                                @if ($entity->shouldNotice())
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -192,7 +192,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->shouldNotice())
+                                @if ($entity->shouldAttachInvoice())
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
