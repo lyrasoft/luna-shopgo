@@ -24,76 +24,42 @@ use function Windwalker\collect;
  */
 trait ProductVariantTrait
 {
-    public ?PriceSet $priceSet = null;
-
-    /**
-     * @var Collection<Discount>|null
-     */
-    public ?Collection $applyDiscounts = null;
-
-    /**
-     * @return PriceSet
-     * @throws MathException
-     */
-    public function getPriceSet(): PriceSet
-    {
-        if (!$this->priceSet) {
-            $this->priceSet = new PriceSet();
-
-            $this->priceSet->set(
-                new PriceObject(
-                    'origin',
-                    (string) $this->price
-                )
-            );
-
-            $this->priceSet->set(
-                new PriceObject(
-                    'base',
-                    (string) $this->price
-                )
-            );
-
-            $this->priceSet->set(
-                new PriceObject(
-                    'final',
-                    (string) $this->price
-                )
-            );
-        }
-
-        return $this->priceSet;
+    public PriceSet $priceSet {
+        get => $this->priceSet ??= $this->preparePriceSet();
     }
 
     /**
-     * @param  PriceSet|null  $priceSet
-     *
-     * @return  static  Return self to support chaining.
+     * @var Collection<Discount>
      */
-    public function setPriceSet(?PriceSet $priceSet): static
-    {
-        $this->priceSet = $priceSet;
-
-        return $this;
+    public Collection $applyDiscounts {
+        get => $this->applyDiscounts ??= collect();
     }
 
-    /**
-     * @return Collection
-     */
-    public function getApplyDiscounts(): Collection
+    protected function preparePriceSet(): PriceSet
     {
-        return $this->applyDiscounts ??= collect();
-    }
+        $priceSet = new PriceSet();
 
-    /**
-     * @param  Collection|null  $applyDiscounts
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setApplyDiscounts(?Collection $applyDiscounts): static
-    {
-        $this->applyDiscounts = $applyDiscounts;
+        $priceSet->set(
+            new PriceObject(
+                'origin',
+                (string) $this->price
+            )
+        );
 
-        return $this;
+        $priceSet->set(
+            new PriceObject(
+                'base',
+                (string) $this->price
+            )
+        );
+
+        $priceSet->set(
+            new PriceObject(
+                'final',
+                (string) $this->price
+            )
+        );
+
+        return $priceSet;
     }
 }

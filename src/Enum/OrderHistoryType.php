@@ -18,6 +18,6 @@ enum OrderHistoryType: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.order.history.type.' . $this->getKey());
+        return $lang->trans('shopgo.order.history.type.' . $this->name);
     }
 }

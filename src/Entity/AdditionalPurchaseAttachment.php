@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -33,6 +26,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The AdditionalPurchaseAttachment class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('additional_purchase_attachments', 'additional_purchase_attachment')]
 #[\AllowDynamicProperties]
 class AdditionalPurchaseAttachment implements EntityInterface
@@ -53,7 +48,9 @@ class AdditionalPurchaseAttachment implements EntityInterface
 
     #[Column('method')]
     #[Cast(DiscountMethod::class)]
-    public DiscountMethod $method;
+    public DiscountMethod $method {
+        set(DiscountMethod|string $value) => $this->method = DiscountMethod::wrap($value);
+    }
 
     #[Column('price')]
     public float $price = 0.0;
@@ -64,7 +61,9 @@ class AdditionalPurchaseAttachment implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('ordering')]
     public int $ordering = 0;
@@ -72,12 +71,16 @@ class AdditionalPurchaseAttachment implements EntityInterface
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]

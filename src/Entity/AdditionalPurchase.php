@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -32,6 +25,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The AdditionalPurchase class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('additional_purchases', 'additional_purchase')]
 #[\AllowDynamicProperties]
 class AdditionalPurchase implements EntityInterface
@@ -47,28 +42,38 @@ class AdditionalPurchase implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('ordering')]
     public int $ordering = 0;
 
     #[Column('publish_up')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $publishUp = null;
+    public ?Chronos $publishUp = null {
+        set(\DateTimeInterface|string|null $value) => $this->publishUp = Chronos::tryWrap($value);
+    }
 
     #[Column('publish_down')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $publishDown = null;
+    public ?Chronos $publishDown = null {
+        set(\DateTimeInterface|string|null $value) => $this->publishDown = Chronos::tryWrap($value);
+    }
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]

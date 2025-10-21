@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -36,6 +29,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The ProductVariant class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('product_variants', 'product_variant')]
 #[\AllowDynamicProperties]
 class ProductVariant implements EntityInterface
@@ -90,7 +85,10 @@ class ProductVariant implements EntityInterface
     #[Column('dimension')]
     #[Cast(JsonCast::class)]
     #[Cast(ProductDimension::class)]
-    public ProductDimension $dimension;
+    public ProductDimension $dimension {
+        set(ProductDimension|array|null $value) => $this->dimension = ProductDimension::wrap($value);
+        get => $this->dimension ??= new ProductDimension();
+    }
 
     #[Column('out_of_stock_text')]
     public string $outOfStockText = '';
@@ -105,22 +103,31 @@ class ProductVariant implements EntityInterface
     #[Column('options')]
     #[Cast(JsonCast::class)]
     #[Cast(ListOptionCollection::class)]
-    public ListOptionCollection $options;
+    public ListOptionCollection $options {
+        set(ListOptionCollection|array|null $value) => $this->options = ListOptionCollection::wrap($value);
+        get => $this->options ??= new ListOptionCollection();
+    }
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -138,311 +145,6 @@ class ProductVariant implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getProductId(): int
-    {
-        return $this->productId;
-    }
-
-    public function setProductId(int $productId): static
-    {
-        $this->productId = $productId;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getHash(): string
-    {
-        return $this->hash;
-    }
-
-    public function setHash(string $hash): static
-    {
-        $this->hash = $hash;
-
-        return $this;
-    }
-
-    public function isPrimary(): bool
-    {
-        return $this->primary;
-    }
-
-    public function setPrimary(bool $primary): static
-    {
-        $this->primary = $primary;
-
-        return $this;
-    }
-
-    public function getSku(): string
-    {
-        return $this->sku;
-    }
-
-    public function setSku(string $sku): static
-    {
-        $this->sku = $sku;
-
-        return $this;
-    }
-
-    public function getUpc(): string
-    {
-        return $this->upc;
-    }
-
-    public function setUpc(string $upc): static
-    {
-        $this->upc = $upc;
-
-        return $this;
-    }
-
-    public function getEan(): string
-    {
-        return $this->ean;
-    }
-
-    public function setEan(string $ean): static
-    {
-        $this->ean = $ean;
-
-        return $this;
-    }
-
-    public function getJan(): string
-    {
-        return $this->jan;
-    }
-
-    public function setJan(string $jan): static
-    {
-        $this->jan = $jan;
-
-        return $this;
-    }
-
-    public function getIsbn(): string
-    {
-        return $this->isbn;
-    }
-
-    public function setIsbn(string $isbn): static
-    {
-        $this->isbn = $isbn;
-
-        return $this;
-    }
-
-    public function getMpn(): string
-    {
-        return $this->mpn;
-    }
-
-    public function setMpn(string $mpn): static
-    {
-        $this->mpn = $mpn;
-
-        return $this;
-    }
-
-    public function getStockQuantity(): int
-    {
-        return $this->stockQuantity;
-    }
-
-    public function setStockQuantity(int $stockQuantity): static
-    {
-        $this->stockQuantity = $stockQuantity;
-
-        return $this;
-    }
-
-    public function isSubtract(): bool
-    {
-        return $this->subtract;
-    }
-
-    public function setSubtract(bool $subtract): static
-    {
-        $this->subtract = $subtract;
-
-        return $this;
-    }
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): static
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    public function getDimension(): ProductDimension
-    {
-        return $this->dimension ??= ProductDimension::wrap([]);
-    }
-
-    public function setDimension(ProductDimension|array $dimension): static
-    {
-        $this->dimension = ProductDimension::wrap($dimension);
-
-        return $this;
-    }
-
-    public function getOutOfStockText(): string
-    {
-        return $this->outOfStockText;
-    }
-
-    public function setOutOfStockText(string $outOfStockText): static
-    {
-        $this->outOfStockText = $outOfStockText;
-
-        return $this;
-    }
-
-    public function getCover(): string
-    {
-        return $this->cover;
-    }
-
-    public function setCover(string $cover): static
-    {
-        $this->cover = $cover;
-
-        return $this;
-    }
-
-    public function getImages(): array
-    {
-        return $this->images;
-    }
-
-    public function setImages(array $images): static
-    {
-        $this->images = $images;
-
-        return $this;
-    }
-
-    public function getOptions(): ListOptionCollection
-    {
-        return $this->options ??= new ListOptionCollection();
-    }
-
-    public function setOptions(array|ListOptionCollection $options): static
-    {
-        $this->options = ListOptionCollection::wrap($options);
-
-        return $this;
-    }
-
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getModified(): ?Chronos
-    {
-        return $this->modified;
-    }
-
-    public function setModified(DateTimeInterface|string|null $modified): static
-    {
-        $this->modified = Chronos::wrapOrNull($modified);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getModifiedBy(): int
-    {
-        return $this->modifiedBy;
-    }
-
-    public function setModifiedBy(int $modifiedBy): static
-    {
-        $this->modifiedBy = $modifiedBy;
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
-    }
-
-    public function getProduct(): ?Product
-    {
-        return $this->product ?? null;
     }
 
     public function getSearchIndex(): string

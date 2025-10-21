@@ -23,6 +23,6 @@ enum ProductFeatureType: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.product.feature.type.' . $this->getKey());
+        return $lang->trans('shopgo.product.feature.type.' . $this->name);
     }
 }

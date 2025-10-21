@@ -19,6 +19,6 @@ enum OrderNoMode: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.order.no.mode.' . $this->getKey());
+        return $lang->trans('shopgo.order.no.mode.' . $this->name);
     }
 }

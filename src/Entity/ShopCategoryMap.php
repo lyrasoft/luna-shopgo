@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -53,77 +46,5 @@ class ShopCategoryMap implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getTargetId(): int
-    {
-        return $this->targetId;
-    }
-
-    public function setTargetId(int $targetId): static
-    {
-        $this->targetId = $targetId;
-
-        return $this;
-    }
-
-    public function getCategoryId(): int
-    {
-        return $this->categoryId;
-    }
-
-    public function setCategoryId(int $categoryId): static
-    {
-        $this->categoryId = $categoryId;
-
-        return $this;
-    }
-
-    public function getOrdering(): int
-    {
-        return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): static
-    {
-        $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function isPrimary(): bool
-    {
-        return $this->primary;
-    }
-
-    public function setPrimary(bool $primary): static
-    {
-        $this->primary = $primary;
-
-        return $this;
     }
 }

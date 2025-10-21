@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -51,77 +44,5 @@ class ProductAttributeMap implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getProductId(): int
-    {
-        return $this->productId;
-    }
-
-    public function setProductId(int $productId): static
-    {
-        $this->productId = $productId;
-
-        return $this;
-    }
-
-    public function getAttributeId(): int
-    {
-        return $this->attributeId;
-    }
-
-    public function setAttributeId(int $attributeId): static
-    {
-        $this->attributeId = $attributeId;
-
-        return $this;
-    }
-
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    public function setKey(string $key): static
-    {
-        $this->key = $key;
-
-        return $this;
-    }
-
-    public function getValue(): string
-    {
-        return $this->value;
-    }
-
-    public function setValue(string $value): static
-    {
-        $this->value = $value;
-
-        return $this;
-    }
-
-    public function getLocale(): string
-    {
-        return $this->locale;
-    }
-
-    public function setLocale(string $locale): static
-    {
-        $this->locale = $locale;
-
-        return $this;
     }
 }

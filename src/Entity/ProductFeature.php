@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -35,6 +28,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The ProductFeature class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('product_features', 'product_feature')]
 #[\AllowDynamicProperties]
 class ProductFeature implements EntityInterface
@@ -46,7 +41,9 @@ class ProductFeature implements EntityInterface
 
     #[Column('type')]
     #[Cast(ProductFeatureType::class)]
-    public ProductFeatureType $type;
+    public ProductFeatureType $type {
+        set(ProductFeatureType|string $value) => $this->type = ProductFeatureType::wrap($value);
+    }
 
     #[Column('title')]
     public string $title = '';
@@ -63,22 +60,30 @@ class ProductFeature implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
     #[Cast(ListOptionCollection::class)]
-    public ListOptionCollection $options;
+    public ListOptionCollection $options {
+        set(ListOptionCollection|array|null $value) => $this->options = ListOptionCollection::wrap($value);
+    }
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -96,161 +101,5 @@ class ProductFeature implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDefault(): string
-    {
-        return $this->default;
-    }
-
-    public function setDefault(string $default): static
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    public function getNote(): string
-    {
-        return $this->note;
-    }
-
-    public function setNote(string $note): static
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    public function getOrdering(): int
-    {
-        return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): static
-    {
-        $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
-    public function getOptions(): ListOptionCollection
-    {
-        return $this->options;
-    }
-
-    public function setOptions(ListOptionCollection|array $options): static
-    {
-        $this->options = ListOptionCollection::wrap($options);
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getModified(): ?Chronos
-    {
-        return $this->modified;
-    }
-
-    public function setModified(DateTimeInterface|string|null $modified): static
-    {
-        $this->modified = Chronos::wrapOrNull($modified);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getModifiedBy(): int
-    {
-        return $this->modifiedBy;
-    }
-
-    public function setModifiedBy(int $modifiedBy): static
-    {
-        $this->modifiedBy = $modifiedBy;
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
-    }
-
-    public function getType(): ProductFeatureType
-    {
-        return $this->type;
-    }
-
-    public function setType(string|ProductFeatureType $type): static
-    {
-        $this->type = ProductFeatureType::wrap($type);
-
-        return $this;
     }
 }

@@ -18,21 +18,21 @@ enum DiscountType: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.discount.type.' . $this->getKey());
+        return $lang->trans('shopgo.discount.type.' . $this->name);
     }
 
     public function getSubTypes(): array
     {
-        return match ($this->getValue()) {
-            static::PRODUCT => [
+        return match ($this) {
+            self::PRODUCT => [
                 'discount',
                 'special',
             ],
-            static::GLOBAL => [
+            self::GLOBAL => [
                 'basic',
                 'code',
             ],
-            static::COUPON => [
+            self::COUPON => [
                 'basic',
             ],
         };

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -27,6 +20,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The Coupon class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('coupons', 'coupon')]
 #[\AllowDynamicProperties]
 class Coupon implements EntityInterface
@@ -51,83 +46,13 @@ class Coupon implements EntityInterface
 
     #[Column('used_at')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $usedAt = null;
+    public ?Chronos $usedAt = null {
+        set(\DateTimeInterface|string|null $value) => $this->usedAt = Chronos::tryWrap($value);
+    }
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getDiscountId(): int
-    {
-        return $this->discountId;
-    }
-
-    public function setDiscountId(int $discountId): static
-    {
-        $this->discountId = $discountId;
-
-        return $this;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): static
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    public function isUsed(): bool
-    {
-        return $this->used;
-    }
-
-    public function setUsed(bool $used): static
-    {
-        $this->used = $used;
-
-        return $this;
-    }
-
-    public function getUsedAt(): ?Chronos
-    {
-        return $this->usedAt;
-    }
-
-    public function setUsedAt(DateTimeInterface|string|null $usedAt): static
-    {
-        $this->usedAt = Chronos::wrapOrNull($usedAt);
-
-        return $this;
     }
 }

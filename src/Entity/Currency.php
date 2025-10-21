@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -37,6 +30,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The Currency class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('currencies', 'currency')]
 #[\AllowDynamicProperties]
 class Currency implements EntityInterface
@@ -60,7 +55,9 @@ class Currency implements EntityInterface
 
     #[Column('sign_position')]
     #[Cast(SignPosition::class)]
-    public SignPosition $signPosition;
+    public SignPosition $signPosition {
+        set(SignPosition|string $value) => $this->signPosition = SignPosition::wrap($value);
+    }
 
     #[Column('decimal_place')]
     public int $decimalPlace = 0;
@@ -81,17 +78,23 @@ class Currency implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -150,210 +153,6 @@ class Currency implements EntityInterface
 
         $rm->manyToOne('user')
             ->targetTo(User::class, created_by: 'id');
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): static
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    public function getCodeNum(): int
-    {
-        return $this->codeNum;
-    }
-
-    public function setCodeNum(int $codeNum): static
-    {
-        $this->codeNum = $codeNum;
-
-        return $this;
-    }
-
-    public function getSign(): string
-    {
-        return $this->sign;
-    }
-
-    public function setSign(string $sign): static
-    {
-        $this->sign = $sign;
-
-        return $this;
-    }
-
-    public function getSignPosition(): SignPosition
-    {
-        return $this->signPosition;
-    }
-
-    public function setSignPosition(string|SignPosition $signPosition): static
-    {
-        $this->signPosition = SignPosition::wrap($signPosition);
-
-        return $this;
-    }
-
-    public function getDecimalPlace(): int
-    {
-        return $this->decimalPlace;
-    }
-
-    public function setDecimalPlace(int $decimalPlace): static
-    {
-        $this->decimalPlace = $decimalPlace;
-
-        return $this;
-    }
-
-    public function getDecimalPoint(): string
-    {
-        return $this->decimalPoint;
-    }
-
-    public function setDecimalPoint(string $decimalPoint): static
-    {
-        $this->decimalPoint = $decimalPoint;
-
-        return $this;
-    }
-
-    public function getNumSeparator(): string
-    {
-        return $this->numSeparator;
-    }
-
-    public function setNumSeparator(string $numSeparator): static
-    {
-        $this->numSeparator = $numSeparator;
-
-        return $this;
-    }
-
-    public function getExchangeRate(): float
-    {
-        return $this->exchangeRate;
-    }
-
-    public function setExchangeRate(float $exchangeRate): static
-    {
-        $this->exchangeRate = $exchangeRate;
-
-        return $this;
-    }
-
-    public function hasSpace(): bool
-    {
-        return $this->space;
-    }
-
-    public function setSpace(bool $space): static
-    {
-        $this->space = $space;
-
-        return $this;
-    }
-
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getModified(): ?Chronos
-    {
-        return $this->modified;
-    }
-
-    public function setModified(DateTimeInterface|string|null $modified): static
-    {
-        $this->modified = Chronos::wrapOrNull($modified);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getModifiedBy(): int
-    {
-        return $this->modifiedBy;
-    }
-
-    public function setModifiedBy(int $modifiedBy): static
-    {
-        $this->modifiedBy = $modifiedBy;
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
     }
 
     public function getInputStep(): string

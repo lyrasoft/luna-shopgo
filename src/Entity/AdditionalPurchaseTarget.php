@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -30,28 +23,4 @@ class AdditionalPurchaseTarget implements EntityInterface
 
     #[Column('product_id')]
     public int $productId = 0;
-
-    public function getAdditionalPurchaseId(): int
-    {
-        return $this->additionalPurchaseId;
-    }
-
-    public function setAdditionalPurchaseId(int $additionalPurchaseId): static
-    {
-        $this->additionalPurchaseId = $additionalPurchaseId;
-
-        return $this;
-    }
-
-    public function getProductId(): int
-    {
-        return $this->productId;
-    }
-
-    public function setProductId(int $productId): static
-    {
-        $this->productId = $productId;
-
-        return $this;
-    }
 }

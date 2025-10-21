@@ -44,7 +44,7 @@ $seeder->import(
         /** @var Collection<Product> $attachmentProducts */
         /** @var Collection<Product> $targetProducts */
         [$attachmentProducts, $targetProducts] = $products->partition(
-            fn (Product $product) => $product->canAttach()
+            fn (Product $product) => $product->canAttach
         );
 
         /** @var ProductVariant[][] $variantGroups */

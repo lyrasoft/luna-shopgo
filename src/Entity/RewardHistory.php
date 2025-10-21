@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -27,6 +20,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The RewardHistory class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('reward_histories', 'reward_history')]
 #[\AllowDynamicProperties]
 class RewardHistory implements EntityInterface
@@ -56,7 +51,9 @@ class RewardHistory implements EntityInterface
 
     #[Column('time')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $time = null;
+    public ?Chronos $time = null {
+        set(\DateTimeInterface|string|null $value) => $this->time = Chronos::tryWrap($value);
+    }
 
     #[Column('note')]
     public string $note = '';
@@ -69,125 +66,5 @@ class RewardHistory implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getOrderId(): int
-    {
-        return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): static
-    {
-        $this->orderId = $orderId;
-
-        return $this;
-    }
-
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    public function setAction(string $action): static
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-    public function getPoints(): float
-    {
-        return $this->points;
-    }
-
-    public function setPoints(float $points): static
-    {
-        $this->points = $points;
-
-        return $this;
-    }
-
-    public function getRemain(): float
-    {
-        return $this->remain;
-    }
-
-    public function setRemain(float $remain): static
-    {
-        $this->remain = $remain;
-
-        return $this;
-    }
-
-    public function getRatio(): string
-    {
-        return $this->ratio;
-    }
-
-    public function setRatio(string $ratio): static
-    {
-        $this->ratio = $ratio;
-
-        return $this;
-    }
-
-    public function getTime(): ?Chronos
-    {
-        return $this->time;
-    }
-
-    public function setTime(DateTimeInterface|string|null $time): static
-    {
-        $this->time = Chronos::wrapOrNull($time);
-
-        return $this;
-    }
-
-    public function getNote(): string
-    {
-        return $this->note;
-    }
-
-    public function setNote(string $note): static
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
     }
 }

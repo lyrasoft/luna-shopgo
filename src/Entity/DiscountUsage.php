@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -28,6 +21,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The DiscountUsage class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('discount_usages', 'discount_usage')]
 #[\AllowDynamicProperties]
 class DiscountUsage implements EntityInterface
@@ -51,7 +46,9 @@ class DiscountUsage implements EntityInterface
 
     #[Column('used_at')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $usedAt = null;
+    public ?Chronos $usedAt = null {
+        set(\DateTimeInterface|string|null $value) => $this->usedAt = Chronos::tryWrap($value);
+    }
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
@@ -61,89 +58,5 @@ class DiscountUsage implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getDiscountId(): int
-    {
-        return $this->discountId;
-    }
-
-    public function setDiscountId(int $discountId): static
-    {
-        $this->discountId = $discountId;
-
-        return $this;
-    }
-
-    public function getOrderId(): int
-    {
-        return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): static
-    {
-        $this->orderId = $orderId;
-
-        return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    public function getUsedAt(): ?Chronos
-    {
-        return $this->usedAt;
-    }
-
-    public function setUsedAt(DateTimeInterface|string|null $usedAt): static
-    {
-        $this->usedAt = Chronos::wrapOrNull($usedAt);
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
     }
 }

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -30,6 +23,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The OrderHistory class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('order_histories', 'order_history')]
 #[\AllowDynamicProperties]
 class OrderHistory implements EntityInterface
@@ -44,7 +39,10 @@ class OrderHistory implements EntityInterface
 
     #[Column('type')]
     #[Cast(OrderHistoryType::class)]
-    public OrderHistoryType $type;
+    public OrderHistoryType $type {
+        set(OrderHistoryType|string $value) => $this->type = OrderHistoryType::wrap($value);
+        get => $this->type ??= OrderHistoryType::SYSTEM;
+    }
 
     #[Column('state_id')]
     public int $stateId = 0;
@@ -65,7 +63,9 @@ class OrderHistory implements EntityInterface
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -75,110 +75,6 @@ class OrderHistory implements EntityInterface
     public static function setup(EntityMetadata $metadata): void
     {
         //
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getOrderId(): int
-    {
-        return $this->orderId;
-    }
-
-    public function setOrderId(int $orderId): static
-    {
-        $this->orderId = $orderId;
-
-        return $this;
-    }
-
-    public function getType(): OrderHistoryType
-    {
-        return $this->type;
-    }
-
-    public function setType(OrderHistoryType|string $type): static
-    {
-        $this->type = OrderHistoryType::wrap($type);
-
-        return $this;
-    }
-
-    public function isNotify(): bool
-    {
-        return $this->notify;
-    }
-
-    public function setNotify(bool $notify): static
-    {
-        $this->notify = $notify;
-
-        return $this;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    public function setMessage(string $message): static
-    {
-        $this->message = $message;
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getStateId(): int
-    {
-        return $this->stateId;
-    }
-
-    /**
-     * @param  int  $stateId
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setStateId(int $stateId): static
-    {
-        $this->stateId = $stateId;
-
-        return $this;
     }
 
     public function setState(OrderState|null $state): static
@@ -192,46 +88,6 @@ class OrderHistory implements EntityInterface
             $this->stateText = $state->title;
             $this->stateColor = $state->color;
         }
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStateColor(): string
-    {
-        return $this->stateColor;
-    }
-
-    /**
-     * @param  string  $stateColor
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setStateColor(string $stateColor): static
-    {
-        $this->stateColor = $stateColor;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStateText(): string
-    {
-        return $this->stateText;
-    }
-
-    /**
-     * @param  string  $stateText
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setStateText(string $stateText): static
-    {
-        $this->stateText = $stateText;
 
         return $this;
     }

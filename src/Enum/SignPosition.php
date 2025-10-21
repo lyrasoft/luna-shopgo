@@ -17,6 +17,6 @@ enum SignPosition: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.currency.sign.position.' . $this->getKey());
+        return $lang->trans('shopgo.currency.sign.position.' . $this->name);
     }
 }

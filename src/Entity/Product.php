@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -37,6 +30,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The Product class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('products', 'product')]
 #[\AllowDynamicProperties]
 class Product implements EntityInterface
@@ -77,7 +72,9 @@ class Product implements EntityInterface
     #[Column('meta')]
     #[Cast(JsonCast::class)]
     #[Cast(MetaData::class)]
-    public MetaData $meta;
+    public MetaData $meta {
+        set(MetaData|array|null $value) => $this->meta = MetaData::wrap($value);
+    }
 
     #[Column('can_attach')]
     #[Cast('bool', 'int')]
@@ -96,7 +93,9 @@ class Product implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('search_index')]
     public string $searchIndex = '';
@@ -107,21 +106,29 @@ class Product implements EntityInterface
 
     #[Column('publish_up')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $publishUp = null;
+    public ?Chronos $publishUp = null {
+        set(\DateTimeInterface|string|null $value) => $this->publishUp = Chronos::tryWrap($value);
+    }
 
     #[Column('publish_down')]
     #[CastNullable(Chronos::class)]
-    public ?Chronos $publishDown = null;
+    public ?Chronos $publishDown = null {
+        set(\DateTimeInterface|string|null $value) => $this->publishDown = Chronos::tryWrap($value);
+    }
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -147,317 +154,5 @@ class Product implements EntityInterface
     public function makeLink(Navigator $nav): RouteUri
     {
         return $nav->to('front::product_item')->id($this->id)->alias($this->alias);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getCategoryId(): int
-    {
-        return $this->categoryId;
-    }
-
-    public function setCategoryId(int $categoryId): static
-    {
-        $this->categoryId = $categoryId;
-
-        return $this;
-    }
-
-    public function getPrimaryVariantId(): int
-    {
-        return $this->primaryVariantId;
-    }
-
-    public function setPrimaryVariantId(int $primaryVariantId): static
-    {
-        $this->primaryVariantId = $primaryVariantId;
-
-        return $this;
-    }
-
-    public function getModel(): string
-    {
-        return $this->model;
-    }
-
-    public function setModel(string $model): static
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    public function setAlias(string $alias): static
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    public function getOriginPrice(): float
-    {
-        return $this->originPrice;
-    }
-
-    public function setOriginPrice(float $originPrice): static
-    {
-        $this->originPrice = $originPrice;
-
-        return $this;
-    }
-
-    public function getSafeStock(): int
-    {
-        return $this->safeStock;
-    }
-
-    public function setSafeStock(int $safeStock): static
-    {
-        $this->safeStock = $safeStock;
-
-        return $this;
-    }
-
-    public function getIntro(): string
-    {
-        return $this->intro;
-    }
-
-    public function setIntro(string $intro): static
-    {
-        $this->intro = $intro;
-
-        return $this;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getMeta(): MetaData
-    {
-        return $this->meta;
-    }
-
-    public function setMeta(MetaData|array $meta): static
-    {
-        $this->meta = MetaData::wrap($meta);
-
-        return $this;
-    }
-
-    public function canAttach(): bool
-    {
-        return $this->canAttach;
-    }
-
-    public function setCanAttach(bool $canAttach): static
-    {
-        $this->canAttach = $canAttach;
-
-        return $this;
-    }
-
-    public function getVariants(): int
-    {
-        return $this->variants;
-    }
-
-    public function setVariants(int $variants): static
-    {
-        $this->variants = $variants;
-
-        return $this;
-    }
-
-    public function getOrdering(): int
-    {
-        return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): static
-    {
-        $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function isHide(): bool
-    {
-        return $this->hide;
-    }
-
-    public function setHide(bool $hide): static
-    {
-        $this->hide = $hide;
-
-        return $this;
-    }
-
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
-    public function getSearchIndex(): string
-    {
-        return $this->searchIndex;
-    }
-
-    public function setSearchIndex(string $searchIndex): static
-    {
-        $this->searchIndex = $searchIndex;
-
-        return $this;
-    }
-
-    public function getShippings(): array
-    {
-        return $this->shippings;
-    }
-
-    public function setShippings(array $shippings): static
-    {
-        $this->shippings = $shippings;
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getModified(): ?Chronos
-    {
-        return $this->modified;
-    }
-
-    public function setModified(DateTimeInterface|string|null $modified): static
-    {
-        $this->modified = Chronos::wrapOrNull($modified);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getModifiedBy(): int
-    {
-        return $this->modifiedBy;
-    }
-
-    public function setModifiedBy(int $modifiedBy): static
-    {
-        $this->modifiedBy = $modifiedBy;
-
-        return $this;
-    }
-
-    public function getHits(): int
-    {
-        return $this->hits;
-    }
-
-    public function setHits(int $hits): static
-    {
-        $this->hits = $hits;
-
-        return $this;
-    }
-
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
-    }
-
-    public function getPublishUp(): ?Chronos
-    {
-        return $this->publishUp;
-    }
-
-    public function setPublishUp(\DateTimeInterface|string|null $publishUp): static
-    {
-        $this->publishUp = Chronos::wrapOrNull($publishUp);
-
-        return $this;
-    }
-
-    public function getPublishDown(): ?Chronos
-    {
-        return $this->publishDown;
-    }
-
-    public function setPublishDown(\DateTimeInterface|string|null $publishDown): static
-    {
-        $this->publishDown = Chronos::wrapOrNull($publishDown);
-
-        return $this;
     }
 }

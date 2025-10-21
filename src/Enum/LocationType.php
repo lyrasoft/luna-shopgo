@@ -21,7 +21,7 @@ enum LocationType: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.location.type.' . $this->getKey());
+        return $lang->trans('shopgo.location.type.' . $this->name);
     }
 
     public static function nonRootTypes(): array

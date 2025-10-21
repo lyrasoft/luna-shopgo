@@ -11,87 +11,28 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
 
-use Lyrasoft\ShopGo\Entity\Address;
-
 /**
  * Interface AddressAwareInterface
  */
 interface AddressAwareInterface
 {
-    /**
-     * @return string
-     */
-    public function getFirstname(): string;
-
-    /**
-     * @return string
-     */
-    public function getLastname(): string;
-
-    /**
-     * @return string
-     */
-    public function getName(): string;
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string;
-
-    /**
-     * @return string
-     */
-    public function getPhone(): string;
-
-    /**
-     * @return string
-     */
-    public function getMobile(): string;
-
-    /**
-     * @return int
-     */
-    public function getAddressId(): int;
-
-    /**
-     * @return string
-     */
-    public function getCompany(): string;
-
-    /**
-     * @return string
-     */
-    public function getVat(): string;
-
-    /**
-     * @return string
-     */
-    public function getCountry(): string;
-
-    /**
-     * @return string
-     */
-    public function getState(): string;
-
-    /**
-     * @return string
-     */
-    public function getCity(): string;
-
-    /**
-     * @return string
-     */
-    public function getAddress1(): string;
-
-    /**
-     * @return string
-     */
-    public function getAddress2(): string;
-
-    /**
-     * @return int
-     */
-    public function getLocationId(): int;
+    public string $name { get; }
+    public string $firstname { get; }
+    public string $lastname { get; }
+    public string $email { get; }
+    public string $phone { get; }
+    public string $mobile { get; }
+    public string $company { get; }
+    public string $country { get; }
+    public string $state { get; }
+    public string $city { get; }
+    public string $postcode { get; }
+    public string $address1 { get; }
+    public string $address2 { get; }
+    public string $vat { get; }
+    public string $formatted { get; set; }
+    public int $locationId { get; }
+    public ?int $addressId { get; }
 
     /**
      * @param  AddressAwareInterface  $address
@@ -99,16 +40,4 @@ interface AddressAwareInterface
      * @return  static
      */
     public function fillFrom(AddressAwareInterface $address): static;
-
-    /**
-     * @return string
-     */
-    public function getFormatted(): string;
-
-    /**
-     * @param  string  $formatted
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setFormatted(string $formatted): static;
 }

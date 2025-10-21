@@ -23,6 +23,6 @@ enum DiscountApplyTo: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.discount.apply.to.' . $this->getKey());
+        return $lang->trans('shopgo.discount.apply.to.' . $this->name);
     }
 }

@@ -24,6 +24,6 @@ enum DiscountCombine: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.discount.combine.' . $this->getKey());
+        return $lang->trans('shopgo.discount.combine.' . $this->name);
     }
 }

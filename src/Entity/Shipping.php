@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of starter project.
- *
- * @copyright  Copyright (C) 2021 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Entity;
@@ -38,6 +31,8 @@ use Windwalker\Utilities\Str;
 /**
  * The Shipping class.
  */
+// phpcs:disable
+// todo: remove this when phpcs supports 8.4
 #[Table('shippings', 'shipping')]
 #[\AllowDynamicProperties]
 class Shipping implements EntityInterface
@@ -97,7 +92,9 @@ class Shipping implements EntityInterface
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    public BasicState $state;
+    public BasicState $state {
+        set(BasicState|int $value) => $this->state = BasicState::wrap($value);
+    }
 
     #[Column('ordering')]
     public int $ordering = 0;
@@ -105,12 +102,16 @@ class Shipping implements EntityInterface
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    public ?Chronos $created = null;
+    public ?Chronos $created = null {
+        set(\DateTimeInterface|string|null $value) => $this->created = Chronos::tryWrap($value);
+    }
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    public ?Chronos $modified = null;
+    public ?Chronos $modified = null {
+        set(\DateTimeInterface|string|null $value) => $this->modified = Chronos::tryWrap($value);
+    }
 
     #[Column('created_by')]
     #[Author]
@@ -133,8 +134,8 @@ class Shipping implements EntityInterface
     #[BeforeSaveEvent]
     public static function beforeSave(BeforeSaveEvent $event): void
     {
-        $data = $event->getData();
-        $orm = $event->getORM();
+        $data = $event->data;
+        $orm = $event->orm;
 
         $exists = $orm->from(static::class)
             ->where('alias', $data['alias'])
@@ -149,8 +150,8 @@ class Shipping implements EntityInterface
     #[BeforeCopyEvent]
     public static function beforeCopy(BeforeCopyEvent $event): void
     {
-        $orm = $event->getORM();
-        $data = &$event->getData();
+        $orm = $event->orm;
+        $data = &$event->data;
 
         do {
             $data['title'] = Str::increment($data['title']);
@@ -163,269 +164,5 @@ class Shipping implements EntityInterface
 
             $exists = $orm->findOne(static::class, ['alias' => $data['alias']]);
         } while ($exists !== null);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function setId(?int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getLocationCategoryId(): int
-    {
-        return $this->locationCategoryId;
-    }
-
-    public function setLocationCategoryId(int $locationCategoryId): static
-    {
-        $this->locationCategoryId = $locationCategoryId;
-
-        return $this;
-    }
-
-    public function getLocationId(): int
-    {
-        return $this->locationId;
-    }
-
-    public function setLocationId(int $locationId): static
-    {
-        $this->locationId = $locationId;
-
-        return $this;
-    }
-
-    public function getClassname(): string
-    {
-        return $this->classname;
-    }
-
-    public function setClassname(string $classname): static
-    {
-        $this->classname = $classname;
-
-        return $this;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getImage(): string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getPayments(): array
-    {
-        return $this->payments;
-    }
-
-    public function setPayments(array $payments): static
-    {
-        $this->payments = $payments;
-
-        return $this;
-    }
-
-    public function getPricing(): array
-    {
-        return $this->pricing;
-    }
-
-    public function setPricing(array $pricing): static
-    {
-        $this->pricing = $pricing;
-
-        return $this;
-    }
-
-    public function getOrdering(): int
-    {
-        return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): static
-    {
-        $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function getCreated(): ?Chronos
-    {
-        return $this->created;
-    }
-
-    public function setCreated(DateTimeInterface|string|null $created): static
-    {
-        $this->created = Chronos::wrapOrNull($created);
-
-        return $this;
-    }
-
-    public function getModified(): ?Chronos
-    {
-        return $this->modified;
-    }
-
-    public function setModified(DateTimeInterface|string|null $modified): static
-    {
-        $this->modified = Chronos::wrapOrNull($modified);
-
-        return $this;
-    }
-
-    public function getCreatedBy(): int
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(int $createdBy): static
-    {
-        $this->createdBy = $createdBy;
-
-        return $this;
-    }
-
-    public function getModifiedBy(): int
-    {
-        return $this->modifiedBy;
-    }
-
-    public function setModifiedBy(int $modifiedBy): static
-    {
-        $this->modifiedBy = $modifiedBy;
-
-        return $this;
-    }
-
-    public function &getParams(): array
-    {
-        return $this->params;
-    }
-
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
-    }
-
-    public function getState(): BasicState
-    {
-        return $this->state;
-    }
-
-    public function setState(int|BasicState $state): static
-    {
-        $this->state = BasicState::wrap($state);
-
-        return $this;
-    }
-
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    public function setAlias(string $alias): static
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    public function getUnallowTags(): array
-    {
-        return $this->unallowTags;
-    }
-
-    public function setUnallowTags(array $unallowTags): static
-    {
-        $this->unallowTags = $unallowTags;
-
-        return $this;
-    }
-
-    public function getNote(): string
-    {
-        return $this->note;
-    }
-
-    public function setNote(string $note): static
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    public function getSubtitle(): string
-    {
-        return $this->subtitle;
-    }
-
-    public function setSubtitle(string $subtitle): static
-    {
-        $this->subtitle = $subtitle;
-
-        return $this;
-    }
-
-    public function getAllowTags(): array
-    {
-        return $this->allowTags;
-    }
-
-    public function setAllowTags(array $allowTags): static
-    {
-        $this->allowTags = $allowTags;
-
-        return $this;
     }
 }

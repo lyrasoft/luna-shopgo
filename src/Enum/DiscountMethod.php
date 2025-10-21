@@ -19,6 +19,6 @@ enum DiscountMethod: string implements EnumTranslatableInterface
 
     public function trans(LanguageInterface $lang, ...$args): string
     {
-        return $lang->trans('shopgo.discount.method.' . $this->getKey());
+        return $lang->trans('shopgo.discount.method.' . $this->name);
     }
 }
