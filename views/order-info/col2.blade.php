@@ -30,7 +30,7 @@ use Windwalker\Core\Router\SystemUri;
 
 ?>
 
-@php($paymentData = $order->getPaymentData())
+@php($paymentData = $order->paymentData)
 <div class="card">
     <div class="card-body">
         <dl class="row p-2 mb-0">
@@ -56,7 +56,7 @@ use Windwalker\Core\Router\SystemUri;
                 @lang('shopgo.order.field.note')
             </dt>
             <dd class="col-8">
-                {{ $order->getNote() ?: '-' }}
+                {{ $order->note ?: '-' }}
             </dd>
         </dl>
     </div>

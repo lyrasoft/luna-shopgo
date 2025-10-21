@@ -3,8 +3,10 @@
     "description": "Luna ShopGo package",
     "type": "luna-package",
     "require": {
+        "php": ">=8.4.6",
         "brick/math": "*",
-        "lyrasoft/favorite": "^1.0||^2.0"
+        "lyrasoft/luna": "^2.2",
+        "lyrasoft/favorite": "^2.0"
     },
     "require-dev": {
         "lyrasoft/sequence": "^1.0"

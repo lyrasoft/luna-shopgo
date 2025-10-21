@@ -85,7 +85,7 @@ class DiscountService
 
             $this->applyCartDiscount($pricing, $discount);
 
-            if ($discount->getCombine() === DiscountCombine::STOP()) {
+            if ($discount->combine === DiscountCombine::STOP()) {
                 break;
             }
         }
@@ -113,11 +113,11 @@ class DiscountService
     public function applyCartDiscount(CartTotalsInterface $pricing, Discount $discount): void
     {
         // Apply
-        if ($discount->getApplyTo() === DiscountApplyTo::ORDER()) {
-            if ($discount->getMethod() !== DiscountMethod::NONE()) {
+        if ($discount->applyTo === DiscountApplyTo::ORDER()) {
+            if ($discount->method !== DiscountMethod::NONE()) {
                 $totals = $pricing->getTotals();
 
-                if ($discount->isAccumulate()) {
+                if ($discount->accumulate) {
                     $grandTotal = PricingService::calcAmount($pricing->getTotal(), $totals);
 
                     $this->pricingService->pricingByDiscount($grandTotal, $discount, $diff);
@@ -126,15 +126,15 @@ class DiscountService
                 }
 
                 $totals->add(
-                    'discount:' . $discount->getId(),
+                    'discount:' . $discount->id,
                     $diff,
-                    $discount->getTitle(),
+                    $discount->title,
                     [
-                        'id' => $discount->getId(),
-                        'type' => $discount->getType(),
-                        'subtype' => $discount->getSubtype(),
-                        'code' => $discount->getCode(),
-                        'title' => $discount->getTitle(),
+                        'id' => $discount->id,
+                        'type' => $discount->type,
+                        'subtype' => $discount->subtype,
+                        'code' => $discount->code,
+                        'title' => $discount->title,
                     ]
                 );
                 $pricing->setTotals($totals);
@@ -192,7 +192,7 @@ class DiscountService
                         /** @var Product $product */
                         $product = $cartItem->getProduct()->getData();
 
-                        if ($product->getId() === $applyTarget) {
+                        if ($product->id === $applyTarget) {
                             $itemApplied = &$cartItem->getDiscounts();
 
                             if ($this->checkDiscountCombine($discount, $itemApplied) === true) {
@@ -220,7 +220,7 @@ class DiscountService
         Discount $discount,
         ?BigDecimal &$diff = null
     ): PriceSet {
-        if (!$discount->isAccumulate() && $discount->getMethod() === DiscountMethod::PERCENTAGE()) {
+        if (!$discount->accumulate && $discount->method === DiscountMethod::PERCENTAGE()) {
             $this->pricingService->pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
             $this->pricingService->pricingByDiscount($priceSet['final'], $discount, $diff);
@@ -229,15 +229,15 @@ class DiscountService
         $priceSet['final'] = $priceSet['final']->plus($diff);
 
         $priceSet->add(
-            'discount:' . $discount->getId(),
+            'discount:' . $discount->id,
             $diff,
-            $discount->getTitle(),
+            $discount->title,
             [
-                'id' => $discount->getId(),
-                'type' => $discount->getType(),
-                'subtype' => $discount->getSubtype(),
-                'code' => $discount->getCode(),
-                'title' => $discount->getTitle(),
+                'id' => $discount->id,
+                'type' => $discount->type,
+                'subtype' => $discount->subtype,
+                'code' => $discount->code,
+                'title' => $discount->title,
             ]
         );
 
@@ -255,7 +255,7 @@ class DiscountService
 
             if (
                 $appliedDiscount->getCombine() === DiscountCombine::INCLUDES()
-                && !in_array($discount->getId(), array_map('intval', $appliedDiscount->getCombineTargets()), true)
+                && !in_array($discount->id, array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
 
@@ -264,7 +264,7 @@ class DiscountService
 
             if (
                 $appliedDiscount->getCombine() === DiscountCombine::EXCLUDES()
-                && in_array($discount->getId(), array_map('intval', $appliedDiscount->getCombineTargets()), true)
+                && in_array($discount->id, array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
 
@@ -289,40 +289,40 @@ class DiscountService
         $cartData = $pricing->getCartData();
 
         // @ Minimum Cart Items
-        if ($discount->getMinCartItems()) {
+        if ($discount->minCartItems) {
             $cartData = $pricing->getCartData();
             $count = count($cartData->getCheckedItems());
 
-            if ($count < $discount->getMinCartItems()) {
+            if ($count < $discount->minCartItems) {
                 return false;
             }
         }
 
         // @ Minimum Cart Price
-        if ($discount->getMinCartPrice()) {
+        if ($discount->minCartPrice) {
             $total = $pricing->getTotal();
 
-            if ($total->lt((string) $discount->getMinCartPrice())) {
+            if ($total->lt((string) $discount->minCartPrice)) {
                 return false;
             }
         }
 
         // @ Times Per User
-        if ($discount->getTimesPerUser()) {
+        if ($discount->timesPerUser) {
             if (!$user->isLogin()) {
                 return false;
             }
 
-            $usages = $this->discountUsageService->getUserUsages($user->getId());
-            $usage = (int) $usages[$discount->getId()] ?? 0;
+            $usages = $this->discountUsageService->getUserUsages($user->id);
+            $usage = (int) $usages[$discount->id] ?? 0;
 
-            if ($usage >= $discount->getTimesPerUser()) {
+            if ($usage >= $discount->timesPerUser) {
                 return false;
             }
         }
 
         // @ First N Times
-        if ($discount->getFirstBuy()) {
+        if ($discount->firstBuy) {
             if (!$user->isLogin()) {
                 return false;
             }
@@ -331,39 +331,39 @@ class DiscountService
                 ->selectRaw('COUNT(order.id) AS count')
                 ->from(Order::class)
                 ->leftJoin(OrderState::class, 'state', 'state.id', 'order.state_id')
-                ->where('user_id', $user->getId())
+                ->where('user_id', $user->id)
                 ->where('order.cancelled_at', '!=', null)
                 ->where('order.rollback_at', '!=', null)
                 ->result();
 
-            if ($count >= $discount->getFirstBuy()) {
+            if ($count >= $discount->firstBuy) {
                 return false;
             }
         }
 
         // @ Days After Registered
-        if ($discount->getAfterRegistered()) {
+        if ($discount->afterRegistered) {
             /** @var User $user */
-            if (!$user->isLogin() || !$user->getRegistered()) {
+            if (!$user->isLogin() || !$user->registered) {
                 return false;
             }
 
-            if (chronos('-' . $discount->getAfterRegistered() . 'days') > $user->getRegistered()) {
+            if (chronos('-' . $discount->afterRegistered . 'days') > $user->registered) {
                 return false;
             }
         }
 
         // @ Users
-        if ($discount->getUsers()) {
-            $userIds = array_map('intval', $discount->getUsers());
+        if ($discount->users) {
+            $userIds = array_map('intval', $discount->users);
 
-            if (!$user->isLogin() || !in_array($user->getId(), $userIds, true)) {
+            if (!$user->isLogin() || !in_array($user->id, $userIds, true)) {
                 return false;
             }
         }
 
         // @ Categories
-        if ($discount->getCategories() || $discount->getProducts()) {
+        if ($discount->categories || $discount->products) {
             $matched = $pricing->getMatchedItems()[$discount] ?? [];
 
             if (!$matched) {
@@ -394,8 +394,8 @@ class DiscountService
 
         foreach ($discounts as $discount) {
             // @ Categories
-            if ($discount->getCategories()) {
-                $discountCategoryIds = array_map('intval', $discount->getCategories());
+            if ($discount->categories) {
+                $discountCategoryIds = array_map('intval', $discount->categories);
 
                 foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
@@ -410,8 +410,8 @@ class DiscountService
             }
 
             // @ Tags
-            if ($discount->getTags()) {
-                $discountTagIds = array_map('intval', $discount->getTags());
+            if ($discount->tags) {
+                $discountTagIds = array_map('intval', $discount->tags);
 
                 foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
@@ -426,14 +426,14 @@ class DiscountService
             }
 
             // @ Products
-            if ($discount->getProducts()) {
-                $productIds = array_map('intval', $discount->getProducts());
+            if ($discount->products) {
+                $productIds = array_map('intval', $discount->products);
 
                 foreach ($cartItems as $cartItem) {
                     /** @var Product $product */
                     $product = $cartItem->getProduct()->getData();
 
-                    if (in_array($product->getId(), $productIds, true)) {
+                    if (in_array($product->id, $productIds, true)) {
                         $pricing->addMatchedItem($discount, $cartItem);
                     }
                 }
@@ -466,12 +466,12 @@ class DiscountService
 
         $product = $pricing->getProduct();
 
-        $discounts = $this->getProductDiscounts($product->getId());
+        $discounts = $this->getProductDiscounts($product->id);
 
         $matchedDiscount = null;
 
         foreach ($discounts as $discount) {
-            if ($discount->getMinProductQuantity() <= $quantity) {
+            if ($discount->minProductQuantity <= $quantity) {
                 $matchedDiscount = $discount;
             }
         }
@@ -518,7 +518,7 @@ class DiscountService
         $product = $pricing->getProduct();
         $priceSet = $pricing->getPriceSet();
 
-        $specials = $this->getProductSpecials($product->getId());
+        $specials = $this->getProductSpecials($product->id);
 
         // Only apply 1 special
         $special = $specials->first();
@@ -561,7 +561,7 @@ class DiscountService
                     ->all(Discount::class);
 
                 foreach ($coupons as $coupon) {
-                    $coupon->setCode($code);
+                    $coupon->code = $code;
                 }
 
                 return $discounts->merge($coupons);
@@ -678,11 +678,11 @@ class DiscountService
     protected function findProductCategoryIds(Product $product): array
     {
         return $this->once(
-            'product.categories.' . $product->getId(),
+            'product.categories.' . $product->id,
             fn() => $this->orm->findColumn(
                 ShopCategoryMap::class,
                 'category_id',
-                ['target_id' => $product->getId(), 'type' => 'product']
+                ['target_id' => $product->id, 'type' => 'product']
             )
                 ->map('intval')
                 ->dump()
@@ -697,11 +697,11 @@ class DiscountService
     protected function findProductTagIds(Product $product): array
     {
         return $this->once(
-            'product.tags.' . $product->getId(),
+            'product.tags.' . $product->id,
             fn() => $this->orm->findColumn(
                 TagMap::class,
                 'tag_id',
-                ['target_id' => $product->getId(), 'type' => 'product']
+                ['target_id' => $product->id, 'type' => 'product']
             )
                 ->map('intval')
                 ->dump()

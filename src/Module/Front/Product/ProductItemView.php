@@ -101,22 +101,22 @@ class ProductItemView implements ViewModelInterface
         /** @var Product $item */
         $item = $this->repository->mustGetItem($id);
 
-        $canPreview = $previewSecret && $this->pageService->secretVerify($item->getId(), (string) $previewSecret);
+        $canPreview = $previewSecret && $this->pageService->secretVerify($item->id, (string) $previewSecret);
 
-        if (!$canPreview && $item->getState()->isUnpublished()) {
+        if (!$canPreview && $item->state->isUnpublished()) {
             throw new RouteNotFoundException();
         }
 
-        $variant = $this->orm->mustFindOne(ProductVariant::class, $item->getPrimaryVariantId());
-        $category = $this->orm->mustFindOne(Category::class, $item->getCategoryId());
+        $variant = $this->orm->mustFindOne(ProductVariant::class, $item->primaryVariantId);
+        $category = $this->orm->mustFindOne(Category::class, $item->categoryId);
 
-        if (!$canPreview && $category->getState()->isUnpublished()) {
+        if (!$canPreview && $category->state->isUnpublished()) {
             throw new RouteNotFoundException();
         }
 
         // Keep URL unique
-        if (($item->getAlias() !== $alias) && !$app->service(Browser::class)->isRobot()) {
-            return $this->nav->self()->alias($item->getAlias());
+        if (($item->alias !== $alias) && !$app->service(Browser::class)->isRobot()) {
+            return $this->nav->self()->alias($item->alias);
         }
 
         // Prepare variant view & price
@@ -124,7 +124,7 @@ class ProductItemView implements ViewModelInterface
 
         // Sub Variants
         $variants = $this->orm->from(ProductVariant::class)
-            ->where('product_id', $item->getId())
+            ->where('product_id', $item->id)
             ->where('primary', '!=', 1)
             ->where('state', 1)
             ->all(ProductVariant::class);
@@ -134,15 +134,15 @@ class ProductItemView implements ViewModelInterface
 
         /** @var ProductVariant $subVariant */
         foreach ($variants as $subVariant) {
-            $minPrice = min($minPrice, $variant->getPrice());
-            $maxPrice = max($maxPrice, $variant->getPrice());
+            $minPrice = min($minPrice, $variant->price);
+            $maxPrice = max($maxPrice, $variant->price);
         }
 
         // Features
         $features = $this->variantService->findFeaturesFromProduct($item);
 
         // Shippings
-        $shippingIds = $item->getShippings();
+        $shippingIds = $item->shippings;
 
         $shippings = $this->orm->from(Shipping::class)
             ->where('state', 1)
@@ -153,7 +153,7 @@ class ProductItemView implements ViewModelInterface
         $discounts = $this->orm->from(Discount::class)
             ->where('type', DiscountType::PRODUCT())
             ->where('subtype', 'discount')
-            ->where('product_id', $item->getId())
+            ->where('product_id', $item->id)
             ->order('min_product_quantity', 'ASC')
             ->all(Discount::class);
 
@@ -167,14 +167,14 @@ class ProductItemView implements ViewModelInterface
         $attributeSet = $attributes->groupBy('categoryId');
 
         foreach ($attrGroups as $group) {
-            $params = $group->getParams();
-            $params['attributes'] = $attributeSet[$group->getId()] ?? collect();
+            $params = $group->params;
+            $params['attributes'] = $attributeSet[$group->id] ?? collect();
 
-            $group->setParams($params);
+            $group->params = $params;
         }
 
         // Additional Purchases
-        $additionalPurchases = $this->additionalPurchaseService->getAvailableVariants($item->getId());
+        $additionalPurchases = $this->additionalPurchaseService->getAvailableVariants($item->id);
 
         // Tags
         $tags = $this->orm->select('tag.*')
@@ -187,12 +187,12 @@ class ProductItemView implements ViewModelInterface
                     ['tag_map.type', val('product')]
                 ]
             )
-            ->where('tag_map.target_id', $item->getId())
+            ->where('tag_map.target_id', $item->id)
             ->order('tag.title')
             ->all(Tag::class);
 
         // Tabs
-        $tabs = $this->getTabsByCategoryId($category->getId());
+        $tabs = $this->getTabsByCategoryId($category->id);
 
         $this->prepareMetadata($app, $view, $item, $variant);
 
@@ -200,7 +200,7 @@ class ProductItemView implements ViewModelInterface
         $user = $this->userService->getUser();
 
         if ($user->isLogin()) {
-            $favorited = $this->favoriteService->isFavorited('product', $user->getId(), $item->getId());
+            $favorited = $this->favoriteService->isFavorited('product', $user->id, $item->id);
         } else {
             $favorited = false;
         }
@@ -226,21 +226,21 @@ class ProductItemView implements ViewModelInterface
     protected function prepareMetadata(AppContext $app, View $view, Product $item, ProductVariant $variant): void
     {
         $asset = $app->service(AssetService::class);
-        $metadata = $item->getMeta();
+        $metadata = $item->meta;
 
-        $view->setTitle($metadata->getOgTitle() ?: $metadata->getTitle() ?: $item->getTitle());
+        $view->setTitle($metadata->getOgTitle() ?: $metadata->getTitle() ?: $item->title);
 
         $htmlFrame = $view->getHtmlFrame();
         $htmlFrame->setDescription(
-            (string) str($metadata->getDescription() ?: $item->getDescription())->stripHtmlTags()
+            (string) str($metadata->getDescription() ?: $item->description)->stripHtmlTags()
                 ->truncate(200, '...')
         );
 
         $images[] = $asset->addAssetBase(
-            $metadata->getOgImage() ?: $metadata->getCover() ?: $variant->getCover()
+            $metadata->getOgImage() ?: $metadata->getCover() ?: $variant->cover
         );
 
-        foreach ($variant->getImages() as $image) {
+        foreach ($variant->images as $image) {
             $images[] = $asset->addAssetBase($image['url']);
         }
 

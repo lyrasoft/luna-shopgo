@@ -45,7 +45,7 @@ class ProductAttributeService
      */
     public function getAttributesAndGroupsWithValues(Product $product): array
     {
-        $groups = $this->getGroupsByProductCategoryId($product->getCategoryId());
+        $groups = $this->getGroupsByProductCategoryId($product->categoryId);
         $groupIds = $groups->column('id')
             ->prepend(0)
             ->unique()
@@ -54,10 +54,10 @@ class ProductAttributeService
         $attributes = $this->getAttributesOfGroups($groupIds);
 
         /** @var ProductAttributeMap[] $maps */
-        $maps = $this->getProductAttributeValues($product->getId())->keyBy('attributeId');
+        $maps = $this->getProductAttributeValues($product->id)->keyBy('attributeId');
 
         foreach ($attributes as $attribute) {
-            $attribute->setValue($maps[$attribute->getId()]?->getValue() ?? '');
+            $attribute->value = $maps[$attribute->getId()]?->value ?? '';
         }
 
         return [$attributes, $groups];
@@ -83,7 +83,7 @@ class ProductAttributeService
 
     public function prepareEditForm(Product $product, Form $form, &$fieldsets = []): Form
     {
-        [$attributes, $groups] = $this->getAttributesAndGroupsByCategoryId($product->getCategoryId());
+        [$attributes, $groups] = $this->getAttributesAndGroupsByCategoryId($product->categoryId);
 
         $attributeSets = $attributes->groupBy('categoryId');
 
@@ -93,7 +93,7 @@ class ProductAttributeService
          * @return  void
          */
         $register = function (?Category $group) use (&$fieldsets, $attributeSets, $form) {
-            $groupId = $group?->getId() ?? 0;
+            $groupId = $group?->id ?? 0;
             $fieldsets[] = $fieldset = 'attr-' . $groupId;
             /** @var ProductAttribute[] $attributes */
             $attributes = $attributeSets[$groupId];
@@ -103,11 +103,11 @@ class ProductAttributeService
             }
 
             $form->fieldset($fieldset)
-                ->title($group?->getTitle() ?? '')
+                ->title($group?->title ?? '')
                 ->register(
                     function (Form $form) use ($attributes) {
                         foreach ($attributes as $attribute) {
-                            $field = match ($attribute->getType()) {
+                            $field = match ($attribute->type) {
                                 ProductAttributeType::BOOL() => $this->prepareFieldBool($form, $attribute),
                                 ProductAttributeType::TEXT() => $this->prepareFieldText($form, $attribute),
                                 ProductAttributeType::SELECT() => $this->prepareFieldSelect($form, $attribute),
@@ -186,9 +186,9 @@ class ProductAttributeService
 
     public function renderValue(ProductAttribute $attribute): string
     {
-        $value = $attribute->getValue();
+        $value = $attribute->value;
 
-        return match ($attribute->getType()) {
+        return match ($attribute->type) {
             ProductAttributeType::BOOL() => $value
                 ? $this->trans('unicorn.core.yes')
                 : $this->trans('unicorn.core.no'),
@@ -199,25 +199,25 @@ class ProductAttributeService
 
     protected function prepareFieldBool(Form $form, ProductAttribute $attribute): SwitcherField
     {
-        return $form->add($attribute->getKey(), SwitcherField::class)
-            ->label($attribute->getTitle())
+        return $form->add($attribute->key, SwitcherField::class)
+            ->label($attribute->title)
             ->circle(true)
             ->color('primary');
     }
 
     protected function prepareFieldText(Form $form, ProductAttribute $attribute): TextField
     {
-        return $form->add($attribute->getKey(), TextField::class)
-            ->label($attribute->getTitle());
+        return $form->add($attribute->key, TextField::class)
+            ->label($attribute->title);
     }
 
     protected function prepareFieldSelect(Form $form, ProductAttribute $attribute): ListField
     {
-        return $form->add($attribute->getKey(), ListField::class)
-            ->label($attribute->getTitle())
+        return $form->add($attribute->key, ListField::class)
+            ->label($attribute->title)
             ->register(
                 function (ListField $field) use ($attribute) {
-                    foreach ($attribute->getOptions() as $option) {
+                    foreach ($attribute->options as $option) {
                         $field->option($option->getText(), $option->getValue());
                     }
                 }

@@ -42,11 +42,11 @@ class CurrencyService
     {
         $n = BigDecimal::of((string) $num);
 
-        if ($toCurrency->getExchangeRate() === 1.0) {
+        if ($toCurrency->exchangeRate === 1.0) {
             return $n;
         }
 
-        return $n->multipliedBy($toCurrency->getExchangeRate());
+        return $n->multipliedBy($toCurrency->exchangeRate);
     }
 
     public function format(
@@ -116,10 +116,10 @@ class CurrencyService
                     ->findFirst(
                         function (Currency $currency) use ($mainCurrency) {
                             if (is_string($mainCurrency)) {
-                                return $currency->getCode() === $mainCurrency;
+                                return $currency->code === $mainCurrency;
                             }
 
-                            return $currency->getId() === $mainCurrency;
+                            return $currency->id === $mainCurrency;
                         }
                     );
 
@@ -137,9 +137,9 @@ class CurrencyService
         $currencies = $this->getCurrencies();
 
         if (is_numeric($condition)) {
-            $currency = $currencies->findFirst(fn(Currency $currency) => $currency->getId() === (int) $condition);
+            $currency = $currencies->findFirst(fn(Currency $currency) => $currency->id === (int) $condition);
         } else {
-            $currency = $currencies->findFirst(fn(Currency $currency) => $currency->getCode() === $condition);
+            $currency = $currencies->findFirst(fn(Currency $currency) => $currency->code === $condition);
         }
 
         if (!$currency) {
@@ -167,7 +167,7 @@ class CurrencyService
         $state = $this->app->service(AppState::class);
 
         if ($currency instanceof Currency) {
-            $currency = $currency->getCode();
+            $currency = $currency->code;
         }
 
         $state->remember('current_currency', $currency);

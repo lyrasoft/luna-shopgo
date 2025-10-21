@@ -62,8 +62,8 @@ $states = $app->service(OrderStateService::class)->getOrderStates()->keyBy('id')
                                 @lang('unicorn.select.no.change')
                             </option>
                             @foreach ($states as $state)
-                                <option value="{{ $state->getId() }}">
-                                    {{ $state->getTitle() }}
+                                <option value="{{ $state->id }}">
+                                    {{ $state->title }}
                                 </option>
                             @endforeach
                         </select>
@@ -93,7 +93,7 @@ $states = $app->service(OrderStateService::class)->getOrderStates()->keyBy('id')
                     <div class="d-none">
                         <input name="_method" type="hidden" value="PATCH" />
                         <input name="task" type="hidden" value="transition" />
-                        <input name="id" type="hidden" value="{{ $order->getId() }}" />
+                        <input name="id" type="hidden" value="{{ $order->id }}" />
                         <x-csrf></x-csrf>
                     </div>
                 </form>

@@ -44,66 +44,66 @@ class Currency implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('code')]
-    protected string $code = '';
+    public string $code = '';
 
     #[Column('code_num')]
-    protected int $codeNum = 0;
+    public int $codeNum = 0;
 
     #[Column('sign')]
-    protected string $sign = '';
+    public string $sign = '';
 
     #[Column('sign_position')]
     #[Cast(SignPosition::class)]
-    protected SignPosition $signPosition;
+    public SignPosition $signPosition;
 
     #[Column('decimal_place')]
-    protected int $decimalPlace = 0;
+    public int $decimalPlace = 0;
 
     #[Column('decimal_point')]
-    protected string $decimalPoint = '';
+    public string $decimalPoint = '';
 
     #[Column('num_separator')]
-    protected string $numSeparator = '';
+    public string $numSeparator = '';
 
     #[Column('exchange_rate')]
-    protected float $exchangeRate = 0.0;
+    public float $exchangeRate = 0.0;
 
     #[Column('space')]
     #[Cast('bool', 'int')]
-    protected bool $space = false;
+    public bool $space = false;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     public function formatPrice(mixed $num, bool $addCode = false): string
     {
@@ -119,17 +119,17 @@ class Currency implements EntityInterface
 
         $formatted = number_format(
             $num,
-            $this->getDecimalPlace(),
-            $this->getDecimalPoint(),
-            $this->getNumSeparator(),
+            $this->decimalPlace,
+            $this->decimalPoint,
+            $this->numSeparator,
         );
 
         $space = $this->hasSpace() ? ' ' : '';
 
-        if ($this->getSignPosition() === SignPosition::START()) {
-            $formatted = $this->getSign() . $space . $formatted;
+        if ($this->signPosition === SignPosition::START()) {
+            $formatted = $this->sign . $space . $formatted;
         } else {
-            $formatted .= $space . $this->getSign();
+            $formatted .= $space . $this->sign;
         }
 
         if ($negative) {
@@ -137,7 +137,7 @@ class Currency implements EntityInterface
         }
 
         if ($addCode) {
-            $formatted = $this->getCode() . ' ' . $formatted;
+            $formatted = $this->code . ' ' . $formatted;
         }
 
         return $formatted;
@@ -358,7 +358,7 @@ class Currency implements EntityInterface
 
     public function getInputStep(): string
     {
-        $place = $this->getDecimalPlace();
+        $place = $this->decimalPlace;
 
         if ($place === 0) {
             return '1';

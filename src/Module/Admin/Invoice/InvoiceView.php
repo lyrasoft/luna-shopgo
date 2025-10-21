@@ -61,13 +61,13 @@ class InvoiceView implements ViewModelInterface
         $orderItems = $this->orm->findList(
             OrderItem::class,
             [
-                'order_id' => $order->getId(),
+                'order_id' => $order->id,
             ]
         )
             ->all();
 
         [$orderItems, $attachments] = $orderItems->partition(
-            fn(OrderItem $orderItem) => $orderItem->getParentId() === 0
+            fn(OrderItem $orderItem) => $orderItem->parentId === 0
         );
 
         $attachments = $attachments->groupBy('parentId');
@@ -75,16 +75,16 @@ class InvoiceView implements ViewModelInterface
         // Totals
         $totalItems = $this->orm->mapper(OrderTotal::class)
             ->select()
-            ->where('order_id', $order->getId())
+            ->where('order_id', $order->id)
             ->order('ordering', 'ASC')
             ->all(OrderTotal::class)
             ->map(
                 function (OrderTotal $total) {
                     return new PriceObject(
-                        $total->getCode(),
-                        (string) $total->getValue(),
-                        $total->getTitle(),
-                        $total->getParams()
+                        $total->code,
+                        (string) $total->value,
+                        $total->title,
+                        $total->params
                     );
                 }
             );

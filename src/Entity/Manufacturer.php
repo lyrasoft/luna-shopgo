@@ -43,63 +43,63 @@ class Manufacturer implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('alias')]
     #[Slugify]
-    protected string $alias = '';
+    public string $alias = '';
 
     #[Column('image')]
-    protected string $image = '';
+    public string $image = '';
 
     #[Column('introtext')]
-    protected string $introtext = '';
+    public string $introtext = '';
 
     #[Column('page_id')]
-    protected int $pageId = 0;
+    public int $pageId = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('meta')]
     #[Cast(MetaData::class, JsonCast::class)]
-    protected MetaData $meta;
+    public MetaData $meta;
 
     #[Column('search_index')]
-    protected string $searchIndex = '';
+    public string $searchIndex = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('language')]
-    protected string $language = '';
+    public string $language = '';
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

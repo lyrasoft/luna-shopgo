@@ -77,8 +77,8 @@ class PaymentRepository implements ManageRepositoryInterface, ListRepositoryInte
     {
         $action->setReorderGroupHandler(
             function (Query $query, Payment $payment) {
-                $query->where('location_category_id', $payment->getLocationCategoryId())
-                    ->where('location_id', $payment->getLocationId());
+                $query->where('location_category_id', $payment->locationCategoryId)
+                    ->where('location_id', $payment->locationId);
             }
         );
     }

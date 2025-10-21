@@ -30,11 +30,11 @@ use Windwalker\Core\Router\SystemUri;
  * @var $order Order
  */
 
-$paymentData = $order->getPaymentData();
+$paymentData = $order->paymentData;
 $locationService = $app->service(LocationService::class);
 
 $paymentService = $app->service(PaymentService::class);
-$typeInstance = $paymentService->getInstanceById($order->getPaymentId());
+$typeInstance = $paymentService->getInstanceById($order->paymentId);
 
 $orderInfo = trim($typeInstance?->orderInfo($order) ?? '');
 
@@ -53,7 +53,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.order.field.payment')
             </dt>
             <dd class="col-{{ $ddCols }}">
-                {{ $order->getPaymentData()->getPaymentTitle() }}
+                {{ $order->paymentData->getPaymentTitle() }}
             </dd>
 
             {{-- Name --}}

@@ -59,8 +59,8 @@ class ShippingService
                         fn(Query $query) => $query->from(Location::class)
                             ->leftJoin(Category::class)
                             ->whereRaw('category.id = shipping.location_category_id')
-                            ->whereRaw('location.lft <= %a', $location->getLft())
-                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                            ->whereRaw('location.lft <= %a', $location->lft)
+                            ->whereRaw('location.rgt >= %a', $location->rgt)
                     );
                 }
             )
@@ -70,8 +70,8 @@ class ShippingService
                     $query->whereExists(
                         fn(Query $query) => $query->from(Location::class)
                             ->whereRaw('location.id = shipping.location_id')
-                            ->whereRaw('location.lft <= %a', $location->getLft())
-                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                            ->whereRaw('location.lft <= %a', $location->lft)
+                            ->whereRaw('location.rgt >= %a', $location->rgt)
                     );
                 }
             )
@@ -86,14 +86,14 @@ class ShippingService
 
         /** @var Product $product */
         foreach ($products as $product) {
-            if (!$product->getShippings()) {
+            if (!$product->shippings) {
                 continue;
             }
 
             if ($productShippingIds->count() === 0) {
-                $productShippingIds = collect($product->getShippings());
+                $productShippingIds = collect($product->shippings);
             } else {
-                $productShippingIds = array_intersect($productShippingIds, $product->getShippings());
+                $productShippingIds = array_intersect($productShippingIds, $product->shippings);
             }
         }
 
@@ -101,7 +101,7 @@ class ShippingService
 
         if ($productShippingIds->count()) {
             $shippings = $shippings->filter(
-                fn(Shipping $shipping) => $productShippingIds->contains($shipping->getId())
+                fn(Shipping $shipping) => $productShippingIds->contains($shipping->id)
             );
         }
 
@@ -118,24 +118,24 @@ class ShippingService
         $shippings = $shippings->filter(
             function (Shipping $shipping) use ($products, $tagMapsSet) {
                 if (
-                    $shipping->getUnallowTags() === []
-                    && $shipping->getAllowTags() === []
+                    $shipping->unallowTags === []
+                    && $shipping->allowTags === []
                 ) {
                     return true;
                 }
 
                 // Allow Tags should default TRUE if no selected
-                $allow = $shipping->getAllowTags() === [];
+                $allow = $shipping->allowTags === [];
 
                 // Unallow Tags always default FALSE, only TRUE if matched.
                 $disallow = false;
 
                 foreach ($products as $product) {
-                    $tagMaps = $tagMapsSet[$product->getId()] ?? collect();
+                    $tagMaps = $tagMapsSet[$product->id] ?? collect();
                     $tagIds = $tagMaps->column('tagId')->values();
 
-                    $allow = $allow || $tagIds->intersect($shipping->getAllowTags())->count() > 0;
-                    $disallow = $disallow || $tagIds->intersect($shipping->getUnallowTags())->count() > 0;
+                    $allow = $allow || $tagIds->intersect($shipping->allowTags)->count() > 0;
+                    $disallow = $disallow || $tagIds->intersect($shipping->unallowTags)->count() > 0;
                 }
 
                 // Disallow priority higher, if TRUE means ignore this shipping.
@@ -178,7 +178,7 @@ class ShippingService
     {
         if ($type instanceof Shipping) {
             $data = $type;
-            $type = $type->getType();
+            $type = $type->type;
         }
 
         $typeClass = $this->getTypeClass($type);

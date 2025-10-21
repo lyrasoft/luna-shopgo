@@ -24,12 +24,12 @@ use function Windwalker\collect;
  */
 trait ProductVariantTrait
 {
-    protected ?PriceSet $priceSet = null;
+    public ?PriceSet $priceSet = null;
 
     /**
      * @var Collection<Discount>|null
      */
-    protected ?Collection $applyDiscounts = null;
+    public ?Collection $applyDiscounts = null;
 
     /**
      * @return PriceSet
@@ -43,21 +43,21 @@ trait ProductVariantTrait
             $this->priceSet->set(
                 new PriceObject(
                     'origin',
-                    (string) $this->getPrice()
+                    (string) $this->price
                 )
             );
 
             $this->priceSet->set(
                 new PriceObject(
                     'base',
-                    (string) $this->getPrice()
+                    (string) $this->price
                 )
             );
 
             $this->priceSet->set(
                 new PriceObject(
                     'final',
-                    (string) $this->getPrice()
+                    (string) $this->price
                 )
             );
         }

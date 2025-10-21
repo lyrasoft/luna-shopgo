@@ -81,13 +81,13 @@ $siteName = value($shopGo->config('shop.sitename'));
                 $orderItems = $orm->findList(
                     OrderItem::class,
                     [
-                        'order_id' => $order->getId(),
+                        'order_id' => $order->id,
                     ]
                 )
                     ->all();
 
                 [$orderItems, $attachments] = $orderItems->partition(
-                    fn(OrderItem $orderItem) => $orderItem->getParentId() === 0
+                    fn(OrderItem $orderItem) => $orderItem->parentId === 0
                 );
 
                 $attachments = $attachments->groupBy('parentId');
@@ -101,16 +101,16 @@ $siteName = value($shopGo->config('shop.sitename'));
                         </td>
                         <td class="" style="width: 40%">
                             <div>
-                                <strong>@lang('shopgo.order.field.no'):</strong> #{{ $order->getNo() }}
+                                <strong>@lang('shopgo.order.field.no'):</strong> #{{ $order->no }}
                             </div>
                             <div>
-                                <strong>@lang('shopgo.order.field.shipment.no'):</strong> {{ $order->getShippingInfo()->getShipmentNo() }}
+                                <strong>@lang('shopgo.order.field.shipment.no'):</strong> {{ $order->shippingInfo->getShipmentNo() }}
                             </div>
                             {{--                            <div>--}}
                             {{--                                <strong>@lang('shopgo.order.field.payment'):</strong> {{ $order->getPayment()?->getTitle() }}--}}
                             {{--                            </div>--}}
                             <div>
-                                <strong>@lang('shopgo.order.field.shipping'):</strong> {{ $order->getShipping()?->getTitle() }}
+                                <strong>@lang('shopgo.order.field.shipping'):</strong> {{ $order->getShipping()?->title }}
                             </div>
                         </td>
                     </tr>
@@ -140,22 +140,22 @@ $siteName = value($shopGo->config('shop.sitename'));
                                     <tr>
                                         <td>
                                             <div>
-                                                {{ $orderItem->getTitle() }}
+                                                {{ $orderItem->title }}
                                             </div>
-                                            @if ($orderItem->getVariantHash())
+                                            @if ($orderItem->variantHash)
                                                 <div>
-                                                    {{ $orderItem->getVariantTitle() }}
+                                                    {{ $orderItem->variantTitle }}
                                                 </div>
                                             @endif
                                         </td>
                                         <td class="text-nowrap">
-                                            {{ $orderItem->getProductData()['product']['model'] ?? '' }}
+                                            {{ $orderItem->productData['product']['model'] ?? '' }}
                                         </td>
                                         <td class="text-nowrap">
-                                            {{ $orderItem->getProductData()['variant']['sku'] ?? '' }}
+                                            {{ $orderItem->productData['variant']['sku'] ?? '' }}
                                         </td>
                                         <td class="text-end">
-                                            {{ $orderItem->getQuantity() }}
+                                            {{ $orderItem->quantity }}
                                         </td>
                                     </tr>
 
@@ -163,19 +163,19 @@ $siteName = value($shopGo->config('shop.sitename'));
                                         <tr>
                                             <td>
                                                 <div>
-                                                    {{ $attachment->getTitle() }}
+                                                    {{ $attachment->title }}
                                                 </div>
-                                                @if ($attachment->getVariantHash())
+                                                @if ($attachment->variantHash)
                                                     <div>
-                                                        {{ $attachment->getVariantTitle() }}
+                                                        {{ $attachment->variantTitle }}
                                                     </div>
                                                 @endif
                                             </td>
                                             <td class="text-nowrap">
-                                                {{ $attachment->getProductData()['product']['model'] ?? '' }}
+                                                {{ $attachment->productData['product']['model'] ?? '' }}
                                             </td>
                                             <td class="text-end">
-                                                {{ $attachment->getQuantity() }}
+                                                {{ $attachment->quantity }}
                                             </td>
                                         </tr>
                                     @endforeach

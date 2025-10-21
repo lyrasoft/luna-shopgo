@@ -116,14 +116,14 @@ class CheckoutController
                     $paymentLocation = $checkoutService->prepareAddressData(
                         (int) $addressId,
                         $paymentData,
-                        $order->getPaymentData(),
+                        $order->paymentData,
                         $user
                     );
 
-                    if ($order->getPaymentData()->getVat()) {
-                        $order->setInvoiceType(InvoiceType::COMPANY());
+                    if ($order->paymentData->getVat()) {
+                        $order->invoiceType = InvoiceType::COMPANY();
                     } else {
-                        $order->setInvoiceType(InvoiceType::IDV());
+                        $order->invoiceType = InvoiceType::IDV();
                     }
                 }
 
@@ -133,18 +133,18 @@ class CheckoutController
                     $shippingLocation = $checkoutService->prepareAddressData(
                         (int) $addressId,
                         $shippingData,
-                        $order->getShippingData(),
+                        $order->shippingData,
                         $user
                     );
                 } else {
                     $shippingLocation = $orm->mustFindOne(
                         Location::class,
-                        $order->getShippingData()->getLocationId()
+                        $order->shippingData->getLocationId()
                     );
                 }
 
                 $cartData = $cartService->getCartDataForCheckout(
-                    $shippingLocation->getId(),
+                    $shippingLocation->id,
                     $shipping['id'] ?? 0,
                     $payment['id'] ?? 0,
                     [],
@@ -153,10 +153,10 @@ class CheckoutController
 
                 $stockService->checkAndReduceStocks($cartData);
 
-                $order->setUserId($user->getId());
-                $order->setPaymentId((int) $payment['id']);
-                $order->setShippingId((int) $shipping['id']);
-                $order->setNote($input['note'] ?? '');
+                $order->userId = $user->id;
+                $order->paymentId = (int) $payment['id'];
+                $order->shippingId = (int) $shipping['id'];
+                $order->note = $input['note'] ?? '';
 
                 return [
                     $checkoutService->createOrder($order, $cartData, $input),
@@ -165,7 +165,7 @@ class CheckoutController
             }
         );
 
-        $orderItems = $order->getOrderItems()->getAttachedEntities();
+        $orderItems = $order->orderItems->getAttachedEntities();
 
         $event = $shopGo->emit(
             AfterCheckoutEvent::class,
@@ -184,7 +184,7 @@ class CheckoutController
 
         $completeUrl = $nav->to('checkout')
             ->layout('complete')
-            ->var('no', $order->getNo())
+            ->var('no', $order->no)
             ->full();
 
         $res = $checkoutService->processPayment($order, $completeUrl);

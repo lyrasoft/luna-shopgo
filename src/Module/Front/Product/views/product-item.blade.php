@@ -138,11 +138,11 @@ $shopGoScript->swiper(
                     @if (count($tags))
                         <div class="l-product-info__tags d-flex gap-2">
                             @foreach ($tags as $tag)
-                                <a href="{{ $nav->to('product_list')->var('tag', $tag->getAlias()) }}"
+                                <a href="{{ $nav->to('product_list')->var('tag', $tag->alias) }}"
                                     class="c-tag-badge"
                                     target="_blank">
                                     <span class="badge bg-primary">
-                                        {{ $tag->getTitle() }}
+                                        {{ $tag->title }}
                                     </span>
                                 </a>
                             @endforeach
@@ -151,11 +151,11 @@ $shopGoScript->swiper(
 
                     <div class="d-flex align-items-center">
                         {{-- Title --}}
-                        <h1 class="l-product-info__title m-0">{{ $item->getTitle() }}</h1>
+                        <h1 class="l-product-info__title m-0">{{ $item->title }}</h1>
 
                         {{-- Favorite --}}
                         <div class="ms-auto l-product-info__favorite">
-                            <x-favorite-button class="fs-4" :id="$item->getId()"
+                            <x-favorite-button class="fs-4" :id="$item->id"
                                 type="product"
                                 :added="(int) (bool) $favorited"
                             >
@@ -166,7 +166,7 @@ $shopGoScript->swiper(
                     {{-- Category --}}
                     @if ($category)
                         <div class="l-product-info__category">
-                            {{ $category->getTitle() }}
+                            {{ $category->title }}
                         </div>
                     @endif
 
@@ -179,7 +179,7 @@ $shopGoScript->swiper(
                                 </span>
 
                                 <span class="c-info__value">
-                                    {{ $item->getModel() }}
+                                    {{ $item->model }}
                                 </span>
                             </div>
                             /
@@ -190,7 +190,7 @@ $shopGoScript->swiper(
                                 </span>
 
                                 <span class="c-info__value">
-                                    {{ $variant->getSku() }}
+                                    {{ $variant->sku }}
                                 </span>
                             </div>
                         </div>
@@ -201,13 +201,13 @@ $shopGoScript->swiper(
 
                 {{-- Price --}}
                 <div class="l-product-info__pricing l-pricing mt-4">
-                    @if ($item->getOriginPrice())
+                    @if ($item->originPrice)
                         <div class="l-pricing__final c-price--origin fs-5">
                             <span class="c-price__label">
                                 @lang('shopgo.product.field.origin.price')
                             </span>
                             <del class="c-price__value">
-                                {{ $vm->formatPrice($item->getOriginPrice()) }}
+                                {{ $vm->formatPrice($item->originPrice) }}
                             </del>
                         </div>
                     @endif
@@ -249,17 +249,17 @@ $shopGoScript->swiper(
 
                 {{-- Intro --}}
                 <div class="l-product-info__intro l-intro">
-                    {!! $item->getIntro() !!}
+                    {!! $item->intro !!}
                 </div>
 
                 {{-- Attributes --}}
                 <div class="l-product-info__basic-info l-basic-info mt-4">
                     @foreach ($attrGroups as $group)
-                        @if (!in_array('intro', $group->getParams()['position'] ?? [], true))
+                        @if (!in_array('intro', $group->params['position'] ?? [], true))
                             @continue
                         @endif
 
-                        @php($attributes = $group->getParams()['attributes'] ?? [])
+                        @php($attributes = $group->params['attributes'] ?? [])
 
                         @foreach ($attributes as $attribute)
                             @if (!$attribute->shouldDisplay())
@@ -267,7 +267,7 @@ $shopGoScript->swiper(
                             @endif
                             <div class="c-info">
                                 <span class="c-info__label fw-bold">
-                                    {{ $attribute->getTitle() }}
+                                    {{ $attribute->title }}
                                 </span>
 
                                 <span class="c-info__value">
@@ -374,7 +374,7 @@ $shopGoScript->swiper(
             <x-tabs>
 
                 <x-tab name="description" :title="$lang('shopgo.product.tab.description')">
-                    {!! $item->getDescription() !!}
+                    {!! $item->description !!}
                 </x-tab>
 
                 <x-tab name="attributes" :title="$lang('shopgo.product.tab.attributes')">
@@ -382,7 +382,7 @@ $shopGoScript->swiper(
                 </x-tab>
 
                 @foreach ($tabs as $tab)
-                    <x-tab :name="'tab-' . $tab->getId()" :title="$tab->getTitle()">
+                    <x-tab :name="'tab-' . $tab->id" :title="$tab->title">
                         @include('product-tab', compact('tab'))
                     </x-tab>
                 @endforeach

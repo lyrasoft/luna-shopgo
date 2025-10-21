@@ -37,12 +37,12 @@ class VariantService
 
     public function prepareVariantView(ProductVariant $variant, ?Product $product = null): ProductVariant
     {
-        $product ??= $this->orm->mustFindOne(Product::class, $variant->getProductId());
+        $product ??= $this->orm->mustFindOne(Product::class, $variant->productId);
 
-        $priceSet = $variant->getPriceSet();
+        $priceSet = $variant->priceSet;
 
-        if ($product->getOriginPrice()) {
-            $priceSet['origin']->setPrice((string) $product->getOriginPrice());
+        if ($product->originPrice) {
+            $priceSet['origin']->setPrice((string) $product->originPrice);
         }
 
         // $mainVariant = $item->getMainVariant();
@@ -55,7 +55,7 @@ class VariantService
             $priceSet,
         );
 
-        $variant->setPriceSet($priceSet);
+        $variant->priceSet = $priceSet;
 
         // Todo: @event PrepareProductDiscountsInformation
         // Todo: @event PrepareProductInformation
@@ -81,7 +81,7 @@ class VariantService
         PriceSet $priceSet,
         ?CartItem $cartItem = null,
     ): PriceSet {
-        $event = (new PrepareProductPricesEvent())
+        $event = new PrepareProductPricesEvent()
             ->setContext($context)
             ->setProduct($product)
             ->setMainVariant($mainVariant)
@@ -113,7 +113,7 @@ class VariantService
 
     public static function isOutOfStock(ProductVariant $variant, Product $product, int $quantity = 1): bool
     {
-        if (!$variant->isSubtract()) {
+        if (!$variant->subtract) {
             return false;
         }
 
@@ -122,9 +122,9 @@ class VariantService
 
     public static function getAvailableQuantity(ProductVariant $variant, Product $product): int
     {
-        $safeStock = $product->getSafeStock();
+        $safeStock = $product->safeStock;
 
-        return max($variant->getStockQuantity() - $safeStock, 0);
+        return max($variant->stockQuantity - $safeStock, 0);
     }
 
     /**
@@ -184,7 +184,7 @@ class VariantService
     public function findFeaturesFromProduct(Product $product): Collection
     {
         $variants = $this->orm->from(ProductVariant::class)
-            ->where('product_id', $product->getId())
+            ->where('product_id', $product->id)
             ->where('primary', 0)
             ->all(ProductVariant::class);
 
@@ -195,7 +195,7 @@ class VariantService
         /** @var ProductVariant $variant */
         foreach ($variants as $variant) {
             /** @var ListOption $option */
-            foreach ($variant->getOptions() as $option) {
+            foreach ($variant->options as $option) {
                 if ($option->getParentId()) {
                     $featureIds[] = $option->getParentId();
                     $options[$option->getUid()] = $option;
@@ -215,7 +215,7 @@ class VariantService
         /** @var ProductFeature $feature */
         foreach ($features as $feature) {
             /** @var ListOptionCollection $options */
-            $options = $feature->getOptions();
+            $options = $feature->options;
 
             $options = $options->filter(
                 function (ListOption $option) use ($optionUids) {
@@ -223,7 +223,7 @@ class VariantService
                 }
             );
 
-            $feature->setOptions($options);
+            $feature->options = $options;
         }
 
         return $features;

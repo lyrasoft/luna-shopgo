@@ -59,7 +59,7 @@ class ShippingEditView implements ViewModelInterface
 
         /** @var Shipping $item */
         $item = $this->repository->getItem($id);
-        $type = $item?->getType() ?? $app->input('type');
+        $type = $item?->type ?? $app->input('type');
 
         $typeClass = $this->shippingService->getTypeClass($type);
         $typeInstance = $this->shippingService->createTypeInstance($type);

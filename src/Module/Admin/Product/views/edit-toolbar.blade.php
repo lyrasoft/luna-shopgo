@@ -54,7 +54,7 @@ $pageService = $app->service(PageService::class);
     @if ($item)
         {{-- Preview --}}
         <a class="btn btn-outline-primary btn-sm uni-btn-priview"
-            href="{{ $item->makeLink($nav)->var('preview', $pageService->genPreviewSecret($item->getId())) }}"
+            href="{{ $item->makeLink($nav)->var('preview', $pageService->genPreviewSecret($item->id)) }}"
             target="_blank">
             <span class="fa fa-eye"></span>
             @lang('shopgo.toolbar.button.preview')

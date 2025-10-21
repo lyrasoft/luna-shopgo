@@ -51,7 +51,7 @@ trait DiscountsAppliedTrait
     public function addAppliedDiscounts(Discount $discount): static
     {
         foreach ($this->appliedDiscounts as $appliedDiscount) {
-            if ($appliedDiscount->getId() === $discount->getId()) {
+            if ($appliedDiscount->id === $discount->id) {
                 return $this;
             }
         }

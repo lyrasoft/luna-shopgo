@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
 
 $id ??= 'shipping-history-modal';
 
-$shippinghistory = $order->getShippingHistory();
+$shippinghistory = $order->shippingHistory;
 
 $shippinghistory = $shippinghistory->reverse();
 ?>

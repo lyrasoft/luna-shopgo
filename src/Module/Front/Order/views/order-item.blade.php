@@ -111,17 +111,17 @@ $orm = $app->service(ORM::class);
                             }
                             ?>
                         <tr>
-                            <td>{{ $chronos->toLocalFormat($history->getCreated(), 'Y/m/d H:i:s') }}</td>
+                            <td>{{ $chronos->toLocalFormat($history->created, 'Y/m/d H:i:s') }}</td>
                             <td>
-                                @if ($history->getStateText())
+                                @if ($history->stateText)
                                     <span class="badge p-2 c-order-state"
-                                        style="{{ $state?->getColorCSS() ?? 'background-color: var(--bs-dark)' }}">
-                                        {{ $history->getStateText() }}
+                                        style="{{ $state?->colorCSS ?? 'background-color: var(--bs-dark)' }}">
+                                        {{ $history->stateText }}
                                     </span>
                                 @endif
                             </td>
                             <td>
-                                {{ $history->getMessage() }}
+                                {{ $history->message }}
                             </td>
                             {{--                            <td>--}}
                             {{--                                @if ($history->isNotify())--}}
@@ -129,10 +129,10 @@ $orm = $app->service(ORM::class);
                             {{--                                @endif--}}
                             {{--                            </td>--}}
                             <td>
-                                @if ($history->getType() === OrderHistoryType::ADMIN())
-                                    {{ $history->getType()->getTitle($lang) }}
-                                @elseif ($history->getType() === OrderHistoryType::SYSTEM())
-                                    {{ $history->getType()->getTitle($lang) }}
+                                @if ($history->type === OrderHistoryType::ADMIN())
+                                    {{ $history->type->getTitle($lang) }}
+                                @elseif ($history->type === OrderHistoryType::SYSTEM())
+                                    {{ $history->type->getTitle($lang) }}
                                 @else
                                     @lang('shopgo.cart.order.historty.text.you')
                                 @endif
@@ -144,7 +144,7 @@ $orm = $app->service(ORM::class);
             </div>
         </div>
 
-        <form action="{{ $nav->to('my_order_item', ['no' => $item->getNo()]) }}" method="post">
+        <form action="{{ $nav->to('my_order_item', ['no' => $item->no]) }}" method="post">
             <div class="l-order-note mt-5">
                 <div class="l-order-note__title mb-3">
                     <h4>@lang('shopgo.order.field.comment')</h4>
@@ -153,11 +153,11 @@ $orm = $app->service(ORM::class);
                 <div class="l-order-note__content">
                     <textarea name="item[note]" class="form-control" rows="5"
                         required
-                        @attr('disabled', $item->getDoneAt() !== null)
+                        @attr('disabled', $item->doneAt !== null)
                     ></textarea>
                 </div>
 
-                <input name="item[no]" type="hidden" value="{{ $item->getNo() }}" />
+                <input name="item[no]" type="hidden" value="{{ $item->no }}" />
                 @formToken
             </div>
 
@@ -168,7 +168,7 @@ $orm = $app->service(ORM::class);
             </div>
 
             <div class="d-none">
-                <input name="no" type="hidden" value="{{ $item->getNo() }}" />
+                <input name="no" type="hidden" value="{{ $item->no }}" />
                 <x-csrf></x-csrf>
             </div>
         </form>

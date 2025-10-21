@@ -49,7 +49,7 @@ class PaymentService
      */
     public function getPayments(Location $location, Shipping $shipping): Collection
     {
-        $paymentIds = $shipping->getPayments();
+        $paymentIds = $shipping->payments;
 
         return $this->repository->getAvailableListSelector()
             ->orWhere(
@@ -59,8 +59,8 @@ class PaymentService
                         fn(Query $query) => $query->from(Location::class)
                             ->leftJoin(Category::class)
                             ->whereRaw('category.id = payment.location_category_id')
-                            ->whereRaw('location.lft <= %a', $location->getLft())
-                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                            ->whereRaw('location.lft <= %a', $location->lft)
+                            ->whereRaw('location.rgt >= %a', $location->rgt)
                     );
                 }
             )
@@ -70,8 +70,8 @@ class PaymentService
                     $query->whereExists(
                         fn(Query $query) => $query->from(Location::class)
                             ->whereRaw('location.id = payment.location_id')
-                            ->whereRaw('location.lft <= %a', $location->getLft())
-                            ->whereRaw('location.rgt >= %a', $location->getRgt())
+                            ->whereRaw('location.lft <= %a', $location->lft)
+                            ->whereRaw('location.rgt >= %a', $location->rgt)
                     );
                 }
             )
@@ -86,7 +86,7 @@ class PaymentService
     {
         if ($type instanceof Payment) {
             $data = $type;
-            $type = $type->getType();
+            $type = $type->type;
         }
 
         $typeClass = $this->getTypeClass($type);

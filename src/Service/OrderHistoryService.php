@@ -46,12 +46,12 @@ class OrderHistoryService
         bool $notify = false
     ): OrderHistory {
         $history = new OrderHistory();
-        $history->setType($type);
-        $history->setCreatedBy(0);
-        $history->setState($state);
-        $history->setOrderId($orderId);
-        $history->setMessage($message);
-        $history->setNotify($notify);
+        $history->type = $type;
+        $history->createdBy = 0;
+        $history->state = $state;
+        $history->orderId = $orderId;
+        $history->message = $message;
+        $history->notify = $notify;
 
         return $this->repository->save($history);
     }
@@ -64,7 +64,7 @@ class OrderHistoryService
         bool $notify = false
     ): OrderHistory {
         return $this->createHistoryByOrderId(
-            $order->getId(),
+            $order->id,
             $state,
             $type,
             $message,
@@ -80,7 +80,7 @@ class OrderHistoryService
         bool $notify = true
     ): OrderHistory {
         $history = $this->createHistoryByOrderId(
-            $order->getId(),
+            $order->id,
             $state,
             $type,
             $message,
@@ -99,7 +99,7 @@ class OrderHistoryService
         ?OrderState $state,
         OrderHistory $history,
     ): void {
-        $paymentData = $order->getPaymentData();
+        $paymentData = $order->paymentData;
         $email = $paymentData->getEmail();
 
         if (!$email) {
@@ -115,8 +115,8 @@ class OrderHistoryService
             $this->trans(
                 'shopgo.order.mail.changed.notify.subject',
                 sitename: $sitename,
-                state: $order->getStateText(),
-                no: $order->getNo()
+                state: $order->stateText,
+                no: $order->no
             )
         )
             ->to($email)
@@ -126,7 +126,7 @@ class OrderHistoryService
             );
 
         // Attach invoice
-        if ($order->getPaidAt() && $state?->shouldAttachInvoice()) {
+        if ($order->paidAt && $state?->shouldAttachInvoice()) {
             $shopGo = $this->app->service(ShopGoPackage::class);
             $invoiceService = $this->app->service(InvoiceService::class);
 
@@ -135,7 +135,7 @@ class OrderHistoryService
                 sprintf(
                     '[%s] Invoice-%s.pdf',
                     $shopGo->config('shop.sitename') ?: 'ShopGo',
-                    $order->getInvoiceNo()
+                    $order->invoiceNo
                 ),
                 'application/pdf'
             );
@@ -164,8 +164,8 @@ class OrderHistoryService
                 $this->trans(
                     'shopgo.order.mail.changed.notify.subject',
                     sitename: $sitename,
-                    state: $order->getStateText(),
-                    no: $order->getNo()
+                    state: $order->stateText,
+                    no: $order->no
                 )
             )
                 ->bcc(...$emails)
@@ -194,15 +194,15 @@ class OrderHistoryService
     public function getShouldNoticeAdminCallback(): ?\Closure
     {
         return $this->shouldNoticeAdminCallback ??= static function (Order $order, OrderState $state) {
-            if ($state->isPaid() && !$order->getPaidAt()) {
+            if ($state->paid && !$order->paidAt) {
                 return true;
             }
 
-            if ($state->isDone() && !$order->getDoneAt()) {
+            if ($state->done && !$order->doneAt) {
                 return true;
             }
 
-            if ($state->isCancel() && !$order->getCancelledAt()) {
+            if ($state->cancel && !$order->cancelledAt) {
                 return true;
             }
 

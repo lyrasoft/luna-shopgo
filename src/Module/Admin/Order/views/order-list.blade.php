@@ -166,29 +166,29 @@ $orm = $app->service(ORM::class);
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
                             <td>
                                 <span class="badge px-3 py-2 w-100"
-                                    style="{{ $state?->getColorCSS() ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
-                                    {{ $state?->getTitle() ?: $entity->getStateText() }}
+                                    style="{{ $state?->colorCSS ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
+                                    {{ $state?->title ?: $entity->stateText }}
                                 </span>
                             </td>
 
                             {{-- No --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('order_edit')->id($entity->getId()) }}">
-                                        #{{ $entity->getNo() }}
+                                    <a href="{{ $nav->to('order_edit')->id($entity->id) }}">
+                                        #{{ $entity->no }}
                                     </a>
                                 </div>
                             </td>
 
                             {{-- User --}}
                             <td class="text-nowrap">
-                                {{ $entity->getPaymentData()->getName() }}
+                                {{ $entity->paymentData->getName() }}
 
                                 <div class="mt-1">
                                     <div class="text-info small">
@@ -204,13 +204,13 @@ $orm = $app->service(ORM::class);
 
                             {{-- Total --}}
                             <td class="text-end">
-                                {{ $vm->formatPrice($entity->getTotal()) }}
+                                {{ $vm->formatPrice($entity->total) }}
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getPaidAt())
+                                @if ($entity->paidAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.paid'): {{ $chronos->toLocalFormat($entity->getPaidAt()) }}">
+                                        title="@lang('shopgo.order.state.field.paid'): {{ $chronos->toLocalFormat($entity->paidAt) }}">
                                         <i class="fa fa-clock text-info"></i>
                                     </div>
                                 @else
@@ -219,9 +219,9 @@ $orm = $app->service(ORM::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getShippedAt())
+                                @if ($entity->shippedAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.shipped'): {{ $chronos->toLocalFormat($entity->getShippedAt()) }}">
+                                        title="@lang('shopgo.order.state.field.shipped'): {{ $chronos->toLocalFormat($entity->shippedAt) }}">
                                         <i class="fa fa-clock text-info"></i>
                                     </div>
                                 @else
@@ -230,9 +230,9 @@ $orm = $app->service(ORM::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getDoneAt())
+                                @if ($entity->doneAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.done'): {{ $chronos->toLocalFormat($entity->getDoneAt()) }}">
+                                        title="@lang('shopgo.order.state.field.done'): {{ $chronos->toLocalFormat($entity->doneAt) }}">
                                         <i class="fa fa-clock text-success"></i>
                                     </div>
                                 @else
@@ -241,9 +241,9 @@ $orm = $app->service(ORM::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getCancelledAt())
+                                @if ($entity->cancelledAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.cancel'): {{ $chronos->toLocalFormat($entity->getCancelledAt()) }}">
+                                        title="@lang('shopgo.order.state.field.cancel'): {{ $chronos->toLocalFormat($entity->cancelledAt) }}">
                                         <i class="fa fa-clock text-secondary"></i>
                                     </div>
                                 @else
@@ -252,9 +252,9 @@ $orm = $app->service(ORM::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getReturnedAt())
+                                @if ($entity->returnedAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.returned'): {{ $chronos->toLocalFormat($entity->getReturnedAt()) }}">
+                                        title="@lang('shopgo.order.state.field.returned'): {{ $chronos->toLocalFormat($entity->returnedAt) }}">
                                         <i class="fa fa-clock text-danger"></i>
                                     </div>
                                 @else
@@ -263,9 +263,9 @@ $orm = $app->service(ORM::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->getRollbackAt())
+                                @if ($entity->rollbackAt)
                                     <div data-bs-toggle="tooltip"
-                                        title="@lang('shopgo.order.state.field.rollback'): {{ $chronos->toLocalFormat($entity->getRollbackAt()) }}">
+                                        title="@lang('shopgo.order.state.field.rollback'): {{ $chronos->toLocalFormat($entity->rollbackAt) }}">
                                         <i class="fa fa-clock text-warning"></i>
                                     </div>
                                 @else
@@ -276,8 +276,8 @@ $orm = $app->service(ORM::class);
                             {{-- Created --}}
                             <td>
                                 <div data-bs-toggle="tooltip"
-                                    title="{{ $chronos->toLocalFormat($entity->getCreated()) }}">
-                                    {{ $chronos->toLocalFormat($entity->getCreated(), 'Y-m-d') }}
+                                    title="{{ $chronos->toLocalFormat($entity->created) }}">
+                                    {{ $chronos->toLocalFormat($entity->created, 'Y-m-d') }}
                                 </div>
                             </td>
 
@@ -285,7 +285,7 @@ $orm = $app->service(ORM::class);
                                 {{-- Delete --}}
                                 <td class="text-center">
                                     <button type="button" class="btn btn-sm btn-outline-secondary"
-                                        @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                        @click="grid.deleteItem('{{ $entity->id }}')"
                                         data-dos
                                     >
                                         <i class="fa-solid fa-trash"></i>
@@ -295,7 +295,7 @@ $orm = $app->service(ORM::class);
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

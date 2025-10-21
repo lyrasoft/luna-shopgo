@@ -31,7 +31,7 @@ use Windwalker\ORM\ORM;
  */
 
 $orm = $app->service(ORM::class);
-$state = $orm->findOne(OrderState::class, $order->getStateId());
+$state = $orm->findOne(OrderState::class, $order->stateId);
 ?>
 
 <div class="card">
@@ -41,29 +41,29 @@ $state = $orm->findOne(OrderState::class, $order->getStateId());
                 @lang('shopgo.order.field.no')
             </dt>
             <dd class="col-8">
-                #{{ $order->getNo() }}
+                #{{ $order->no }}
             </dd>
             <dt class="col-4">
                 @lang('shopgo.order.field.state')
             </dt>
             <dd class="col-8">
                 <span class="badge px-2 py-1"
-                    style="font-size: .875rem; {{ $state?->getColorCSS() }}">
-                    {{ $order->getStateText() ?: $state?->getTitle() }}
+                    style="font-size: .875rem; {{ $state?->colorCSS }}">
+                    {{ $order->stateText ?: $state?->title }}
                 </span>
             </dd>
             <dt class="col-4">
                 @lang('shopgo.order.field.created')
             </dt>
             <dd class="col-8">
-                {{ $chronos->toLocalFormat($order->getCreated()) }}
+                {{ $chronos->toLocalFormat($order->created) }}
             </dd>
-            @if ($order->getPaidAt())
+            @if ($order->paidAt)
                 <dt class="col-4">
                     @lang('shopgo.order.field.paid.at')
                 </dt>
                 <dd class="col-8">
-                    {{ $chronos->toLocalFormat($order->getPaidAt()) }}
+                    {{ $chronos->toLocalFormat($order->paidAt) }}
                 </dd>
             @endif
         </dl>

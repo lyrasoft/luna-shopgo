@@ -53,7 +53,7 @@ trait PriceRangeTrait
                     $form->add('flat_fee', NumberField::class)
                         ->label($this->trans('shopgo.shipping.field.flat.fee'))
                         ->min(0, false)
-                        ->step($this->getMainCurrency()->getInputStep())
+                        ->step($this->getMainCurrency()->inputStep)
                         ->defaultValue('0');
 
                     $form->add('depends_on', ButtonRadioField::class)
@@ -109,8 +109,8 @@ trait PriceRangeTrait
             foreach ($locCategories as $locCategory) {
                 $found = $this->orm->from(Location::class)
                     ->leftJoin(Category::class)
-                    ->where('location.lft', '<=', $location->getLft())
-                    ->where('location.rgt', '>=', $location->getRgt())
+                    ->where('location.lft', '<=', $location->lft)
+                    ->where('location.rgt', '>=', $location->rgt)
                     ->where('category.id', $locCategory['id'] ?? 0)
                     ->get();
 
@@ -123,8 +123,8 @@ trait PriceRangeTrait
             if ($matchedPricing === null) {
                 foreach ($range['locations'] ?? [] as $loc) {
                     $found = $this->orm->from(Location::class)
-                        ->where('location.lft', '<=', $location->getLft())
-                        ->where('location.rgt', '>=', $location->getRgt())
+                        ->where('location.lft', '<=', $location->lft)
+                        ->where('location.rgt', '>=', $location->rgt)
                         ->where('location.id', $loc['id'] ?? 0)
                         ->get();
 
@@ -153,7 +153,7 @@ trait PriceRangeTrait
                         /** @var ProductVariant $variant */
                         $variant = $cartItem->getVariant()->getData();
 
-                        $value = BigDecimal::of($variant->getDimension()->getWeight())
+                        $value = BigDecimal::of($variant->dimension->getWeight())
                             ->multipliedBy($cartItem->getQuantity());
                     }
 
@@ -176,10 +176,10 @@ trait PriceRangeTrait
                                 $itemFee,
                                 $this->trans('shopgo.order.field.shipping.fee'),
                                 [
-                                    'id' => $this->getData()->getId(),
-                                    'alias' => $this->getData()->getAlias(),
-                                    'title' => $this->getData()->getTitle(),
-                                    'location_id' => $location?->getId(),
+                                    'id' => $this->getData()->id,
+                                    'alias' => $this->getData()->alias,
+                                    'title' => $this->getData()->title,
+                                    'location_id' => $location?->id,
                                 ]
                             );
                             $cartItem->setPriceSet($priceSet);
@@ -205,7 +205,7 @@ trait PriceRangeTrait
                         $variant = $cartItem->getVariant()->getData();
 
                         $value = $value->plus(
-                            BigDecimal::of($variant->getDimension()->getWeight())
+                            BigDecimal::of($variant->dimension->getWeight())
                                 ->multipliedBy($cartItem->getQuantity())
                         );
                     }
@@ -234,10 +234,10 @@ trait PriceRangeTrait
                 $fee,
                 $this->trans('shopgo.order.field.shipping.fee'),
                 [
-                    'id' => $this->getData()->getId(),
-                    'alias' => $this->getData()->getAlias(),
-                    'title' => $this->getData()->getTitle(),
-                    'location_id' => $location?->getId(),
+                    'id' => $this->getData()->id,
+                    'alias' => $this->getData()->alias,
+                    'title' => $this->getData()->title,
+                    'location_id' => $location?->id,
                 ]
             );
         }

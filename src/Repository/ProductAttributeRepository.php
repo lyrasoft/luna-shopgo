@@ -55,7 +55,7 @@ class ProductAttributeRepository implements ManageRepositoryInterface, ListRepos
     {
         $action->setReorderGroupHandler(
             function (Query $query, ProductAttribute $attribute) {
-                $query->where('category_id', $attribute->getCategoryId());
+                $query->where('category_id', $attribute->categoryId);
             }
         );
     }

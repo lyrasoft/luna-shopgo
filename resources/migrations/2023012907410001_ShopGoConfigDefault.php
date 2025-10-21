@@ -32,9 +32,8 @@ $mig->up(
 
         $item = $mapper->createEntity();
 
-        $item->setType('shopgo_shop');
-        $item->setContent(
-            [
+        $item->type = 'shopgo_shop';
+        $item->content = [
                 'currency_main' => 1,
                 'payment_no_maxlength' => '20',
                 'order_no_prefix' => 'S',
@@ -43,8 +42,7 @@ $mig->up(
                 'sequence_day_format' => 'ymd',
                 'order_hash_seed' => str_shuffle(BaseConvert::BASE62),
                 'invoice_no_prefix' => 'INV',
-            ]
-        );
+            ];
 
         $mapper->createOne($item);
     }

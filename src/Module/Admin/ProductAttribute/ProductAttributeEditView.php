@@ -73,7 +73,7 @@ class ProductAttributeEditView implements ViewModelInterface
                 'category_id',
                 [
                     'type' => 'attribute',
-                    'target_id' => $item->getId()
+                    'target_id' => $item->id
                 ]
             );
 

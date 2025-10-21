@@ -62,7 +62,7 @@ $minStock ??= $item->min_stock ?? 0;
 $maxStock ??= $item->max_stock ?? 0;
 $favorited ??= null;
 
-$priceSet = $variant->getPriceSet();
+$priceSet = $variant->priceSet;
 
 $currencyService = $app->service(CurrencyService::class);
 $variantService = $app->service(VariantService::class);
@@ -77,7 +77,7 @@ $attributes = $attributes->class('card c-product-card');
 <article {!! $attributes !!}>
     <div class="card-body d-flex flex-column gap-2">
         <div class="ratio ratio-1x1">
-            <img src="{{ $variant->getCover() }}"
+            <img src="{{ $variant->cover }}"
                 class="c-product-card__cover"
                 alt="Cover">
         </div>
@@ -85,7 +85,7 @@ $attributes = $attributes->class('card c-product-card');
         <header class="c-product-card__header">
             <a href="{{ $item->makeLink($nav) }}"
                 class="stretched-link">
-                <h4 class="m-0">{{ $item->getTitle() }}</h4>
+                <h4 class="m-0">{{ $item->title }}</h4>
             </a>
         </header>
 
@@ -111,20 +111,20 @@ $attributes = $attributes->class('card c-product-card');
             @else
                 <button type="button" class="btn btn-primary flex-grow-1"
                     data-task="add-to-cart"
-                    data-id="{{ $item->getId() }}"
-                    data-variant-id="{{ $variant->getId() }}"
+                    data-id="{{ $item->id }}"
+                    data-variant-id="{{ $variant->id }}"
                     @attr('disabled', $isOutOfStock)
                 >
                     <i class="fa fa-cart-plus"></i>
                     @if ($isOutOfStock)
-                        {{ $variant->getOutOfStockText() ?: $lang('shopgo.message.out.of.stock') }}
+                        {{ $variant->outOfStockText ?: $lang('shopgo.message.out.of.stock') }}
                     @else
                         @lang('shopgo.cart.button.add.to.cart')
                     @endif
                 </button>
             @endif
 
-            <x-favorite-button :id="$item->getId()"
+            <x-favorite-button :id="$item->id"
                 :added="(bool) $favorited"
                 type="product"
                 class="btn btn-outline-primary">

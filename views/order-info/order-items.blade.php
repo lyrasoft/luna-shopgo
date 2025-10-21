@@ -73,34 +73,34 @@ $totals = clone $totals;
         @foreach($orderItems as $orderItem)
             <tr>
                 @if (!$simple)
-                    <td>{{ $orderItem->getId() }}</td>
+                    <td>{{ $orderItem->id }}</td>
                     <td>
-                        <img src="{{ $orderItem->getImage() }}" class="me-3" width="100"
+                        <img src="{{ $orderItem->image }}" class="me-3" width="100"
                             alt="Image">
                     </td>
                 @endif
                 <td>
                     <h4>
-                        {{ $orderItem->getTitle() }}
+                        {{ $orderItem->title }}
                     </h4>
-                    @if ($orderItem->getVariantHash())
+                    @if ($orderItem->variantHash)
                         <div>
-                            {{ $orderItem->getVariantTitle() }}
+                            {{ $orderItem->variantTitle }}
                         </div>
                     @endif
                 </td>
                 @if (!$simple)
                     <td class="text-end" style="width: 200px">
-                        {{ $currency->format($orderItem->getPriceUnit()) }}
+                        {{ $currency->format($orderItem->priceUnit) }}
                     </td>
                 @endif
-                <td class="text-end" style="width: 200px">{{ $orderItem->getQuantity() }}</td>
+                <td class="text-end" style="width: 200px">{{ $orderItem->quantity }}</td>
                 <td class="text-end" style="width: 200px">
-                    {{ $currency->formatWithCode($orderItem->getTotal()) }}
+                    {{ $currency->formatWithCode($orderItem->total) }}
                 </td>
             </tr>
 
-            @if ($attachmentItems = $attachments[$orderItem->getId()] ?? [])
+            @if ($attachmentItems = $attachments[$orderItem->id] ?? [])
                 @foreach ($attachmentItems as $atachment)
                     <tr class="bg-light">
                         @if (!$simple)
@@ -143,7 +143,7 @@ $totals = clone $totals;
                         @lang('shopgo.order.item.attached.final.total')
                     </td>
                     <td class="text-end">
-                        {{ $currency->formatWithCode($orderItem->getPriceSet()['attached_final_total']) }}
+                        {{ $currency->formatWithCode($orderItem->priceSet['attached_final_total']) }}
                     </td>
                 </tr>
             @endif

@@ -38,67 +38,67 @@ class OrderItem implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('parent_id')]
-    protected int $parentId = 0;
+    public int $parentId = 0;
 
     #[Column('order_id')]
-    protected int $orderId = 0;
+    public int $orderId = 0;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     #[Column('variant_id')]
-    protected int $variantId = 0;
+    public int $variantId = 0;
 
     #[Column('attachment_id')]
-    protected int $attachmentId = 0;
+    public int $attachmentId = 0;
 
     #[Column('variant_hash')]
-    protected string $variantHash = '';
+    public string $variantHash = '';
 
     #[Column('key')]
-    protected string $key = '';
+    public string $key = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('variant_title')]
-    protected string $variantTitle = '';
+    public string $variantTitle = '';
 
     #[Column('image')]
-    protected string $image = '';
+    public string $image = '';
 
     #[Column('product_data')]
     #[Cast(JsonCast::class)]
-    protected array $productData = [];
+    public array $productData = [];
 
     #[Column('quantity')]
-    protected int $quantity = 0;
+    public int $quantity = 0;
 
     #[Column('price_unit')]
-    protected float $priceUnit = 0.0;
+    public float $priceUnit = 0.0;
 
     #[Column('base_price_unit')]
-    protected float $basePriceUnit = 0.0;
+    public float $basePriceUnit = 0.0;
 
     #[Column('total')]
-    protected float $total = 0.0;
+    public float $total = 0.0;
 
     #[Column('price_set')]
     #[Cast(JsonCast::class)]
     #[Cast(PriceSet::class)]
-    protected PriceSet $priceSet;
+    public PriceSet $priceSet;
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
     #[Cast(ListOptionCollection::class)]
-    protected ListOptionCollection $options;
+    public ListOptionCollection $options;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[
         OneToMany,
@@ -106,7 +106,7 @@ class OrderItem implements EntityInterface
         OnUpdate(Action::IGNORE),
         OnDelete(Action::CASCADE)
     ]
-    protected RelationCollection|null $attachments = null;
+    public RelationCollection|null $attachments = null;
 
     public function getId(): ?int
     {
@@ -218,11 +218,11 @@ class OrderItem implements EntityInterface
 
     public function getFullTitle(string $delimiter = ' | '): string
     {
-        if ($this->getVariantHash()) {
-            return $this->getTitle() . $delimiter . $this->getVariantTitle();
+        if ($this->variantHash) {
+            return $this->title . $delimiter . $this->variantTitle;
         }
 
-        return $this->getTitle();
+        return $this->title;
     }
 
     public function getImage(): string

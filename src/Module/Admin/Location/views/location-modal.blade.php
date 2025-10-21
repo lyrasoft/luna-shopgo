@@ -46,12 +46,12 @@ $parentsCount = count($parents);
 $path = [];
 
 foreach ($parents as $i => $parent) {
-    $path[] = $parent->getTitle();
+    $path[] = $parent->title;
 
     $breadcrumb->push(
-        $parent->getTitle(),
+        $parent->title,
         ($i + 1) !== $parentsCount
-            ? $nav->self()->var('current_id', $parent->getId())
+            ? $nav->self()->var('current_id', $parent->id)
             : null
     );
 }

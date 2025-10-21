@@ -71,15 +71,15 @@ class AdditionalPurchaseController
                     foreach ($variants as $variantId => $attachment) {
                         $attachmentItem = new AdditionalPurchaseAttachment();
 
-                        $attachmentItem->setId((int) ($attachment['id'] ?? 0));
-                        $attachmentItem->setAdditionalPurchaseId((int) $data['id']);
-                        $attachmentItem->setProductId((int) $productId);
-                        $attachmentItem->setVariantId((int) $variantId);
-                        $attachmentItem->setMethod($attachment['method']);
-                        $attachmentItem->setPrice((float) $attachment['price']);
-                        $attachmentItem->setMaxQuantity((int) $attachment['max_quantity']);
-                        $attachmentItem->setState((int) $attachment['state']);
-                        $attachmentItem->setOrdering(1);
+                        $attachmentItem->id = (int) ($attachment['id'] ?? 0);
+                        $attachmentItem->additionalPurchaseId = (int) $data['id'];
+                        $attachmentItem->productId = (int) $productId;
+                        $attachmentItem->variantId = (int) $variantId;
+                        $attachmentItem->method = $attachment['method'];
+                        $attachmentItem->price = (float) $attachment['price'];
+                        $attachmentItem->maxQuantity = (int) $attachment['max_quantity'];
+                        $attachmentItem->state = (int) $attachment['state'];
+                        $attachmentItem->ordering = 1;
 
                         $attachments[] = $attachmentItem;
                     }
@@ -99,8 +99,8 @@ class AdditionalPurchaseController
 
                 foreach ($productIds as $productId) {
                     $map = new AdditionalPurchaseTarget();
-                    $map->setAdditionalPurchaseId((int) $data['id']);
-                    $map->setProductId((int) $productId);
+                    $map->additionalPurchaseId = (int) $data['id'];
+                    $map->productId = (int) $productId;
 
                     $maps[] = $map;
                 }
@@ -189,16 +189,16 @@ class AdditionalPurchaseController
         $product->variant = $variant;
 
         $variants = $orm->from(ProductVariant::class, 'variant')
-            ->where('product_id', $product->getId())
+            ->where('product_id', $product->id)
             ->all(ProductVariant::class);
 
         $variants = $variants->filter(
             function (ProductVariant $variant) use ($product) {
-                if ($product->getVariants() === 0) {
-                    return $variant->isPrimary();
+                if ($product->variants === 0) {
+                    return $variant->primary;
                 }
 
-                return !$variant->isPrimary();
+                return !$variant->primary;
             }
         )->values();
 

@@ -177,7 +177,7 @@ class LocationListView implements ViewModelInterface
         $title = $this->trans('unicorn.title.grid', title: $this->trans('luna.location.title'));
 
         if ($this->current && !$this->current->isRoot()) {
-            $title .= ': ' . $this->current->getTitle();
+            $title .= ': ' . $this->current->title;
         }
 
         $view->getHtmlFrame()

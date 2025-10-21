@@ -158,7 +158,7 @@ abstract class AbstractPayment implements FieldDefinitionInterface
 
     public function &getParams(): array
     {
-        $params = &$this->getData()->getParams();
+        $params = &$this->getData()->params;
 
         return $params;
     }

@@ -37,39 +37,39 @@ class OrderHistory implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('order_id')]
-    protected int $orderId = 0;
+    public int $orderId = 0;
 
     #[Column('type')]
     #[Cast(OrderHistoryType::class)]
-    protected OrderHistoryType $type;
+    public OrderHistoryType $type;
 
     #[Column('state_id')]
-    protected int $stateId = 0;
+    public int $stateId = 0;
 
     #[Column('state_color')]
-    protected string $stateColor = '';
+    public string $stateColor = '';
 
     #[Column('state_text')]
-    protected string $stateText = '';
+    public string $stateText = '';
 
     #[Column('notify')]
     #[Cast('bool', 'int')]
-    protected bool $notify = false;
+    public bool $notify = false;
 
     #[Column('message')]
-    protected string $message = '';
+    public string $message = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -184,13 +184,13 @@ class OrderHistory implements EntityInterface
     public function setState(OrderState|null $state): static
     {
         if (!$state) {
-            $this->setStateId(0);
-            $this->setStateText('');
-            $this->setStateColor('');
+            $this->stateId = 0;
+            $this->stateText = '';
+            $this->stateColor = '';
         } else {
-            $this->setStateId((int) $state->getId());
-            $this->setStateText($state->getTitle());
-            $this->setStateColor($state->getColor());
+            $this->stateId = (int) $state->id;
+            $this->stateText = $state->title;
+            $this->stateColor = $state->color;
         }
 
         return $this;

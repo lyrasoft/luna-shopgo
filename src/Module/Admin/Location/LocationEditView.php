@@ -59,7 +59,7 @@ class LocationEditView implements ViewModelInterface
         $item = $this->repository->getItem($id);
 
         $form = $this->formFactory
-            ->create(EditForm::class, id: $item?->getId(), type: $item?->getType())
+            ->create(EditForm::class, id: $item?->id, type: $item?->type)
             ->setNamespace('item')
             ->fill(
                 $this->repository->getState()->getAndForget('edit.data')

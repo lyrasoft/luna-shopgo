@@ -31,23 +31,23 @@ class ShopCategoryMap implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('type')]
-    protected string $type = '';
+    public string $type = '';
 
     #[Column('target_id')]
-    protected int $targetId = 0;
+    public int $targetId = 0;
 
     #[Column('category_id')]
-    protected int $categoryId = 0;
+    public int $categoryId = 0;
 
     #[Column('primary')]
     #[Cast('bool', 'int')]
-    protected bool $primary = false;
+    public bool $primary = false;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

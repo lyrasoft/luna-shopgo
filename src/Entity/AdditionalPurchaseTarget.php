@@ -26,10 +26,10 @@ class AdditionalPurchaseTarget implements EntityInterface
     use EntityTrait;
 
     #[Column('additional_purchase_id')]
-    protected int $additionalPurchaseId = 0;
+    public int $additionalPurchaseId = 0;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     public function getAdditionalPurchaseId(): int
     {

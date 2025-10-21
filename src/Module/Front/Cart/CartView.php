@@ -86,7 +86,7 @@ class CartView implements ViewModelInterface
             $checkoutData['payment_data']['locationPath'] = $locationMapper->getPath(
                 $checkoutData['payment_data']['location_id']
             )
-                ->map(fn (Location $location) => $location->getId())
+                ->map(fn (Location $location) => $location->id)
                 ->map('strval')
                 ->slice(1)
                 ->dump();

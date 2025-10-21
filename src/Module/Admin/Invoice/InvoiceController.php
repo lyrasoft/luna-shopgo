@@ -43,8 +43,8 @@ class InvoiceController
 
         $order = $orm->mustFindOne(Order::class, $id);
 
-        if (!$order->getInvoiceNo()) {
-            $order->setInvoiceNo($invoiceService->genInvoiceNumber());
+        if (!$order->invoiceNo) {
+            $order->invoiceNo = $invoiceService->genInvoiceNumber();
         }
 
         $orm->updateOne(Order::class, $order);
@@ -98,7 +98,7 @@ class InvoiceController
                 sprintf(
                     '[%s] Invoice-%s.pdf',
                     $shopGo->config('shop.sitename') ?: 'ShopGo',
-                    $order->getInvoiceNo()
+                    $order->invoiceNo
                 )
             );
     }

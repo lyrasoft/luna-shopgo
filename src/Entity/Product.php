@@ -44,99 +44,99 @@ class Product implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('category_id')]
-    protected int $categoryId = 0;
+    public int $categoryId = 0;
 
     #[Column('primary_variant_id')]
-    protected int $primaryVariantId = 0;
+    public int $primaryVariantId = 0;
 
     #[Column('model')]
-    protected string $model = '';
+    public string $model = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('alias')]
     #[Slugify]
-    protected string $alias = '';
+    public string $alias = '';
 
     #[Column('origin_price')]
-    protected float $originPrice = 0.0;
+    public float $originPrice = 0.0;
 
     #[Column('safe_stock')]
-    protected int $safeStock = 0;
+    public int $safeStock = 0;
 
     #[Column('intro')]
-    protected string $intro = '';
+    public string $intro = '';
 
     #[Column('description')]
-    protected string $description = '';
+    public string $description = '';
 
     #[Column('meta')]
     #[Cast(JsonCast::class)]
     #[Cast(MetaData::class)]
-    protected MetaData $meta;
+    public MetaData $meta;
 
     #[Column('can_attach')]
     #[Cast('bool', 'int')]
-    protected bool $canAttach = false;
+    public bool $canAttach = false;
 
     #[Column('variants')]
-    protected int $variants = 0;
+    public int $variants = 0;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('hide')]
     #[Cast('bool', 'int')]
-    protected bool $hide = false;
+    public bool $hide = false;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('search_index')]
-    protected string $searchIndex = '';
+    public string $searchIndex = '';
 
     #[Column('shippings')]
     #[Cast(JsonCast::class)]
-    protected array $shippings = [];
+    public array $shippings = [];
 
     #[Column('publish_up')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $publishUp = null;
+    public ?Chronos $publishUp = null;
 
     #[Column('publish_down')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $publishDown = null;
+    public ?Chronos $publishDown = null;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('hits')]
-    protected int $hits = 0;
+    public int $hits = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -146,7 +146,7 @@ class Product implements EntityInterface
 
     public function makeLink(Navigator $nav): RouteUri
     {
-        return $nav->to('front::product_item')->id($this->getId())->alias($this->getAlias());
+        return $nav->to('front::product_item')->id($this->id)->alias($this->alias);
     }
 
     public function getId(): ?int

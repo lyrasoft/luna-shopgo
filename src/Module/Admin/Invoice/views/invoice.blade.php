@@ -50,7 +50,7 @@ $currency = $app->service(CurrencyService::class);
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Invoice-{{ $order->getInvoiceNo() }}</title>
+    <title>Invoice-{{ $order->invoiceNo }}</title>
 
     <style>
       html, body {
@@ -128,7 +128,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.invoice.no') /
                             </span>
                                 <strong>
-                                    #{{ $order->getInvoiceNo() }}
+                                    #{{ $order->invoiceNo }}
                                 </strong>
                             </div>
                             <div class="c-info">
@@ -136,7 +136,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.no') /
                             </span>
                                 <strong>
-                                    #{{ $order->getNo() }}
+                                    #{{ $order->no }}
                                 </strong>
                             </div>
                             <div class="c-info">
@@ -144,7 +144,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.order.time') /
                             </span>
                                 <strong>
-                                    {{ $chronos->toLocalFormat($order->getCreated(), 'Y-m-d') }}
+                                    {{ $chronos->toLocalFormat($order->created, 'Y-m-d') }}
                                 </strong>
                             </div>
                             <div class="c-info">
@@ -152,7 +152,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.payment') /
                             </span>
                                 <strong>
-                                    {{ $order->getPaymentData()->getPaymentTitle() }}
+                                    {{ $order->paymentData->getPaymentTitle() }}
                                 </strong>
                             </div>
                             <div class="c-info">
@@ -160,7 +160,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.shipping') /
                             </span>
                                 <strong>
-                                    {{ $order->getShippingData()?->getShippingTitle() }}
+                                    {{ $order->shippingData?->getShippingTitle() }}
                                 </strong>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ $currency = $app->service(CurrencyService::class);
                             @lang('shopgo.order.payment.data.title')
                         </h4>
                         <div>
-                            {!! nl2br($order->getPaymentData()->getFormatted()) !!}
+                            {!! nl2br($order->paymentData->getFormatted()) !!}
                         </div>
                     </td>
                     <td class="l-address-table__shipping">
@@ -187,7 +187,7 @@ $currency = $app->service(CurrencyService::class);
                             @lang('shopgo.order.shipping.data.title')
                         </h4>
                         <div>
-                            {!! nl2br($order->getShippingData()->getFormatted()) !!}
+                            {!! nl2br($order->shippingData->getFormatted()) !!}
                         </div>
                     </td>
                 </tr>
@@ -219,22 +219,22 @@ $currency = $app->service(CurrencyService::class);
                     <tr class="c-order-table__item c-order-table__item--item">
                         <td>
                             <div>
-                                {{ $orderItem->getTitle() }}
+                                {{ $orderItem->title }}
                             </div>
-                            @if ($orderItem->getVariantHash())
+                            @if ($orderItem->variantHash)
                                 <div style="font-size: .875rem; color: #666; margin-top: .25rem">
-                                    {{ $orderItem->getVariantTitle() }}
+                                    {{ $orderItem->variantTitle }}
                                 </div>
                             @endif
                         </td>
                         <td class="text-nowrap text-end">
-                            {{ $orderItem->getQuantity() }}
+                            {{ $orderItem->quantity }}
                         </td>
                         <td class="text-nowrap text-end">
-                            {{ $currency->format($orderItem->getPriceUnit()) }}
+                            {{ $currency->format($orderItem->priceUnit) }}
                         </td>
                         <td class="text-end text-end">
-                            {{ $currency->formatWithCode($orderItem->getTotal()) }}
+                            {{ $currency->formatWithCode($orderItem->total) }}
                         </td>
                     </tr>
 
@@ -243,20 +243,20 @@ $currency = $app->service(CurrencyService::class);
                             <td>
                                 <div style="padding-left: .5rem">
                                     <div>
-                                        {{ $attachment->getTitle() }}
+                                        {{ $attachment->title }}
                                     </div>
-                                    @if ($attachment->getVariantHash())
+                                    @if ($attachment->variantHash)
                                         <div style="font-size: .875rem; color: #666; margin-top: .25rem">
-                                            {{ $attachment->getVariantTitle() }}
+                                            {{ $attachment->variantTitle }}
                                         </div>
                                     @endif
                                 </div>
                             </td>
                             <td class="text-nowrap">
-                                {{ $attachment->getProductData()['product']['model'] ?? '' }}
+                                {{ $attachment->productData['product']['model'] ?? '' }}
                             </td>
                             <td class="text-end">
-                                {{ $attachment->getQuantity() }}
+                                {{ $attachment->quantity }}
                             </td>
                         </tr>
                     @endforeach

@@ -44,95 +44,95 @@ class ProductVariant implements EntityInterface
     use ProductVariantTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('hash')]
-    protected string $hash = '';
+    public string $hash = '';
 
     #[Column('primary')]
     #[Cast('bool', 'int')]
-    protected bool $primary = false;
+    public bool $primary = false;
 
     #[Column('sku')]
-    protected string $sku = '';
+    public string $sku = '';
 
     #[Column('upc')]
-    protected string $upc = '';
+    public string $upc = '';
 
     #[Column('ean')]
-    protected string $ean = '';
+    public string $ean = '';
 
     #[Column('jan')]
-    protected string $jan = '';
+    public string $jan = '';
 
     #[Column('isbn')]
-    protected string $isbn = '';
+    public string $isbn = '';
 
     #[Column('mpn')]
-    protected string $mpn = '';
+    public string $mpn = '';
 
     #[Column('stock_quantity')]
-    protected int $stockQuantity = 0;
+    public int $stockQuantity = 0;
 
     #[Column('subtract')]
     #[Cast('bool', 'int')]
-    protected bool $subtract = false;
+    public bool $subtract = false;
 
     #[Column('price')]
-    protected float $price = 0.0;
+    public float $price = 0.0;
 
     #[Column('dimension')]
     #[Cast(JsonCast::class)]
     #[Cast(ProductDimension::class)]
-    protected ProductDimension $dimension;
+    public ProductDimension $dimension;
 
     #[Column('out_of_stock_text')]
-    protected string $outOfStockText = '';
+    public string $outOfStockText = '';
 
     #[Column('cover')]
-    protected string $cover = '';
+    public string $cover = '';
 
     #[Column('images')]
     #[Cast(JsonCast::class)]
-    protected array $images = [];
+    public array $images = [];
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
     #[Cast(ListOptionCollection::class)]
-    protected ListOptionCollection $options;
+    public ListOptionCollection $options;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -448,13 +448,13 @@ class ProductVariant implements EntityInterface
     public function getSearchIndex(): string
     {
         $indexes = [
-            $this->getHash(),
-            $this->getSku(),
-            $this->getUpc(),
-            $this->getEan(),
-            $this->getJan(),
-            $this->getIsbn(),
-            $this->getMpn(),
+            $this->hash,
+            $this->sku,
+            $this->upc,
+            $this->ean,
+            $this->jan,
+            $this->isbn,
+            $this->mpn,
         ];
 
         return implode('|', array_filter($indexes));

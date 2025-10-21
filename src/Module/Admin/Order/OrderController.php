@@ -132,11 +132,11 @@ class OrderController
         foreach ($ids as $id) {
             $order = $orm->mustFindOne(Order::class, $id);
 
-            $shippingInstance = $shippingService->createTypeInstance($order->getShipping());
+            $shippingInstance = $shippingService->createTypeInstance($order->shipping);
 
             if (!$shippingInstance) {
                 throw new \RuntimeException(
-                    "Order: `{$order->getNo()}` shipping type: `{$order->getShipping()->getType()}` not found."
+                    "Order: `{$order->no}` shipping type: `{$order->getShipping()->type}` not found."
                 );
             }
 
@@ -167,11 +167,11 @@ class OrderController
         foreach ($ids as $id) {
             $order = $orm->mustFindOne(Order::class, $id);
 
-            $shippingInstance = $shippingService->createTypeInstance($order->getShipping());
+            $shippingInstance = $shippingService->createTypeInstance($order->shipping);
 
             if (!$shippingInstance) {
                 throw new \RuntimeException(
-                    "Order: `{$order->getNo()}` shipping type: `{$order->getShipping()->getType()}` not found."
+                    "Order: `{$order->no}` shipping type: `{$order->getShipping()->type}` not found."
                 );
             }
 
@@ -206,8 +206,8 @@ class OrderController
             $orders[] = $order = $orm->mustFindOne(Order::class, $id);
 
             if (!$shipping) {
-                $shipping = $order->getShipping();
-            } elseif ($shipping->getType() !== $order->getShipping()?->getType()) {
+                $shipping = $order->shipping;
+            } elseif ($shipping->type !== $order->getShipping()?->type) {
                 throw new ValidateFailException(
                     $this->trans(
                         'shopgo.order.message.print.shipment.should.be.same.shipping.type'
@@ -224,7 +224,7 @@ class OrderController
 
         if (!$shippingInstance) {
             throw new \RuntimeException(
-                "Order: `{$order->getNote()}` shipping type: `{$shipping->getType()}` not found."
+                "Order: `{$order->note}` shipping type: `{$shipping->type}` not found."
             );
         }
 

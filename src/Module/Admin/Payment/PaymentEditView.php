@@ -60,7 +60,7 @@ class PaymentEditView implements ViewModelInterface
         /** @var Payment $item */
         $item = $this->repository->getItem($id);
 
-        $type = $item?->getType() ?? $app->input('type');
+        $type = $item?->type ?? $app->input('type');
 
         $typeClass = $this->paymentService->getTypeClass($type);
         $typeInstance = $this->paymentService->createTypeInstance($type);

@@ -37,14 +37,14 @@ use Windwalker\Core\Router\SystemUri;
                 @lang('shopgo.order.field.payment.no')
             </dt>
             <dd class="col-8">
-                {{ $order->getPaymentNo() ?: '-' }}
+                {{ $order->paymentNo ?: '-' }}
             </dd>
 
             <dt class="col-4">
                 @lang('shopgo.order.field.shipping.no')
             </dt>
             <dd class="col-8">
-                {{ $order->getShippingNo() ?: '-' }}
+                {{ $order->shippingNo ?: '-' }}
             </dd>
 
             <dt class="col-4">
@@ -53,8 +53,8 @@ use Windwalker\Core\Router\SystemUri;
             <dd class="col-8">
                 <div class="d-flex">
                     <div>
-                        @if ($order->getInvoiceNo())
-                            #{{ $order->getInvoiceNo() }}
+                        @if ($order->invoiceNo)
+                            #{{ $order->invoiceNo }}
                         @else
                             -
                         @endif

@@ -60,7 +60,7 @@ class OrderService
                 $to = $this->orm->mustFindOne(OrderState::class, ['alias' => $to]);
             }
 
-            $hasChange = $to->getId() !== $order->getStateId();
+            $hasChange = $to->id !== $order->stateId;
         } else {
             $hasChange = false;
         }

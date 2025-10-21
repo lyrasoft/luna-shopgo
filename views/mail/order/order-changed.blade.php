@@ -34,7 +34,7 @@ use function Windwalker\str;
  * @var $history OrderHistory
  */
 
-$paymentData = $order->getPaymentData();
+$paymentData = $order->paymentData;
 
 ?>
 
@@ -49,26 +49,26 @@ $paymentData = $order->getPaymentData();
 
     @if ($state)
         <p>
-            @lang('shopgo.order.mail.changed.to', no: $order->getNo()):
+            @lang('shopgo.order.mail.changed.to', no: $order->no):
             <span
-                style="padding: .25em .5em; {{ $state->getColorCSS() }}; color: {{ $state->getContrastColor() }}; border-radius: 3px;">
-                {{ $state->getTitle() }}
+                style="padding: .25em .5em; {{ $state->colorCSS }}; color: {{ $state->contrastColor }}; border-radius: 3px;">
+                {{ $state->title }}
             </span>
         </p>
     @endif
 
-    @if ($history->getMessage())
+    @if ($history->message)
         <p>
             <strong>@lang('shopgo.order.mail.changed.comment')</strong>
         </p>
         <blockquote style="margin: 0; padding: .5em 1em;background-color: #eee">
-            {!! html_escape($history->getMessage()) !!}
+            {!! html_escape($history->message) !!}
         </blockquote>
     @endif
 
     <div style="margin-top: 40px">
         @if ($isAdmin)
-            <a href="{{ $nav->to('admin::order_edit')->id($order->getId())->full() }}"
+            <a href="{{ $nav->to('admin::order_edit')->id($order->id)->full() }}"
                 class="btn btn-primary"
                 target="_blank"
                 style="width: 100%"
@@ -76,7 +76,7 @@ $paymentData = $order->getPaymentData();
                 @lang('shopgo.mail.new.order.button.go.manage')
             </a>
         @else
-            <a href="{{ $nav->to('front::my_order_item')->var('no', $order->getNo())->full() }}"
+            <a href="{{ $nav->to('front::my_order_item')->var('no', $order->no)->full() }}"
                 class="btn btn-primary"
                 target="_blank"
                 style="width: 100%"

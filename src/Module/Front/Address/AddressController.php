@@ -69,8 +69,8 @@ class AddressController
         /** @var Location $item */
         foreach ($query->getIterator(Location::class) as $item) {
             $items[] = [
-                'title' => $item->getTitle(),
-                'id' => $item->getId(),
+                'title' => $item->title,
+                'id' => $item->id,
             ];
         }
 

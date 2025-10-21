@@ -66,7 +66,7 @@ class DiscountSubscriber
                     ->setVariant($event->getVariant())
                     ->setPriceSet($event->getPriceSet(), false)
                     ->setDiscounts($event->getAppliedDiscounts())
-                    ->setKey((string) $event->getProduct()->getId())
+                    ->setKey((string) $event->getProduct()->id)
                     ->setQuantity(1)
                     ->setUid(uid());
             }

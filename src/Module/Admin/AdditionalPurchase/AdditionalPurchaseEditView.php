@@ -79,7 +79,7 @@ class AdditionalPurchaseEditView implements ViewModelInterface
             $productIds = $this->orm->findColumn(
                 AdditionalPurchaseTarget::class,
                 'product_id',
-                ['additional_purchase_id' => $item->getId()]
+                ['additional_purchase_id' => $item->id]
             )->dump();
 
             $form->fill(['products' => $productIds]);
@@ -87,7 +87,7 @@ class AdditionalPurchaseEditView implements ViewModelInterface
 
         // Attachments
         $attachments = $this->orm->from(AdditionalPurchaseAttachment::class)
-            ->where('additional_purchase_id', $item?->getId())
+            ->where('additional_purchase_id', $item?->id)
             ->all(AdditionalPurchaseAttachment::class)
             ->keyBy('variantId');
 
@@ -99,7 +99,7 @@ class AdditionalPurchaseEditView implements ViewModelInterface
 
         /** @var ProductVariant $variant */
         foreach ($variants as $variant) {
-            $variant->attachment = $attachments[$variant->getId()] ?? null;
+            $variant->attachment = $attachments[$variant->id] ?? null;
         }
 
         $variantSet = $variants->groupBy('productId');
@@ -121,15 +121,15 @@ class AdditionalPurchaseEditView implements ViewModelInterface
         $attachmentsData = [];
 
         foreach ($products as $product) {
-            $variants = $variantSet[$product->getId()] ?? collect();
+            $variants = $variantSet[$product->id] ?? collect();
 
             $variants = $variants->filter(
                 function (ProductVariant $variant) use ($product) {
-                    if ($product->getVariants() === 0) {
-                        return $variant->isPrimary();
+                    if ($product->variants === 0) {
+                        return $variant->primary;
                     }
 
-                    return !$variant->isPrimary();
+                    return !$variant->primary;
                 }
             )->values();
 

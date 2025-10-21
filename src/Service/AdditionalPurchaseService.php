@@ -41,12 +41,12 @@ class AdditionalPurchaseService
         Product $product,
         AdditionalPurchaseAttachment $attachment
     ): ProductVariant {
-        $priceSet = $variant->getPriceSet();
+        $priceSet = $variant->priceSet;
 
         $newPrice = $this->pricingService->pricingByMethod(
             $priceSet['final'],
-            $attachment->getPrice(),
-            $attachment->getMethod()
+            $attachment->price,
+            $attachment->method
         );
 
         $priceSet['final']->setPrice((string) $newPrice);
@@ -124,28 +124,28 @@ class AdditionalPurchaseService
         Product $targetProduct,
         bool $forUpdate = false
     ): array {
-        $ap = $this->getAdditionalPurchase($attachment->getAdditionalPurchaseId());
+        $ap = $this->getAdditionalPurchase($attachment->additionalPurchaseId);
 
         $now = chronos();
 
-        if ($ap->getPublishUp() !== null && $ap->getPublishUp() > $now) {
+        if ($ap->publishUp !== null && $ap->publishUp > $now) {
             throw new ValidateFailException('Additional Purchase not started yet.');
         }
 
-        if ($ap->getPublishDown() !== null && $ap->getPublishDown() < $now) {
+        if ($ap->publishDown !== null && $ap->publishDown < $now) {
             throw new ValidateFailException('Additional Purchase has ended.');
         }
 
-        $targets = $this->getTargets($ap->getId());
+        $targets = $this->getTargets($ap->id);
 
         $targetIds = $targets->column('productId');
 
-        if (!$targetIds->contains($targetProduct->getId())) {
+        if (!$targetIds->contains($targetProduct->id)) {
             throw new ValidateFailException('The target product not in additional purchase targets');
         }
 
         $variant = $this->orm->from(ProductVariant::class)
-            ->where('id', $attachment->getVariantId())
+            ->where('id', $attachment->variantId)
             ->tapIf(
                 $forUpdate,
                 fn (Query $query) => $query->forUpdate()
@@ -153,7 +153,7 @@ class AdditionalPurchaseService
             ->get(ProductVariant::class);
 
         if (!$variant) {
-            throw new \RuntimeException('Variant: ' . $attachment->getVariantId() . ' not found.');
+            throw new \RuntimeException('Variant: ' . $attachment->variantId . ' not found.');
         }
 
         $product = $this->getVariantProduct($variant->getProductId());

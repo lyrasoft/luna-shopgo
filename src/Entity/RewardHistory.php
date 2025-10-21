@@ -34,36 +34,36 @@ class RewardHistory implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('user_id')]
-    protected int $userId = 0;
+    public int $userId = 0;
 
     #[Column('order_id')]
-    protected int $orderId = 0;
+    public int $orderId = 0;
 
     #[Column('action')]
-    protected string $action = '';
+    public string $action = '';
 
     #[Column('points')]
-    protected float $points = 0.0;
+    public float $points = 0.0;
 
     #[Column('remain')]
-    protected float $remain = 0.0;
+    public float $remain = 0.0;
 
     #[Column('ratio')]
-    protected string $ratio = '';
+    public string $ratio = '';
 
     #[Column('time')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $time = null;
+    public ?Chronos $time = null;
 
     #[Column('note')]
-    protected string $note = '';
+    public string $note = '';
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

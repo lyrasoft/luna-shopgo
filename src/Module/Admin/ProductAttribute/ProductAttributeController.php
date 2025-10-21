@@ -65,9 +65,9 @@ class ProductAttributeController
 
                 foreach ($categories as $categoryId) {
                     $map = new ShopCategoryMap();
-                    $map->setTargetId((int) $data['id']);
-                    $map->setCategoryId((int) $categoryId);
-                    $map->setType('attribute');
+                    $map->targetId = (int) $data['id'];
+                    $map->categoryId = (int) $categoryId;
+                    $map->type = 'attribute';
 
                     $maps[] = $map;
                 }

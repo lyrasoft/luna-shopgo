@@ -93,7 +93,7 @@ class PricingService
         Discount $discount,
         ?BigDecimal &$diff = null,
     ): BigDecimal {
-        return $this->pricingByMethod($price, $discount->getPrice(), $discount->getMethod(), $diff);
+        return $this->pricingByMethod($price, $discount->price, $discount->method, $diff);
     }
 
     public function pricingByMethodAndFormat(
@@ -125,6 +125,6 @@ class PricingService
     {
         return $this->cacheStorage['scale'] ??= $this->app->service(CurrencyService::class)
             ->getMainCurrency()
-            ->getDecimalPlace();
+            ->decimalPlace;
     }
 }

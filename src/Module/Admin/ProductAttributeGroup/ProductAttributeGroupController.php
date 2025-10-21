@@ -59,9 +59,9 @@ class ProductAttributeGroupController
 
                 foreach ($categories as $categoryId) {
                     $map = new ShopCategoryMap();
-                    $map->setTargetId((int) $data['id']);
-                    $map->setCategoryId((int) $categoryId);
-                    $map->setType('attribute_group');
+                    $map->targetId = (int) $data['id'];
+                    $map->categoryId = (int) $categoryId;
+                    $map->type = 'attribute_group';
 
                     $maps[] = $map;
                 }

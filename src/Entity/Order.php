@@ -61,37 +61,37 @@ class Order implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('user_id')]
-    protected int $userId = 0;
+    public int $userId = 0;
 
     #[Column('no')]
-    protected string $no = '';
+    public string $no = '';
 
     #[Column('total')]
-    protected float $total = 0.0;
+    public float $total = 0.0;
 
     #[Column('rewards')]
-    protected float $rewards = 0.0;
+    public float $rewards = 0.0;
 
     #[Column('invoice_type')]
     #[Cast(InvoiceType::class)]
-    protected InvoiceType $invoiceType;
+    public InvoiceType $invoiceType;
 
     #[Column('invoice_no')]
-    protected string $invoiceNo = '';
+    public string $invoiceNo = '';
 
     #[Column('invoice_data')]
     #[Cast(JsonCast::class)]
     #[Cast(InvoiceData::class)]
-    protected InvoiceData $invoiceData;
+    public InvoiceData $invoiceData;
 
     #[Column('state_id')]
-    protected int $stateId = 0;
+    public int $stateId = 0;
 
     #[Column('state_text')]
-    protected string $stateText = '';
+    public string $stateText = '';
 
     /**
      * Payment ID or key name.
@@ -99,10 +99,10 @@ class Order implements EntityInterface
      * @var string
      */
     #[Column('payment_id')]
-    protected string $paymentId = '';
+    public string $paymentId = '';
 
     #[Column('payment_no')]
-    protected string $paymentNo = '';
+    public string $paymentNo = '';
 
     /**
      * User payment data
@@ -112,7 +112,7 @@ class Order implements EntityInterface
     #[Column('payment_data')]
     #[Cast(JsonCast::class)]
     #[Cast(PaymentData::class)]
-    protected PaymentData $paymentData;
+    public PaymentData $paymentData;
 
     /**
      * The payment API arguments
@@ -121,7 +121,7 @@ class Order implements EntityInterface
      */
     #[Column('payment_args')]
     #[Cast(JsonCast::class)]
-    protected array $paymentArgs = [];
+    public array $paymentArgs = [];
 
     /**
      * The pay info that payment gateway returned to site.
@@ -131,7 +131,7 @@ class Order implements EntityInterface
     #[Column('payment_info')]
     #[Cast(JsonCast::class)]
     #[Cast(PaymentInfo::class)]
-    protected PaymentInfo $paymentInfo;
+    public PaymentInfo $paymentInfo;
 
     /**
      * Shipping ID or key name.
@@ -139,13 +139,13 @@ class Order implements EntityInterface
      * @var string
      */
     #[Column('shipping_id')]
-    protected string $shippingId = '';
+    public string $shippingId = '';
 
     #[Column('shipping_no')]
-    protected string $shippingNo = '';
+    public string $shippingNo = '';
 
     #[Column('shipping_status')]
-    protected string $shippingStatus = '';
+    public string $shippingStatus = '';
 
     /**
      * User shipping data.
@@ -155,7 +155,7 @@ class Order implements EntityInterface
     #[Column('shipping_data')]
     #[Cast(JsonCast::class)]
     #[Cast(ShippingData::class)]
-    protected ShippingData $shippingData;
+    public ShippingData $shippingData;
 
     /**
      * The arguments sent to shipping API.
@@ -164,7 +164,7 @@ class Order implements EntityInterface
      */
     #[Column('shipping_args')]
     #[Cast(JsonCast::class)]
-    protected array $shippingArgs = [];
+    public array $shippingArgs = [];
 
     /**
      * Thr shipping info returned from shipping services.
@@ -174,7 +174,7 @@ class Order implements EntityInterface
     #[Column('shipping_info')]
     #[Cast(JsonCast::class)]
     #[Cast(ShippingInfo::class)]
-    protected ShippingInfo $shippingInfo;
+    public ShippingInfo $shippingInfo;
 
     /**
      * The shipping histories
@@ -184,63 +184,63 @@ class Order implements EntityInterface
     #[Column('shipping_history')]
     #[Cast(JsonCast::class)]
     #[Cast(ShippingHistoryCollection::class)]
-    protected ShippingHistoryCollection $shippingHistory;
+    public ShippingHistoryCollection $shippingHistory;
 
     #[Column('note')]
-    protected string $note = '';
+    public string $note = '';
 
     #[Column('paid_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $paidAt = null;
+    public ?Chronos $paidAt = null;
 
     #[Column('shipped_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $shippedAt = null;
+    public ?Chronos $shippedAt = null;
 
     #[Column('returned_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $returnedAt = null;
+    public ?Chronos $returnedAt = null;
 
     #[Column('done_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $doneAt = null;
+    public ?Chronos $doneAt = null;
 
     #[Column('cancelled_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $cancelledAt = null;
+    public ?Chronos $cancelledAt = null;
 
     #[Column('rollback_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $rollbackAt = null;
+    public ?Chronos $rollbackAt = null;
 
     #[Column('expiry_on')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $expiryOn = null;
+    public ?Chronos $expiryOn = null;
 
     #[Column('search_index')]
-    protected string $searchIndex = '';
+    public string $searchIndex = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[
         ManyToOne,
@@ -248,7 +248,7 @@ class Order implements EntityInterface
         OnUpdate(Action::IGNORE),
         OnDelete(Action::IGNORE)
     ]
-    protected ?OrderState $state = null;
+    public ?OrderState $state = null;
 
     #[
         ManyToOne,
@@ -256,7 +256,7 @@ class Order implements EntityInterface
         OnUpdate(Action::IGNORE),
         OnDelete(Action::IGNORE)
     ]
-    protected ?Payment $payment = null;
+    public ?Payment $payment = null;
 
     #[
         ManyToOne,
@@ -264,7 +264,7 @@ class Order implements EntityInterface
         OnUpdate(Action::IGNORE),
         OnDelete(Action::IGNORE)
     ]
-    protected ?Shipping $shipping = null;
+    public ?Shipping $shipping = null;
 
     #[
         OneToMany,
@@ -272,7 +272,7 @@ class Order implements EntityInterface
         OnUpdate(Action::CASCADE),
         OnDelete(Action::CASCADE)
     ]
-    protected ?RelationCollection $totals = null;
+    public ?RelationCollection $totals = null;
 
     #[
         OneToMany,
@@ -280,7 +280,7 @@ class Order implements EntityInterface
         OnUpdate(Action::CASCADE),
         OnDelete(Action::CASCADE)
     ]
-    protected RelationCollection|null $orderItems = null;
+    public RelationCollection|null $orderItems = null;
 
     #[EntitySetup]
     public static function setup(
@@ -299,7 +299,7 @@ class Order implements EntityInterface
         if ($data['state_id']) {
             $state = $orm->findOne(OrderState::class, $data['state_id']);
 
-            $data['state_text'] = $state?->getTitle() ?: '';
+            $data['state_text'] = $state?->title ?: '';
         } else {
             $data['state_text'] = '';
         }
@@ -307,9 +307,9 @@ class Order implements EntityInterface
         $searchIndex = collect();
 
         $entity = $orm->toEntity(static::class, $data);
-        $paymentData = $entity->getPaymentData();
-        $shippingData = $entity->getShippingData();
-        $invoiceData = $entity->getInvoiceData();
+        $paymentData = $entity->paymentData;
+        $shippingData = $entity->shippingData;
+        $invoiceData = $entity->invoiceData;
 
         $searchIndex = $searchIndex->merge(
             array_values($paymentData->dump()),
@@ -349,7 +349,7 @@ class Order implements EntityInterface
     public function setPayment(Payment|string|int $payment): static
     {
         if ($payment instanceof Payment) {
-            $payment = $payment->getId();
+            $payment = $payment->id;
         }
 
         $this->paymentId = $payment;
@@ -373,7 +373,7 @@ class Order implements EntityInterface
     public function setShipping(Shipping|string|int $shipping): static
     {
         if ($shipping instanceof Shipping) {
-            $shipping = $shipping->getId();
+            $shipping = $shipping->id;
         }
 
         $this->shippingId = (string) $shipping;
@@ -437,8 +437,8 @@ class Order implements EntityInterface
     public function setState(OrderState|null $state): static
     {
         if ($state) {
-            $this->stateId = $state->getId();
-            $this->stateText = $state->getTitle();
+            $this->stateId = $state->id;
+            $this->stateText = $state->title;
         } else {
             $this->stateId = 0;
             $this->stateText = '';

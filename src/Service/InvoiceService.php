@@ -57,13 +57,13 @@ class InvoiceService
 
     public function createAndRenderInvoice(Order $order): string
     {
-        if (!$order->getInvoiceNo()) {
+        if (!$order->invoiceNo) {
             $this->genAndSaveInvoiceNoForOrder($order);
         }
 
         /** @var View $view */
         $view = $this->app->make(InvoiceView::class);
-        $res = $view->render(['id' => $order->getId()]);
+        $res = $view->render(['id' => $order->id]);
         return (string) $res->getBody();
     }
 
@@ -130,12 +130,12 @@ class InvoiceService
 
         $no = $this->genInvoiceNumber();
 
-        $order->setInvoiceNo($no);
+        $order->invoiceNo = $no;
 
         $orm->updateBatch(
             Order::class,
             ['invoice_no' => $no],
-            ['id' => $order->getId()]
+            ['id' => $order->id]
         );
     }
 }

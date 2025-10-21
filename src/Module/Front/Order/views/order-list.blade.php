@@ -60,10 +60,10 @@ $orm = $app->service(ORM::class);
                     <div class="card-body ">
                         <div class="d-lg-flex d-grid gap-3 justify-content-between">
                             <div class="d-flex align-items-center gap-3 ">
-                                <div class="gs-5 fw-bold">#{{ $entity->getNo() }}</div>
+                                <div class="gs-5 fw-bold">#{{ $entity->no }}</div>
                                 <span class="badge px-3 py-2 w-100"
-                                    style="{{ $state?->getColorCSS() ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
-                                {{ $state?->getTitle() ?: $entity->getStateText() }}
+                                    style="{{ $state?->colorCSS ?: 'background: var(--bs-dark)' }} font-size: .9375rem;">
+                                {{ $state?->title ?: $entity->stateText }}
                             </span>
                             </div>
 
@@ -74,7 +74,7 @@ $orm = $app->service(ORM::class);
                             <div class="d-flex gap-3">
                                 <div>
                                     @lang('shopgo.order.field.order.time'):
-                                    {{ $chronos->toLocalFormat($entity->getCreated(), 'Y/m/d') }}
+                                    {{ $chronos->toLocalFormat($entity->created, 'Y/m/d') }}
                                 </div>
                             </div>
                         </div>
@@ -82,11 +82,11 @@ $orm = $app->service(ORM::class);
                         <div class="d-lg-flex d-grid gap-3 justify-content-between mt-3">
                             <div class=" ">
                                 <span class="">@lang('shopgo.order.field.total'): </span>
-                                <span class="fs-5 fw-bold">{{ $vm->formatPrice($entity->getTotal(), true) }}</span>
+                                <span class="fs-5 fw-bold">{{ $vm->formatPrice($entity->total, true) }}</span>
                             </div>
 
                             <div>
-                                <a href="{{ $nav->to('my_order_item')->var('no', $entity->getNo()) }}"
+                                <a href="{{ $nav->to('my_order_item')->var('no', $entity->no) }}"
                                     class="btn btn-secondary stretched-link"
                                     style="min-width: 150px">
                                     @lang('shopgo.order.button.details')

@@ -50,7 +50,7 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
             FavoriteRepository::joinFavorite(
                 $selector,
                 'product',
-                $user->getId(),
+                $user->id,
                 'product.id'
             );
         }
@@ -142,8 +142,8 @@ class ProductRepository implements ManageRepositoryInterface, ListRepositoryInte
 
         $action->setReorderGroupHandler(
             function (Query $query, ShopCategoryMap $entity) {
-                $query->where('category_id', $entity->getCategoryId());
-                $query->where('type', $entity->getType());
+                $query->where('category_id', $entity->categoryId);
+                $query->where('type', $entity->type);
             }
         );
     }

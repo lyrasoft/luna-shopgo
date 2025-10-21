@@ -42,7 +42,7 @@ $vueScript->draggable();
 $vueScript->animate();
 
 $uniScript = $app->service(UnicornScript::class);
-$uniScript->data('options', $item?->getOptions() ?? []);
+$uniScript->data('options', $item?->options ?? []);
 ?>
 
 @extends('admin.global.body-edit')

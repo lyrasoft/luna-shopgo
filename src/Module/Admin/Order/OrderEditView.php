@@ -84,16 +84,16 @@ class OrderEditView implements ViewModelInterface
         // Totals
         $totalItems = $this->orm->mapper(OrderTotal::class)
             ->select()
-            ->where('order_id', $item->getId())
+            ->where('order_id', $item->id)
             ->order('ordering', 'ASC')
             ->all(OrderTotal::class)
             ->map(
                 function (OrderTotal $total) {
                     return new PriceObject(
-                        $total->getCode(),
-                        (string) $total->getValue(),
-                        $total->getTitle(),
-                        $total->getParams()
+                        $total->code,
+                        (string) $total->value,
+                        $total->title,
+                        $total->params
                     );
                 }
             );
@@ -109,7 +109,7 @@ class OrderEditView implements ViewModelInterface
         $orderItems = $this->orm->findList(
             OrderItem::class,
             [
-                'order_id' => $item->getId(),
+                'order_id' => $item->id,
             ]
         )
             ->all();
@@ -137,11 +137,11 @@ class OrderEditView implements ViewModelInterface
 
     public function getOrderHistories(Order $order): Collection
     {
-        return $this->cacheStorage['histories.' . $order->getId()]
+        return $this->cacheStorage['histories.' . $order->id]
             ??= $this->orm
             ->from(OrderHistory::class)
             ->leftJoin(User::class, 'user', 'user.id', 'order_history.created_by')
-            ->where('order_history.order_id', $order->getId())
+            ->where('order_history.order_id', $order->id)
             ->order('order_history.id', 'DESC')
             ->groupByJoins()
             ->all(OrderHistory::class);

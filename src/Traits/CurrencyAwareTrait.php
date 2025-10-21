@@ -44,6 +44,6 @@ trait CurrencyAwareTrait
 
     public function getMainInputStep(): string
     {
-        return $this->getMainCurrency()->getInputStep();
+        return $this->getMainCurrency()->inputStep;
     }
 }

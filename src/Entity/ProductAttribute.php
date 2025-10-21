@@ -42,61 +42,61 @@ class ProductAttribute implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('category_id')]
-    protected int $categoryId = 0;
+    public int $categoryId = 0;
 
     #[Column('type')]
     #[Cast(ProductAttributeType::class)]
-    protected ProductAttributeType $type;
+    public ProductAttributeType $type;
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('key')]
-    protected string $key = '';
+    public string $key = '';
 
     #[Column('display')]
     #[Cast('bool', 'int')]
-    protected bool $display = false;
+    public bool $display = false;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('options')]
     #[Cast(JsonCast::class)]
     #[Cast(ListOptionCollection::class)]
-    protected ListOptionCollection $options;
+    public ListOptionCollection $options;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
-    protected string $value = '';
+    public string $value = '';
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

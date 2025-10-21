@@ -243,7 +243,7 @@ abstract class AbstractShipping implements FieldDefinitionInterface
      */
     public function getPricing(): array
     {
-        return $this->getData()->getPricing();
+        return $this->getData()->pricing;
     }
 
     /**
@@ -253,7 +253,7 @@ abstract class AbstractShipping implements FieldDefinitionInterface
      */
     public function &getParams(): array
     {
-        $params = &$this->getData()->getParams();
+        $params = &$this->getData()->params;
 
         return $params;
     }

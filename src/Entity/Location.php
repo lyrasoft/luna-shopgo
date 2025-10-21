@@ -41,77 +41,77 @@ class Location implements NestedEntityInterface
     use NestedEntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('category_id')]
-    protected int $categoryId = 0;
+    public int $categoryId = 0;
 
     #[Column('type')]
     #[Cast(LocationType::class)]
-    protected LocationType $type;
+    public LocationType $type;
 
     #[Column('region')]
-    protected string $region = '';
+    public string $region = '';
 
     #[Column('subregion')]
-    protected string $subregion = '';
+    public string $subregion = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('code')]
-    protected string $code = '';
+    public string $code = '';
 
     #[Column('code3')]
-    protected string $code3 = '';
+    public string $code3 = '';
 
     #[Column('address_format')]
-    protected string $addressFormat = '';
+    public string $addressFormat = '';
 
     #[Column('postcode_required')]
     #[Cast('bool', 'int')]
-    protected bool $postcodeRequired = false;
+    public bool $postcodeRequired = false;
 
     #[Column('native')]
-    protected string $native = '';
+    public string $native = '';
 
     #[Column('has_states')]
     #[Cast('bool', 'int')]
-    protected bool $hasStates = false;
+    public bool $hasStates = false;
 
     #[Column('call_prefix')]
-    protected string $callPrefix = '';
+    public string $callPrefix = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('can_ship')]
     #[Cast('bool', 'int')]
-    protected bool $canShip = false;
+    public bool $canShip = false;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -121,7 +121,7 @@ class Location implements NestedEntityInterface
 
     public function getPrimaryKeyValue(): ?int
     {
-        return $this->getId();
+        return $this->id;
     }
 
     public function getId(): ?int

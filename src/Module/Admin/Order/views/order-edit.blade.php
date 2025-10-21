@@ -35,7 +35,7 @@ use Windwalker\Form\Form;
  * @var PriceSet    $totals
  */
 
-$alert = $item->getParams()['alert'] ?? [];
+$alert = $item->params['alert'] ?? [];
 
 $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
 
@@ -71,9 +71,9 @@ $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
                 </div>
                 <div class="col-md-4">
                     <x-order-info.col3 :order="$item">
-                        @if ($item->getInvoiceNo())
+                        @if ($item->invoiceNo)
                             <x-slot name="invoiceControl">
-                                <a href="{{ $nav->to('invoice')->id($item->getId()) }}"
+                                <a href="{{ $nav->to('invoice')->id($item->id) }}"
                                     data-bs-toggle="tooltip"
                                     class="btn btn-sm btn-primary"
                                     target="_blank"
@@ -81,7 +81,7 @@ $workflow = $app->service(\Lyrasoft\ShopGo\Workflow\OrderStateWorkflow::class);
                                 >
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a href="{{ $nav->to('invoice')->id($item->getId())->var('pdf', '1') }}"
+                                <a href="{{ $nav->to('invoice')->id($item->id)->var('pdf', '1') }}"
                                     data-bs-toggle="tooltip"
                                     target="_blank"
                                     class="btn btn-sm btn-danger"

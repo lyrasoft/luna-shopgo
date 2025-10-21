@@ -139,7 +139,7 @@ class CartService
             $cartItem->setMainVariant($mainVariant);
             $cartItem->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
             $cartItem->setKey((string) $k);
-            $cartItem->setCover($variant->getCover() ?: $mainVariant->getCover());
+            $cartItem->setCover($variant->cover ?: $mainVariant->cover);
             $cartItem->setLink(
                 (string) $product->makeLink($this->nav)
             );
@@ -147,7 +147,7 @@ class CartService
             $cartItem->setPayload($storageItem['payload'] ?? []);
             $cartItem->setOptions($storageItem['options'] ?? []);
 
-            $cartItem->setPriceSet($variant->getPriceSet());
+            $cartItem->setPriceSet($variant->priceSet);
 
             // @event
             $event = $this->shopGo->emit(
@@ -321,7 +321,7 @@ class CartService
 
         /** @var Discount $discount */
         foreach ($appliedDiscounts as $discount) {
-            if ($discount->getType() === DiscountType::COUPON() || $discount->getSubtype() === 'code') {
+            if ($discount->type === DiscountType::COUPON() || $discount->subtype === 'code') {
                 $coupons[] = $discount;
             }
         }

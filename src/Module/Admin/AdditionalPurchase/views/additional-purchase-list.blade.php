@@ -148,7 +148,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
@@ -157,7 +157,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->state"
                                     no-title
                                 ></x-state-dropdown>
@@ -166,7 +166,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             {{-- Title --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('additional_purchase_edit')->id($entity->getId()) }}">
+                                    <a href="{{ $nav->to('additional_purchase_edit')->id($entity->id) }}">
                                         {{ $item->title }}
                                     </a>
                                 </div>
@@ -209,11 +209,11 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             </td>
 
                             <td>
-                                {{ $chronos->toLocalFormat($entity->getPublishUp()) }}
+                                {{ $chronos->toLocalFormat($entity->publishUp) }}
                             </td>
 
                             <td>
-                                {{ $chronos->toLocalFormat($entity->getPublishDown()) }}
+                                {{ $chronos->toLocalFormat($entity->publishDown) }}
                             </td>
 
                             {{-- Ordering --}}
@@ -221,7 +221,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                 <x-order-control
                                     :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->ordering"
                                 ></x-order-control>
                             </td>
@@ -229,7 +229,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -238,7 +238,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

@@ -45,7 +45,7 @@ class OrderController
 
         $user = $userService->getUser();
 
-        if ($user->getId() !== $order->getUserId()) {
+        if ($user->id !== $order->userId) {
             throw new UnauthorizedException('Forbidden');
         }
 
@@ -58,6 +58,6 @@ class OrderController
 
         $orderHistoryService->notifyToAdmin($order, null, $history);
 
-        return $nav->to('my_order_item')->var('no', $order->getNo());
+        return $nav->to('my_order_item')->var('no', $order->no);
     }
 }

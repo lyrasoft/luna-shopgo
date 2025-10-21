@@ -43,8 +43,8 @@ use Windwalker\Core\Router\SystemUri;
                     [$additionalPurchase, $apProduct, $attachment] = $vm->prepareAdditionalPurchase(
                         $additionalPurchase
                     );
-                    $priceSet = $additionalPurchase->getPriceSet();
-                    $maxQuantity = $attachment->getMaxQuantity() ?: 30;
+                    $priceSet = $additionalPurchase->priceSet;
+                    $maxQuantity = $attachment->maxQuantity ?: 30;
 
                     if (VariantService::isOutOfStock($additionalPurchase, $apProduct)) {
                         continue;
@@ -59,17 +59,17 @@ use Windwalker\Core\Router\SystemUri;
                         <div class="c-additional-purchase-product__cover "
                             style="width: 75px">
                             <div class="ratio ratio-1x1">
-                                <img class="object-fit-cover" src="{{ $additionalPurchase->getCover() }}" alt="cover">
+                                <img class="object-fit-cover" src="{{ $additionalPurchase->cover }}" alt="cover">
                             </div>
                         </div>
                         <div>
                             <h6 class="c-additional-purchase-product__title mb-1">
-                                {{ $apProduct->getTitle() }}
+                                {{ $apProduct->title }}
                             </h6>
 
-                            @if (!$additionalPurchase->isPrimary())
+                            @if (!$additionalPurchase->primary)
                                 <div class="c-additional-purchase-product__variant text-muted small">
-                                    {{ $additionalPurchase->getTitle() }}
+                                    {{ $additionalPurchase->title }}
                                 </div>
                             @endif
 
@@ -86,19 +86,19 @@ use Windwalker\Core\Router\SystemUri;
                             <div
                                 class="c-additional-purchase-product__actions mt-2 d-flex align-items-center gap-3 ">
                                 <div class="form-check">
-                                    <input id="input-attachment-{{ $attachment->getId() }}"
+                                    <input id="input-attachment-{{ $attachment->id }}"
                                         type="checkbox" class="form-check-input"
-                                        value="{{ $attachment->getId() }}"
+                                        value="{{ $attachment->id }}"
                                         data-role="attachment_id"
                                     />
-                                    <label for="input-attachment-{{ $attachment->getId() }}"
+                                    <label for="input-attachment-{{ $attachment->id }}"
                                         class="stretched-link">
                                         @lang('shopgo.product.button.add.attachment')
                                     </label>
                                 </div>
 
                                 <div class="" style="z-index: 1">
-                                    <select name="attachments[{{ $attachment->getId() }}][quantity]"
+                                    <select name="attachments[{{ $attachment->id }}][quantity]"
                                         class="form-select form-select-sm"
                                         data-role="attachment_quantity"
                                     >

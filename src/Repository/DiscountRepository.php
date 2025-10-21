@@ -108,7 +108,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
                 ->tap(
                     function (Query $query) use ($user) {
                         if ($user) {
-                            $query->whereRaw('user_id = %a', $user->getId());
+                            $query->whereRaw('user_id = %a', $user->id);
                         } else {
                             $query->whereRaw('user_id = 0 OR user_id IS NULL');
                         }
@@ -135,7 +135,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
 
         /** @var Discount $discount */
         foreach ($discounts as $discount) {
-            if ($discount->getSubtype() === 'discount') {
+            if ($discount->subtype === 'discount') {
                 $productDiscounts[] = $discount;
             } else {
                 $productSpecials[] = $discount;
@@ -155,7 +155,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
 
         /** @var Discount $discount */
         foreach ($discounts as $discount) {
-            if ($discount->getSubtype() === 'discount') {
+            if ($discount->subtype === 'discount') {
                 $productDiscounts[] = $discount;
             } else {
                 $productSpecials[] = $discount;
@@ -202,7 +202,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
     {
         $action->setReorderGroupHandler(
             function (Query $query, Discount $discount) {
-                $query->where('type', $discount->getType());
+                $query->where('type', $discount->type);
             }
         );
     }

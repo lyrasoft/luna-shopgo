@@ -148,7 +148,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
@@ -157,7 +157,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->state"
                                 ></x-state-dropdown>
                             </td>
@@ -170,7 +170,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             <td>
                                 <div class="d-flex align-items-center gap-1">
                                     <a class="fs-5"
-                                        href="{{ $nav->to('product_edit')->id($entity->getId()) }}">
+                                        href="{{ $nav->to('product_edit')->id($entity->id) }}">
                                         {{ $item->title }}
                                     </a>
 
@@ -201,7 +201,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
 
                             {{-- Model --}}
                             <td class="text-nowrap">
-                                {{ $entity->getModel() ?: '-' }}
+                                {{ $entity->model ?: '-' }}
                             </td>
 
                             {{-- Price --}}
@@ -247,7 +247,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -256,7 +256,7 @@ $defaultImage = $imagePlaceholder->placeholderSquare();
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

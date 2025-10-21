@@ -64,7 +64,7 @@ class ProductTabEditView implements ViewModelInterface
             'category_id',
             [
                 'type' => 'tab',
-                'target_id' => $item?->getId()
+                'target_id' => $item?->id
             ]
         )->dump();
 

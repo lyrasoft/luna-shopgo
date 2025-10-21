@@ -48,10 +48,10 @@ $attributes = $attributes->class('list-group');
             <div class="order-history__info d-flex text-muted mb-2">
                 <div class="order-history__info-item mr-2">
                     <span class="fa fa-calendar"></span>
-                    {{ $chronos->toLocalFormat($history->getCreated()) }}
+                    {{ $chronos->toLocalFormat($history->created) }}
                 </div>
 
-                @if ($history->isNotify())
+                @if ($history->notify)
                     <div class="order-history__info-item ms-2">
                     <span class="fa fa-envelope"
                         data-bs-toggle="tooltip"
@@ -60,24 +60,24 @@ $attributes = $attributes->class('list-group');
                 @endif
             </div>
             <div class="order-history__title">
-                {{ $history->getType()->trans($lang) }}
+                {{ $history->type->trans($lang) }}
 
-                @if ($history->getType() !== OrderHistoryType::SYSTEM())
-                    <a href="{{ $nav->to('user_edit', ['id' => $history->getCreatedBy()]) }}">
+                @if ($history->type !== OrderHistoryType::SYSTEM())
+                    <a href="{{ $nav->to('user_edit', ['id' => $history->createdBy]) }}">
                         {{ $history->user->name }}
                     </a>
                 @endif
 
-                @if ($history->getStateId())
+                @if ($history->stateId)
                     @lang('shopgo.order.history.action.changed.to')
                     <span class="badge"
-                        style="{{ OrderStateService::colorToCSS($history->getStateColor()) }}">
-                    {{ $history->getStateText() }}
+                        style="{{ OrderStateService::colorToCSS($history->stateColor) }}">
+                    {{ $history->stateText }}
                 </span>
                 @endif
 
-                @if (trim($history->getMessage()) !== '')
-                    @if ($history->getStateId())
+                @if (trim($history->message) !== '')
+                    @if ($history->stateId)
                         @lang('shopgo.order.history.action.and.comments')
                     @else
                         @lang('shopgo.order.history.action.comments')
@@ -85,9 +85,9 @@ $attributes = $attributes->class('list-group');
                 @endif
             </div>
 
-            @if (trim($history->getMessage()) !== '')
+            @if (trim($history->message) !== '')
                 <div class="order-history__message p-2 bg-light mt-2">
-                    {!! html_escape($history->getMessage(), true) !!}
+                    {!! html_escape($history->message, true) !!}
                 </div>
             @endif
         </div>

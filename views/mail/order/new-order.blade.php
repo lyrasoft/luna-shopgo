@@ -43,15 +43,15 @@ $shopGo = $app->service(ShopGoPackage::class);
 // Totals
 $totals = $cartData->getTotals();
 
-$orderItems = $orm->findList(OrderItem::class, ['order_id' => $item->getId()])->all();
+$orderItems = $orm->findList(OrderItem::class, ['order_id' => $item->id])->all();
 
 [$orderItems, $attachments] = $orderItems->partition(
-    fn(OrderItem $orderItem) => $orderItem->getParentId() === 0
+    fn(OrderItem $orderItem) => $orderItem->parentId === 0
 );
 
 $attachments = $attachments->groupBy('parentId');
 
-$paymentData = $item->getPaymentData();
+$paymentData = $item->paymentData;
 
 ?>
 
@@ -149,7 +149,7 @@ $paymentData = $item->getPaymentData();
 
     <div style="margin-top: 40px">
         @if ($isAdmin)
-            <a href="{{ $nav->to('admin::order_edit')->id($item->getId())->full() }}"
+            <a href="{{ $nav->to('admin::order_edit')->id($item->id)->full() }}"
                 class="btn btn-primary"
                 target="_blank"
                 style="width: 100%"
@@ -157,7 +157,7 @@ $paymentData = $item->getPaymentData();
                 @lang('shopgo.mail.new.order.button.go.manage')
             </a>
         @else
-            <a href="{{ $nav->to('front::my_order_item')->var('no', $item->getNo())->full() }}"
+            <a href="{{ $nav->to('front::my_order_item')->var('no', $item->no)->full() }}"
                 class="btn btn-primary"
                 target="_blank"
                 style="width: 100%"

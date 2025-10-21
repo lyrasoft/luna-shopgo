@@ -82,7 +82,7 @@ class ProductListView implements ViewModelInterface
         $user = $this->userService->getUser();
 
         $items = $this->repository->getFrontListSelector($user)
-            ->addFilter('category_id', $category?->getId())
+            ->addFilter('category_id', $category?->id)
             ->searchTextFor(
                 $q ?? '',
                 $this->getSearchFields()
@@ -95,7 +95,7 @@ class ProductListView implements ViewModelInterface
                     [
                         ['category_map.type', '=', val('product')],
                         ['category_map.target_id', '=', 'product.id'],
-                        ['category_map.category_id', '=', val($category->getId())],
+                        ['category_map.category_id', '=', val($category->id)],
                     ]
                 )
             )
@@ -107,7 +107,7 @@ class ProductListView implements ViewModelInterface
                     [
                         ['tag_map.type', '=', val('product')],
                         ['tag_map.target_id', '=', 'product.id'],
-                        ['tag_map.tag_id', '=', val($tag->getId())],
+                        ['tag_map.tag_id', '=', val($tag->id)],
                     ]
                 )
             )
@@ -137,9 +137,9 @@ class ProductListView implements ViewModelInterface
         $htmlFrame = $view->getHtmlFrame();
 
         if ($category) {
-            $htmlFrame->setTitle($category->getTitle());
+            $htmlFrame->setTitle($category->title);
             $htmlFrame->setDescription(
-                (string) str($category->getDescription())->stripHtmlTags()->truncate(200, '...')
+                (string) str($category->description)->stripHtmlTags()->truncate(200, '...')
             );
         } else {
             $htmlFrame->setTitle($this->trans('shopgo.product.list.title'));

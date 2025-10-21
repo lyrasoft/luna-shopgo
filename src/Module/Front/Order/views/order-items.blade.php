@@ -43,17 +43,17 @@ $currency = $app->service(CurrencyService::class);
             <div class="card-body d-grid d-lg-flex gap-3">
                 <div class="d-flex gap-3 me-auto">
                     <div class="c-order-item__image">
-                        <img src="{{ $orderItem->getImage() }}" class="me-3" width="100"
+                        <img src="{{ $orderItem->image }}" class="me-3" width="100"
                             alt="Image">
                     </div>
 
                     <div class="c-order-item__content">
                         <h4>
-                            {{ $orderItem->getTitle() }}
+                            {{ $orderItem->title }}
                         </h4>
-                        @if ($orderItem->getVariantHash())
+                        @if ($orderItem->variantHash)
                             <div>
-                                {{ $orderItem->getVariantTitle() }}
+                                {{ $orderItem->variantTitle }}
                             </div>
                         @endif
                     </div>
@@ -61,19 +61,19 @@ $currency = $app->service(CurrencyService::class);
 
                 <div class="d-flex gap-3 justify-content-end">
                     <div class="text-end" style="">
-                        {{ $currency->format($orderItem->getPriceUnit()) }}
+                        {{ $currency->format($orderItem->priceUnit) }}
                     </div>
                     <div style="">
-                        x{{ $orderItem->getQuantity() }}
+                        x{{ $orderItem->quantity }}
                     </div>
                     <div class="text-end" style="">
                         =
-                        {{ $currency->formatWithCode($orderItem->getTotal()) }}
+                        {{ $currency->formatWithCode($orderItem->total) }}
                     </div>
                 </div>
             </div>
 
-            @if ($attachmentItems = $attachments[$orderItem->getId()] ?? [])
+            @if ($attachmentItems = $attachments[$orderItem->id] ?? [])
                 <div class="card-footer">
                     @foreach ($attachmentItems as $attachment)
                         <div class="d-grid d-lg-flex gap-3 py-2 border-bottom">
@@ -115,7 +115,7 @@ $currency = $app->service(CurrencyService::class);
                             @lang('shopgo.order.item.attached.final.total')
                         </div>
                         <div class="text-end">
-                            {{ $currency->formatWithCode($orderItem->getPriceSet()['attached_final_total']) }}
+                            {{ $currency->formatWithCode($orderItem->priceSet['attached_final_total']) }}
                         </div>
                     </div>
                 </div>

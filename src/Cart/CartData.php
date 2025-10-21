@@ -120,21 +120,21 @@ class CartData extends ValueObject
         foreach ($items as $item) {
             /** @var ProductVariant $variant */
             $variant = $item->getVariant()->getData();
-            $quantity = $quantities[$variant->getId()] ?? 0;
+            $quantity = $quantities[$variant->id] ?? 0;
 
             $quantity += $item->getQuantity();
 
-            $quantities[$variant->getId()] = $quantity;
+            $quantities[$variant->id] = $quantity;
 
             if ($includeAttachments) {
                 foreach ($item->getAttachments() as $attachment) {
                     /** @var ProductVariant $variant */
                     $variant = $attachment->getVariant()->getData();
-                    $quantity = $quantities[$variant->getId()] ?? 0;
+                    $quantity = $quantities[$variant->id] ?? 0;
 
                     $quantity += ($attachment->getQuantity() * $item->getQuantity());
 
-                    $quantities[$variant->getId()] = $quantity;
+                    $quantities[$variant->id] = $quantity;
                 }
             }
         }

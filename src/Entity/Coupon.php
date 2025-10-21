@@ -34,24 +34,24 @@ class Coupon implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('discount_id')]
-    protected int $discountId = 0;
+    public int $discountId = 0;
 
     #[Column('user_id')]
-    protected int $userId = 0;
+    public int $userId = 0;
 
     #[Column('code')]
-    protected string $code = '';
+    public string $code = '';
 
     #[Column('used')]
     #[Cast('bool', 'int')]
-    protected bool $used = false;
+    public bool $used = false;
 
     #[Column('used_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $usedAt = null;
+    public ?Chronos $usedAt = null;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

@@ -71,7 +71,7 @@ class ProductController
 
                 $mainVariant = $orm->hydrateEntity($variantData, $mainVariant);
 
-                $searchIndexes[] = $mainVariant->getSearchIndex();
+                $searchIndexes[] = $mainVariant->searchIndex;
 
                 $orm->updateOne(ProductVariant::class, $mainVariant);
 
@@ -79,7 +79,7 @@ class ProductController
                 $variants = $this->saveSubVariants($app, $orm, (int) $data['id']);
 
                 foreach ($variants as $variant) {
-                    $searchIndexes[] = $variant->getSearchIndex();
+                    $searchIndexes[] = $variant->searchIndex;
                 }
 
                 // Save Discounts
@@ -87,7 +87,7 @@ class ProductController
 
                 // Save variant info
                 $data['variants'] = count($variants);
-                $data['primary_variant_id'] = $mainVariant->getId();
+                $data['primary_variant_id'] = $mainVariant->id;
                 $data['search_index'] = implode('|', array_filter($searchIndexes));
 
                 $repository->save($data);
@@ -97,7 +97,7 @@ class ProductController
 
                 $tagService->flushTagMapsFromInput(
                     'product',
-                    $entity->getId(),
+                    $entity->id,
                     (array) ($app->input('item')['tags'] ?? [])
                 );
             }
@@ -133,10 +133,10 @@ class ProductController
     {
         // Primary
         $map = new ShopCategoryMap();
-        $map->setType('product');
-        $map->setTargetId((int) $data['id']);
-        $map->setCategoryId($data['category_id']);
-        $map->setPrimary(true);
+        $map->type = 'product';
+        $map->targetId = (int) $data['id'];
+        $map->categoryId = $data['category_id'];
+        $map->primary = true;
 
         $maps[] = $map;
 
@@ -145,10 +145,10 @@ class ProductController
 
         foreach ($categories as $categoryId) {
             $map = new ShopCategoryMap();
-            $map->setType('product');
-            $map->setTargetId((int) $data['id']);
-            $map->setCategoryId((int) $categoryId);
-            $map->setPrimary(false);
+            $map->type = 'product';
+            $map->targetId = (int) $data['id'];
+            $map->categoryId = (int) $categoryId;
+            $map->primary = false;
 
             $maps[] = $map;
         }
@@ -205,13 +205,9 @@ class ProductController
         $discounts = $discounts->map(function ($discount) use ($chronosService, $orm) {
             $discount = $orm->toEntity(Discount::class, $discount);
 
-            $discount->setPublishUp(
-                $chronosService->toServerFormat($discount->getPublishUp())
-            );
+            $discount->publishUp = $chronosService->toServerFormat($discount->publishUp);
 
-            $discount->setPublishDown(
-                $chronosService->toServerFormat($discount->getPublishDown())
-            );
+            $discount->publishDown = $chronosService->toServerFormat($discount->publishDown);
 
             return $discount;
         });
@@ -280,10 +276,10 @@ class ProductController
         /** @var ProductFeature $feature */
         foreach ($features as $feature) {
             /** @var ListOptionCollection $options */
-            $options = $feature->getOptions();
+            $options = $feature->options;
 
             foreach ($options as $i => $option) {
-                $option->setParentId($feature->getId());
+                $option->setParentId($feature->id);
 
                 $options[$i] = $option;
             }
@@ -327,16 +323,16 @@ class ProductController
             }
 
             $variant = new ProductVariant();
-            $variant->setProductId($productId);
-            $variant->setHash($hash);
-            $variant->setTitle(implode(' / ', $texts));
+            $variant->productId = $productId;
+            $variant->hash = $hash;
+            $variant->title = implode(' / ', $texts);
             // $variant->model = $product->model === ''
             //     ? $product->model
             //     : $product->model . '-' . implode('-', $optionGroup);
-            $variant->getDimension(); // Pre-create ValueObject
-            $variant->setSubtract(true);
-            $variant->setState(1);
-            $variant->setOptions($optionGroup);
+            $variant->dimension; // Pre-create ValueObject
+            $variant->subtract = true;
+            $variant->state = 1;
+            $variant->options = $optionGroup;
 
             $variants[] = $variant;
         }

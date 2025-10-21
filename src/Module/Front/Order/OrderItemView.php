@@ -82,23 +82,23 @@ class OrderItemView implements ViewModelInterface
 
         $user = $this->userService->getUser();
 
-        if (!$item || $item->getUserId() !== $user->getId()) {
+        if (!$item || $item->userId !== $user->id) {
             return $this->nav->to('my_order_list');
         }
 
         // Totals
         $totalItems = $this->orm->mapper(OrderTotal::class)
             ->select()
-            ->where('order_id', $item->getId())
+            ->where('order_id', $item->id)
             ->order('ordering', 'ASC')
             ->all(OrderTotal::class)
             ->map(
                 function (OrderTotal $total) {
                     return new PriceObject(
-                        $total->getCode(),
-                        (string) $total->getValue(),
-                        $total->getTitle(),
-                        $total->getParams()
+                        $total->code,
+                        (string) $total->value,
+                        $total->title,
+                        $total->params
                     );
                 }
             );
@@ -114,13 +114,13 @@ class OrderItemView implements ViewModelInterface
         $orderItems = $this->orm->findList(
             OrderItem::class,
             [
-                'order_id' => $item->getId(),
+                'order_id' => $item->id,
             ]
         )
             ->all();
 
         [$orderItems, $attachments] = $orderItems->partition(
-            fn (OrderItem $orderItem) => $orderItem->getParentId() === 0
+            fn (OrderItem $orderItem) => $orderItem->parentId === 0
         );
 
         $attachments = $attachments->groupBy('parentId');
@@ -148,12 +148,12 @@ class OrderItemView implements ViewModelInterface
 
     public function getOrderHistories(Order $order): Collection
     {
-        return $this->cacheStorage['histories.' . $order->getId()]
+        return $this->cacheStorage['histories.' . $order->id]
             ??= $this->orm
             ->from(OrderHistory::class)
             ->leftJoin(User::class, 'user', 'user.id', 'order_history.created_by')
             ->leftJoin(OrderState::class, 'order_state', 'order_state.id', 'order_history.state_id')
-            ->where('order_history.order_id', $order->getId())
+            ->where('order_history.order_id', $order->id)
             ->order('order_history.id', 'DESC')
             ->groupByJoins()
             ->all(OrderHistory::class);

@@ -39,76 +39,76 @@ class Address implements EntityInterface, AddressAwareInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('user_id')]
-    protected int $userId = 0;
+    public int $userId = 0;
 
     #[Column('location_id')]
-    protected int $locationId = 0;
+    public int $locationId = 0;
 
     #[Column('firstname')]
-    protected string $firstname = '';
+    public string $firstname = '';
 
     #[Column('lastname')]
-    protected string $lastname = '';
+    public string $lastname = '';
 
     #[Column('name')]
-    protected string $name = '';
+    public string $name = '';
 
     #[Column('email')]
-    protected string $email = '';
+    public string $email = '';
 
     #[Column('company')]
-    protected string $company = '';
+    public string $company = '';
 
     #[Column('address1')]
-    protected string $address1 = '';
+    public string $address1 = '';
 
     #[Column('address2')]
-    protected string $address2 = '';
+    public string $address2 = '';
 
     #[Column('country')]
-    protected string $country = '';
+    public string $country = '';
 
     #[Column('state')]
-    protected string $state = '';
+    public string $state = '';
 
     #[Column('city')]
-    protected string $city = '';
+    public string $city = '';
 
     #[Column('postcode')]
-    protected string $postcode = '';
+    public string $postcode = '';
 
     #[Column('phone')]
-    protected string $phone = '';
+    public string $phone = '';
 
     #[Column('mobile')]
-    protected string $mobile = '';
+    public string $mobile = '';
 
     #[Column('vat')]
-    protected string $vat = '';
+    public string $vat = '';
 
     #[Column('details')]
     #[Cast(JsonCast::class)]
-    protected array $details = [];
+    public array $details = [];
 
     #[Column('enabled')]
     #[Cast('bool', 'int')]
-    protected bool $enabled = false;
+    public bool $enabled = false;
 
     #[Column('formatted')]
-    protected string $formatted = '';
+    public string $formatted = '';
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -362,7 +362,7 @@ class Address implements EntityInterface, AddressAwareInterface
 
     public function getAddressId(): int
     {
-        return (int) $this->getId();
+        return (int) $this->id;
     }
 
     public function getState(): string
@@ -429,7 +429,6 @@ class Address implements EntityInterface, AddressAwareInterface
             ->setPostcode($address->getPostcode())
             ->setCountry($address->getCountry())
             ->setState($address->getState())
-            ->setCity($address->getCity())
-            ->setFormatted($address->getFormatted());
+            ->setCity($address->getCity())->locationId = $address->getFormatted();
     }
 }

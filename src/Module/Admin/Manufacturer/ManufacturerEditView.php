@@ -71,9 +71,9 @@ class ManufacturerEditView implements ViewModelInterface
                     ?: $this->orm->extractEntity($item)
             )->fill(
                 [
-                    'meta_title' => $item?->getMeta()['title'] ?? '',
-                    'meta_description' => $item?->getMeta()['description'] ?? '',
-                    'meta_keywords' => $item?->getMeta()['keywords'] ?? '',
+                    'meta_title' => $item?->meta['title'] ?? '',
+                    'meta_description' => $item?->meta['description'] ?? '',
+                    'meta_keywords' => $item?->meta['keywords'] ?? '',
                 ]
             );
 

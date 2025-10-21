@@ -156,17 +156,17 @@ $workflow = $app->service(BasicStateWorkflow::class);
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- Title --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('order_state_edit')->id($entity->getId()) }}">
+                                    <a href="{{ $nav->to('order_state_edit')->id($entity->id) }}">
                                         {{ $item->title }}
                                     </a>
 
-                                    @if ($entity->isDefault())
+                                    @if ($entity->default)
                                         <i class="fa fa-star"
                                             data-bs-toggle="tooltip"
                                             title="@lang('shopgo.order.state.tooltip.default')"
@@ -178,8 +178,8 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             {{-- Color --}}
                             <td>
                                 <span class="badge"
-                                    style="background-color: {{ $entity->getColor() }}; color: {{ $entity->getContrastColor() }}">
-                                    {{ $entity->getColor() }}
+                                    style="background-color: {{ $entity->color }}; color: {{ $entity->contrastColor }}">
+                                    {{ $entity->color }}
                                 </span>
                             </td>
 
@@ -200,7 +200,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isShipped())
+                                @if ($entity->shipped))
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -208,7 +208,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isPaid())
+                                @if ($entity->paid)
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -216,7 +216,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isReturned())
+                                @if ($entity->returned)
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -224,7 +224,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isDone())
+                                @if ($entity->done)
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -232,7 +232,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isCancel())
+                                @if ($entity->cancel)
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -240,7 +240,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->isRollback())
+                                @if ($entity->rollback)
                                     <i class="fa fa-check text-success"></i>
                                 @else
                                     -
@@ -252,7 +252,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                 <x-order-control
                                     :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->ordering"
                                 ></x-order-control>
                             </td>
@@ -260,7 +260,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -269,7 +269,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

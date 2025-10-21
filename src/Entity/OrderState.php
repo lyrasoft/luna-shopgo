@@ -33,59 +33,59 @@ class OrderState implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('alias')]
     #[Slugify]
-    protected string $alias = '';
+    public string $alias = '';
 
     #[Column('default')]
     #[Cast('bool', 'int')]
-    protected bool $default = false;
+    public bool $default = false;
 
     #[Column('color')]
-    protected string $color = '';
+    public string $color = '';
 
     #[Column('image')]
-    protected string $image = '';
+    public string $image = '';
 
     #[Column('notice')]
     #[Cast('bool', 'int')]
-    protected bool $notice = false;
+    public bool $notice = false;
 
     #[Column('attach_invoice')]
     #[Cast('bool', 'int')]
-    protected bool $attachInvoice = false;
+    public bool $attachInvoice = false;
 
     #[Column('shipped')]
     #[Cast('bool', 'int')]
-    protected bool $shipped = false;
+    public bool $shipped = false;
 
     #[Column('paid')]
     #[Cast('bool', 'int')]
-    protected bool $paid = false;
+    public bool $paid = false;
 
     #[Column('returned')]
     #[Cast('bool', 'int')]
-    protected bool $returned = false;
+    public bool $returned = false;
 
     #[Column('done')]
     #[Cast('bool', 'int')]
-    protected bool $done = false;
+    public bool $done = false;
 
     #[Column('cancel')]
     #[Cast('bool', 'int')]
-    protected bool $cancel = false;
+    public bool $cancel = false;
 
     #[Column('rollback')]
     #[Cast('bool', 'int')]
-    protected bool $rollback = false;
+    public bool $rollback = false;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -251,12 +251,12 @@ class OrderState implements EntityInterface
 
     public function getContrastColor(int $sep = 200): string
     {
-        return OrderStateService::colorToContrast($this->getColor(), $sep);
+        return OrderStateService::colorToContrast($this->color, $sep);
     }
 
     public function getColorCSS(int $sep = 200): string
     {
-        return OrderStateService::colorToCSS($this->getColor(), $sep);
+        return OrderStateService::colorToCSS($this->color, $sep);
     }
 
     /**

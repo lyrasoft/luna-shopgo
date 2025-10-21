@@ -93,7 +93,7 @@ class ProductEditView implements ViewModelInterface
             $mainVariant = $this->orm->findOne(
                 ProductVariant::class,
                 [
-                    'product_id' => $item->getId(),
+                    'product_id' => $item->id,
                     'primary' => 1
                 ]
             );
@@ -107,32 +107,28 @@ class ProductEditView implements ViewModelInterface
 
             // Variants
             $variants = $this->orm->from(ProductVariant::class)
-                ->where('product_id', $item->getId())
+                ->where('product_id', $item->id)
                 ->where('primary', '!=', 1)
                 ->all(ProductVariant::class);
 
             // Discounts
             $discounts = $this->orm->from(Discount::class)
-                ->where('product_id', $item->getId())
+                ->where('product_id', $item->id)
                 ->where('type', DiscountType::PRODUCT())
                 ->order('ordering', 'ASC')
                 ->all(Discount::class);
 
             /** @var Discount $discount */
             foreach ($discounts as $discount) {
-                $discount->setPublishUp(
-                    $this->chronosService->toLocalFormat($discount->getPublishUp())
-                );
+                $discount->publishUp = $this->chronosService->toLocalFormat($discount->publishUp);
 
-                $discount->setPublishDown(
-                    $this->chronosService->toLocalFormat($discount->getPublishDown())
-                );
+                $discount->publishDown = $this->chronosService->toLocalFormat($discount->publishDown);
             }
 
             // Sub Categories
             $subCategoryIds = $this->orm->select('category_id')
                 ->from(ShopCategoryMap::class, 'map')
-                ->where('map.target_id', $item->getId())
+                ->where('map.target_id', $item->id)
                 ->where('map.type', 'product')
                 ->where('primary', 0)
                 ->loadColumn()
@@ -147,7 +143,7 @@ class ProductEditView implements ViewModelInterface
 
             $attrMaps = $this->orm->findList(
                 ProductAttributeMap::class,
-                ['product_id' => $item->getId()]
+                ['product_id' => $item->id]
             )
                 ->all();
 
@@ -155,7 +151,7 @@ class ProductEditView implements ViewModelInterface
 
             /** @var ProductAttributeMap $attrMap */
             foreach ($attrMaps as $attrMap) {
-                $attrValues[$attrMap->getKey()] = $attrMap->getValue();
+                $attrValues[$attrMap->key] = $attrMap->value;
             }
 
             $form->fill(['attrs' => $attrValues]);
@@ -164,7 +160,7 @@ class ProductEditView implements ViewModelInterface
             $tagIds = $this->orm->findColumn(
                 TagMap::class,
                 'tag_id',
-                ['type' => 'product', 'target_id' => $item->getId()]
+                ['type' => 'product', 'target_id' => $item->id]
             )->dump();
 
             $form->fill(['tags' => $tagIds]);

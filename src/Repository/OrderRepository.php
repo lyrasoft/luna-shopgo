@@ -76,7 +76,7 @@ class OrderRepository implements ManageRepositoryInterface, ListRepositoryInterf
     {
         $selector = $this->getListSelector();
 
-        $selector->where('user_id', $user->getId());
+        $selector->where('user_id', $user->id);
 
         return $selector;
     }

@@ -46,9 +46,9 @@ class ProductTabController
 
                 foreach ($categories as $categoryId) {
                     $map = new ShopCategoryMap();
-                    $map->setTargetId((int) $data['id']);
-                    $map->setCategoryId((int) $categoryId);
-                    $map->setType('tab');
+                    $map->targetId = (int) $data['id'];
+                    $map->categoryId = (int) $categoryId;
+                    $map->type = 'tab';
 
                     $maps[] = $map;
                 }

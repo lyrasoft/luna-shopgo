@@ -45,7 +45,7 @@ class AddressService
     public function getUserAddresses(User $user): Collection
     {
         $addresses = $this->repository->getFrontListSelector()
-            ->where('address.user_id', $user->getId())
+            ->where('address.user_id', $user->id)
             ->order('address.id', 'DESC')
             ->all(Address::class);
 
@@ -111,6 +111,6 @@ class AddressService
         ?Location $location,
         bool $withName = false
     ): string {
-        return static::format($addressData, $location?->getAddressFormat() ?: null, $withName);
+        return static::format($addressData, $location?->addressFormat ?: null, $withName);
     }
 }

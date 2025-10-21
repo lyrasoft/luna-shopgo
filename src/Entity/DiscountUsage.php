@@ -35,27 +35,27 @@ class DiscountUsage implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('discount_id')]
-    protected int $discountId = 0;
+    public int $discountId = 0;
 
     #[Column('order_id')]
-    protected int $orderId = 0;
+    public int $orderId = 0;
 
     #[Column('type')]
-    protected string $type = '';
+    public string $type = '';
 
     #[Column('user_id')]
-    protected int $userId = 0;
+    public int $userId = 0;
 
     #[Column('used_at')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $usedAt = null;
+    public ?Chronos $usedAt = null;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

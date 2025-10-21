@@ -32,39 +32,39 @@ class OrderTotal implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('order_id')]
-    protected int $orderId = 0;
+    public int $orderId = 0;
 
     #[Column('discount_id')]
-    protected int $discountId = 0;
+    public int $discountId = 0;
 
     #[Column('discount_type')]
-    protected string $discountType = '';
+    public string $discountType = '';
 
     #[Column('type')]
-    protected string $type = '';
+    public string $type = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('code')]
-    protected string $code = '';
+    public string $code = '';
 
     #[Column('value')]
-    protected float $value = 0.0;
+    public float $value = 0.0;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('protect')]
     #[Cast('bool', 'int')]
-    protected bool $protect = false;
+    public bool $protect = false;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

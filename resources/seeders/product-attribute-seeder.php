@@ -45,9 +45,9 @@ $seeder->import(
         foreach ($groupIds as $groupId) {
             foreach ($faker->randomElements($productCategoryIds, 15) as $productCategoryId) {
                 $map = new ShopCategoryMap();
-                $map->setType('attribute_group');
-                $map->setCategoryId((int) $productCategoryId);
-                $map->setTargetId((int) $groupId);
+                $map->type = 'attribute_group';
+                $map->categoryId = (int) $productCategoryId;
+                $map->targetId = (int) $groupId;
 
                 $orm->createOne(ShopCategoryMap::class, $map);
             }
@@ -60,15 +60,13 @@ $seeder->import(
             $groupId = $faker->randomElement($groupIds);
 
             $item = $mapper->createEntity();
-            $item->setType($type);
-            $item->setCategoryId((int) $groupId);
-            $item->setTitle($faker->sentence(1));
-            $item->setKey(
-                StrNormalize::toSnakeCase(trim($item->getTitle(), '.'))
-            );
-            $item->setDisplay(true);
-            $item->setOrdering($i);
-            $item->setState(1);
+            $item->type = $type;
+            $item->categoryId = (int) $groupId;
+            $item->title = $faker->sentence(1);
+            $item->key = StrNormalize::toSnakeCase(trim($item->title, '.'));
+            $item->display = true;
+            $item->ordering = $i;
+            $item->state = 1;
 
             $options = [];
 
@@ -84,7 +82,7 @@ $seeder->import(
                 }
             }
 
-            $item->setOptions($options);
+            $item->options = $options;
 
             $mapper->createOne($item);
 

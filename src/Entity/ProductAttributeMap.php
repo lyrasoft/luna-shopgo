@@ -30,22 +30,22 @@ class ProductAttributeMap implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     #[Column('attribute_id')]
-    protected int $attributeId = 0;
+    public int $attributeId = 0;
 
     #[Column('key')]
-    protected string $key = '';
+    public string $key = '';
 
     #[Column('value')]
-    protected string $value = '';
+    public string $value = '';
 
     #[Column('locale')]
-    protected string $locale = '*';
+    public string $locale = '*';
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

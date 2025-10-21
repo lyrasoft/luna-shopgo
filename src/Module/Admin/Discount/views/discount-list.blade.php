@@ -113,7 +113,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
@@ -122,7 +122,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->state"
                                 ></x-state-dropdown>
                             </td>
@@ -130,7 +130,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             {{-- Title --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('discount_edit')->id($entity->getId()) }}">
+                                    <a href="{{ $nav->to('discount_edit')->id($entity->id) }}">
                                         {{ $item->title }}
                                     </a>
                                 </div>
@@ -141,7 +141,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                                 <x-order-control
                                     :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->ordering"
                                 ></x-order-control>
                             </td>
@@ -149,7 +149,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -158,7 +158,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

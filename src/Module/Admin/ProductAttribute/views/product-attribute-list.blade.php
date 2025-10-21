@@ -132,7 +132,7 @@ $displayButton = $vm->createDisplayButton();
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
@@ -141,7 +141,7 @@ $displayButton = $vm->createDisplayButton();
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->state"
                                     no-title
                                 ></x-state-dropdown>
@@ -160,7 +160,7 @@ $displayButton = $vm->createDisplayButton();
                             {{-- Title --}}
                             <td>
                                 <div>
-                                    <a href="{{ $nav->to('product_attribute_edit')->id($entity->getId()) }}">
+                                    <a href="{{ $nav->to('product_attribute_edit')->id($entity->id) }}">
                                         {{ $item->title }}
                                     </a>
                                 </div>
@@ -168,9 +168,9 @@ $displayButton = $vm->createDisplayButton();
 
                             {{-- Title --}}
                             <td>
-                                <span class="badge bg-{{ $entity->getType()->getColor() }}">
-                                    <i class="fa fa-fw fa-{{ $entity->getType()->getIcon() }}"></i>
-                                    {{ $entity->getType()->getTitle($lang) }}
+                                <span class="badge bg-{{ $entity->type->getColor() }}">
+                                    <i class="fa fa-fw fa-{{ $entity->type->getIcon() }}"></i>
+                                    {{ $entity->type->getTitle($lang) }}
                                 </span>
                             </td>
 
@@ -179,7 +179,7 @@ $displayButton = $vm->createDisplayButton();
                                 <x-order-control
                                     :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->ordering"
                                 ></x-order-control>
                             </td>
@@ -187,7 +187,7 @@ $displayButton = $vm->createDisplayButton();
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -196,7 +196,7 @@ $displayButton = $vm->createDisplayButton();
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

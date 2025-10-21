@@ -78,7 +78,7 @@ class CartController
             );
         }
 
-        $cartStorage->addToCart($variant->getId(), (int) $quantity, compact('attachments'));
+        $cartStorage->addToCart($variant->id, (int) $quantity, compact('attachments'));
 
         return array_values($cartStorage->getStoredItems());
     }
@@ -176,7 +176,7 @@ class CartController
             throw new \RuntimeException($this->trans('shopgo.cart.message.no.available.codes'), 404);
         }
 
-        $cartStorage->addCoupon($matched->getId());
+        $cartStorage->addCoupon($matched->id);
 
         return true;
     }
@@ -227,9 +227,9 @@ class CartController
                 throw new ValidateFailException(
                     sprintf(
                         "Attachment: %s - %s (%d) is out of stock",
-                        $product->getTitle(),
-                        $variant->getTitle(),
-                        $variant->getId()
+                        $product->title,
+                        $variant->title,
+                        $variant->id
                     )
                 );
             }
@@ -257,7 +257,7 @@ class CartController
             return [];
         }
 
-        $cartData = $cartService->getCartData(['location_id' => $location->getId()]);
+        $cartData = $cartService->getCartData(['location_id' => $location->id]);
 
         /** @var Product[] $products */
         $products = [];
@@ -265,12 +265,12 @@ class CartController
         foreach ($cartData->getCheckedItems() as $item) {
             /** @var Product $product */
             $product = $item->getProduct()->getData();
-            $products[$product->getId()] = $product;
+            $products[$product->id] = $product;
 
             foreach ($item->getAttachments() as $attachment) {
                 /** @var Product $product */
                 $product = $attachment->getProduct()->getData();
-                $products[$product->getId()] = $product;
+                $products[$product->id] = $product;
             }
         }
 
@@ -320,7 +320,7 @@ class CartController
             return [];
         }
 
-        $cartData = $cartService->getCartData(['location_id' => $location->getId()]);
+        $cartData = $cartService->getCartData(['location_id' => $location->id]);
         $shipping = $orm->findOne(Shipping::class, $shippingId);
 
         if (!$shipping) {

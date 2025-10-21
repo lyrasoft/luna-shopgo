@@ -34,11 +34,11 @@ class OrderStateService
 
     public function changeState(Order $order, OrderState $to): Order
     {
-        if ($order->getState()->getId() === $to->getId()) {
+        if ($order->getState()->id === $to->id) {
             return $order;
         }
 
-        $order->setState($to);
+        $order->state = $to;
 
         $this->mutateOrderByState($order, $to);
 
@@ -69,7 +69,7 @@ class OrderStateService
     public function getDefaultState(): OrderState
     {
         return $this->getOrderStates()
-            ->findFirst(fn (OrderState $state) => $state->isDefault());
+            ->findFirst(fn (OrderState $state) => $state->default);
     }
 
     public function mutateOrderByState(
@@ -79,28 +79,28 @@ class OrderStateService
     ): Order {
         $now = chronos($now);
 
-        if ($state->isShipped()) {
-            $order->setShippedAt($now);
+        if ($state->shipped) {
+            $order->shippedAt = $now;
         }
 
-        if ($state->isPaid()) {
-            $order->setPaidAt($now);
+        if ($state->paid) {
+            $order->paidAt = $now;
         }
 
-        if ($state->isDone()) {
-            $order->setDoneAt($now);
+        if ($state->done) {
+            $order->doneAt = $now;
         }
 
-        if ($state->isCancel()) {
-            $order->setCancelledAt($now);
+        if ($state->cancel) {
+            $order->cancelledAt = $now;
         }
 
-        if ($state->isReturned()) {
-            $order->setReturnedAt($now);
+        if ($state->returned) {
+            $order->returnedAt = $now;
         }
 
-        if ($state->isRollback()) {
-            $order->setRollbackAt($now);
+        if ($state->rollback) {
+            $order->rollbackAt = $now;
         }
 
         return $order;

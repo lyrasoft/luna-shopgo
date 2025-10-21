@@ -168,7 +168,7 @@ class PaymentListView implements ViewModelInterface
 
     public function getTypeName(Payment $item): string
     {
-        $type = $item->getType();
+        $type = $item->type;
 
         /** @var class-string<AbstractPayment> $typeClass */
         $typeClass = $this->paymentService->getTypeClass($type);

@@ -45,70 +45,70 @@ class Payment implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('location_category_id')]
-    protected int $locationCategoryId = 0;
+    public int $locationCategoryId = 0;
 
     #[Column('location_id')]
-    protected int $locationId = 0;
+    public int $locationId = 0;
 
     #[Column('order_state_id')]
-    protected int $orderStateId = 0;
+    public int $orderStateId = 0;
 
     #[Column('classname')]
-    protected string $classname = '';
+    public string $classname = '';
 
     #[Column('type')]
-    protected string $type = '';
+    public string $type = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
     #[Column('subtitle')]
-    protected string $subtitle = '';
+    public string $subtitle = '';
 
     #[Column('alias')]
     #[Slugify]
-    protected string $alias = '';
+    public string $alias = '';
 
     #[Column('description')]
-    protected string $description = '';
+    public string $description = '';
 
     #[Column('note')]
-    protected string $note = '';
+    public string $note = '';
 
     #[Column('image')]
-    protected string $image = '';
+    public string $image = '';
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

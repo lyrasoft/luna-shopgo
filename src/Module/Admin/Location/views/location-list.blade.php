@@ -48,9 +48,9 @@ $parentsCount = count($parents);
 
 foreach ($parents as $i => $parent) {
     $breadcrumb->push(
-        $parent->getTitle(),
+        $parent->title,
         ($i + 1) !== $parentsCount
-            ? $nav->self()->var('current_id', $parent->getId())
+            ? $nav->self()->var('current_id', $parent->id)
             : null
     );
 }
@@ -75,7 +75,7 @@ $orders = [];
                 @if (!$current->isRoot())
                     <div class="d-flex gap-3 align-items-center">
                         <div>
-                            <a href="{{ $nav->self()->var('current_id', $current->getParentId()) }}"
+                            <a href="{{ $nav->self()->var('current_id', $current->parentId) }}"
                                 class="btn btn-outline-primary btn-sm">
                                 <i class="fa fa-chevron-left"></i>
                                 @lang('shopgo.location.button.back')
@@ -181,13 +181,13 @@ $orders = [];
                         <?php
                         $entity = $vm->prepareItem($item);
 
-                        $orders[$entity->getParentId()][] = $entity->getId();
-                        $order = count($orders[$entity->getParentId()]);
+                        $orders[$entity->parentId][] = $entity->id;
+                        $order = count($orders[$entity->parentId]);
                         ?>
                         <tr>
                             {{-- Checkbox --}}
                             <td>
-                                <x-row-checkbox :row="$i" :id="$entity->getId()"></x-row-checkbox>
+                                <x-row-checkbox :row="$i" :id="$entity->id"></x-row-checkbox>
                             </td>
 
                             {{-- State --}}
@@ -196,7 +196,7 @@ $orders = [];
                                     button-style="width: 100%"
                                     use-states
                                     :workflow="$workflow"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$item->state"
                                     no-title
                                 ></x-state-dropdown>
@@ -204,14 +204,14 @@ $orders = [];
 
                             {{-- Type --}}
                             <td>
-                                {{ $entity->getType()->getTitle($lang) }}
+                                {{ $entity->type->getTitle($lang) }}
                             </td>
 
                             {{-- Title --}}
                             <td class="">
                                 <div class="d-flex">
                                     <div>
-                                        <a href="{{ $nav->to('location_edit')->id($entity->getId()) }}">
+                                        <a href="{{ $nav->to('location_edit')->id($entity->id) }}">
                                             <i class="fa fa-edit small"></i>
                                             {{ $item->title }}
                                         </a>
@@ -221,13 +221,13 @@ $orders = [];
 
                             <td>
                                 <div class="text-secondary ms-2">
-                                    {{ $entity->getNative() ?: '-' }}
+                                    {{ $entity->native ?: '-' }}
                                 </div>
                             </td>
 
                             <td>
                                 <?php
-                                $codes = [$entity->getCode(), $entity->getCode3()];
+                                $codes = [$entity->code, $entity->code3];
                                 echo implode(' / ', array_filter($codes));
                                 ?>
                             </td>
@@ -241,9 +241,9 @@ $orders = [];
                             </td>
 
                             <td style="width: 3%" class="text-nowrap">
-                                @if ($entity->getRgt() - $entity->getLft() > 1)
+                                @if ($entity->rgt - $entity->lft > 1)
                                     <div class="ms-auto ml-auto">
-                                        <a href="{{ $nav->self()->var('current_id', $entity->getId()) }}"
+                                        <a href="{{ $nav->self()->var('current_id', $entity->id) }}"
                                             class="btn btn-sm btn-outline-primary">
                                             <i class="fa fa-list"></i>
                                             @lang('shopgo.location.see.children')
@@ -257,7 +257,7 @@ $orders = [];
                                 <x-order-control
                                     :enabled="$vm->reorderEnabled($ordering)"
                                     :row="$i"
-                                    :id="$entity->getId()"
+                                    :id="$entity->id"
                                     :value="$order"
                                 ></x-order-control>
                             </td>
@@ -265,7 +265,7 @@ $orders = [];
                             {{-- Delete --}}
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-outline-secondary"
-                                    @click="grid.deleteItem('{{ $entity->getId() }}')"
+                                    @click="grid.deleteItem('{{ $entity->id }}')"
                                     data-dos
                                 >
                                     <i class="fa-solid fa-trash"></i>
@@ -274,7 +274,7 @@ $orders = [];
 
                             {{-- ID --}}
                             <td class="text-end">
-                                {{ $entity->getId() }}
+                                {{ $entity->id }}
                             </td>
                         </tr>
                     @endforeach

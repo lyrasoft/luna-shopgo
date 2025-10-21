@@ -72,7 +72,7 @@ class ProductAttributeGroupEditView implements ViewModelInterface
             $categoryIds = $this->orm->select('category_id')
                 ->from(ShopCategoryMap::class)
                 ->where('type', 'attribute_group')
-                ->where('target_id', $item->getId())
+                ->where('target_id', $item->id)
                 ->loadColumn()
                 ->dump();
 

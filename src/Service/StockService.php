@@ -79,10 +79,10 @@ class StockService
         /** @var ProductVariant $variant */
         $variant = $item->getVariant()->getData();
 
-        $title = $product->getTitle();
+        $title = $product->title;
 
-        if (!$variant->isPrimary()) {
-            $title .= ' - ' . $variant->getTitle();
+        if (!$variant->primary) {
+            $title .= ' - ' . $variant->title;
         }
 
         return $title;
@@ -100,17 +100,17 @@ class StockService
             /** @var ProductVariant $variant */
             $variant = $item->getVariant()->getData();
 
-            $quantity = $quantities[$variant->getId()] ?? 0;
+            $quantity = $quantities[$variant->id] ?? 0;
 
-            $variants[$variant->getId()] = [$variant, $quantity];
+            $variants[$variant->id] = [$variant, $quantity];
 
             foreach ($item->getAttachments() as $attachment) {
                 /** @var ProductVariant $variant */
                 $variant = $attachment->getVariant()->getData();
 
-                $quantity = $quantities[$variant->getId()] ?? 0;
+                $quantity = $quantities[$variant->id] ?? 0;
 
-                $variants[$variant->getId()] = [$variant, $quantity];
+                $variants[$variant->id] = [$variant, $quantity];
             }
         }
 
@@ -120,8 +120,8 @@ class StockService
             }
 
             $mapper->updateBatch(
-                ['stock_quantity' => $variant->getStockQuantity() - $quantity],
-                ['id' => $variant->getId()]
+                ['stock_quantity' => $variant->stockQuantity - $quantity],
+                ['id' => $variant->id]
             );
         }
     }
@@ -132,15 +132,15 @@ class StockService
             function () use ($order) {
                 /** @var OrderItem[] $items */
                 $items = $this->orm->from(OrderItem::class)
-                    ->where('order_id', $order->getId())
+                    ->where('order_id', $order->id)
                     ->all(OrderItem::class);
 
                 $variantQuantities = [];
 
                 foreach ($items as $item) {
-                    $variantQuantities[$item->getVariantId()] ??= 0;
+                    $variantQuantities[$item->variantId] ??= 0;
 
-                    $variantQuantities[$item->getVariantId()] += $item->getQuantity();
+                    $variantQuantities[$item->variantId] += $item->quantity;
                 }
 
                 /** @var OrderItem $item */
@@ -152,9 +152,7 @@ class StockService
                         ->forUpdate()
                         ->get(ProductVariant::class);
 
-                    $variant->setStockQuantity(
-                        $variant->getStockQuantity() + $quantity
-                    );
+                    $variant->stockQuantity = $variant->stockQuantity + $quantity;
 
                     $this->orm->updateOne(ProductVariant::class, $variant);
                 }

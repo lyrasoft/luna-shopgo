@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
  */
 
 $shippingService = $app->service(ShippingService::class);
-$typeInstance = $shippingService->createTypeInstance($item->getShipping());
+$typeInstance = $shippingService->createTypeInstance($item->shipping);
 
 $hasCreatShipment = $typeInstance instanceof ShipmentCreatingInterface;
 $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
@@ -72,8 +72,8 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
                     <button type="button"
                         class="dropdown-item"
                         data-task="create_shipments"
-                        @attr('disabled', !WINDWALKER_DEBUG && $item->getShippingNo())
-                        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'create_shipments', id: '{{ $item->getId() }}' });"
+                        @attr('disabled', !WINDWALKER_DEBUG && $item->shippingNo)
+                        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'create_shipments', id: '{{ $item->id }}' });"
                     >
                         <i class="fa fa-fw fa-truck-clock"></i>
                         @lang('shopgo.order.button.create.shipment')
@@ -84,7 +84,7 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
                     <button type="button"
                         class="dropdown-item"
                         data-task="update_shippings"
-                        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'update_shippings', id: '{{ $item->getId() }}' });"
+                        @click="form.patch('{{ $nav->to('order_list') }}', { task: 'update_shippings', id: '{{ $item->id }}' });"
                     >
                         <i class="fa fa-fw fa-truck-fast"></i>
                         @lang('shopgo.order.button.update.shipping.status')
@@ -103,7 +103,7 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
         <div class="dropdown-menu">
             <a class="dropdown-item"
                 data-task="print_shipments"
-                href="{{ $nav->to('order_list')->task('print_packaging')->id($item->getId()) }}"
+                href="{{ $nav->to('order_list')->task('print_packaging')->id($item->id) }}"
                 target="_blank"
             >
                 <i class="fa fa-box-open"></i>
@@ -113,7 +113,7 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
             @if ($typeInstance instanceof ShipmentPrintableInterface)
                 <a class="dropdown-item"
                     data-task="print_shipments"
-                    href="{{ $nav->to('order_list')->task('print_shipments')->id($item->getId()) }}"
+                    href="{{ $nav->to('order_list')->task('print_shipments')->id($item->id) }}"
                     target="_blank"
                 >
                     <i class="fa fa-truck"></i>
@@ -123,10 +123,10 @@ $hasUpdateShipping = $typeInstance instanceof ShippingStatusInterface;
         </div>
     </div>
 
-    @if (!$item->getInvoiceNo())
+    @if (!$item->invoiceNo)
         <button type="button"
             class="btn btn-success btn-sm"
-            @click="form.post('{{ $nav->to('invoice') }}', { id: '{{ $item->getId() }}' })"
+            @click="form.post('{{ $nav->to('invoice') }}', { id: '{{ $item->id }}' })"
         >
             <i class="fa fa-file-invoice"></i>
             @lang('shopgo.order.button.invoice.create')

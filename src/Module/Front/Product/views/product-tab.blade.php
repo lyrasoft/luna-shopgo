@@ -38,21 +38,21 @@ $orm = $app->service(ORM::class);
 
 $content = '';
 
-if ($tab->getArticleId()) {
-    $article = $orm->findOne(Article::class, ['id' => $tab->getArticleId(), 'state' => 1]);
+if ($tab->articleId) {
+    $article = $orm->findOne(Article::class, ['id' => $tab->articleId, 'state' => 1]);
 
     if ($article) {
-        $content = $article->getIntrotext() . $article->getFulltext();
+        $content = $article->introtext . $article->fulltext;
     }
-} elseif ($tab->getPageId()) {
-    $page = $orm->findOne(Page::class, ['id' => $tab->getPageId(), 'state' => 1]);
+} elseif ($tab->pageId) {
+    $page = $orm->findOne(Page::class, ['id' => $tab->pageId, 'state' => 1]);
     $pageBuilder = $app->service(PageBuilder::class);
-    $content = $pageBuilder->renderPage($page->getContent());
+    $content = $pageBuilder->renderPage($page->content);
     $content = "<div class=\"l-page-container\">$content</div>";
 
-    $asset->internalJS($page->getCss());
+    $asset->internalJS($page->css);
 } else {
-    $content = $tab->getContent();
+    $content = $tab->content;
 }
 
 echo $content;

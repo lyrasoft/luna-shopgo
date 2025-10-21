@@ -168,7 +168,7 @@ class ShippingListView implements ViewModelInterface
 
     public function getTypeName(Shipping $item): string
     {
-        $type = $item->getType();
+        $type = $item->type;
 
         /** @var class-string<AbstractShipping> $typeClass */
         $typeClass = $this->shippingService->getTypeClass($type);

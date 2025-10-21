@@ -41,154 +41,154 @@ class Discount implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     #[Column('type')]
     #[Cast(DiscountType::class)]
-    protected DiscountType $type;
+    public DiscountType $type;
 
     #[Column('subtype')]
-    protected string $subtype = '';
+    public string $subtype = '';
 
     #[Column('title')]
-    protected string $title = '';
+    public string $title = '';
 
     #[Column('price')]
-    protected float $price = 0.0;
+    public float $price = 0.0;
 
     #[Column('publish_up')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $publishUp = null;
+    public ?Chronos $publishUp = null;
 
     #[Column('publish_down')]
     #[CastNullable(Chronos::class)]
-    protected ?Chronos $publishDown = null;
+    public ?Chronos $publishDown = null;
 
     #[Column('description')]
-    protected string $description = '';
+    public string $description = '';
 
     #[Column('code')]
-    protected string $code = '';
+    public string $code = '';
 
     #[Column('notice')]
-    protected string $notice = '';
+    public string $notice = '';
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('hide')]
     #[Cast('bool', 'int')]
-    protected bool $hide = false;
+    public bool $hide = false;
 
     #[Column('min_price')]
-    protected ?float $minPrice = null;
+    public ?float $minPrice = null;
 
     #[Column('quantity')]
-    protected ?int $quantity = null;
+    public ?int $quantity = null;
 
     #[Column('times_per_user')]
-    protected ?int $timesPerUser = null;
+    public ?int $timesPerUser = null;
 
     #[Column('first_buy')]
-    protected ?int $firstBuy = null;
+    public ?int $firstBuy = null;
 
     #[Column('after_registered')]
-    protected ?int $afterRegistered = null;
+    public ?int $afterRegistered = null;
 
     #[Column('can_rollback')]
     #[Cast('bool', 'int')]
-    protected bool $canRollback = false;
+    public bool $canRollback = false;
 
     #[Column('combine')]
     #[Cast(DiscountCombine::class)]
-    protected DiscountCombine $combine;
+    public DiscountCombine $combine;
 
     #[Column('combine_targets')]
     #[Cast(JsonCast::class)]
-    protected array $combineTargets = [];
+    public array $combineTargets = [];
 
     #[Column('users')]
     #[Cast(JsonCast::class)]
-    protected array $users = [];
+    public array $users = [];
 
     #[Column('categories')]
     #[Cast(JsonCast::class)]
-    protected array $categories = [];
+    public array $categories = [];
 
     #[Column('products')]
     #[Cast(JsonCast::class)]
-    protected array $products = [];
+    public array $products = [];
 
     #[Column('tags')]
     #[Cast(JsonCast::class)]
-    protected array $tags = [];
+    public array $tags = [];
 
     #[Column('payments')]
     #[Cast(JsonCast::class)]
-    protected array $payments = [];
+    public array $payments = [];
 
     #[Column('shippings')]
     #[Cast(JsonCast::class)]
-    protected array $shippings = [];
+    public array $shippings = [];
 
     #[Column('apply_products')]
     #[Cast(JsonCast::class)]
-    protected array $applyProducts = [];
+    public array $applyProducts = [];
 
     #[Column('min_product_quantity')]
-    protected ?int $minProductQuantity = null;
+    public ?int $minProductQuantity = null;
 
     #[Column('min_cart_items')]
-    protected ?int $minCartItems = null;
+    public ?int $minCartItems = null;
 
     #[Column('min_cart_price')]
-    protected ?float $minCartPrice = null;
+    public ?float $minCartPrice = null;
 
     #[Column('free_shipping')]
     #[Cast('bool', 'int')]
-    protected bool $freeShipping = false;
+    public bool $freeShipping = false;
 
     #[Column('accumulate')]
     #[Cast('bool', 'int')]
-    protected bool $accumulate = false;
+    public bool $accumulate = false;
 
     #[Column('method')]
     #[Cast(DiscountMethod::class)]
-    protected DiscountMethod $method;
+    public DiscountMethod $method;
 
     #[Column('apply_to')]
     #[Cast(DiscountApplyTo::class)]
-    protected DiscountApplyTo $applyTo;
+    public DiscountApplyTo $applyTo;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     public function getId(): ?int
     {

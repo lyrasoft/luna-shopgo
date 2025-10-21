@@ -77,8 +77,8 @@ class ShippingRepository implements ManageRepositoryInterface, ListRepositoryInt
     {
         $action->setReorderGroupHandler(
             function (Query $query, Shipping $shipping) {
-                $query->where('location_category_id', $shipping->getLocationCategoryId())
-                    ->where('location_id', $shipping->getLocationId());
+                $query->where('location_category_id', $shipping->locationCategoryId)
+                    ->where('location_id', $shipping->locationId);
             }
         );
     }

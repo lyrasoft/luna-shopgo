@@ -37,7 +37,7 @@ use Windwalker\Core\Router\SystemUri;
     <tbody>
     @foreach ($attrGroups as $attrGroup)
             <?php
-            $attributes = $attrGroup->getParams()['attributes'] ?? [];
+            $attributes = $attrGroup->params['attributes'] ?? [];
 
             if (!count($attributes)) {
                 continue;
@@ -46,7 +46,7 @@ use Windwalker\Core\Router\SystemUri;
             $hasValue = false;
 
             foreach ($attributes as $attribute) {
-                $hasValue = $hasValue || (string) $attribute->getValue() !== '';
+                $hasValue = $hasValue || (string) $attribute->value !== '';
             }
 
             if (!$hasValue) {
@@ -56,23 +56,23 @@ use Windwalker\Core\Router\SystemUri;
 
         <tr>
             <th class="text-bg-dark" colspan="5">
-                {{ $attrGroup->getTitle() }}
+                {{ $attrGroup->title }}
             </th>
         </tr>
 
         @foreach ($attributes as $attribute)
-            @if ($attribute->getValue() === '')
+            @if ($attribute->value === '')
                 @continue
             @endif
             <tr>
                 <th style="width: 33%">
-                    {{ $attribute->getTitle() }}
+                    {{ $attribute->title }}
                 </th>
                 <td>
-                    @if ($attribute->getType() === ProductAttributeType::BOOL())
-                        {{ $attribute->getValue() ? $lang('unicorn.core.yes') : $lang('unicorn.core.no') }}
+                    @if ($attribute->type === ProductAttributeType::BOOL())
+                        {{ $attribute->value ? $lang('unicorn.core.yes') : $lang('unicorn.core.no') }}
                     @else
-                        {{ $attribute->getValue() }}
+                        {{ $attribute->value }}
                     @endif
                 </td>
             </tr>

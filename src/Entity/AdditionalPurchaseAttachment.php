@@ -40,56 +40,56 @@ class AdditionalPurchaseAttachment implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    protected ?int $id = null;
+    public ?int $id = null;
 
     #[Column('additional_purchase_id')]
-    protected int $additionalPurchaseId = 0;
+    public int $additionalPurchaseId = 0;
 
     #[Column('product_id')]
-    protected int $productId = 0;
+    public int $productId = 0;
 
     #[Column('variant_id')]
-    protected int $variantId = 0;
+    public int $variantId = 0;
 
     #[Column('method')]
     #[Cast(DiscountMethod::class)]
-    protected DiscountMethod $method;
+    public DiscountMethod $method;
 
     #[Column('price')]
-    protected float $price = 0.0;
+    public float $price = 0.0;
 
     #[Column('max_quantity')]
-    protected int $maxQuantity = 0;
+    public int $maxQuantity = 0;
 
     #[Column('state')]
     #[Cast('int')]
     #[Cast(BasicState::class)]
-    protected BasicState $state;
+    public BasicState $state;
 
     #[Column('ordering')]
-    protected int $ordering = 0;
+    public int $ordering = 0;
 
     #[Column('created')]
     #[CastNullable(Chronos::class)]
     #[CreatedTime]
-    protected ?Chronos $created = null;
+    public ?Chronos $created = null;
 
     #[Column('modified')]
     #[CastNullable(Chronos::class)]
     #[CurrentTime]
-    protected ?Chronos $modified = null;
+    public ?Chronos $modified = null;
 
     #[Column('created_by')]
     #[Author]
-    protected int $createdBy = 0;
+    public int $createdBy = 0;
 
     #[Column('modified_by')]
     #[Modifier]
-    protected int $modifiedBy = 0;
+    public int $modifiedBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected array $params = [];
+    public array $params = [];
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void

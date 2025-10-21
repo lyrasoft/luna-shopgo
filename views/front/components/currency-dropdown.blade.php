@@ -34,7 +34,7 @@ $currencyService = $app->service(CurrencyService::class);
 $currentCurrency = $currencyService->getCurrentCurrency();
 
 $currencies = $currencyService->getCurrencies()
-    ->filter(fn(Currency $currency) => $currency->getId() !== $currentCurrency->getId());
+    ->filter(fn(Currency $currency) => $currency->id !== $currentCurrency->id);
 
 $attributes = $attributes->class('dropdown');
 
@@ -47,13 +47,13 @@ $tag = $props->tag ?: 'li';
 <{{ $tag }} {!! $attributes !!}>
     <a href="javascript://" class="nav-link dropdown-toggle"
         data-bs-toggle="dropdown">
-        {{ $currentCurrency->getTitle() }}
+        {{ $currentCurrency->title }}
     </a>
     <div class="dropdown-menu">
         @foreach ($currencies as $currency)
             <a class="dropdown-item" href="javascript://"
-                onclick="u.form().post('{{ $nav->to('currency_switch') }}', { code: '{{ $currency->getCode() }}' })">
-                {{ $currency->getTitle() }}
+                onclick="u.form().post('{{ $nav->to('currency_switch') }}', { code: '{{ $currency->code }}' })">
+                {{ $currency->title }}
             </a>
         @endforeach
     </div>

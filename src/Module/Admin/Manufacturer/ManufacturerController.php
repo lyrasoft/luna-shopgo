@@ -74,7 +74,7 @@ class ManufacturerController
 
                 $tagService->flushTagMapsFromInput(
                     'manufacturer',
-                    $entity->getId(),
+                    $entity->id,
                     (array) ($app->input('item')['tags'] ?? [])
                 );
             }

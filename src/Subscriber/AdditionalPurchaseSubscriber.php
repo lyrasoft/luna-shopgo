@@ -78,10 +78,10 @@ class AdditionalPurchaseSubscriber
 
                 $mainVariant = $this->orm->mustFindOne(
                     ProductVariant::class,
-                    ['product_id' => $attachProduct->getId(), 'primary' => 1]
+                    ['product_id' => $attachProduct->id, 'primary' => 1]
                 );
 
-                $priceSet = $attachVariant->getPriceSet();
+                $priceSet = $attachVariant->priceSet;
 
                 $attachCartItem = new CartItem();
                 $attachCartItem->setVariant($attachVariant);
@@ -89,7 +89,7 @@ class AdditionalPurchaseSubscriber
                 $attachCartItem->setMainVariant($mainVariant);
                 $attachCartItem->setOutOfStock(VariantService::isOutOfStock($attachVariant, $attachProduct));
                 $attachCartItem->setKey((string) $attachmentId);
-                $attachCartItem->setCover($attachVariant->getCover() ?: $mainVariant->getCover());
+                $attachCartItem->setCover($attachVariant->cover ?: $mainVariant->cover);
                 $attachCartItem->setLink(
                     (string) $product->makeLink($this->nav)
                 );
@@ -159,7 +159,7 @@ class AdditionalPurchaseSubscriber
             /** @var ProductVariant $variant */
             $variant = $item->getVariant()->getData();
 
-            $quantity = $quantities[$variant->getId()] ?? 1;
+            $quantity = $quantities[$variant->id] ?? 1;
 
             $item->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
 
@@ -167,7 +167,7 @@ class AdditionalPurchaseSubscriber
                 /** @var ProductVariant $variant */
                 $product = $attachment->getProduct()->getData();
                 $variant = $attachment->getVariant()->getData();
-                $quantity = $quantities[$variant->getId()] ?? 1;
+                $quantity = $quantities[$variant->id] ?? 1;
 
                 $attachment->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
             }
