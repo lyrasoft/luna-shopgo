@@ -151,7 +151,7 @@ class ProductItemView implements ViewModelInterface
 
         // Discounts
         $discounts = $this->orm->from(Discount::class)
-            ->where('type', DiscountType::PRODUCT())
+            ->where('type', DiscountType::PRODUCT)
             ->where('subtype', 'discount')
             ->where('product_id', $item->id)
             ->order('min_product_quantity', 'ASC')

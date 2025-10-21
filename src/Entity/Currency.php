@@ -126,7 +126,7 @@ class Currency implements EntityInterface
 
         $space = $this->hasSpace() ? ' ' : '';
 
-        if ($this->signPosition === SignPosition::START()) {
+        if ($this->signPosition === SignPosition::START) {
             $formatted = $this->sign . $space . $formatted;
         } else {
             $formatted .= $space . $this->sign;

@@ -41,7 +41,7 @@ $seeder->import(
         $locations = $orm->findList(
             Location::class,
             [
-                'type' => [LocationType::STATE(), LocationType::CITY()]
+                'type' => [LocationType::STATE, LocationType::CITY]
             ]
         )->all()->dump();
 

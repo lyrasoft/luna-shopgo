@@ -215,7 +215,7 @@ class ProductController
         $orm->sync(
             Discount::class,
             $discounts,
-            ['product_id' => $productId, 'type' => DiscountType::PRODUCT()],
+            ['product_id' => $productId, 'type' => DiscountType::PRODUCT],
             ['id']
         );
     }

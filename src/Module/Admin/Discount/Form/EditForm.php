@@ -217,7 +217,7 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('shopgo.discount.field.accumulate'))
                     ->circle(true)
                     ->color('danger')
-                    ->set('showon', ['method' => DiscountMethod::PERCENTAGE()]);
+                    ->set('showon', ['method' => DiscountMethod::PERCENTAGE]);
 
                 $form->add('apply_to', ListField::class)
                     ->label($this->trans('shopgo.discount.field.apply_to'))
@@ -237,7 +237,7 @@ class EditForm implements FieldDefinitionInterface
                     ->label($this->trans('shopgo.discount.field.apply_products'))
                     ->hasImage(true)
                     ->multiple(true)
-                    ->set('showon', ['apply_to' => DiscountApplyTo::PRODUCTS()]);
+                    ->set('showon', ['apply_to' => DiscountApplyTo::PRODUCTS]);
             }
         );
 

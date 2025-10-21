@@ -194,7 +194,7 @@ $seeder->import(
             // Invoice
             $item->invoiceType = $faker->randomElement(InvoiceType::cases());
 
-            if ($item->invoiceType === InvoiceType::COMPANY()) {
+            if ($item->invoiceType === InvoiceType::COMPANY) {
                 $item->invoiceData
                     ->setTitle($user->name);
             } else {

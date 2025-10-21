@@ -114,7 +114,7 @@ class ProductEditView implements ViewModelInterface
             // Discounts
             $discounts = $this->orm->from(Discount::class)
                 ->where('product_id', $item->id)
-                ->where('type', DiscountType::PRODUCT())
+                ->where('type', DiscountType::PRODUCT)
                 ->order('ordering', 'ASC')
                 ->all(Discount::class);
 

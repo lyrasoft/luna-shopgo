@@ -265,7 +265,7 @@ class OrderController
         $orderService->transition(
             (int) $id,
             ((int) $stateId) ?: null,
-            OrderHistoryType::ADMIN(),
+            OrderHistoryType::ADMIN,
             $message,
             (bool) $notify
         );

@@ -62,7 +62,7 @@ $attributes = $attributes->class('list-group');
             <div class="order-history__title">
                 {{ $history->type->trans($lang) }}
 
-                @if ($history->type !== OrderHistoryType::SYSTEM())
+                @if ($history->type !== OrderHistoryType::SYSTEM)
                     <a href="{{ $nav->to('user_edit', ['id' => $history->createdBy]) }}">
                         {{ $history->user->name }}
                     </a>

@@ -104,7 +104,7 @@ return [
             // DAILY_SEQUENCE: S20230105000123
             // SEQUENCE_HASHES: SfY5Sv8fhJ
             // RANDOM_HASHES: Skf8q2FgHJ38kl (longer)
-            'mode' => OrderNoMode::INCREMENT_ID(),
+            'mode' => OrderNoMode::INCREMENT_ID,
             'prefix' => 'S',
             'hash_offsets' => 100000, // Add offset to hash seed to make no un-guessable
             'sequence_day_format' => 'Ymd',

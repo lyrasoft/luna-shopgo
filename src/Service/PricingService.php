@@ -44,7 +44,7 @@ class PricingService
         $method = DiscountMethod::wrap($method);
         $diff = BigDecimal::of(0);
 
-        if ($method === DiscountMethod::NONE()) {
+        if ($method === DiscountMethod::NONE) {
             return BigDecimal::of((string) $origin)
                 ->toScale($scale, RoundingMode::HALF_UP);
         }
@@ -52,7 +52,7 @@ class PricingService
         $origin = BigDecimal::of((string) $origin)->toScale($scale, RoundingMode::HALF_UP);
         $modify = BigDecimal::of((string) $modify)->toScale($scale, RoundingMode::HALF_UP);
 
-        if ($method === DiscountMethod::FIXED()) {
+        if ($method === DiscountMethod::FIXED) {
             // New price should not greater than origin.
             if ($modify->isGreaterThan($origin)) {
                 return $origin;
@@ -62,7 +62,7 @@ class PricingService
             return $modify;
         }
 
-        if ($method === DiscountMethod::OFFSETS()) {
+        if ($method === DiscountMethod::OFFSETS) {
             $newPrice = $origin->plus($modify)
                 ->toScale($scale, RoundingMode::HALF_UP);
 

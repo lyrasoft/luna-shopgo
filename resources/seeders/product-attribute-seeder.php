@@ -56,7 +56,7 @@ $seeder->import(
         $groupIds[] = '0';
 
         foreach (range(1, 30) as $i) {
-            $type = $faker->randomElement(ProductAttributeType::values());
+            $type = $faker->randomElement(ProductAttributeType::cases());
             $groupId = $faker->randomElement($groupIds);
 
             $item = $mapper->createEntity();
@@ -70,7 +70,7 @@ $seeder->import(
 
             $options = [];
 
-            if ($type === ProductAttributeType::SELECT()) {
+            if ($type === ProductAttributeType::SELECT) {
                 foreach (range(1, random_int(5, 8)) as $o) {
                     $options[] = new ListOption(
                         [

@@ -49,7 +49,7 @@ $seeder->import(
             // Special
             $item = $mapper->createEntity();
 
-            $item->type = DiscountType::PRODUCT();
+            $item->type = DiscountType::PRODUCT;
             $item->subtype = 'special';
             $item->productId = $product->id;
             $item->publishUp = chronos('-3months');
@@ -72,12 +72,12 @@ $seeder->import(
                 foreach (range(1, 3) as $d) {
                     $item = $mapper->createEntity();
 
-                    $item->type = DiscountType::PRODUCT();
+                    $item->type = DiscountType::PRODUCT;
                     $item->subtype = 'discount';
                     $item->productId = $product->id;
                     $item->minProductQuantity = $d * 3;
                     $item->price = -(random_int(1, 20) * 10);
-                    $item->method = DiscountMethod::OFFSETS();
+                    $item->method = DiscountMethod::OFFSETS;
                     $item->state = 1;
                     $item->ordering = $d + 1;
 
@@ -92,9 +92,9 @@ $seeder->import(
             $item = $mapper->createEntity();
 
             /** @var "basic"|"code" $subType */
-            $subType = $faker->randomElement(DiscountType::GLOBAL()->getSubTypes());
+            $subType = $faker->randomElement(DiscountType::GLOBAL->getSubTypes());
 
-            $item->type = DiscountType::GLOBAL();
+            $item->type = DiscountType::GLOBAL;
             $item->subtype = $subType;
             $item->title = $faker->sentence(2);
             $item->method = $faker->randomElement(DiscountMethod::cases());
@@ -137,9 +137,9 @@ $seeder->import(
             $item = $mapper->createEntity();
 
             /** @var "auto" $subType */
-            $subType = $faker->randomElement(DiscountType::COUPON()->getSubTypes());
+            $subType = $faker->randomElement(DiscountType::COUPON->getSubTypes());
 
-            $item->type = DiscountType::COUPON();
+            $item->type = DiscountType::COUPON;
             $item->subtype = $subType;
             $item->title = $faker->sentence(2);
             $item->method = $faker->randomElement(DiscountMethod::cases());

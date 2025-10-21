@@ -68,10 +68,10 @@ class EditForm implements FieldDefinitionInterface
                     ->ignoreSelfWith($this->id)
                     ->labels(
                         [
-                            LocationType::CONTINENT()->getTitle($this->lang),
-                            LocationType::COUNTRY()->getTitle($this->lang),
-                            LocationType::STATE()->getTitle($this->lang),
-                            LocationType::CITY()->getTitle($this->lang),
+                            LocationType::CONTINENT->getTitle($this->lang),
+                            LocationType::COUNTRY->getTitle($this->lang),
+                            LocationType::STATE->getTitle($this->lang),
+                            LocationType::CITY->getTitle($this->lang),
                         ]
                     )
                     ->cascadeSelectOptions(
@@ -105,7 +105,7 @@ class EditForm implements FieldDefinitionInterface
                 $form->add('native', TextField::class)
                     ->label($this->trans('shopgo.location.field.native'));
 
-                if ($this->type && $this->type === LocationType::COUNTRY()) {
+                if ($this->type && $this->type === LocationType::COUNTRY) {
                     $form->add('region', TextField::class)
                         ->label($this->trans('shopgo.location.field.region'));
 

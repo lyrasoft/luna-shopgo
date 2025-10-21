@@ -73,7 +73,7 @@ $seeder->import(
                 $attachment->additionalPurchaseId = $ap->id;
                 $attachment->productId = $attachmentProduct->id;
                 $attachment->variantId = $variant->id;
-                $attachment->method = DiscountMethod::OFFSETS();
+                $attachment->method = DiscountMethod::OFFSETS;
                 $attachment->price = -200;
                 $attachment->maxQuantity = random_int(3, 7);
                 $attachment->state = 1;

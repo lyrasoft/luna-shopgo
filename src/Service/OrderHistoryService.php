@@ -87,7 +87,7 @@ class OrderHistoryService
             $notify
         );
 
-        if ($notify && ($type === OrderHistoryType::SYSTEM() || $type === OrderHistoryType::ADMIN())) {
+        if ($notify && ($type === OrderHistoryType::SYSTEM || $type === OrderHistoryType::ADMIN)) {
             $this->notifyToMember($order, $state, $history);
         }
 

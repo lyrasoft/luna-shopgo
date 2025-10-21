@@ -57,17 +57,17 @@ class LocationService
         $city = null;
 
         foreach ($path as $loc) {
-            if ($loc->type === LocationType::COUNTRY()) {
+            if ($loc->type === LocationType::COUNTRY) {
                 $country = $loc;
                 continue;
             }
 
-            if ($loc->type === LocationType::STATE()) {
+            if ($loc->type === LocationType::STATE) {
                 $state = $loc;
                 continue;
             }
 
-            if ($loc->type === LocationType::CITY()) {
+            if ($loc->type === LocationType::CITY) {
                 $city = $loc;
                 continue;
             }
@@ -86,13 +86,13 @@ class LocationService
                 $item = $mapper->findOne(
                     [
                         'title' => $title,
-                        'type' => LocationType::CONTINENT()
+                        'type' => LocationType::CONTINENT
                     ]
                 );
 
                 if (!$item) {
                     $item = $mapper->createEntity();
-                    $item->type = LocationType::CONTINENT();
+                    $item->type = LocationType::CONTINENT;
                     $item->title = $title;
 
                     $mapper->setPosition($item, $this->getRoot()->id, Position::LAST_CHILD);
@@ -112,7 +112,7 @@ class LocationService
                 return $this->getEntityMapper()->mustFindOne(
                     [
                         'title' => $title,
-                        'type' => LocationType::COUNTRY()
+                        'type' => LocationType::COUNTRY
                     ]
                 );
             }

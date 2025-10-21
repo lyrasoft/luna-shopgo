@@ -42,7 +42,7 @@ class AddressController
     {
         return $orm->from(Location::class)
             ->where('state', 1)
-            ->where('type', LocationType::COUNTRY())
+            ->where('type', LocationType::COUNTRY)
             ->order('lft', 'ASC')
             ->all(Location::class);
     }

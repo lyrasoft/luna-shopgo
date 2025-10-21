@@ -52,7 +52,7 @@ class OrderController
         $history = $orderHistoryService->createHistory(
             $order,
             null,
-            OrderHistoryType::MEMBER(),
+            OrderHistoryType::MEMBER,
             $note
         );
 

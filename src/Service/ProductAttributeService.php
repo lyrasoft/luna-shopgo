@@ -108,9 +108,9 @@ class ProductAttributeService
                     function (Form $form) use ($attributes) {
                         foreach ($attributes as $attribute) {
                             $field = match ($attribute->type) {
-                                ProductAttributeType::BOOL() => $this->prepareFieldBool($form, $attribute),
-                                ProductAttributeType::TEXT() => $this->prepareFieldText($form, $attribute),
-                                ProductAttributeType::SELECT() => $this->prepareFieldSelect($form, $attribute),
+                                ProductAttributeType::BOOL => $this->prepareFieldBool($form, $attribute),
+                                ProductAttributeType::TEXT => $this->prepareFieldText($form, $attribute),
+                                ProductAttributeType::SELECT => $this->prepareFieldSelect($form, $attribute),
                             };
 
                             if (!$attribute->shouldDisplay()) {
@@ -189,11 +189,11 @@ class ProductAttributeService
         $value = $attribute->value;
 
         return match ($attribute->type) {
-            ProductAttributeType::BOOL() => $value
+            ProductAttributeType::BOOL => $value
                 ? $this->trans('unicorn.core.yes')
                 : $this->trans('unicorn.core.no'),
-            ProductAttributeType::TEXT() => $value,
-            ProductAttributeType::SELECT() => $value,
+            ProductAttributeType::TEXT => $value,
+            ProductAttributeType::SELECT => $value,
         };
     }
 

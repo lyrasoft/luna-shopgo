@@ -129,9 +129,9 @@ $orm = $app->service(ORM::class);
                             {{--                                @endif--}}
                             {{--                            </td>--}}
                             <td>
-                                @if ($history->type === OrderHistoryType::ADMIN())
+                                @if ($history->type === OrderHistoryType::ADMIN)
                                     {{ $history->type->getTitle($lang) }}
-                                @elseif ($history->type === OrderHistoryType::SYSTEM())
+                                @elseif ($history->type === OrderHistoryType::SYSTEM)
                                     {{ $history->type->getTitle($lang) }}
                                 @else
                                     @lang('shopgo.cart.order.historty.text.you')

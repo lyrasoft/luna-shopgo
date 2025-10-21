@@ -100,7 +100,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
 
     public function getAvailableCouponSelector(string $code, ?User $user = null): ListSelector
     {
-        $selector = $this->getListSelector(DiscountType::COUPON());
+        $selector = $this->getListSelector(DiscountType::COUPON);
 
         $selector->whereExists(
             fn(Query $query) => $query->from(Coupon::class)
@@ -125,7 +125,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
      */
     public function getProductDiscountGroups(int $productId): array
     {
-        $discounts = $this->getAvailableSelector(DiscountType::PRODUCT())
+        $discounts = $this->getAvailableSelector(DiscountType::PRODUCT)
             ->where('subtype', ['discount', 'special'])
             ->where('product_id', $productId)
             ->all(Discount::class);
@@ -180,7 +180,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
             $productIds = array_unique($productIds);
         }
 
-        return $this->getAvailableSelector(DiscountType::PRODUCT())
+        return $this->getAvailableSelector(DiscountType::PRODUCT)
             ->where('subtype', ['discount', 'special'])
             ->where('product_id', $productIds)
             ->all(Discount::class);
@@ -188,7 +188,7 @@ class DiscountRepository implements ManageRepositoryInterface, ListRepositoryInt
 
     public function getCouponListSelector(): ListSelector
     {
-        return $this->getListSelector(DiscountType::COUPON());
+        return $this->getListSelector(DiscountType::COUPON);
     }
 
     #[ConfigureAction(SaveAction::class)]

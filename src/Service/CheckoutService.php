@@ -229,7 +229,7 @@ class CheckoutService
             $this->orderHistoryService->createHistory(
                 $order,
                 null,
-                OrderHistoryType::MEMBER(),
+                OrderHistoryType::MEMBER,
                 $order->note
             );
         }
@@ -327,7 +327,7 @@ class CheckoutService
         return $this->orderHistoryService->createHistory(
             $order,
             $state,
-            OrderHistoryType::SYSTEM(),
+            OrderHistoryType::SYSTEM,
             $msg,
             true
         );

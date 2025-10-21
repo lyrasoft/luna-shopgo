@@ -44,7 +44,7 @@ static fn() => [
     ],
 
     'order_no' => [
-        'mode' => OrderNoMode::INCREMENT_ID(),
+        'mode' => OrderNoMode::INCREMENT_ID,
         'prefix' => 'S',
         'hash_offsets' => 100000,
         'sequence_day_format' => 'Ymd',

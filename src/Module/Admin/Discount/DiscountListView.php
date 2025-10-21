@@ -65,7 +65,7 @@ class DiscountListView implements ViewModelInterface
         $search   = (array) $state->rememberFromRequest('search');
         $ordering = $state->rememberFromRequest('list_ordering') ?? $this->getDefaultOrdering();
 
-        $items = $this->repository->getListSelector(DiscountType::GLOBAL())
+        $items = $this->repository->getListSelector(DiscountType::GLOBAL)
             ->setFilters($filter)
             ->searchTextFor(
                 $search['*'] ?? '',

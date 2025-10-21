@@ -121,9 +121,9 @@ class CheckoutController
                     );
 
                     if ($order->paymentData->getVat()) {
-                        $order->invoiceType = InvoiceType::COMPANY();
+                        $order->invoiceType = InvoiceType::COMPANY;
                     } else {
-                        $order->invoiceType = InvoiceType::IDV();
+                        $order->invoiceType = InvoiceType::IDV;
                     }
                 }
 

@@ -63,7 +63,7 @@ $mig->up(
         $item->title = 'USD';
         $item->code = 'USD';
         $item->sign = '$';
-        $item->signPosition = SignPosition::START();
+        $item->signPosition = SignPosition::START;
         $item->decimalPlace = 2;
         $item->decimalPoint = '.';
         $item->numSeparator = ',';
@@ -81,7 +81,7 @@ $mig->up(
         $item->title = 'TWD';
         $item->code = 'TWD';
         $item->sign = '$';
-        $item->signPosition = SignPosition::START();
+        $item->signPosition = SignPosition::START;
         $item->decimalPlace = 0;
         $item->decimalPoint = '.';
         $item->numSeparator = ',';
@@ -99,7 +99,7 @@ $mig->up(
         $item->title = 'EUR';
         $item->code = 'EUR';
         $item->sign = '€';
-        $item->signPosition = SignPosition::END();
+        $item->signPosition = SignPosition::END;
         $item->decimalPlace = 0;
         $item->decimalPoint = ',';
         $item->numSeparator = '.';

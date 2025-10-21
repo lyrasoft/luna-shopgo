@@ -40,9 +40,9 @@ $seeder->import(
         foreach (range(1, 10) as $i) {
             $type = $faker->randomElement(
                 [
-                    ProductFeatureType::SELECT(),
-                    ProductFeatureType::SELECT(),
-                    ProductFeatureType::COLOR(),
+                    ProductFeatureType::SELECT,
+                    ProductFeatureType::SELECT,
+                    ProductFeatureType::COLOR,
                 ]
             );
 
@@ -57,7 +57,7 @@ $seeder->import(
                     ]
                 );
 
-                if ($type === ProductFeatureType::COLOR()) {
+                if ($type === ProductFeatureType::COLOR) {
                     $option->setColor($faker->safeHexColor());
                 }
             }

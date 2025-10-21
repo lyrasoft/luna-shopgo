@@ -69,7 +69,7 @@ use Windwalker\Core\Router\SystemUri;
                     {{ $attribute->title }}
                 </th>
                 <td>
-                    @if ($attribute->type === ProductAttributeType::BOOL())
+                    @if ($attribute->type === ProductAttributeType::BOOL)
                         {{ $attribute->value ? $lang('unicorn.core.yes') : $lang('unicorn.core.no') }}
                     @else
                         {{ $attribute->value }}

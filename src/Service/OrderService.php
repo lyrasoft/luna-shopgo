@@ -71,7 +71,7 @@ class OrderService
 
         return $this->orm->getDb()->transaction(
             function () use ($hasChange, $notify, $message, $type, $to, $order) {
-                $shouldNoticeAdmin = $type === OrderHistoryType::SYSTEM()
+                $shouldNoticeAdmin = $type === OrderHistoryType::SYSTEM
                     && $this->orderHistoryService->shouldNoticeAdmin($order, $to);
 
                 if ($hasChange) {
@@ -104,16 +104,16 @@ class OrderService
     {
         $prefix = (string) $this->shopGo->config('order_no.prefix');
         $mode = OrderNoMode::wrap(
-            $this->shopGo->config('order_no.mode') ?: OrderNoMode::INCREMENT_ID()
+            $this->shopGo->config('order_no.mode') ?: OrderNoMode::INCREMENT_ID
         );
 
-        if ($mode === OrderNoMode::INCREMENT_ID()) {
+        if ($mode === OrderNoMode::INCREMENT_ID) {
             $availableLength = $this->getAvailableNoLength($prefix);
 
             return $prefix . Str::padLeft((string) $id, $availableLength, '0');
         }
 
-        if ($mode === OrderNoMode::DAILY_SEQUENCE()) {
+        if ($mode === OrderNoMode::DAILY_SEQUENCE) {
             $sequenceService = $this->app->service(SequenceService::class);
             $format = $this->shopGo->config('order_no.sequence_day_format') ?: 'Ymd';
             $prefix .= now($format);
@@ -123,7 +123,7 @@ class OrderService
             return $prefix . $sequenceService->getNextSerialAndPadZero('shopgo_order', $prefix, $availableLength);
         }
 
-        if ($mode === OrderNoMode::SEQUENCE_HASHES()) {
+        if ($mode === OrderNoMode::SEQUENCE_HASHES) {
             $offsets = (int) $this->shopGo->config('order_no.hash_offsets');
             $seed = $this->shopGo->config('order_no.hash_seed') ?: BaseConvert::BASE62;
             $hash = BaseConvert::encode($id + $offsets, $seed);
@@ -131,7 +131,7 @@ class OrderService
             return $prefix . $hash;
         }
 
-        if ($mode === OrderNoMode::RANDOM_HASHES()) {
+        if ($mode === OrderNoMode::RANDOM_HASHES) {
             $uid = bin2hex(random_bytes(6));
             $seed = $this->shopGo->config('order_no.hash_seed') ?: BaseConvert::BASE62;
 

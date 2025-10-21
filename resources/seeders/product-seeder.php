@@ -148,11 +148,11 @@ $seeder->import(
                 $attrMap->productId = $item->id;
                 $attrMap->locale = '*';
 
-                if ($attribute->type === ProductAttributeType::BOOL()) {
+                if ($attribute->type === ProductAttributeType::BOOL) {
                      $attrMap->value = (string) random_int(0, 1);
-                } elseif ($attribute->type === ProductAttributeType::TEXT()) {
+                } elseif ($attribute->type === ProductAttributeType::TEXT) {
                     $attrMap->value = $faker->sentence();
-                } elseif ($attribute->type === ProductAttributeType::SELECT()) {
+                } elseif ($attribute->type === ProductAttributeType::SELECT) {
                     $options = $attribute->options->dump();
                     $option = $faker->randomElement($options);
                     $attrMap->value = $option->value;

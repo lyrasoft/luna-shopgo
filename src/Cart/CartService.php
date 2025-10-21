@@ -321,7 +321,7 @@ class CartService
 
         /** @var Discount $discount */
         foreach ($appliedDiscounts as $discount) {
-            if ($discount->type === DiscountType::COUPON() || $discount->subtype === 'code') {
+            if ($discount->type === DiscountType::COUPON || $discount->subtype === 'code') {
                 $coupons[] = $discount;
             }
         }

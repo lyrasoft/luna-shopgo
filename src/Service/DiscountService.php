@@ -85,7 +85,7 @@ class DiscountService
 
             $this->applyCartDiscount($pricing, $discount);
 
-            if ($discount->combine === DiscountCombine::STOP()) {
+            if ($discount->combine === DiscountCombine::STOP) {
                 break;
             }
         }
@@ -113,8 +113,8 @@ class DiscountService
     public function applyCartDiscount(CartTotalsInterface $pricing, Discount $discount): void
     {
         // Apply
-        if ($discount->applyTo === DiscountApplyTo::ORDER()) {
-            if ($discount->method !== DiscountMethod::NONE()) {
+        if ($discount->applyTo === DiscountApplyTo::ORDER) {
+            if ($discount->method !== DiscountMethod::NONE) {
                 $totals = $pricing->getTotals();
 
                 if ($discount->accumulate) {
@@ -151,7 +151,7 @@ class DiscountService
 
         foreach ($discounts as $discount) {
             // Apply
-            if ($discount->getApplyTo() === DiscountApplyTo::MATCHED()) {
+            if ($discount->getApplyTo() === DiscountApplyTo::MATCHED) {
                 $cartItems = $pricing->getMatchedItems()[$discount] ?? [];
 
                 /** @var CartItem $cartItem */
@@ -183,7 +183,7 @@ class DiscountService
                         $itemApplied[] = $discount;
                     }
                 }
-            } elseif ($discount->getApplyTo() === DiscountApplyTo::PRODUCTS()) {
+            } elseif ($discount->getApplyTo() === DiscountApplyTo::PRODUCTS) {
                 foreach ($discount->getApplyProducts() as $applyTarget) {
                     $applyTarget = (int) $applyTarget;
                     $cartData = $pricing->getCartData();
@@ -220,7 +220,7 @@ class DiscountService
         Discount $discount,
         ?BigDecimal &$diff = null
     ): PriceSet {
-        if (!$discount->accumulate && $discount->method === DiscountMethod::PERCENTAGE()) {
+        if (!$discount->accumulate && $discount->method === DiscountMethod::PERCENTAGE) {
             $this->pricingService->pricingByDiscount($priceSet['base'], $discount, $diff);
         } else {
             $this->pricingService->pricingByDiscount($priceSet['final'], $discount, $diff);
@@ -247,14 +247,14 @@ class DiscountService
     public function checkDiscountCombine(Discount $discount, array $applied, string &$action = null): string|bool
     {
         foreach ($applied as $appliedDiscount) {
-            if ($appliedDiscount->getCombine() === DiscountCombine::STOP()) {
+            if ($appliedDiscount->getCombine() === DiscountCombine::STOP) {
                 $action = 'break';
 
                 return false;
             }
 
             if (
-                $appliedDiscount->getCombine() === DiscountCombine::INCLUDES()
+                $appliedDiscount->getCombine() === DiscountCombine::INCLUDES
                 && !in_array($discount->id, array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
@@ -263,7 +263,7 @@ class DiscountService
             }
 
             if (
-                $appliedDiscount->getCombine() === DiscountCombine::EXCLUDES()
+                $appliedDiscount->getCombine() === DiscountCombine::EXCLUDES
                 && in_array($discount->id, array_map('intval', $appliedDiscount->getCombineTargets()), true)
             ) {
                 $action = 'continue';
@@ -551,7 +551,7 @@ class DiscountService
         return $this->once(
             'discounts.codes.coupons',
             function () use ($user, $code) {
-                $discounts = $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL())
+                $discounts = $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL)
                     ->where('subtype', 'code')
                     ->where('code', $code)
                     ->all(Discount::class);
@@ -576,7 +576,7 @@ class DiscountService
     {
         return $this->once(
             'discounts.global',
-            fn() => $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL())
+            fn() => $this->discountRepository->getAvailableSelector(DiscountType::GLOBAL)
                 ->where('subtype', 'basic')
                 ->all(Discount::class)
         );
