@@ -14,7 +14,7 @@ namespace Lyrasoft\ShopGo\Field;
 use Lyrasoft\ShopGo\Entity\Location;
 use Unicorn\Field\LayoutFieldTrait;
 use Windwalker\DI\Attributes\Inject;
-use Windwalker\DOM\DOMElement;
+use Windwalker\DOM\HTMLElement;
 use Windwalker\Form\Field\AbstractField;
 use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
@@ -34,12 +34,12 @@ class ShippingPricingField extends AbstractField
         return 'field.shipping-pricing';
     }
 
-    public function prepareInput(DOMElement $input): DOMElement
+    public function prepareInput(HTMLElement $input): HTMLElement
     {
         return $input;
     }
 
-    public function buildFieldElement(DOMElement $input, array $options = []): string|DOMElement
+    public function buildFieldElement(HTMLElement $input, array $options = []): string|HTMLElement
     {
         $field = $this;
 

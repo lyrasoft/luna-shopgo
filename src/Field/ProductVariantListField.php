@@ -13,7 +13,7 @@ namespace Lyrasoft\ShopGo\Field;
 
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Unicorn\Field\SqlListField;
-use Windwalker\DOM\DOMElement;
+use Windwalker\DOM\HTMLElement;
 use Windwalker\Query\Query;
 
 /**
@@ -52,7 +52,7 @@ class ProductVariantListField extends SqlListField
         $query->where('product_id', $this->getProductId());
     }
 
-    public function createItemOption(object $item): DOMElement
+    public function createItemOption(object $item): HTMLElement
     {
         $option = parent::createItemOption($item);
 
@@ -66,11 +66,11 @@ class ProductVariantListField extends SqlListField
     /**
      * prepareInput
      *
-     * @param  DOMElement  $input
+     * @param  HTMLElement  $input
      *
-     * @return  DOMElement
+     * @return  HTMLElement
      */
-    public function prepareInput(DOMElement $input): DOMElement
+    public function prepareInput(HTMLElement $input): HTMLElement
     {
         return $input;
     }

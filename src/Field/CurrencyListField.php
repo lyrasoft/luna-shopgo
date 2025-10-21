@@ -13,7 +13,7 @@ namespace Lyrasoft\ShopGo\Field;
 
 use Lyrasoft\ShopGo\Entity\Currency;
 use Unicorn\Field\SqlListField;
-use Windwalker\DOM\DOMElement;
+use Windwalker\DOM\HTMLElement;
 
 /**
  * The CurrencyListField class.
@@ -25,11 +25,11 @@ class CurrencyListField extends SqlListField
     /**
      * prepareInput
      *
-     * @param  DOMElement  $input
+     * @param  HTMLElement  $input
      *
-     * @return  DOMElement
+     * @return  HTMLElement
      */
-    public function prepareInput(DOMElement $input): DOMElement
+    public function prepareInput(HTMLElement $input): HTMLElement
     {
         return $input;
     }
