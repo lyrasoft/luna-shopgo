@@ -6,7 +6,7 @@
         "php": ">=8.4.6",
         "brick/math": "*",
         "lyrasoft/luna": "^2.2",
-        "lyrasoft/favorite": "^2.0"
+        "lyrasoft/favorite": "^1.0"
     },
     "require-dev": {
         "lyrasoft/sequence": "^1.0"
