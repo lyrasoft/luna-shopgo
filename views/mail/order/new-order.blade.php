@@ -98,7 +98,7 @@ $paymentData = $item->paymentData;
         </p>
     @else
         <p>
-            @lang('shopgo.mail.new.order.hi.buyer', name: $paymentData->getName())
+            @lang('shopgo.mail.new.order.hi.buyer', name: $paymentData->name)
         </p>
 
         <p>

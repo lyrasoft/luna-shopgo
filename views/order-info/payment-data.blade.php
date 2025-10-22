@@ -53,7 +53,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.order.field.payment')
             </dt>
             <dd class="col-{{ $ddCols }}">
-                {{ $order->paymentData->getPaymentTitle() }}
+                {{ $order->paymentData->paymentTitle }}
             </dd>
 
             {{-- Name --}}
@@ -61,7 +61,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.name')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getName() }}
+                {{ $paymentData->name }}
             </dd>
 
             {{-- Email --}}
@@ -69,7 +69,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.email')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getEmail() ?: '-' }}
+                {{ $paymentData->email ?: '-' }}
             </dd>
 
             {{-- Phone --}}
@@ -77,7 +77,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.phone')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getPhone() ?: '-' }}
+                {{ $paymentData->phone ?: '-' }}
             </dd>
 
             {{-- Mobile --}}
@@ -85,7 +85,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.mobile')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getMobile() ?: '-' }}
+                {{ $paymentData->mobile ?: '-' }}
             </dd>
 
             {{-- Address --}}
@@ -110,7 +110,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.company')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getCompany() ?: '-' }}
+                {{ $paymentData->company ?: '-' }}
             </dd>
 
             {{-- Company --}}
@@ -118,7 +118,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.vat')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $paymentData->getVat() ?: '-' }}
+                {{ $paymentData->vat ?: '-' }}
             </dd>
         </dl>
     </div>

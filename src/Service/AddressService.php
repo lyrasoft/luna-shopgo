@@ -79,25 +79,25 @@ class AddressService
         $format ??= static::DEFAULT_FORMAT;
 
         $data = [
-            'email' => $addressData->getEmail(),
-            'phone' => $addressData->getPhone(),
-            'mobile' => $addressData->getMobile(),
-            'country' => $addressData->getCountry(),
-            'state' => $addressData->getState(),
-            'city' => $addressData->getCity(),
-            'address1' => $addressData->getAddress1(),
-            'address2' => $addressData->getAddress2(),
+            'email' => $addressData->email,
+            'phone' => $addressData->phone,
+            'mobile' => $addressData->mobile,
+            'country' => $addressData->country,
+            'state' => $addressData->state,
+            'city' => $addressData->city,
+            'address1' => $addressData->address1,
+            'address2' => $addressData->address2,
         ];
 
         if ($withName) {
             $data = array_merge(
                 [
-                    'fullname' => $addressData->getName(),
-                    'name' => $addressData->getName(),
-                    'firstname' => $addressData->getFirstname(),
-                    'lastname' => $addressData->getLastname(),
-                    'company' => $addressData->getCompany(),
-                    'vat' => $addressData->getVat(),
+                    'fullname' => $addressData->name,
+                    'name' => $addressData->name,
+                    'firstname' => $addressData->firstname,
+                    'lastname' => $addressData->lastname,
+                    'company' => $addressData->company,
+                    'vat' => $addressData->vat,
                 ],
                 $data,
             );

@@ -90,37 +90,31 @@ class CheckoutService
             $location = $this->orm->mustFindOne(Location::class, $address->locationId);
             [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
 
-            $addressData
-                ->fillFrom($address)
-                ->setCountry($country?->title ?? '')
-                ->setState($state?->title ?? '')
-                ->setCity($city?->title ?? '')
-                ->setFormatted(
-                    AddressService::formatByLocation($address, $country, true)
-                );
+            $addressData->fillFrom($address);
+            $addressData->country = $country?->title ?? '';
+            $addressData->state = $state?->title ?? '';
+            $addressData->city = $city?->title ?? '';
+            $addressData->formatted = AddressService::formatByLocation($address, $country, true);
         } else {
             $location = $this->orm->mustFindOne(Location::class, $data['location_id']);
             [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
 
-            $addressData
-                ->setLocationId($location->id)
-                ->setFirstname($data['firstname'])
-                ->setLastname($data['lastname'])
-                ->setEmail($data['email'])
-                ->setPhone($data['phone'])
-                ->setMobile($data['mobile'])
-                ->setCompany($data['company'])
-                ->setVat($data['vat'])
-                ->setAddress1($data['address1'])
-                ->setAddress2($data['address2'])
-                ->setPostcode($data['postcode'])
-                ->setCountry($country?->title ?? '')
-                ->setState($state?->title ?? '')
-                ->setCity($city?->title ?? '')
-                ->setName(trim($addressData->getFirstname() . ' ' . $addressData->getLastname()))
-                ->setFormatted(
-                    AddressService::formatByLocation($addressData, $country, true)
-                );
+            $addressData->locationId = $location->id;
+            $addressData->firstname = $data['firstname'];
+            $addressData->lastname = $data['lastname'];
+            $addressData->email = $data['email'];
+            $addressData->phone = $data['phone'];
+            $addressData->mobile = $data['mobile'];
+            $addressData->company = $data['company'];
+            $addressData->vat = $data['vat'];
+            $addressData->address1 = $data['address1'];
+            $addressData->address2 = $data['address2'];
+            $addressData->postcode = $data['postcode'];
+            $addressData->country = $country?->title ?? '';
+            $addressData->state = $state?->title ?? '';
+            $addressData->city = $city?->title ?? '';
+            $addressData->name = trim($data['firstname'] . ' ' . $data['lastname']);
+            $addressData->formatted = AddressService::formatByLocation($addressData, $country, true);
 
             if ($data['save'] ?? false) {
                 $address = new Address();
@@ -128,7 +122,7 @@ class CheckoutService
 
                 $this->orm->createOne(Address::class, $address);
 
-                $addressData->setAddressId($address->id);
+                $addressData->addressId = $address->id;
             }
         }
 
@@ -170,8 +164,8 @@ class CheckoutService
         $paymentData = $order->paymentData;
         $shippingData = $order->shippingData;
 
-        $paymentData->setPaymentTitle($paymentInstance->getData()->title);
-        $shippingData->setShippingTitle($shippingInstance->getData()->title);
+        $paymentData->paymentTitle = $paymentInstance->getData()->title;
+        $shippingData->shippingTitle = $shippingInstance->getData()->title;
 
         $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
         $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);
@@ -239,7 +233,7 @@ class CheckoutService
 
     public function notifyForCheckout(Order $order, CartData $cartData): Order
     {
-        $userMail = $order->paymentData->getEmail();
+        $userMail = $order->paymentData->email;
 
         if ($userMail) {
             $this->notifyBuyer($order, $cartData);
@@ -267,7 +261,7 @@ class CheckoutService
                 sitename: $this->shopGo->config('shop.sitename'),
             )
         )
-            ->to($order->paymentData->getEmail())
+            ->to($order->paymentData->email)
             ->renderBody(
                 'mail.order.new-order',
                 compact('order', 'cartData', 'isAdmin')
@@ -294,8 +288,8 @@ class CheckoutService
             $this->mailer->createMessage(
                 $this->trans(
                     'shopgo.mail.new.order.subject.for.admin',
-                    no:       $order->no,
-                    buyer:    $order->paymentData->getName(),
+                    no: $order->no,
+                    buyer: $order->paymentData->name,
                     sitename: $this->shopGo->config('shop.sitename'),
                 )
             )
@@ -408,8 +402,8 @@ class CheckoutService
             $orderTotal->orderId = $order->id;
             $orderTotal->title = $total->getLabel();
             $orderTotal->type = str_starts_with($total->getName(), 'discount')
-                    ? 'discount'
-                    : 'total';
+                ? 'discount'
+                : 'total';
             $orderTotal->code = $total->getName();
             $orderTotal->title = $total->getLabel();
             $orderTotal->value = $total->getPrice()->toFloat();
@@ -485,13 +479,13 @@ class CheckoutService
         $orderItem->total = $item->getPriceSet()['final_total']->toFloat();
         $orderItem->priceSet = clone $item->getPriceSet();
         $orderItem->productData = [
-                'product' => $product->toCollection()
-                    ->except(['searchIndex']),
-                'variant' => $variant->toCollection()
-                    ->except(['searchIndex']),
-                'currency' => $currency->toCollection()
-                    ->only(['id', 'code', 'exchangeRate', 'codeNum']),
-            ];
+            'product' => $product->toCollection()
+                ->except(['searchIndex']),
+            'variant' => $variant->toCollection()
+                ->except(['searchIndex']),
+            'currency' => $currency->toCollection()
+                ->only(['id', 'code', 'exchangeRate', 'codeNum']),
+        ];
         $orderItem->options = $variant->options;
 
         $data = $this->orm->extractEntity($orderItem);

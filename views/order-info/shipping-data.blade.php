@@ -58,7 +58,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.order.field.shipping')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $order->shippingData->getShippingTitle() }}
+                {{ $order->shippingData->shippingTitle }}
             </dd>
 
             {{-- Name --}}
@@ -66,7 +66,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.name')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getName() }}
+                {{ $shippingData->name }}
             </dd>
 
             {{-- Email --}}
@@ -74,7 +74,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.email')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getEmail() ?: '-' }}
+                {{ $shippingData->email ?: '-' }}
             </dd>
 
             {{-- Phone --}}
@@ -82,7 +82,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.phone')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getPhone() ?: '-' }}
+                {{ $shippingData->phone ?: '-' }}
             </dd>
 
             {{-- Mobile --}}
@@ -90,7 +90,7 @@ $ddCols = 12 - $dtCols;
                 @lang('shopgo.address.field.mobile')
             </dt>
             <dd class="col-lg-{{ $ddCols }}">
-                {{ $shippingData->getMobile() ?: '-' }}
+                {{ $shippingData->mobile ?: '-' }}
             </dd>
 
             {{-- Address --}}

@@ -152,7 +152,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.payment') /
                             </span>
                                 <strong>
-                                    {{ $order->paymentData->getPaymentTitle() }}
+                                    {{ $order->paymentData->paymentTitle }}
                                 </strong>
                             </div>
                             <div class="c-info">
@@ -160,7 +160,7 @@ $currency = $app->service(CurrencyService::class);
                                 @lang('shopgo.order.field.shipping') /
                             </span>
                                 <strong>
-                                    {{ $order->shippingData?->getShippingTitle() }}
+                                    {{ $order->shippingData?->shippingTitle }}
                                 </strong>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ $currency = $app->service(CurrencyService::class);
                             @lang('shopgo.order.payment.data.title')
                         </h4>
                         <div>
-                            {!! nl2br($order->paymentData->getFormatted()) !!}
+                            {!! nl2br($order->paymentData->formatted) !!}
                         </div>
                     </td>
                     <td class="l-address-table__shipping">
@@ -187,7 +187,7 @@ $currency = $app->service(CurrencyService::class);
                             @lang('shopgo.order.shipping.data.title')
                         </h4>
                         <div>
-                            {!! nl2br($order->shippingData->getFormatted()) !!}
+                            {!! nl2br($order->shippingData->formatted) !!}
                         </div>
                     </td>
                 </tr>

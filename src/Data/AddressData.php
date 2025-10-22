@@ -19,13 +19,13 @@ use Windwalker\Data\ValueObject;
 #[\AllowDynamicProperties]
 class AddressData extends ValueObject
 {
-    protected int $locationId = 0;
+    public int $locationId = 0;
 
-    protected string $address1 = '';
+    public string $address1 = '';
 
-    protected string $address2 = '';
+    public string $address2 = '';
 
-    protected string $fullAddress = '';
+    public string $fullAddress = '';
 
     /**
      * @return int

@@ -36,7 +36,7 @@ class LocationService
 
     public function formatAddress(AddressAwareInterface $addressData, bool $withName = false): string
     {
-        [$country] = $this->getPathFromLocation($addressData->getLocationId());
+        [$country] = $this->getPathFromLocation($addressData->locationId);
 
         return AddressService::formatByLocation($addressData, $country, $withName);
     }

@@ -127,7 +127,7 @@ class Currency implements EntityInterface
             $this->numSeparator,
         );
 
-        $space = $this->hasSpace() ? ' ' : '';
+        $space = $this->space ? ' ' : '';
 
         if ($this->signPosition === SignPosition::START) {
             $formatted = $this->sign . $space . $formatted;

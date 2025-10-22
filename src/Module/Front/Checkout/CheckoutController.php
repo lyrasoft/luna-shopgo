@@ -120,7 +120,7 @@ class CheckoutController
                         $user
                     );
 
-                    if ($order->paymentData->getVat()) {
+                    if ($order->paymentData->vat) {
                         $order->invoiceType = InvoiceType::COMPANY;
                     } else {
                         $order->invoiceType = InvoiceType::IDV;
@@ -139,7 +139,7 @@ class CheckoutController
                 } else {
                     $shippingLocation = $orm->mustFindOne(
                         Location::class,
-                        $order->shippingData->getLocationId()
+                        $order->shippingData->locationId
                     );
                 }
 

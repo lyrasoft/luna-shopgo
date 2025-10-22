@@ -188,7 +188,7 @@ $orm = $app->service(ORM::class);
 
                             {{-- User --}}
                             <td class="text-nowrap">
-                                {{ $entity->paymentData->getName() }}
+                                {{ $entity->paymentData->name }}
 
                                 <div class="mt-1">
                                     <div class="text-info small">

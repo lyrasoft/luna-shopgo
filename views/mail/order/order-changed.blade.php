@@ -42,7 +42,7 @@ $paymentData = $order->paymentData;
 
 @section('content')
     @if (!$isAdmin)
-        <p>@lang('shopgo.order.mail.changed.hi.member', name: $paymentData->getName())</p>
+        <p>@lang('shopgo.order.mail.changed.hi.member', name: $paymentData->name)</p>
     @else
         <p>@lang('shopgo.order.mail.changed.hi.admin')</p>
     @endif

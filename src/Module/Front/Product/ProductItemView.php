@@ -163,7 +163,7 @@ class ProductItemView implements ViewModelInterface
             $item
         );
 
-        $attributes = $attributes->filter(fn (ProductAttribute $attribute) => $attribute->shouldDisplay());
+        $attributes = $attributes->filter(fn (ProductAttribute $attribute) => $attribute->display);
         $attributeSet = $attributes->groupBy('categoryId');
 
         foreach ($attrGroups as $group) {

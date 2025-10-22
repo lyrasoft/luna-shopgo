@@ -100,7 +100,7 @@ class OrderHistoryService
         OrderHistory $history,
     ): void {
         $paymentData = $order->paymentData;
-        $email = $paymentData->getEmail();
+        $email = $paymentData->email;
 
         if (!$email) {
             return;
