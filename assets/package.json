@@ -1,15 +1,30 @@
 {
+    "name": "@lyrasoft/shopgo",
+    "private": true,
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "cross-env node_modules/.bin/gulp",
-        "build:dev": "cross-env NODE_ENV=development node_modules/.bin/gulp",
-        "build:prod": "cross-env NODE_ENV=production node_modules/.bin/gulp",
-        "watch": "cross-env NODE_ENV=development node_modules/.bin/gulp --watch=1",
-        "watch:reload": "cross-env NODE_ENV=development node_modules/.bin/gulp --watch=1 --livereload=1"
+        "dev": "vite build --mode development --watch",
+        "build": "vite build --mode development",
+        "build:prod": "vite build",
+        "watch": "vite build --watch --mode development",
+        "upgrade": "yarn up '**' -R"
     },
     "devDependencies": {
-        "@windwalker-io/fusion": "^1.0"
+        "@microsoft/api-extractor": "^7.53.2",
+        "@types/bootstrap": "^5",
+        "@types/node": "^24.9.1",
+        "@vitejs/plugin-vue": "^6.0.1",
+        "@windwalker-io/unicorn-next": "^0.1.0",
+        "spectrum-vanilla": "^1.1.1",
+        "unplugin-dts": "^1.0.0-beta.6",
+        "vite": "^7.1.12"
     },
     "dependencies": {
-        "@lyrasoft/ts-toolkit": "^0.2.2"
+        "@lyrasoft/ts-toolkit": "^0.2.2",
+        "sweetalert": "^2.1.2",
+        "vue": "^3.5.22",
+        "bootstrap": "^5.3.8"
     }
 }

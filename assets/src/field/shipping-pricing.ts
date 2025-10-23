@@ -127,5 +127,3 @@ const ShippingPricing = {
     app.mount(el);
   },
 };
-
-window.ShippingPricing = ShippingPricing;

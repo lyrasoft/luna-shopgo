@@ -1,0 +1,28 @@
+{
+//    "references": [
+//        { "path": "./tsconfig.node.json" }
+//    ],
+    "extends": [
+        "@windwalker-io/unicorn-next/tsconfig.js.json"
+    ],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.vue"
+    ],
+    "exclude": [
+        "node_modules/**/*"
+    ],
+    "types": [
+        "reflect-metadata"
+    ],
+    "compilerOptions": {
+        "types": [
+            "vue"
+        ],
+        "paths": {
+            "~shopgo/*": [
+                "./src/*"
+            ]
+        }
+    }
+}
