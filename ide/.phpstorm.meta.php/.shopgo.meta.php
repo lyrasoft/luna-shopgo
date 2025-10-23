@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    __LICENSE__
- */
-
 namespace PHPSTORM_META {
     registerArgumentsSet(
         'shopgo_shop_config_args',
