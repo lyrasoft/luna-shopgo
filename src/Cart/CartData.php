@@ -16,51 +16,52 @@ use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Entity\Shipping;
-use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Data\Collection;
-use Windwalker\Data\ValueObject;
+use Windwalker\Data\RecordInterface;
+use Windwalker\Data\RecordTrait;
 
 use function Windwalker\collect;
 
 /**
  * The CartData class.
  */
-class CartData extends ValueObject
+class CartData implements RecordInterface
 {
+    use RecordTrait;
+
     /**
      * @var Collection<CartItem>
      */
-    public Collection $items;
+    public Collection $items {
+        set(Collection|array $value) => $this->items = collect($value);
+    }
 
     /**
      * @var Collection<Discount>
      */
-    public Collection $discounts;
-
-    /**
-     * @var PriceSet
-     */
-    public PriceSet $totals;
+    public Collection $discounts {
+        set(Collection|array $value) => $this->discounts = collect($value);
+    }
 
     /**
      * @var Collection
      */
-    public Collection $coupons;
+    public Collection $coupons {
+        set(Collection|array $value) => $this->coupons = collect($value);
+    }
 
-    public ?Location $location = null;
-
-    public ?Shipping $shipping = null;
-
-    public array $params = [];
-
-    public function __construct(mixed $data = [])
-    {
-        parent::__construct($data);
-
-        $this->items = collect();
-        $this->discounts = collect();
-        $this->totals = new PriceSet();
-        $this->coupons = collect();
+    public function __construct(
+        Collection|array $items = new Collection(),
+        Collection|array $discounts = new Collection(),
+        Collection|array $coupons = new Collection(),
+        public PriceSet $totals = new PriceSet(),
+        public ?Location $location = null,
+        public ?Shipping $shipping = null,
+        public array $params = []
+    ) {
+        $this->items = $items;
+        $this->discounts = $discounts;
+        $this->coupons = $coupons;
     }
 
     /**
@@ -74,7 +75,7 @@ class CartData extends ValueObject
 
         if ($onlyChecked) {
             $items = $items->filter(
-                fn (CartItem $item) => $item->isChecked()
+                fn(CartItem $item) => $item->isChecked()
             );
         }
 
@@ -140,125 +141,5 @@ class CartData extends ValueObject
         }
 
         return $quantities;
-    }
-
-    /**
-     * @return Discount[]|Collection
-     */
-    public function getDiscounts(): Collection
-    {
-        return $this->discounts;
-    }
-
-    /**
-     * @param  Discount[]|Collection  $discounts
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setDiscounts(Collection|array $discounts): static
-    {
-        $this->discounts = Collection::wrap($discounts);
-
-        return $this;
-    }
-
-    /**
-     * @return PriceSet
-     */
-    public function getTotals(): PriceSet
-    {
-        return $this->totals;
-    }
-
-    /**
-     * @param  PriceSet  $totals
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setTotals(PriceSet $totals): static
-    {
-        $this->totals = $totals;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<Discount>
-     */
-    public function getCoupons(): Collection
-    {
-        return $this->coupons;
-    }
-
-    /**
-     * @param  Collection|array  $coupons
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setCoupons(Collection|array $coupons): static
-    {
-        $this->coupons = Collection::wrap($coupons);
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function &getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param  array  $params
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-
-        return $this;
-    }
-
-    /**
-     * @return Location|null
-     */
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    /**
-     * @param  Location|null  $location
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setLocation(?Location $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    /**
-     * @return Shipping|null
-     */
-    public function getShipping(): ?Shipping
-    {
-        return $this->shipping;
-    }
-
-    /**
-     * @param  Shipping|null  $shipping
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setShipping(?Shipping $shipping): static
-    {
-        $this->shipping = $shipping;
-
-        return $this;
     }
 }

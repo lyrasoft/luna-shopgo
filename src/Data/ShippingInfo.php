@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Data;
 
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\Data\RecordInterface;
 use Windwalker\Data\RecordTrait;
 use Windwalker\ORM\Attributes\CastNullable;
 
@@ -12,7 +13,7 @@ use Windwalker\ORM\Attributes\CastNullable;
  * The ShippingInfo class.
  */
 #[\AllowDynamicProperties]
-class ShippingInfo
+class ShippingInfo implements RecordInterface
 {
     use RecordTrait;
 

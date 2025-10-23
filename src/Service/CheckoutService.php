@@ -140,8 +140,8 @@ class CheckoutService
      */
     public function createOrder(Order $order, CartData $cartData, array $checkoutData = []): Order
     {
-        $totals = $cartData->getTotals();
-        $grandTotal = $cartData->getTotals()['grand_total']->getPrice()->toFloat();
+        $totals = $cartData->totals;
+        $grandTotal = $cartData->totals['grand_total']->getPrice()->toFloat();
 
         if ($grandTotal < 0) {
             throw new ValidateFailException('Cannot process checkout for negative price.');

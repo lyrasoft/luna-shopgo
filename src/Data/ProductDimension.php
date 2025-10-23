@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
+use Windwalker\Data\RecordInterface;
 use Windwalker\Data\RecordTrait;
 
 /**
  * The ProductDimension class.
  */
 #[\AllowDynamicProperties]
-class ProductDimension
+class ProductDimension implements RecordInterface
 {
     use RecordTrait;
 

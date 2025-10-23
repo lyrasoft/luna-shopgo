@@ -43,14 +43,14 @@ use Lyrasoft\ShopGo\Entity\Currency;
  */
 class PriceObject implements \JsonSerializable, \Stringable
 {
-    public const DEFAULT_SCALE = 4;
+    public const int DEFAULT_SCALE = 4;
 
     /**
      * Property name.
      *
      * @var  string
      */
-    protected string $name;
+    public protected(set) string $name;
 
     /**
      * Property price.

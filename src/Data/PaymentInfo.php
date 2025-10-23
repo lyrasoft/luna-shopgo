@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Data;
 
 use Windwalker\Core\DateTime\Chronos;
+use Windwalker\Data\RecordInterface;
 use Windwalker\Data\RecordTrait;
 use Windwalker\ORM\Attributes\CastNullable;
 
@@ -12,7 +13,7 @@ use Windwalker\ORM\Attributes\CastNullable;
  * The PaymentInfo class.
  */
 #[\AllowDynamicProperties]
-class PaymentInfo
+class PaymentInfo implements RecordInterface
 {
     use RecordTrait;
 
@@ -24,9 +25,9 @@ class PaymentInfo
         public string $currency = '',
         public bool $isCod = false,
         #[CastNullable(Chronos::class)]
-        public ?Chronos $created,
+        public ?Chronos $created = null,
         #[CastNullable(Chronos::class)]
-        public ?Chronos $expired,
+        public ?Chronos $expired = null,
     ) {
     }
 }

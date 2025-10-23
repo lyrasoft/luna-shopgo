@@ -210,10 +210,10 @@ return new /** Product Seeder */ class extends AbstractSeeder {
 
                 $optUids = ListOptionCollection::wrap($options)
                     ->as(Collection::class)
-                    ->map(static fn($option) => $option['uid'])
+                    ->map(static fn(ListOption $option) => $option->uid)
                     ->dump();
 
-                $variant->productId = $item->id;
+                $variant->productId = (int) $item->id;
                 $variant->title = (string) $options->as(Collection::class)->column('text')->implode(' / ');
                 $variant->hash = VariantService::hash($optUids, $seed);
                 $variant->primary = false;

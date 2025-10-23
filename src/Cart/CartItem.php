@@ -27,16 +27,22 @@ class CartItem
 {
     use RecordTrait;
 
+    public ProductVariantDTO $variant {
+        set(ProductVariantDTO|ProductVariant $value) => $this->variant = ProductVariantDTO::wrap($value);
+    }
+
+    public ProductVariantDTO $mainVariant {
+        set(ProductVariantDTO|ProductVariant $value) => $this->mainVariant = ProductVariantDTO::wrap($value);
+    }
+
+    public ProductDTO $product {
+        set(ProductDTO|Product $value) => $this->product = ProductDTO::wrap($value);
+    }
+
     public function __construct(
-        public ProductVariantDTO $variant {
-            set(ProductVariantDTO|ProductVariant $value) => $this->variant = ProductVariantDTO::wrap($value);
-        },
-        public ProductVariantDTO $mainVariant {
-            set(ProductVariantDTO|ProductVariant $value) => $this->mainVariant = ProductVariantDTO::wrap($value);
-        },
-        public ProductDTO $product {
-            set(ProductDTO|Product $value) => $this->product = ProductDTO::wrap($value);
-        },
+        ProductVariantDTO|ProductVariant $variant,
+        ProductVariantDTO|ProductVariant $mainVariant,
+        ProductDTO|Product $product,
         public PriceSet $priceSet = new PriceSet(),
         public int $quantity = 0,
         public string $cover = '',
@@ -49,6 +55,9 @@ class CartItem
         public array $attachments = [],
         public array $discounts = [],
     ) {
+        $this->product = $product;
+        $this->mainVariant = $mainVariant;
+        $this->variant = $variant;
         $this->uid = uid();
     }
 

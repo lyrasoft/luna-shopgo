@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
+use Windwalker\Data\RecordInterface;
 use Windwalker\Data\RecordTrait;
 
 /**
  * The ListOption class.
  */
 #[\AllowDynamicProperties]
-class ListOption
+class ListOption implements RecordInterface
 {
     use RecordTrait;
 

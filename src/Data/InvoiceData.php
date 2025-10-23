@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
+use Windwalker\Data\RecordInterface;
 use Windwalker\Data\RecordTrait;
 
 /**
  * The InvoiceData class.
  */
 #[\AllowDynamicProperties]
-class InvoiceData
+class InvoiceData implements RecordInterface
 {
     use RecordTrait;
 

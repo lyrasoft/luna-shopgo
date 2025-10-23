@@ -51,7 +51,7 @@ return new /** ProductFeature Seeder */ class extends AbstractSeeder {
             $item = $mapper->createEntity();
             $item->type = $type;
             $item->title = $faker->sentence(1);
-            $item->default = $faker->randomElement($options)['value'];
+            $item->default = $faker->randomElement($options)->value;
             $item->options = $options;
             $item->note = $faker->sentence();
             $item->ordering = $i;
