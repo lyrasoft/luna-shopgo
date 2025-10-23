@@ -8,5 +8,8 @@
     },
     "devDependencies": {
         "@windwalker-io/fusion": "^1.0"
+    },
+    "dependencies": {
+        "@lyrasoft/ts-toolkit": "^0.2.2"
     }
 }

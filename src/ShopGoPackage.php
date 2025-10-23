@@ -30,11 +30,13 @@ use Lyrasoft\ShopGo\Service\StockService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Windwalker\Core\Application\ApplicationInterface;
+use Windwalker\Core\DI\RequestBootableProviderInterface;
 use Windwalker\Core\Event\CoreEventAwareTrait;
 use Windwalker\Core\Package\AbstractPackage;
 use Windwalker\Core\Package\PackageInstaller;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Container;
+use Windwalker\DI\DIOptions;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\ServiceProviderInterface;
 use Windwalker\Event\EventAwareInterface;
@@ -43,13 +45,25 @@ use Windwalker\Utilities\StrNormalize;
 /**
  * The ShopGoPackage class.
  */
-class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface, EventAwareInterface
+class ShopGoPackage extends AbstractPackage implements
+    ServiceProviderInterface,
+    EventAwareInterface,
+    RequestBootableProviderInterface
 {
     use CoreEventAwareTrait;
 
     public function __construct(protected ApplicationInterface $app)
     {
         //
+        // echo new \Exception();
+        show('GGG');
+    }
+
+    public function bootBeforeRequest(Container $container): void
+    {
+        // Do not cache definition at initial, let it register before request.
+        // Otherwise, subscribers will register too early.
+        // $container->prepareSharedObject(static::class);
     }
 
     /**
@@ -63,7 +77,7 @@ class ShopGoPackage extends AbstractPackage implements ServiceProviderInterface,
     {
         class_alias(Collection::class, ShopConfig::class);
 
-        $container->share(self::class, fn () => $this);
+        $container->prepareSharedObject(static::class);
         $container->prepareSharedObject(AdditionalPurchaseService::class);
         $container->prepareSharedObject(AddressService::class);
         $container->prepareSharedObject(CartService::class);

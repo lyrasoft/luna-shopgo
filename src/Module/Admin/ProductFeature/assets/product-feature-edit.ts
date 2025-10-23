@@ -1,55 +1,51 @@
 
-
-import '@main';
-
-u.$ui.bootstrap.tooltip();
-u.$ui.tomSelect('.has-tom-select');
+import {
+  useBs5Tooltip,
+  useDisableIfStackNotEmpty,
+  useDisableOnSubmit,
+  useFormComponent,
+  useFormValidation,
+  useKeepAlive,
+} from '@windwalker-io/unicorn-next';
 
 const formSelector = '#admin-form';
 
-// Validation
-u.formValidation().then(() => {
-  u.$ui.disableOnSubmit(formSelector);
-});
+useBs5Tooltip();
 
-// Init form
-u.form(formSelector).initComponent();
+useFormComponent(formSelector);
 
-// Disable if uploading
-u.$ui.disableIfStackNotEmpty();
+useFormValidation().then(() => useDisableOnSubmit(formSelector));
 
-// Keep Alive
-u.$ui.keepAlive(location.href);
+useDisableIfStackNotEmpty();
 
-// A workaround to wait all dependencies ready
-await u.domready();
+useKeepAlive(location.href);
 
 // App
 const $typeSelect = document.querySelector('#input-item-type');
-const { ref, onMounted, computed, createApp, toRefs, reactive } = Vue;
+import { ref, onMounted, computed, createApp, toRefs, reactive } from 'vue';
 
+
+// Todo: Fix this
 const app = createApp({
-  name: 'ProductAttributeApp',
+  name: 'ProductFeatureApp',
   setup() {
-    const items = ShopgoVueUtilities.prepareVueItemList(
-      u.data('options') || [],
-      (item) => {
-        item.uid = item.uid = u.tid();
-        return {
-          data: item,
-          uid: item.uid,
-          selected: false
-        };
-      }
-    );
-
     const type = ref($typeSelect.value);
     const state = reactive({
-      items,
+      items: ShopgoVueUtilities.prepareVueItemList(
+        u.data('options') || [],
+        (item) => {
+          item.uid = item.uid || u.tid();
+          return {
+            data: item,
+            uid: item.uid,
+            selected: false
+          };
+        }
+      ),
       current: null,
       selected: [],
-      defaultUid: items.find((item) => item.data.is_default)?.uid
-    });
+      colorpicker: {}
+    })
 
     onMounted(() => {
       $typeSelect.addEventListener('change', () => {
@@ -71,10 +67,10 @@ const app = createApp({
           {
             value: '',
             text: '',
-            is_default: false
+            color: ''
           },
           (data) => {
-            data.uid = data.uid = u.tid();
+            data.uid = data.uid || u.tid();
             return {
               data: data,
               uid: data.uid,
@@ -119,5 +115,6 @@ const app = createApp({
 });
 
 app.use(ShopGoVuePlugin);
+app.directive('colorpicker', ShopGoVuePlugin.Colorpicker);
 app.component('draggable', vuedraggable);
-app.mount('#product-attribute-app');
+app.mount('#product-feature-app');

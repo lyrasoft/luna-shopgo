@@ -1,31 +1,33 @@
-
-
-import '@main';
-
-u.$ui.bootstrap.tooltip();
-u.$ui.tomSelect('.has-tom-select');
+import {
+  __, data,
+  route,
+  simpleAlert,
+  useBs5Tooltip,
+  useDisableIfStackNotEmpty,
+  useDisableOnSubmit,
+  useFormComponent,
+  useFormValidation, useHttpClient, useIframeModal,
+  useKeepAlive, useTomSelect,
+} from '@windwalker-io/unicorn-next';
 
 const formSelector = '#admin-form';
 
-// Validation
-u.formValidation().then(() => {
-  u.$ui.disableOnSubmit(formSelector);
-});
+useBs5Tooltip();
 
-// Init form
-u.form(formSelector).initComponent();
+useFormComponent(formSelector);
 
-// Disable if uploading
-u.$ui.disableIfStackNotEmpty();
+useFormValidation().then(() => useDisableOnSubmit(formSelector));
 
-// Keep Alive
-u.$ui.keepAlive(location.href);
+useDisableIfStackNotEmpty();
 
-await u.domready();
+useKeepAlive(location.href);
 
-const { ref, onMounted, computed, createApp, toRefs, reactive } = Vue;
+useTomSelect('.has-tom-select');
 
-const AdditionalPurchaseAttachments = {
+import { ref, onMounted, computed, createApp, toRefs, reactive, defineComponent } from 'vue';
+
+// Todo: Fix this
+const AdditionalPurchaseAttachments = defineComponent({
   name: 'AdditionalPurchaseAttachments',
   components: {
     'attachment-product': attachmentProduct()
@@ -47,7 +49,7 @@ const AdditionalPurchaseAttachments = {
       state.attachmentSet[0].open = true;
     }
 
-    u.$ui.iframeModal();
+    useIframeModal();
 
     onMounted(() => {
       setTimeout(() => {
@@ -59,7 +61,7 @@ const AdditionalPurchaseAttachments = {
           try {
             checkAvailable(id)
           } catch (e) {
-            u.alert(e.message);
+            simpleAlert((e as Error).message);
             return;
           }
 
@@ -72,18 +74,20 @@ const AdditionalPurchaseAttachments = {
 
     function openProductSelector() {
       const callbackName = 'productSelected';
-      const url = new URL(u.route('product_modal'));
+      const url = new URL(route('product_modal'));
       url.searchParams.set('callback', callbackName);
 
       window[callbackName] = async function ({ title, value: id, image: cover }) {
         try {
           checkAvailable(id);
         } catch (e) {
-          u.alert(e.message, '', 'warning');
+          simpleAlert((e as Error).message, '', 'warning');
           return;
         }
 
-        const res = await u.$http.get(`@additional_purchase_ajax/getProductInfo?id=${id}`);
+        const { get } = useHttpClient();
+
+        const res = await get(`@additional_purchase_ajax/getProductInfo?id=${id}`);
 
         for (const attachment of state.attachmentSet) {
           attachment.open = false;
@@ -104,25 +108,25 @@ const AdditionalPurchaseAttachments = {
       productSelector.value.open(url, { size: 'modal-xl' });
     }
 
-    function checkAvailable(id) {
+    function checkAvailable(id: string | number) {
       // Check is in attachments
       for (const { product } of state.attachmentSet) {
         if (Number(product.id) === Number(id)) {
-          throw new Error(u.__('shopgo.additional.purchase.message.already.selected'));
+          throw new Error(__('shopgo.additional.purchase.message.already.selected'));
           return;
         }
       }
 
       // Check is in targets
-      for (const target of u.selectAll('#input-item-products-wrap .list-group-item')) {
+      for (const target of document.querySelectorAll<HTMLElement>('#input-item-products-wrap .list-group-item')) {
         if (Number(target.dataset.value) === Number(id)) {
-          throw new Error(u.__('shopgo.additional.purchase.message.already.in.targets'));
+          throw new Error(__('shopgo.additional.purchase.message.already.in.targets'));
           return;
         }
       }
     }
 
-    function removeProduct(i) {
+    function removeProduct(i: number) {
       state.attachmentSet.splice(i, 1);
     }
 
@@ -134,11 +138,11 @@ const AdditionalPurchaseAttachments = {
       removeProduct,
     };
   }
-};
+});
 
 const app = createApp(
   AdditionalPurchaseAttachments,
-  u.data('ap.attachments.props')
+  data('ap.attachments.props')
 );
 
 app.use(ShopGoVuePlugin);
