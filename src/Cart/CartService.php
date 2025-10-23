@@ -133,37 +133,35 @@ class CartService
 
             $quantity = (int) $storageItem['quantity'];
 
-            $cartItem = new CartItem();
-            $cartItem->setVariant($variant);
-            $cartItem->setProduct($product);
-            $cartItem->setMainVariant($mainVariant);
-            $cartItem->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
-            $cartItem->setKey((string) $k);
-            $cartItem->setCover($variant->cover ?: $mainVariant->cover);
-            $cartItem->setLink(
-                (string) $product->makeLink($this->nav)
+            $cartItem = new CartItem(
+                variant: $variant,
+                mainVariant: $mainVariant,
+                product: $product,
+                priceSet: $variant->priceSet,
+                quantity: $quantity,
+                cover: $variant->cover ?: $mainVariant->cover,
+                link: (string) $product->makeLink($this->nav),
+                key: (string) $k,
+                outOfStock: VariantService::isOutOfStock($variant, $product, $quantity),
+                payload: $storageItem['payload'] ?? [],
+                options: $storageItem['options'] ?? [],
             );
-            $cartItem->setQuantity($quantity);
-            $cartItem->setPayload($storageItem['payload'] ?? []);
-            $cartItem->setOptions($storageItem['options'] ?? []);
-
-            $cartItem->setPriceSet($variant->priceSet);
 
             // @event
+            // Use emit new instance
             $event = $this->shopGo->emit(
-                PrepareCartItemEvent::class,
-                compact(
-                    'cartItem',
-                    'storageItem',
-                    'product',
-                    'variant',
-                    'mainVariant',
-                    'forUpdate',
-                    'params'
+                new PrepareCartItemEvent(
+                    cartItem: $cartItem,
+                    product: $product,
+                    mainVariant: $mainVariant,
+                    variant: $variant,
+                    storageItem: $storageItem,
+                    forUpdate: $forUpdate,
+                    options: $params
                 )
             );
 
-            $cartItems[] = $event->getCartItem();
+            $cartItems[] = $event->cartItem;
         }
 
         return $cartItems;
@@ -179,12 +177,13 @@ class CartService
     public function createCartDataFromItems(iterable $cartItems, array $params = []): CartData
     {
         $cartData = new CartData();
-        $cartData->setParams($params);
+        $cartData->params = $params;
 
         $location = $this->orm->findOne(Location::class, $params['location_id'] ?? null ?: 0);
         $shipping = $this->orm->findOne(Shipping::class, $params['shipping_id'] ?? null ?: 0);
 
-        $cartData->setLocation($location)->setShipping($shipping);
+        $cartData->location = $location;
+        $cartData->shipping = $shipping;
 
         $appliedDiscounts = [];
         $totals = new PriceSet();
@@ -198,10 +197,10 @@ class CartService
                 continue;
             }
 
-            $total = $total->plus($item->getPriceSet()['final_total']);
+            $total = $total->plus($item->priceSet['final_total']);
         }
 
-        $cartData->setItems(collect($cartItems));
+        $cartData->items = collect($cartItems);
 
         $finalTotal = PriceObject::create(
             'total',
@@ -211,28 +210,27 @@ class CartService
 
         // @event PrepareCartDataEvent
         $event = $this->shopGo->emit(
-            PrepareCartDataEvent::class,
-            compact(
-                'total',
-                'totals',
-                'cartData',
-                'appliedDiscounts',
+            new PrepareCartDataEvent(
+                cartData: $cartData,
+                total: $total,
+                totals: $totals,
+                appliedDiscounts: $appliedDiscounts
             )
         );
 
-        $totals = $event->getTotals();
-        $cartData = $event->getCartData();
-        $appliedDiscounts = $event->getAppliedDiscounts();
+        $totals = $event->totals;
+        $cartData = $event->cartData;
+        $appliedDiscounts = $event->appliedDiscounts;
 
         // Now we have grand total, we must check discount min price.
         /** @var CartItem $cartItem */
         foreach ($cartItems as $cartItem) {
             $priceSet = $this->variantService->computeProductPriceSet(
                 PrepareProductPricesEvent::CART,
-                $cartItem->getProduct()->getData(),
-                $cartItem->getVariant()->getData(),
-                $cartItem->getMainVariant()->getData(),
-                $cartItem->getPriceSet(),
+                $cartItem->product->getData(),
+                $cartItem->variant->getData(),
+                $cartItem->mainVariant->getData(),
+                $cartItem->priceSet,
                 $cartItem,
             );
 
@@ -254,26 +252,35 @@ class CartService
             )
         );
 
-        $total = $event->getTotal();
-        $totals = $event->getTotals();
-        $cartData = $event->getCartData();
-        $appliedDiscounts = $event->getAppliedDiscounts();
-
-        // @event ComputingTotalsEvent
+        // emit with new instance
         $event = $this->shopGo->emit(
-            ComputingTotalsEvent::class,
-            compact(
-                'total',
-                'totals',
-                'cartData',
-                'appliedDiscounts',
+            new BeforeComputeTotalsEvent(
+                cartData: $event->cartData,
+                total: $event->total,
+                totals: $event->totals,
+                appliedDiscounts: $appliedDiscounts
             )
         );
 
-        $total = $event->getTotal();
-        $totals = $event->getTotals();
-        $cartData = $event->getCartData();
-        $appliedDiscounts = $event->getAppliedDiscounts();
+        $total = $event->total;
+        $totals = $event->totals;
+        $cartData = $event->cartData;
+        $appliedDiscounts = $event->appliedDiscounts;
+
+        // @event ComputingTotalsEvent
+        $event = $this->shopGo->emit(
+            new ComputingTotalsEvent(
+                cartData: $cartData,
+                total: $total,
+                totals: $totals,
+                appliedDiscounts: $appliedDiscounts
+            )
+        );
+
+        $total = $event->total;
+        $totals = $event->totals;
+        $cartData = $event->cartData;
+        $appliedDiscounts = $event->appliedDiscounts;
 
         // Shipping Fee
         $freeShipping = false;
@@ -294,28 +301,38 @@ class CartService
         }
 
         // @event AfterComputeTotalsEvent
+        // $event = $this->shopGo->emit(
+        //     AfterComputeTotalsEvent::class,
+        //     compact(
+        //         'total',
+        //         'grandTotal',
+        //         'totals',
+        //         'cartData',
+        //         'appliedDiscounts',
+        //     )
+        // );
+
+        // Emit and use new Event
         $event = $this->shopGo->emit(
-            AfterComputeTotalsEvent::class,
-            compact(
-                'total',
-                'grandTotal',
-                'totals',
-                'cartData',
-                'appliedDiscounts',
+            new AfterComputeTotalsEvent(
+                cartData: $cartData,
+                total: $total,
+                totals: $totals,
+                grandTotal: $grandTotal
             )
         );
 
-        $total = $event->getTotal();
-        $totals = $event->getTotals();
-        $grandTotal = $event->getGrandTotal();
-        $cartData = $event->getCartData();
-        $appliedDiscounts = $event->getAppliedDiscounts();
+        $total = $event->total;
+        $totals = $event->totals;
+        $grandTotal = $event->grandTotal;
+        $cartData = $event->cartData;
+        $appliedDiscounts = $event->appliedDiscounts;
 
         $totals->prepend($total);
         $totals->set($grandTotal);
 
-        $cartData->setTotals($totals);
-        $cartData->setDiscounts($appliedDiscounts);
+        $cartData->totals = $totals;
+        $cartData->discounts = $appliedDiscounts;
 
         $coupons = [];
 
@@ -326,9 +343,9 @@ class CartService
             }
         }
 
-        $cartData->setCoupons($coupons);
+        $cartData->coupons = $coupons;
 
-        return $event->getCartData();
+        return $event->cartData;
     }
 
     /**
@@ -339,7 +356,7 @@ class CartService
      */
     protected function computeShippingFee(CartData $cartData, PriceObject $total): void
     {
-        $shipping = $cartData->getShipping();
+        $shipping = $cartData->shipping;
 
         if (!$shipping) {
             return;

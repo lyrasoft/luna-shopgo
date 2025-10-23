@@ -87,30 +87,43 @@ class CheckoutController
                 $paymentData = $input['payment_data'] ?? [];
                 $shippingData = $input['shipping_data'] ?? [];
 
+                // $event = $shopGo->emit(
+                //     BeforeCheckoutEvent::class,
+                //     compact(
+                //         'order',
+                //         'payment',
+                //         'shipping',
+                //         'paymentData',
+                //         'shippingData',
+                //         'input'
+                //     )
+                // );
+
+                // Emit Event use constructor
                 $event = $shopGo->emit(
-                    BeforeCheckoutEvent::class,
-                    compact(
-                        'order',
-                        'payment',
-                        'shipping',
-                        'paymentData',
-                        'shippingData',
-                        'input'
+                    new BeforeCheckoutEvent(
+                        order: $order,
+                        payment: $payment,
+                        shipping: $shipping,
+                        paymentData: $paymentData,
+                        shippingData: $shippingData,
+                        input: $input,
                     )
                 );
 
-                $order = $event->getOrder();
-                $shipping = $event->getShipping();
-                $payment = $event->getPayment();
-                $shippingData = $event->getShippingData();
-                $paymentData = $event->getPaymentData();
-                $input = $event->getInput();
+
+                $order = $event->order;
+                $shipping = $event->shipping;
+                $payment = $event->payment;
+                $shippingData = $event->shippingData;
+                $paymentData = $event->paymentData;
+                $input = $event->input;
 
                 if ($shippingData['sync'] ?? false) {
                     $shippingData = $paymentData;
                 }
 
-                if (!$event->isOverridePaymentDataProcess()) {
+                if (!$event->overridePaymentDataProcess) {
                     $addressId = $paymentData['address_id'] ?? null;
 
                     $paymentLocation = $checkoutService->prepareAddressData(
@@ -127,7 +140,7 @@ class CheckoutController
                     }
                 }
 
-                if (!$event->isOverrideShippingDataProcess()) {
+                if (!$event->overrideShippingDataProcess) {
                     $addressId = $shippingData['address_id'] ?? null;
 
                     $shippingLocation = $checkoutService->prepareAddressData(
@@ -154,8 +167,8 @@ class CheckoutController
                 $stockService->checkAndReduceStocks($cartData);
 
                 $order->userId = $user->id;
-                $order->paymentId = (int) $payment['id'];
-                $order->shippingId = (int) $shipping['id'];
+                $order->paymentId = (string) $payment['id'];
+                $order->shippingId = (string) $shipping['id'];
                 $order->note = $input['note'] ?? '';
 
                 return [
@@ -168,17 +181,16 @@ class CheckoutController
         $orderItems = $order->orderItems->getAttachedEntities();
 
         $event = $shopGo->emit(
-            AfterCheckoutEvent::class,
-            compact(
-                'order',
-                'cartData',
-                'orderItems',
-                'input',
+            new AfterCheckoutEvent(
+                order: $order,
+                cartData: $cartData,
+                orderItems: $orderItems,
+                input: $input,
             )
         );
 
-        $order = $event->getOrder();
-        $cartData = $event->getCartData();
+        $order = $event->order;
+        $cartData = $event->cartData;
 
         $checkoutService->notifyForCheckout($order, $cartData);
 

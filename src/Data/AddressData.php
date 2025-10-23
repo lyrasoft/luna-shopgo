@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
+use JetBrains\PhpStorm\Deprecated;
 use Windwalker\Data\ValueObject;
 
 /**
  * The AddressData class.
+ *
+ * @deprecated  Currently not use this.
  */
 #[\AllowDynamicProperties]
+#[Deprecated('Currently not use this.')]
 class AddressData extends ValueObject
 {
     public int $locationId = 0;

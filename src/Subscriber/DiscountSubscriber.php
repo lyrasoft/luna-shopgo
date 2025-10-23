@@ -37,38 +37,39 @@ class DiscountSubscriber
     #[ListenTo(PrepareProductPricesEvent::class)]
     public function prepareProductPrices(PrepareProductPricesEvent $event): void
     {
-        $context = $event->getContext();
+        $context = $event->context;
 
         $this->discountService->computeSingleProductSpecials($event);
 
         if ($context === $event::CART || $context === $event::ORDER) {
-            $cartItem = $event->getCartItem();
+            $cartItem = $event->cartItem;
 
             $this->discountService->computeSingleProductDiscounts(
                 $event,
-                $cartItem->getQuantity(),
+                $cartItem->quantity,
                 $cartItem->isChecked()
             );
         }
 
         if ($context === $event::PRODUCT_VIEW) {
-            $pricing = (new CartPricingData())
-                ->setTotals($event->getPriceSet())
-                ->setTotal($event->getPriceSet()['final'])
-                ->setAppliedDiscounts($event->getAppliedDiscounts());
+            $pricing = new CartPricingData();
+            $pricing->totals = $event->priceSet;
+            $pricing->total = $event->priceSet['final'];
+            $pricing->appliedDiscounts = $event->appliedDiscounts;
 
-            $cartItem = $event->getCartItem();
+            $cartItem = $event->cartItem;
 
             if (!$cartItem) {
-                $cartItem = (new CartItem())
-                    ->setProduct($event->getProduct())
-                    ->setMainVariant($event->getMainVariant())
-                    ->setVariant($event->getVariant())
-                    ->setPriceSet($event->getPriceSet(), false)
-                    ->setDiscounts($event->getAppliedDiscounts())
-                    ->setKey((string) $event->getProduct()->id)
-                    ->setQuantity(1)
-                    ->setUid(uid());
+                $cartItem = new CartItem(
+                    variant: $event->variant,
+                    mainVariant: $event->mainVariant,
+                    product: $event->product,
+                    quantity: 1,
+                    key: (string) $event->product->id,
+                    uid: uid(),
+                    discounts: $event->appliedDiscounts,
+                )
+                    ->setPriceSet($event->priceSet, false);
             }
 
             $this->discountService->computeProductsGlobalDiscounts(

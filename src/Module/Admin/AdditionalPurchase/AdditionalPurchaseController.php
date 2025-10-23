@@ -60,8 +60,8 @@ class AdditionalPurchaseController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($app) {
-                $data = $event->getData();
-                $orm = $event->getORM();
+                $data = $event->data;
+                $orm = $event->orm;
 
                 // Attachments
                 $attachmentSet = $app->input('attachments');

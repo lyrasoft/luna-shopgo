@@ -170,18 +170,18 @@ class CheckoutService
         $order = $paymentInstance->prepareOrder($order, $cartData, $checkoutData);
         $order = $shippingInstance->prepareOrder($order, $cartData, $checkoutData);
 
+        // emit with new instance
         $event = $this->shopGo->emit(
-            BeforeOrderCreateEvent::class,
-            compact(
-                'order',
-                'cartData',
-                'totals'
+            new BeforeOrderCreateEvent(
+                order: $order,
+                totals: $totals,
+                cartData: $cartData
             )
         );
 
-        $order = $event->getOrder();
-        $cartData = $event->getCartData();
-        $totals = $event->getTotals();
+        $order = $event->order;
+        $cartData = $event->cartData;
+        $totals = $event->totals;
 
         // Create Order
         /** @var Order $order */
@@ -190,17 +190,16 @@ class CheckoutService
         $this->prepareOrderAndPaymentNo($order, $paymentInstance->isTest());
 
         $event = $this->shopGo->emit(
-            AfterOrderCreateEvent::class,
-            compact(
-                'order',
-                'cartData',
-                'totals'
+            new AfterOrderCreateEvent(
+                order: $order,
+                totals: $totals,
+                cartData: $cartData
             )
         );
 
-        $order = $event->getOrder();
-        $cartData = $event->getCartData();
-        $totals = $event->getTotals();
+        $order = $event->order;
+        $cartData = $event->cartData;
+        $totals = $event->totals;
 
         $orderItems = $this->createOrderItemsAndAttachments($order, $cartData);
         $orderTotals = $this->createOrderTotals($order, $totals);
@@ -228,7 +227,7 @@ class CheckoutService
             );
         }
 
-        return $event->getOrder();
+        return $event->order;
     }
 
     public function notifyForCheckout(Order $order, CartData $cartData): Order
@@ -457,27 +456,27 @@ class CheckoutService
     protected function cartItemToOrderItem(CartItem $item): OrderItem
     {
         /** @var ProductVariant $variant */
-        $variant = $item->getVariant()->getData();
+        $variant = $item->variant->getData();
         $product = $this->orm->toEntity(
             Product::class,
             $variant->product ?? $this->getProduct($variant->productId)
         );
-        $mainVariant = $item->getMainVariant();
+        $mainVariant = $item->mainVariant;
         $currency = $this->currencyService->getCurrentCurrency();
 
         $orderItem = new OrderItem();
         $orderItem->productId = $product->id;
         $orderItem->variantId = $variant->id;
         $orderItem->variantHash = $variant->hash;
-        $orderItem->key = $item->getKey();
+        $orderItem->key = $item->key;
         $orderItem->title = $product->title;
         $orderItem->variantTitle = $variant->title;
         $orderItem->basePriceUnit = $variant->price;
-        $orderItem->priceUnit = $item->getPriceSet()['final']->toFloat();
-        $orderItem->quantity = $item->getQuantity();
+        $orderItem->priceUnit = $item->priceSet['final']->toFloat();
+        $orderItem->quantity = $item->quantity;
         $orderItem->image = $variant->cover ?: $mainVariant->getCover();
-        $orderItem->total = $item->getPriceSet()['final_total']->toFloat();
-        $orderItem->priceSet = clone $item->getPriceSet();
+        $orderItem->total = $item->priceSet['final_total']->toFloat();
+        $orderItem->priceSet = clone $item->priceSet;
         $orderItem->productData = [
             'product' => $product->toCollection()
                 ->except(['searchIndex']),

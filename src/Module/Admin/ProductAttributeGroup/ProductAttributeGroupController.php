@@ -40,7 +40,7 @@ class ProductAttributeGroupController
 
         $controller->prepareSave(
             function (PrepareSaveEvent $event) use ($repository, $app) {
-                $data = &$event->getData();
+                $data = &$event->data;
                 /** @var NestedSetMapper $mapper */
                 $mapper = $repository->getEntityMapper();
 
@@ -51,8 +51,8 @@ class ProductAttributeGroupController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($app) {
-                $orm = $event->getORM();
-                $data = $event->getData();
+                $orm = $event->orm;
+                $data = $event->data;
                 $categories = $app->input('item')['categories'] ?? [];
 
                 $maps = [];

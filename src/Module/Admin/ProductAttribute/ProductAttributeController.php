@@ -39,7 +39,7 @@ class ProductAttributeController
 
         $controller->prepareSave(
             function (PrepareSaveEvent $event) use ($app) {
-                $data = &$event->getData();
+                $data = &$event->data;
 
                 $options = $app->input('options');
 
@@ -57,8 +57,8 @@ class ProductAttributeController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($app) {
-                $orm = $event->getORM();
-                $data = $event->getData();
+                $orm = $event->orm;
+                $data = $event->data;
                 $categories = $app->input('item')['categories'] ?? [];
 
                 $maps = [];

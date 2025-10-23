@@ -93,7 +93,7 @@ trait PriceRangeTrait
             return $fee;
         }
 
-        $location = $cartData->getLocation();
+        $location = $cartData->location;
 
         $flatFee = $pricing['flat_fee'] ?? '';
         $depends = $pricing['depends_no'] ?? PriceRange::DEPENDS_ON_PRICE;
@@ -148,13 +148,13 @@ trait PriceRangeTrait
                 } else {
                     // Get depends value
                     if ($depends === PriceRange::DEPENDS_ON_PRICE) {
-                        $value = BigDecimal::of((string) $cartItem->getPriceSet()['final_total']);
+                        $value = BigDecimal::of((string) $cartItem->priceSet['final_total']);
                     } else {
                         /** @var ProductVariant $variant */
-                        $variant = $cartItem->getVariant()->getData();
+                        $variant = $cartItem->variant->getData();
 
-                        $value = BigDecimal::of($variant->dimension->getWeight())
-                            ->multipliedBy($cartItem->getQuantity());
+                        $value = BigDecimal::of($variant->dimension->weight)
+                            ->multipliedBy($cartItem->quantity);
                     }
 
                     $itemFee = BigDecimal::of(0);
@@ -170,7 +170,7 @@ trait PriceRangeTrait
 
                         if ($value->isGreaterThan((float) $threshold)) {
                             $itemFee = BigDecimal::of((float) $shippingFee);
-                            $priceSet = $cartItem->getPriceSet();
+                            $priceSet = $cartItem->priceSet;
                             $priceSet->add(
                                 'sipping_fee',
                                 $itemFee,
@@ -182,7 +182,7 @@ trait PriceRangeTrait
                                     'location_id' => $location?->id,
                                 ]
                             );
-                            $cartItem->setPriceSet($priceSet);
+                            $cartItem->priceSet = $priceSet;
                         }
                     }
 
@@ -202,11 +202,11 @@ trait PriceRangeTrait
 
                     foreach ($cartItems as $cartItem) {
                         /** @var ProductVariant $variant */
-                        $variant = $cartItem->getVariant()->getData();
+                        $variant = $cartItem->variant->getData();
 
                         $value = $value->plus(
-                            BigDecimal::of($variant->dimension->getWeight())
-                                ->multipliedBy($cartItem->getQuantity())
+                            BigDecimal::of($variant->dimension->weight)
+                                ->multipliedBy($cartItem->quantity)
                         );
                     }
                 }
@@ -228,7 +228,7 @@ trait PriceRangeTrait
         } // End computing
 
         if ($fee->isGreaterThan(0)) {
-            $totals = $cartData->getTotals();
+            $totals = $cartData->totals;
             $totals->add(
                 'shipping_fee',
                 $fee,

@@ -157,9 +157,9 @@ class CartController
         $discounts = $discountService->findCodeDiscountsAndCoupons($code, $user->isLogin() ? $user : null);
 
         $data = new CartPricingData();
-        $data->setTotals($cartData->getTotals())
-            ->setTotal($cartData->getTotals()['total'])
-            ->setCartData($cartData);
+        $data->totals = $cartData->totals;
+        $data->total = $cartData->totals['total'];
+        $data->cartData = $cartData;
 
         $matched = null;
 
@@ -264,12 +264,12 @@ class CartController
 
         foreach ($cartData->getCheckedItems() as $item) {
             /** @var Product $product */
-            $product = $item->getProduct()->getData();
+            $product = $item->product->getData();
             $products[$product->id] = $product;
 
-            foreach ($item->getAttachments() as $attachment) {
+            foreach ($item->attachments as $attachment) {
                 /** @var Product $product */
-                $product = $attachment->getProduct()->getData();
+                $product = $attachment->product->getData();
                 $products[$product->id] = $product;
             }
         }
@@ -285,7 +285,7 @@ class CartController
                 continue;
             }
 
-            if (!$instance->inPriceRange($cartData->getTotals()['total'])) {
+            if (!$instance->inPriceRange($cartData->totals['total'])) {
                 continue;
             }
 
@@ -293,7 +293,7 @@ class CartController
                 continue;
             }
 
-            $fee = $instance->computeShippingFee($cartData, $cartData->getTotals()['total']);
+            $fee = $instance->computeShippingFee($cartData, $cartData->totals['total']);
 
             $shipping->fee = $fee;
 
@@ -337,7 +337,7 @@ class CartController
                 continue;
             }
 
-            if (!$instance->inPriceRange($cartData->getTotals()['total'])) {
+            if (!$instance->inPriceRange($cartData->totals['total'])) {
                 continue;
             }
 

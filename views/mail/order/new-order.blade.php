@@ -41,7 +41,7 @@ $orm = $app->service(ORM::class);
 $shopGo = $app->service(ShopGoPackage::class);
 
 // Totals
-$totals = $cartData->getTotals();
+$totals = $cartData->totals;
 
 $orderItems = $orm->findList(OrderItem::class, ['order_id' => $item->id])->all();
 

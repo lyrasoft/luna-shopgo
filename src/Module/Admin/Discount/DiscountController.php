@@ -43,7 +43,7 @@ class DiscountController
 
         $controller->prepareSave(
             function (PrepareSaveEvent $event) {
-                $data = &$event->getData();
+                $data = &$event->data;
 
                 $data['type'] = DiscountType::GLOBAL;
             }

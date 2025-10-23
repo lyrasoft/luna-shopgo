@@ -61,11 +61,9 @@ return new /** ProductAttribute Seeder */ class extends AbstractSeeder {
             if ($type === ProductAttributeType::SELECT) {
                 foreach (range(1, random_int(5, 8)) as $o) {
                     $options[] = new ListOption(
-                        [
-                            'uid' => tid(),
-                            'text' => $text = $faker->word(),
-                            'value' => strtolower($text),
-                        ]
+                        text: $text,
+                        value: strtolower($text = $faker->word()),
+                        uid: tid(),
                     );
                 }
             }

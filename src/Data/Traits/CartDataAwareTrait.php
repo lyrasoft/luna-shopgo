@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Traits;
@@ -25,94 +18,22 @@ trait CartDataAwareTrait
 {
     use DiscountsAppliedTrait;
 
-    public CartData $cartData;
+    public CartData $cartData {
+        get {
+            $this->cartData->totals = $this->totals;
+
+            return $this->cartData;
+        }
+        set => $this->cartData = $value;
+    }
 
     public PriceObject $total;
 
     public PriceSet $totals;
 
-    public ?\SplObjectStorage $matchedItems = null;
-
-    /**
-     * @return CartData
-     */
-    public function getCartData(): CartData
-    {
-        $this->cartData->setTotals($this->getTotals());
-
-        return $this->cartData;
-    }
-
-    /**
-     * @param  CartData  $cartData
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setCartData(CartData $cartData): static
-    {
-        $this->cartData = $cartData;
-
-        return $this;
-    }
-
-    /**
-     * @return PriceSet
-     */
-    public function getTotals(): PriceSet
-    {
-        return $this->totals;
-    }
-
-    /**
-     * @param  PriceSet  $totals
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setTotals(PriceSet $totals): static
-    {
-        $this->totals = $totals;
-
-        return $this;
-    }
-
-    /**
-     * @return PriceObject
-     */
-    public function getTotal(): PriceObject
-    {
-        return $this->total;
-    }
-
-    /**
-     * @param  PriceObject  $total
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setTotal(PriceObject $total): static
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
-    /**
-     * @return \SplObjectStorage<Discount, CartItem>
-     */
-    public function getMatchedItems(): \SplObjectStorage
-    {
-        return $this->matchedItems ??= new \SplObjectStorage();
-    }
-
-    /**
-     * @param  \SplObjectStorage<Discount, CartItem>  $matchedItems
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setMatchedItems(\SplObjectStorage $matchedItems): static
-    {
-        $this->matchedItems = $matchedItems;
-
-        return $this;
+    public \SplObjectStorage $matchedItems {
+        get => $this->matchedItems ??= new \SplObjectStorage();
+        set => $this->matchedItems = $value;
     }
 
     /**
@@ -123,7 +44,7 @@ trait CartDataAwareTrait
      */
     public function addMatchedItem(Discount $discount, CartItem $cartItem): static
     {
-        $items = $this->getMatchedItems();
+        $items = $this->matchedItems;
 
         if (!isset($items[$discount])) {
             $items[$discount] = [];
@@ -131,11 +52,11 @@ trait CartDataAwareTrait
 
         $storage = $items[$discount];
 
-        $storage[$cartItem->getUid()] = $cartItem;
+        $storage[$cartItem->uid] = $cartItem;
 
         $items[$discount] = $storage;
 
-        $this->setMatchedItems($items);
+        $this->matchedItems = $items;
 
         return $this;
     }

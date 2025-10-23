@@ -81,17 +81,18 @@ class VariantService
         PriceSet $priceSet,
         ?CartItem $cartItem = null,
     ): PriceSet {
-        $event = new PrepareProductPricesEvent()
-            ->setContext($context)
-            ->setProduct($product)
-            ->setMainVariant($mainVariant)
-            ->setVariant($variant)
-            ->setPriceSet($priceSet)
-            ->setCartItem($cartItem)
-            ->setAppliedDiscounts($cartItem?->getDiscounts() ?? []);
-
         /** @var PrepareProductPricesEvent $event */
-        $event = $this->shopGo->emit($event);
+        $event = $this->shopGo->emit(
+            new PrepareProductPricesEvent(
+                cartItem: $cartItem,
+                context: $context,
+                product: $product,
+                variant: $variant,
+                mainVariant: $mainVariant,
+                priceSet: $priceSet,
+                appliedDiscounts: $cartItem?->discounts ?? []
+            )
+        );
 
         // $pricing = $event->getPriceSet();
         //
@@ -105,8 +106,8 @@ class VariantService
         //         ->withName('final')
         // );
 
-        $cartItem?->setDiscounts($event->getAppliedDiscounts());
-        $cartItem?->setPriceSet($priceSet);
+        $cartItem->discounts = $event->appliedDiscounts;
+        $cartItem->priceSet = $priceSet;
 
         return $priceSet;
     }
@@ -196,9 +197,9 @@ class VariantService
         foreach ($variants as $variant) {
             /** @var ListOption $option */
             foreach ($variant->options as $option) {
-                if ($option->getParentId()) {
-                    $featureIds[] = $option->getParentId();
-                    $options[$option->getUid()] = $option;
+                if ($option->parentId) {
+                    $featureIds[] = $option->parentId;
+                    $options[$option->uid] = $option;
                 }
             }
         }
@@ -219,7 +220,7 @@ class VariantService
 
             $options = $options->filter(
                 function (ListOption $option) use ($optionUids) {
-                    return in_array($option->getUid(), $optionUids, true);
+                    return in_array($option->uid, $optionUids, true);
                 }
             );
 

@@ -53,8 +53,8 @@ class ProductController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($tagService, $repository, $app) {
-                $orm = $event->getORM();
-                $data = $event->getData();
+                $orm = $event->orm;
+                $data = $event->data;
 
                 // Save Categories
                 $this->saveCategories($app, $orm, $data);
@@ -93,7 +93,7 @@ class ProductController
                 $repository->save($data);
 
                 /** @var Product $entity */
-                $entity = $event->getEntity();
+                $entity = $event->entity;
 
                 $tagService->flushTagMapsFromInput(
                     'product',
@@ -279,7 +279,7 @@ class ProductController
             $options = $feature->options;
 
             foreach ($options as $i => $option) {
-                $option->setParentId($feature->id);
+                $option->parentId = $feature->id;
 
                 $options[$i] = $option;
             }

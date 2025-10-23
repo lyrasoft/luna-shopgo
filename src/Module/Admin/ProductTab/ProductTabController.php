@@ -38,8 +38,8 @@ class ProductTabController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($app) {
-                $orm = $event->getORM();
-                $data = $event->getData();
+                $orm = $event->orm;
+                $data = $event->data;
                 $categories = $app->input('item')['categories'] ?? [];
 
                 $maps = [];

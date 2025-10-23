@@ -38,15 +38,13 @@ return new /** ProductFeature Seeder */ class extends AbstractSeeder {
 
             foreach (range(1, random_int(5, 8)) as $o) {
                 $options[] = $option = new ListOption(
-                    [
-                        'uid' => tid(),
-                        'text' => $text = Utf8String::ucwords($faker->word()),
-                        'value' => strtolower($text),
-                    ]
+                    value: strtolower($text = Utf8String::ucwords($faker->word())),
+                    text: $text,
+                    uid: tid(),
                 );
 
                 if ($type === ProductFeatureType::COLOR) {
-                    $option->setColor($faker->safeHexColor());
+                    $option->color = $faker->safeHexColor();
                 }
             }
 

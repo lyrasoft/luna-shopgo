@@ -133,9 +133,17 @@ class OrderStateService
 
         $orderStateService = $this;
 
+        // Use new Event and emit
         $this->shopGo->emit(
-            AfterOrderStateChangedEvent::class,
-            compact('order', 'oldOrder', 'from', 'to', 'fromState', 'toState', 'orderStateService')
+            new AfterOrderStateChangedEvent(
+                order: $order,
+                oldOrder: $oldOrder,
+                from: $from,
+                to: $to,
+                orderStateService: $orderStateService,
+                fromState: $fromState,
+                toState: $toState
+            )
         );
     }
 }

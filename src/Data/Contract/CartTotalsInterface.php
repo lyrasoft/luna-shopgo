@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
@@ -23,53 +16,13 @@ use Lyrasoft\ShopGo\Entity\Product;
  */
 interface CartTotalsInterface extends DiscountsAppliedInterface
 {
-    /**
-     * @return CartData
-     */
-    public function getCartData(): CartData;
+    public CartData $cartData { get; set; }
 
-    /**
-     * @param  CartData  $cartData
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setCartData(CartData $cartData): static;
+    public PriceObject $total { get; set; }
 
-    /**
-     * @return PriceSet
-     */
-    public function getTotals(): PriceSet;
+    public PriceSet $totals { get; set; }
 
-    /**
-     * @param  PriceSet  $totals
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setTotals(PriceSet $totals): static;
-
-    /**
-     * @return PriceObject
-     */
-    public function getTotal(): PriceObject;
-
-    /**
-     * @param  PriceObject  $total
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setTotal(PriceObject $total): static;
-
-    /**
-     * @return \SplObjectStorage<Discount, CartItem>
-     */
-    public function getMatchedItems(): \SplObjectStorage;
-
-    /**
-     * @param  \SplObjectStorage<Discount, CartItem>  $matchedItems
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setMatchedItems(\SplObjectStorage $matchedItems): static;
+    public \SplObjectStorage $matchedItems { get; set; }
 
     /**
      * @param  Discount  $discount

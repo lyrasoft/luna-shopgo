@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
@@ -19,16 +12,9 @@ use Lyrasoft\ShopGo\Entity\Discount;
 interface DiscountsAppliedInterface
 {
     /**
-     * @return array
+     * @var array<Discount>
      */
-    public function &getAppliedDiscounts(): array;
-
-    /**
-     * @param  array  $appliedDiscounts
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setAppliedDiscounts(array $appliedDiscounts): static;
+    public array $appliedDiscounts { get; set; }
 
     /**
      * @param  Discount  $discount

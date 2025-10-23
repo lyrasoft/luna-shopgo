@@ -218,7 +218,7 @@ class ProductAttributeService
             ->register(
                 function (ListField $field) use ($attribute) {
                     foreach ($attribute->options as $option) {
-                        $field->option($option->getText(), $option->getValue());
+                        $field->option($option->text, $option->value);
                     }
                 }
             );

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data\Contract;
@@ -22,6 +15,14 @@ use Lyrasoft\ShopGo\Entity\ProductVariant;
  */
 interface ProductPricingInterface extends DiscountsAppliedInterface
 {
+    public Product $product { get; set; }
+
+    public ProductVariant $variant { get; set; }
+
+    public ProductVariant $mainVariant { get; set; }
+
+    public PriceSet $priceSet { get; set; }
+
     /**
      * @return string
      */

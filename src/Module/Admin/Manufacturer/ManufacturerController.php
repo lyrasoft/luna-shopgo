@@ -46,7 +46,7 @@ class ManufacturerController
 
         $controller->beforeSave(
             function (BeforeSaveEvent $event) use ($app) {
-                $data = $event->getData();
+                $data = $event->data;
 
                 $data['meta'] = [
                     'title' => $data['meta_title'],
@@ -54,13 +54,13 @@ class ManufacturerController
                     'keywords' => $data['meta_keywords'],
                 ];
 
-                $event->setData($data);
+                $event->data = $data;
             }
         );
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($fileUploadService, $tagService, $repository, $app) {
-                $data = $event->getData();
+                $data = $event->data;
 
                 $data['image'] = $fileUploadService->handleFileIfUploaded(
                     $app->file('item')['image'] ?? null,
@@ -70,7 +70,7 @@ class ManufacturerController
                 $repository->save($data);
 
                 /** @var Manufacturer $entity */
-                $entity = $event->getEntity();
+                $entity = $event->entity;
 
                 $tagService->flushTagMapsFromInput(
                     'manufacturer',

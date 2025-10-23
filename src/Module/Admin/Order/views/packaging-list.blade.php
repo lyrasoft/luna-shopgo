@@ -104,7 +104,7 @@ $siteName = value($shopGo->config('shop.sitename'));
                                 <strong>@lang('shopgo.order.field.no'):</strong> #{{ $order->no }}
                             </div>
                             <div>
-                                <strong>@lang('shopgo.order.field.shipment.no'):</strong> {{ $order->shippingInfo->getShipmentNo() }}
+                                <strong>@lang('shopgo.order.field.shipment.no'):</strong> {{ $order->shippingInfo->shipmentNo }}
                             </div>
                             {{--                            <div>--}}
                             {{--                                <strong>@lang('shopgo.order.field.payment'):</strong> {{ $order->getPayment()?->getTitle() }}--}}

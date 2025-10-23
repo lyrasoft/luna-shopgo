@@ -16,48 +16,39 @@ use Lyrasoft\ShopGo\DTO\ProductDTO;
 use Lyrasoft\ShopGo\DTO\ProductVariantDTO;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
-use Windwalker\Data\ValueObject;
+use Windwalker\Data\RecordTrait;
 
 use function Windwalker\uid;
 
 /**
  * The CartItem class.
  */
-class CartItem extends ValueObject
+class CartItem
 {
-    public ProductVariantDTO $variant;
+    use RecordTrait;
 
-    public ProductVariantDTO $mainVariant;
-
-    public ProductDTO $product;
-
-    public int $quantity = 0;
-
-    public string $cover = '';
-
-    public string $link = '';
-
-    public string $key = '';
-
-    public string $uid = '';
-
-    public bool $outOfStock = false;
-
-    public array $payload = [];
-
-    public array $options = [];
-
-    public array $attachments = [];
-
-    public PriceSet $priceSet;
-
-    public array $discounts = [];
-
-    public function __construct(mixed $data = [])
-    {
-        parent::__construct($data);
-
-        $this->priceSet = new PriceSet();
+    public function __construct(
+        public ProductVariantDTO $variant {
+            set(ProductVariantDTO|ProductVariant $value) => $this->variant = ProductVariantDTO::wrap($value);
+        },
+        public ProductVariantDTO $mainVariant {
+            set(ProductVariantDTO|ProductVariant $value) => $this->mainVariant = ProductVariantDTO::wrap($value);
+        },
+        public ProductDTO $product {
+            set(ProductDTO|Product $value) => $this->product = ProductDTO::wrap($value);
+        },
+        public PriceSet $priceSet = new PriceSet(),
+        public int $quantity = 0,
+        public string $cover = '',
+        public string $link = '',
+        public string $key = '',
+        public string $uid = '',
+        public bool $outOfStock = false,
+        public array $payload = [],
+        public array $options = [],
+        public array $attachments = [],
+        public array $discounts = [],
+    ) {
         $this->uid = uid();
     }
 
@@ -114,7 +105,7 @@ class CartItem extends ValueObject
     /**
      * setLink
      *
-     * @param string $link
+     * @param  string  $link
      *
      * @return  $this
      */
@@ -157,14 +148,14 @@ class CartItem extends ValueObject
         if ($priceSet->has('base')) {
             $baseTotal = $priceSet->get('base')
                 ->clone('base_total', 'Product Base total')
-                ->multiply((string) $this->getQuantity());
+                ->multiply((string) $this->quantity);
 
             $priceSet->set($baseTotal);
         }
 
         $finalTotal = $priceSet->get('final')
             ->clone('final_total', 'Product Final Total')
-            ->multiply((string) $this->getQuantity());
+            ->multiply((string) $this->quantity);
 
         $priceSet->set($finalTotal);
 
@@ -367,7 +358,7 @@ class CartItem extends ValueObject
 
     public function isChecked(): bool
     {
-        return $this->getOptions()['checked'] ?? true;
+        return $this->options['checked'] ?? true;
     }
 
     /**

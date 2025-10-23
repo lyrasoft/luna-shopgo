@@ -38,7 +38,7 @@ class ProductFeatureController
 
         $controller->prepareSave(
             function (PrepareSaveEvent $event) use ($app) {
-                $data = &$event->getData();
+                $data = &$event->data;
 
                 $options = $app->input('options');
 
@@ -50,7 +50,7 @@ class ProductFeatureController
 
         $controller->beforeSave(
             function (BeforeSaveEvent $event) use ($app) {
-                $data = &$event->getData();
+                $data = &$event->data;
 
                 $options = $app->input('options');
 

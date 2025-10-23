@@ -55,7 +55,7 @@ class PaymentController
 
         $controller->afterSave(
             function (AfterSaveEvent $event) use ($repository, $app, $fileUploadService) {
-                $data = $event->getData();
+                $data = $event->data;
 
                 $data['image'] = $fileUploadService->handleFileIfUploaded(
                     $app->file('item')['image'] ?? null,

@@ -1,46 +1,57 @@
 <?php
 
-/**
- * Part of shopgo project.
- *
- * @copyright  Copyright (C) 2023 __ORGANIZATION__.
- * @license    MIT
- */
-
 declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Data;
 
 use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
-use Windwalker\Data\ValueObject;
+use Windwalker\Data\RecordTrait;
 
 /**
  * The PaymentData class.
  */
 #[\AllowDynamicProperties]
-class PaymentData extends ValueObject implements AddressAwareInterface
+class PaymentData implements AddressAwareInterface
 {
     use AddressAwaitTrait;
+    use RecordTrait;
 
-    public string $paymentTitle = '';
-
-    /**
-     * @return string
-     */
-    public function getPaymentTitle(): string
-    {
-        return $this->paymentTitle;
-    }
-
-    /**
-     * @param  string  $paymentTitle
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setPaymentTitle(string $paymentTitle): static
-    {
-        $this->paymentTitle = $paymentTitle;
-
-        return $this;
+    function __construct(
+        string $name = '',
+        string $firstname = '',
+        string $lastname = '',
+        string $email = '',
+        string $phone = '',
+        string $mobile = '',
+        string $company = '',
+        string $country = '',
+        string $state = '',
+        string $city = '',
+        string $postcode = '',
+        string $address1 = '',
+        string $address2 = '',
+        string $vat = '',
+        string $formatted = '',
+        int $locationId = 0,
+        int $addressId = 0,
+        public string $paymentTitle = ''
+    ) {
+        $this->name = $name;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->mobile = $mobile;
+        $this->company = $company;
+        $this->country = $country;
+        $this->state = $state;
+        $this->city = $city;
+        $this->postcode = $postcode;
+        $this->address1 = $address1;
+        $this->address2 = $address2;
+        $this->vat = $vat;
+        $this->formatted = $formatted;
+        $this->locationId = $locationId;
+        $this->addressId = $addressId;
     }
 }

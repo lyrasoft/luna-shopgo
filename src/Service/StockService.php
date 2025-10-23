@@ -55,7 +55,7 @@ class StockService
                 );
             }
 
-            foreach ($item->getAttachments() as $attachment) {
+            foreach ($item->attachments as $attachment) {
                 $title = $this->getTitleFromCartItem($item);
 
                 if ($attachment->isOutOfStock()) {
@@ -75,9 +75,9 @@ class StockService
     protected function getTitleFromCartItem(CartItem $item): string
     {
         /** @var Product $product */
-        $product = $item->getProduct()->getData();
+        $product = $item->product->getData();
         /** @var ProductVariant $variant */
-        $variant = $item->getVariant()->getData();
+        $variant = $item->variant->getData();
 
         $title = $product->title;
 
@@ -98,15 +98,15 @@ class StockService
 
         foreach ($cartData->getCheckedItems() as $item) {
             /** @var ProductVariant $variant */
-            $variant = $item->getVariant()->getData();
+            $variant = $item->variant->getData();
 
             $quantity = $quantities[$variant->id] ?? 0;
 
             $variants[$variant->id] = [$variant, $quantity];
 
-            foreach ($item->getAttachments() as $attachment) {
+            foreach ($item->attachments as $attachment) {
                 /** @var ProductVariant $variant */
-                $variant = $attachment->getVariant()->getData();
+                $variant = $attachment->variant->getData();
 
                 $quantity = $quantities[$variant->id] ?? 0;
 

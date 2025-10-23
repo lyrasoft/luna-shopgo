@@ -47,10 +47,10 @@ class AdditionalPurchaseSubscriber
     #[ListenTo(PrepareCartItemEvent::class)]
     public function prepareCartItem(PrepareCartItemEvent $event): void
     {
-        $cartItem = $event->getCartItem();
+        $cartItem = $event->cartItem;
 
-        $item = $event->getStorageItem();
-        $product = $event->getProduct();
+        $item = $event->storageItem;
+        $product = $event->product;
 
         if (empty($item['attachments'])) {
             return;
@@ -83,18 +83,17 @@ class AdditionalPurchaseSubscriber
 
                 $priceSet = $attachVariant->priceSet;
 
-                $attachCartItem = new CartItem();
-                $attachCartItem->setVariant($attachVariant);
-                $attachCartItem->setProduct($attachProduct);
-                $attachCartItem->setMainVariant($mainVariant);
-                $attachCartItem->setOutOfStock(VariantService::isOutOfStock($attachVariant, $attachProduct));
-                $attachCartItem->setKey((string) $attachmentId);
-                $attachCartItem->setCover($attachVariant->cover ?: $mainVariant->cover);
-                $attachCartItem->setLink(
-                    (string) $product->makeLink($this->nav)
+                $attachCartItem = new CartItem(
+                    variant: $attachVariant,
+                    mainVariant: $mainVariant,
+                    product: $attachProduct,
+                    priceSet: $priceSet,
+                    quantity: (int) $quantity,
+                    cover: $attachVariant->cover ?: $mainVariant->cover,
+                    link: (string) $product->makeLink($this->nav),
+                    key: (string) $attachmentId,
+                    outOfStock: VariantService::isOutOfStock($attachVariant, $attachProduct)
                 );
-                $attachCartItem->setQuantity((int) $quantity);
-                $attachCartItem->setPriceSet($priceSet);
 
                 $cartItem->addAttachment($attachCartItem);
             } catch (ValidateFailException | NoResultException $e) {
@@ -107,22 +106,22 @@ class AdditionalPurchaseSubscriber
     #[ListenTo(BeforeComputeTotalsEvent::class)]
     public function computeTotals(BeforeComputeTotalsEvent $event): void
     {
-        $cartData = $event->getCartData();
+        $cartData = $event->cartData;
 
-        $total = $event->getTotal();
+        $total = $event->total;
 
         // We must calc product & attachments total before compute Discounts
         // That DiscountService can get cart total to detect the discount conditions.
         foreach ($cartData->getItems() as $item) {
-            $priceSet = $item->getPriceSet();
+            $priceSet = $item->priceSet;
             $attachmentTotal = new PriceObject('attachments_total', '0');
 
-            foreach ($item->getAttachments() as $attachmentItem) {
-                $attachPriceSet = $attachmentItem->getPriceSet();
+            foreach ($item->attachments as $attachmentItem) {
+                $attachPriceSet = $attachmentItem->priceSet;
 
                 $attachmentTotal = $attachmentTotal->plus(
                     $attachPriceSet['final_total'] = $attachPriceSet['final_total']
-                        ->multiply($item->getQuantity())
+                        ->multiply($item->quantity)
                 );
             }
 
@@ -131,42 +130,42 @@ class AdditionalPurchaseSubscriber
             $priceSet->set($attachmentTotal);
         }
 
-        $event->setTotal($total);
+        $event->total = $total;
     }
 
     #[ListenTo(AfterComputeTotalsEvent::class)]
     public function afterComputeTotals(AfterComputeTotalsEvent $event): void
     {
-        $cartData = $event->getCartData();
+        $cartData = $event->cartData;
 
         foreach ($cartData->getItems() as $item) {
             // After discounted, we re-calc products & attachments total
-            $priceSet = $item->getPriceSet();
+            $priceSet = $item->priceSet;
 
             $priceSet->add(
                 'attached_final_total',
                 $priceSet['final_total']->plus($priceSet['attachments_total'])
             );
 
-            $item->setPriceSet($priceSet);
+            $item->priceSet = $priceSet;
         }
 
         $quantities = $cartData->getTotalQuantities(true, true);
 
         // Now get out-of-stock items
         foreach ($cartData->getItems() as $item) {
-            $product = $item->getProduct()->getData();
+            $product = $item->product->getData();
             /** @var ProductVariant $variant */
-            $variant = $item->getVariant()->getData();
+            $variant = $item->variant->getData();
 
             $quantity = $quantities[$variant->id] ?? 1;
 
-            $item->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));
+            $item->outOfStock = VariantService::isOutOfStock($variant, $product, $quantity);
 
-            foreach ($item->getAttachments() as $attachment) {
+            foreach ($item->attachments as $attachment) {
                 /** @var ProductVariant $variant */
-                $product = $attachment->getProduct()->getData();
-                $variant = $attachment->getVariant()->getData();
+                $product = $attachment->product->getData();
+                $variant = $attachment->variant->getData();
                 $quantity = $quantities[$variant->id] ?? 1;
 
                 $attachment->setOutOfStock(VariantService::isOutOfStock($variant, $product, $quantity));

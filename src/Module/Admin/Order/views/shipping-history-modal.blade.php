@@ -59,13 +59,13 @@ $shippinghistory = $shippinghistory->reverse();
                     <div class="list-group-item">
                         <div class="text-muted mb-1 small">
                             <i class="fa fa-calendar"></i>
-                            {{ $chronos->toLocalFormat($history->getTime()) }}
+                            {{ $chronos->toLocalFormat($history->time) }}
                         </div>
                         <div>
                             <span class="badge bg-primary">
-                                {{ $history->getStatusCode() }}
+                                {{ $history->statusCode }}
                             </span>
-                            {{ $history->getStatusText() }}
+                            {{ $history->statusText }}
                         </div>
                     </div>
                     @endforeach
