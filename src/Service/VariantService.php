@@ -42,7 +42,7 @@ class VariantService
         $priceSet = $variant->priceSet;
 
         if ($product->originPrice) {
-            $priceSet['origin']->setPrice((string) $product->originPrice);
+            $priceSet['origin'] = $priceSet['origin']->withPrice((string) $product->originPrice);
         }
 
         // $mainVariant = $item->getMainVariant();
@@ -106,8 +106,10 @@ class VariantService
         //         ->withName('final')
         // );
 
-        $cartItem->discounts = $event->appliedDiscounts;
-        $cartItem->priceSet = $priceSet;
+        if ($cartItem) {
+            $cartItem->discounts = $event->appliedDiscounts;
+            $cartItem->priceSet = $priceSet;
+        }
 
         return $priceSet;
     }

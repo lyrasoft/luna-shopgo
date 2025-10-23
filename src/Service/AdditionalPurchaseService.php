@@ -49,7 +49,7 @@ class AdditionalPurchaseService
             $attachment->method
         );
 
-        $priceSet['final']->setPrice((string) $newPrice);
+        $priceSet['final'] = $priceSet['final']->withPrice((string) $newPrice);
 
         return $variant;
     }

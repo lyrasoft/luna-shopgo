@@ -187,7 +187,7 @@ class CartService
 
         $appliedDiscounts = [];
         $totals = new PriceSet();
-        $total = PriceObject::create('products_total', '0');
+        $total = new PriceObject('products_total', '0');
 
         /** @var CartItem[] $cartItems */
         $cartItems = TypeCast::toArray($cartItems);
@@ -202,7 +202,7 @@ class CartService
 
         $cartData->items = collect($cartItems);
 
-        $finalTotal = PriceObject::create(
+        $finalTotal = new PriceObject(
             'total',
             '0',
             $this->trans('shopgo.order.total.total')
@@ -294,7 +294,10 @@ class CartService
         }
 
         // Calc Grand Totals
-        $grandTotal = $total->clone('grand_total', $this->trans('shopgo.order.total.grand.total'));
+        $grandTotal = $total->with(
+            name: 'grand_total',
+            label:  $this->trans('shopgo.order.total.grand.total')
+        );
 
         foreach ($totals as $tt) {
             $grandTotal = $grandTotal->plus($tt);

@@ -122,7 +122,7 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess, \
      */
     public function prepend(PriceObject $price): static
     {
-        $name = $price->getName();
+        $name = $price->name;
 
         $this->prices = array_merge(
             [
@@ -136,7 +136,7 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess, \
 
     public function set(PriceObject $price): static
     {
-        $name = $price->getName();
+        $name = $price->name;
 
         $this->prices[$name] = $price;
 
@@ -146,11 +146,11 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess, \
     public function add(string $name, mixed $price, string $label = '', array $params = []): PriceObject
     {
         $this->set(
-            $price = PriceObject::create(
-                $name,
-                $price,
-                $label,
-                $params
+            $price = new PriceObject(
+                name: $name,
+                price: $price,
+                label: $label,
+                params: $params
             )
         );
 
@@ -355,7 +355,7 @@ class PriceSet implements \IteratorAggregate, \JsonSerializable, \ArrayAccess, \
             }
         }
 
-        if ($value->getName() !== $offset) {
+        if ($value->name !== $offset) {
             $value = $value->withName((string) $offset);
         }
 

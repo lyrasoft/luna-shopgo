@@ -160,7 +160,7 @@ $totals = clone $totals;
             <tr>
                 <th style="border: none">
                     <div>
-                        {{ $total->getLabel() }}
+                        {{ $total->label }}
                     </div>
                 </th>
                 <td style="border: none; vertical-align: middle; width: 150px;">
@@ -169,15 +169,15 @@ $totals = clone $totals;
             </tr>
 
             @foreach ($totals as $total)
-                <tr data-type="{{ $total->getParamValue('type') }}"
-                    data-discount-id="{{ $total->getParamValue('id') }}">
+                <tr data-type="{{ $total->params['type'] ?? '' }}"
+                    data-discount-id="{{ $total->params['id'] ?? '' }}">
                     <th style="border: none">
                         <div>
-                            {{ $total->getLabel() }}
+                            {{ $total->label }}
                         </div>
-                        @if (str_starts_with($total->getName(), 'discount:'))
+                        @if (str_starts_with($total->name, 'discount:'))
                         <div class="small">
-                            {{ $total->getParamValue('title') }}
+                            {{ $total->params['title'] ?? '' }}
                         </div>
                         @endif
                     </th>
@@ -190,7 +190,7 @@ $totals = clone $totals;
             <tr>
                 <th style="border: none">
                     <div>
-                        {{ $grandTotal->getLabel() }}
+                        {{ $grandTotal->label }}
                     </div>
                 </th>
                 <td class="fw-bold" style="border: none; vertical-align: middle; width: 150px;">

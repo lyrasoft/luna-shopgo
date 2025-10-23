@@ -141,7 +141,7 @@ class CheckoutService
     public function createOrder(Order $order, CartData $cartData, array $checkoutData = []): Order
     {
         $totals = $cartData->totals;
-        $grandTotal = $cartData->totals['grand_total']->getPrice()->toFloat();
+        $grandTotal = $cartData->totals['grand_total']->price->toFloat();
 
         if ($grandTotal < 0) {
             throw new ValidateFailException('Cannot process checkout for negative price.');
@@ -399,16 +399,15 @@ class CheckoutService
         foreach ($totals as $total) {
             $orderTotal = new OrderTotal();
             $orderTotal->orderId = $order->id;
-            $orderTotal->title = $total->getLabel();
-            $orderTotal->type = str_starts_with($total->getName(), 'discount')
+            $orderTotal->title = $total->label;
+            $orderTotal->type = str_starts_with($total->name, 'discount')
                 ? 'discount'
                 : 'total';
-            $orderTotal->code = $total->getName();
-            $orderTotal->title = $total->getLabel();
-            $orderTotal->value = $total->getPrice()->toFloat();
-            $orderTotal->params = $total->getParams();
-            $orderTotal->discountId = $total->getParams()['discount_id'] ?? 0;
-            $orderTotal->discountType = $total->getParams()['discount_type'] ?? '';
+            $orderTotal->code = $total->name;
+            $orderTotal->value = $total->price->toFloat();
+            $orderTotal->params = $total->params;
+            $orderTotal->discountId = $total->params['discount_id'] ?? 0;
+            $orderTotal->discountType = $total->params['discount_type'] ?? '';
             $orderTotal->ordering = $i;
             $orderTotal->protect = $orderTotal->type === 'total';
 

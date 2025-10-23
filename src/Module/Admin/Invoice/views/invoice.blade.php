@@ -16,6 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderItem;
@@ -36,6 +37,7 @@ use function Windwalker\value;
  * @var $orderItems  OrderItem[]
  * @var $attachments OrderItem[]
  * @var $totals      PriceSet
+ * @var $total       PriceObject
  */
 
 $shopGo = $app->service(ShopGoPackage::class);
@@ -53,60 +55,60 @@ $currency = $app->service(CurrencyService::class);
     <title>Invoice-{{ $order->invoiceNo }}</title>
 
     <style>
-      html, body {
-        font-size: 14px;
-        font-family: {{ $shopGo->config('mpdf.font_family') ?: 'sans-serif' }};
-      }
+        html, body {
+            font-size: 14px;
+            font-family: {{ $shopGo->config('mpdf.font_family') ?: 'sans-serif' }};
+        }
 
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 0;
-        margin-bottom: .5em;
-      }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            margin-bottom: .5em;
+        }
 
-      p {
-        margin-top: 0;
-        margin-bottom: .5rem;
-      }
+        p {
+            margin-top: 0;
+            margin-bottom: .5rem;
+        }
 
-      .c-info {
-        margin-bottom: .25rem;
-      }
+        .c-info {
+            margin-bottom: .25rem;
+        }
 
-      table {
-        width: 100%;
-        border-spacing: 0;
-      }
+        table {
+            width: 100%;
+            border-spacing: 0;
+        }
 
-      .c-order-table th, .c-order-table td {
-        padding: .5rem;
-      }
+        .c-order-table th, .c-order-table td {
+            padding: .5rem;
+        }
 
-      .c-order-table thead tr th {
-        border-top: 3px solid #333;
-        border-bottom: 3px solid #333;
-        font-weight: bolder;
-      }
+        .c-order-table thead tr th {
+            border-top: 3px solid #333;
+            border-bottom: 3px solid #333;
+            font-weight: bolder;
+        }
 
-      .c-order-table__item td {
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-      }
+        .c-order-table__item td {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
 
-      .l-totals-table td {
-        padding: .25rem;
-      }
+        .l-totals-table td {
+            padding: .25rem;
+        }
 
-      .l-totals-table {
-        border-top: 3px solid #333;
-      }
+        .l-totals-table {
+            border-top: 3px solid #333;
+        }
 
-      .text-nowrap {
-        white-space: nowrap;
-      }
+        .text-nowrap {
+            white-space: nowrap;
+        }
 
-      .text-end {
-        text-align: right;
-      }
+        .text-end {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -267,7 +269,7 @@ $currency = $app->service(CurrencyService::class);
             </table>
 
             <div class="text-end">
-                    <?php
+                <?php
                 $total = $totals->remove('total');
                 $grandTotal = $totals->remove('grand_total');
                 ?>
@@ -276,7 +278,7 @@ $currency = $app->service(CurrencyService::class);
                     <tr>
                         <th style="text-align: right">
                             <div>
-                                {{ $total->getLabel() }}
+                                {{ $total->label }}
                             </div>
                         </th>
                         <td style="vertical-align: middle; width: 150px;">
@@ -284,16 +286,22 @@ $currency = $app->service(CurrencyService::class);
                         </td>
                     </tr>
 
+                    <?php
+                    /**
+                     * @var $total PriceObject
+                     */
+                    ?>
+
                     @foreach ($totals as $total)
-                        <tr data-type="{{ $total->getParamValue('type') }}"
-                            data-discount-id="{{ $total->getParamValue('id') }}">
+                        <tr data-type="{{ $total->params['type'] ?? '' }}"
+                            data-discount-id="{{ $total->params['id'] }}">
                             <th style="text-align: right">
                                 <div>
-                                    {{ $total->getLabel() }}
+                                    {{ $total->label }}
                                 </div>
-                                @if (str_starts_with($total->getName(), 'discount:'))
+                                @if (str_starts_with($total->name, 'discount:'))
                                     <div class="small">
-                                        {{ $total->getParamValue('title') }}
+                                        {{ $total->params['title'] ?? '' }}
                                     </div>
                                 @endif
                             </th>
@@ -306,7 +314,7 @@ $currency = $app->service(CurrencyService::class);
                     <tr>
                         <th style="text-align: right">
                             <div>
-                                {{ $grandTotal->getLabel() }}
+                                {{ $grandTotal->label }}
                             </div>
                         </th>
                         <td class="" style="font-weight: bold; vertical-align: middle; width: 150px;">

@@ -156,14 +156,14 @@ class CartItem
 
         if ($priceSet->has('base')) {
             $baseTotal = $priceSet->get('base')
-                ->clone('base_total', 'Product Base total')
+                ->with(name: 'base_total', label: 'Product Base total')
                 ->multiply((string) $this->quantity);
 
             $priceSet->set($baseTotal);
         }
 
         $finalTotal = $priceSet->get('final')
-            ->clone('final_total', 'Product Final Total')
+            ->with(name: 'final_total', label: 'Product Final Total')
             ->multiply((string) $this->quantity);
 
         $priceSet->set($finalTotal);
