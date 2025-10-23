@@ -36,7 +36,6 @@ use Windwalker\Core\Package\AbstractPackage;
 use Windwalker\Core\Package\PackageInstaller;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Container;
-use Windwalker\DI\DIOptions;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\ServiceProviderInterface;
 use Windwalker\Event\EventAwareInterface;
@@ -47,23 +46,13 @@ use Windwalker\Utilities\StrNormalize;
  */
 class ShopGoPackage extends AbstractPackage implements
     ServiceProviderInterface,
-    EventAwareInterface,
-    RequestBootableProviderInterface
+    EventAwareInterface
 {
     use CoreEventAwareTrait;
 
     public function __construct(protected ApplicationInterface $app)
     {
         //
-        // echo new \Exception();
-        show('GGG');
-    }
-
-    public function bootBeforeRequest(Container $container): void
-    {
-        // Do not cache definition at initial, let it register before request.
-        // Otherwise, subscribers will register too early.
-        // $container->prepareSharedObject(static::class);
     }
 
     /**
