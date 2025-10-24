@@ -1,7 +1,7 @@
 {
-//    "references": [
-//        { "path": "./tsconfig.node.json" }
-//    ],
+    "references": [
+        { "path": "./tsconfig.node.json" }
+    ],
     "extends": [
         "@windwalker-io/unicorn-next/tsconfig.js.json"
     ],
