@@ -19,6 +19,7 @@ trait ProductVariantTrait
 {
     public PriceSet $priceSet {
         get => $this->priceSet ??= $this->preparePriceSet();
+        set(PriceSet|array $value) => PriceSet::wrap($value);
     }
 
     /**
@@ -26,6 +27,7 @@ trait ProductVariantTrait
      */
     public Collection $applyDiscounts {
         get => $this->applyDiscounts ??= collect();
+        set(Collection|array $value) => collect($value);
     }
 
     protected function preparePriceSet(): PriceSet

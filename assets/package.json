@@ -15,17 +15,22 @@
         "@microsoft/api-extractor": "^7.53.2",
         "@types/bootstrap": "^5",
         "@types/node": "^24.9.1",
+        "@types/sortablejs": "^1",
         "@vitejs/plugin-vue": "^6.0.1",
         "@windwalker-io/unicorn-next": "^0.1.0",
         "spectrum-vanilla": "^1.1.1",
+        "ts-md5": "^2.0.1",
         "unplugin-dts": "^1.0.0-beta.6",
         "vite": "^7.1.12",
-        "vite-plugin-vue-component-override": "^0.1.0"
+        "vite-plugin-vue-component-override": "^0.1.1"
     },
     "dependencies": {
         "@lyrasoft/ts-toolkit": "^0.2.2",
         "bootstrap": "^5.3.8",
+        "sortablejs": "^1.15.6",
         "sweetalert": "^2.1.2",
-        "vue": "^3.5.22"
+        "vue": "^3.5.22",
+        "vue-draggable-plus": "^0.6.0",
+        "vue-multi-uploader": "^0.1.11"
     }
 }

@@ -6,6 +6,7 @@ namespace Lyrasoft\ShopGo\Module\Admin\Product;
 
 use Lyrasoft\Luna\Services\TagService;
 use Lyrasoft\ShopGo\Data\ListOptionCollection;
+use Lyrasoft\ShopGo\Data\ProductDimension;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductFeature;
@@ -322,7 +323,7 @@ class ProductController
             // $variant->model = $product->model === ''
             //     ? $product->model
             //     : $product->model . '-' . implode('-', $optionGroup);
-            $variant->dimension; // Pre-create ValueObject
+            $variant->dimension = new ProductDimension(); // Pre-create ValueObject
             $variant->subtract = true;
             $variant->state = 1;
             $variant->options = $optionGroup;

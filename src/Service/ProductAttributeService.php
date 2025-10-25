@@ -106,7 +106,7 @@ class ProductAttributeService
                                 ProductAttributeType::SELECT => $this->prepareFieldSelect($form, $attribute),
                             };
 
-                            if (!$attribute->shouldDisplay()) {
+                            if (!$attribute->display) {
                                 $field->set('no_display', true);
                             }
                         }

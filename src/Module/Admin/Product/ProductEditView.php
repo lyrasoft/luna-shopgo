@@ -35,8 +35,8 @@ use function Windwalker\collect;
     layout: 'product-edit',
     js: [
         'product-edit.js',
-        'product-variants-edit.js',
-        'product-discounts-edit.js',
+        // 'product-variants-edit.js',
+        // 'product-discounts-edit.js',
     ]
 )]
 class ProductEditView implements ViewModelInterface

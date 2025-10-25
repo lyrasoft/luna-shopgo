@@ -24,15 +24,17 @@ class ShopGoScript extends AbstractScript
 
     public function vueUtilities(): void
     {
+        // todo: Remove this
         if ($this->available()) {
             $this->currency();
 
-            $this->js('@shopgo/shopgo-vue-utilities.js');
+            // $this->js('@shopgo/shopgo-vue-utilities.js');
         }
     }
 
     public function currency(): void
     {
+        // todo: Remove this
         if ($this->available()) {
             $this->unicornScript->data(
                 'currency',
@@ -42,32 +44,35 @@ class ShopGoScript extends AbstractScript
                 ]
             );
 
-            $this->js('@shopgo/currency.js');
+            // $this->js('@shopgo/currency.js');
         }
     }
 
     public function productCart(): void
     {
+        // todo: Remove this
         if ($this->available()) {
-            $this->sweetAlert();
-
-            $this->unicornScript->addRoute('@cart_ajax');
-            $this->unicornScript->addRoute('@cart');
-
-            $this->js('@shopgo/product-cart.js');
+            // $this->sweetAlert();
+            //
+            // $this->unicornScript->addRoute('@cart_ajax');
+            // $this->unicornScript->addRoute('@cart');
+            //
+            // $this->js('@shopgo/product-cart.js');
         }
     }
 
     public function sweetAlert(): void
     {
-        if ($this->available()) {
-            $this->js('@sweetalert');
-        }
+        // todo: Remove this
+        // if ($this->available()) {
+        //     $this->js('@sweetalert');
+        // }
     }
 
     public function wishlistButton(): void
     {
-        $this->favoriteScript->favoriteButton();
+        // todo: Remove this
+        // $this->favoriteScript->favoriteButton();
     }
 
     public function swiper(?string $selector = null, array $options = []): void

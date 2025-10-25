@@ -7,7 +7,13 @@ interface CurrencyInfo {
   current: Currency;
 }
 
-export function useCurrency() {
+export interface CurrencyFormatOptions {
+  code?: boolean;
+  sign?: boolean;
+  signPosition?: 'start' | 'end';
+}
+
+export function useCurrency(currencyOptions: CurrencyFormatOptions = {}) {
   function getCurrentCurrency(): Currency {
     return data<CurrencyInfo>('currency')!.current;
   }
@@ -24,7 +30,7 @@ export function useCurrency() {
     return num * currency.exchangeRate;
   }
 
-  function format(num: number | string, currency?: Currency, addCode: boolean = false): string {
+  function format(num: number | string, currency?: Currency, options: CurrencyFormatOptions = {}): string {
     // normalize number
     let n = typeof num === 'string' ? parseFloat(num) : (num as number);
     if (Number.isNaN(n)) {
@@ -32,6 +38,12 @@ export function useCurrency() {
     }
 
     const currencyObj = currency || getCurrentCurrency();
+
+    options = Object.assign({}, currencyOptions, options);
+
+    const addCode = options?.code ?? false;
+    const addSign = options?.sign ?? true;
+    const signPosition = options?.signPosition ?? currencyObj.signPosition;
 
     const negative = n < 0;
     n = Math.abs(n);
@@ -42,10 +54,12 @@ export function useCurrency() {
 
     const space = currencyObj.space ? ' ' : '';
 
-    if (currencyObj.signPosition === 'start') {
-      formatted = currencyObj.sign + space + formatted;
-    } else {
-      formatted += space + currencyObj.sign;
+    if (addSign) {
+      if (signPosition === 'start') {
+        formatted = currencyObj.sign + space + formatted;
+      } else {
+        formatted += space + currencyObj.sign;
+      }
     }
 
     if (negative) {
@@ -59,8 +73,8 @@ export function useCurrency() {
     return formatted;
   }
 
-  function formatMainCurrency(num: number | string, addCode: boolean = false): string {
-    return format(num, getMainCurrency(), addCode);
+  function formatMainCurrency(num: number | string, options: CurrencyFormatOptions = {}): string {
+    return format(num, getMainCurrency(), options);
   }
 
   return {

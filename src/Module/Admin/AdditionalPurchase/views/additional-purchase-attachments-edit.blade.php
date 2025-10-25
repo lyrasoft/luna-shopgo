@@ -48,8 +48,4 @@ $uniScript->translate('shopgo.discount.method.*');
 $uniScript->translate('unicorn.field.title');
 ?>
 
-<additional-purchase-attachments-app>
-
-</additional-purchase-attachments-app>
-
-<x-components.attachment-product></x-components.attachment-product>
+<additional-purchase-attachments-app />

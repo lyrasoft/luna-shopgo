@@ -1,7 +1,4 @@
 import { App } from 'vue';
-import { ComponentOptionsBase } from 'vue';
-import { ComponentProvideOptions } from 'vue';
-import { ComponentPublicInstance } from 'vue';
 import { ObjectDirective } from 'vue';
 
 declare interface Currency {
@@ -25,22 +22,32 @@ declare interface Currency {
     [prop: string]: any;
 }
 
+export declare interface CurrencyFormatOptions {
+    code?: boolean;
+    sign?: boolean;
+    signPosition?: 'start' | 'end';
+}
+
 export declare function mergeRecursive(obj1: Record<string, any>, obj2: Record<string, any>, ignoreValues?: (string | null | undefined)[]): Record<string, any>;
 
 export declare function ShopGoPlugin(app: App): void;
 
-export declare function useAdditionalPurchaseAttachmentEdit(el: Element | string, props?: Record<string, any>): Promise<ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>, {}, {}, "", {}, any>>;
+export declare function useAdditionalPurchaseAttachmentEditApp(props?: Record<string, any>): Promise<App<Element>>;
 
-export declare function useCurrency(): {
+export declare function useCurrency(currencyOptions?: CurrencyFormatOptions): {
     isSubCurrency: () => boolean;
     getCurrentCurrency: () => Currency;
     getMainCurrency: () => Currency;
-    format: (num: number | string, currency?: Currency, addCode?: boolean) => string;
-    formatMainCurrency: (num: number | string, addCode?: boolean) => string;
+    format: (num: number | string, currency?: Currency, options?: CurrencyFormatOptions) => string;
+    formatMainCurrency: (num: number | string, options?: CurrencyFormatOptions) => string;
     exchange: (num: number, currency: any) => number;
 };
 
 export declare function useProductCart(): void;
+
+export declare function useProductDiscountsEditApp(props?: Record<string, any>): Promise<App<Element>>;
+
+export declare function useProductVariantsEditApp(props?: Record<string, any>): Promise<App<Element>>;
 
 export declare const vColorpicker: ObjectDirective;
 

@@ -84,7 +84,6 @@ class ProductVariant implements EntityInterface
 
     #[Column('dimension')]
     #[Cast(JsonCast::class)]
-    #[Cast(ProductDimension::class)]
     public ProductDimension $dimension {
         set(ProductDimension|array|null $value) => $this->dimension = ProductDimension::wrap($value);
         get => $this->dimension ??= new ProductDimension();

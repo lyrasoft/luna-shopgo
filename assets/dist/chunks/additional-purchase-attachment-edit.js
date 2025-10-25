@@ -1,153 +1,150 @@
-import { defineComponent as N, ref as _, computed as D, watch as S, createElementBlock as v, openBlock as h, createElementVNode as e, createTextVNode as s, toDisplayString as u, withDirectives as k, vModelCheckbox as C, normalizeClass as P, Fragment as Q, renderList as E, vModelSelect as L, createCommentVNode as q, vModelText as M, onMounted as R, resolveComponent as z, createBlock as V, createVNode as B, TransitionGroup as I, withCtx as O, createApp as F } from "vue";
-import { slideDown as G, slideUp as Y, data as H, useIframeModal as J, simpleAlert as $, __ as U, route as K, useHttpClient as W } from "@windwalker-io/unicorn-next";
-import { uniqueItemList as T, uniqueItem as X } from "@lyrasoft/ts-toolkit/vue";
-import { ShopGoPlugin as Z } from "../index.js";
-const tt = /* @__PURE__ */ N({
+import { resolveVueComponent as E } from "vite-plugin-vue-component-override";
+import { defineComponent as Q, ref as b, computed as L, watch as P, createElementBlock as f, openBlock as m, createElementVNode as e, createTextVNode as s, toDisplayString as u, withDirectives as k, vModelCheckbox as S, normalizeClass as C, Fragment as N, renderList as T, vModelSelect as R, createCommentVNode as q, vModelText as M, onMounted as z, createBlock as $, TransitionGroup as B, withCtx as I, createApp as F } from "vue";
+import { slideDown as G, slideUp as O, data as Y, useIframeModal as H, simpleAlert as V, __ as U, route as J, useHttpClient as K } from "@windwalker-io/unicorn-next";
+import { uniqueItemList as j, uniqueItem as W } from "@lyrasoft/ts-toolkit/vue";
+import { _ as D } from "./_plugin-vue_export-helper.js";
+import { ShopGoPlugin as X } from "../index.js";
+const Z = /* @__PURE__ */ Q({
   __name: "AttachmentProduct",
   props: {
     product: {},
     variants: {},
     open: { type: Boolean }
   },
-  setup(i, { expose: t }) {
+  setup(l, { expose: t }) {
     t();
-    const l = i, n = _(
-      T(l.variants).map((a) => (a.attachment = a.attachment || {
+    const i = l, o = b(
+      j(i.variants).map((a) => (a.attachment = a.attachment || {
         method: "offsets",
         price: 0,
         maxQuantity: "",
         state: 1
       }, a))
-    ), m = _(!1), g = _(l.open);
-    function o(a) {
-      for (const p of n.value)
+    ), h = b(!1), v = b(i.open);
+    function n(a) {
+      for (const p of o.value)
         p.attachment.state = a.checked ? 1 : 0;
     }
-    const d = D(() => n.value.filter((a) => Number(a.attachment.state) === 1).length);
+    const d = L(() => o.value.filter((a) => Number(a.attachment.state) === 1).length);
     function y(a) {
-      f(a.attachment.method, "method"), c(a);
+      g(a.attachment.method, "method"), c(a);
     }
     function r(a) {
       let p = a.attachment.maxQuantity;
-      p = Math.max(p, 0), p = Math.min(p, 30), a.attachment.maxQuantity = p, f(a.attachment.maxQuantity, "maxQuantity");
+      p = Math.max(p, 0), p = Math.min(p, 30), a.attachment.maxQuantity = p, g(a.attachment.maxQuantity, "maxQuantity");
     }
     function c(a) {
       a.attachment.method === "percentage" && (a.attachment.price < 0 || a.attachment.price > 100) && (a.attachment.price = Math.min(
         Math.abs(a.attachment.price),
         100
-      )), a.attachment.method === "offsets" && a.attachment.price > 0 && (a.attachment.price = -a.attachment.price), a.attachment.method === "fixed" && a.attachment.price < 0 && (a.attachment.price = -a.attachment.price), f(a.attachment.price, "price");
+      )), a.attachment.method === "offsets" && a.attachment.price > 0 && (a.attachment.price = -a.attachment.price), a.attachment.method === "fixed" && a.attachment.price < 0 && (a.attachment.price = -a.attachment.price), g(a.attachment.price, "price");
     }
-    function f(a, p) {
-      if (m.value)
-        for (const x of n.value)
+    function g(a, p) {
+      if (h.value)
+        for (const x of o.value)
           x.attachment[p] = a;
     }
-    function b(a) {
-      return a.attachment.method === "percentage" ? "1" : H("price.step") || "0.0001";
+    function _(a) {
+      return a.attachment.method === "percentage" ? "1" : Y("price.step") || "0.0001";
     }
-    const w = _();
-    S(g, (a) => {
+    const A = b();
+    P(v, (a) => {
       setTimeout(() => {
-        a ? G(w.value) : Y(w.value);
+        a ? G(A.value) : O(A.value);
       }, 0);
-    }, { immediate: !0 }), S(() => l.open, (a) => {
-      g.value = a;
+    }, { immediate: !0 }), P(() => i.open, (a) => {
+      v.value = a;
     });
-    const A = { props: l, items: n, syncAll: m, open: g, toggleAll: o, checks: d, onMethodChange: y, onMaxQuantityChange: r, normalizePricing: c, syncAllFields: f, getPriceStep: b, variantList: w };
-    return Object.defineProperty(A, "__isScriptSetup", { enumerable: !1, value: !0 }), A;
+    const w = { props: i, items: o, syncAll: h, open: v, toggleAll: n, checks: d, onMethodChange: y, onMaxQuantityChange: r, normalizePricing: c, syncAllFields: g, getPriceStep: _, variantList: A };
+    return Object.defineProperty(w, "__isScriptSetup", { enumerable: !1, value: !0 }), w;
   }
-}), j = (i, t) => {
-  const l = i.__vccOpts || i;
-  for (const [n, m] of t)
-    l[n] = m;
-  return l;
-}, et = { class: "card c-attachment" }, nt = { class: "c-attachment__product card-header border-bottom d-flex gap-3" }, ot = {
+}), tt = { class: "card c-attachment" }, et = { class: "c-attachment__product card-header border-bottom d-flex gap-3" }, nt = {
   class: "ratio ratio-1x1",
   style: { width: "55px" }
-}, at = ["src"], st = { class: "w-100" }, lt = { class: "d-flex align-items-center gap-2 mb-2" }, it = { class: "m-0" }, dt = { class: "ms-auto" }, rt = { class: "d-flex align-items-center gap-2" }, ut = { class: "badge" }, ct = { class: "badge bg-secondary" }, pt = { class: "d-flex gap-3" }, mt = { class: "form-check" }, ht = ["id"], ft = ["for"], vt = { class: "ms-auto" }, gt = {
+}, ot = ["src"], at = { class: "w-100" }, st = { class: "d-flex align-items-center gap-2 mb-2" }, lt = { class: "m-0" }, it = { class: "ms-auto" }, dt = { class: "d-flex align-items-center gap-2" }, rt = { class: "badge" }, ut = { class: "badge bg-secondary" }, ct = { class: "d-flex gap-3" }, pt = { class: "form-check" }, mt = ["id"], ht = ["for"], ft = { class: "ms-auto" }, vt = {
   class: "c-attachment__variants",
   ref: "variantList",
   style: { overflow: "hidden", display: "none" }
-}, yt = { class: "table" }, bt = { style: { width: "1%" } }, _t = ["checked", ".indeterminate"], xt = {
+}, gt = { class: "table" }, yt = { style: { width: "1%" } }, _t = ["checked", ".indeterminate"], bt = {
   class: "text-nowrap",
   style: { width: "23%" }
-}, kt = {
+}, xt = {
   class: "text-nowrap",
   style: { width: "15%" }
-}, wt = {
+}, kt = {
   class: "text-nowrap",
   style: { width: "10%" }
-}, At = ["id", "onUpdate:modelValue"], St = ["for"], Ct = { class: "d-none" }, Pt = ["name", "value"], Mt = ["name", "value"], Vt = ["name", "value"], $t = ["name", "value"], Ut = ["name", "value"], Nt = ["onUpdate:modelValue", "onChange"], Qt = { value: "percentage" }, Et = { value: "offsets" }, qt = { value: "fixed" }, Tt = { class: "input-group input-group-sm flex-nowrap" }, jt = ["step", "onUpdate:modelValue", "onChange"], Dt = {
+}, At = ["id", "onUpdate:modelValue"], wt = ["for"], Pt = { class: "d-none" }, St = ["name", "value"], Ct = ["name", "value"], Mt = ["name", "value"], $t = ["name", "value"], Vt = ["name", "value"], Ut = ["onUpdate:modelValue", "onChange"], Et = { value: "percentage" }, Qt = { value: "offsets" }, Nt = { value: "fixed" }, Tt = { class: "input-group input-group-sm flex-nowrap" }, qt = ["step", "onUpdate:modelValue", "onChange"], jt = {
   key: 0,
   class: "input-group-text"
-}, Lt = ["onUpdate:modelValue", "onChange"];
-function Rt(i, t, l, n, m, g) {
-  return h(), v("div", et, [
-    e("div", nt, [
+}, Dt = ["onUpdate:modelValue", "onChange"];
+function Lt(l, t, i, o, h, v) {
+  return m(), f("div", tt, [
+    e("div", et, [
       e("div", null, [
-        e("div", ot, [
+        e("div", nt, [
           e("img", {
             class: "object-fit-cover",
-            src: l.product.variant.cover,
+            src: i.product.variant.cover,
             alt: "cover"
-          }, null, 8, at)
+          }, null, 8, ot)
         ])
       ]),
       t[13] || (t[13] = s()),
-      e("div", st, [
-        e("div", lt, [
-          e("h4", it, u(l.product.title), 1),
+      e("div", at, [
+        e("div", st, [
+          e("h4", lt, u(i.product.title), 1),
           t[7] || (t[7] = s()),
           t[8] || (t[8] = e("div", null, null, -1)),
           t[9] || (t[9] = s()),
-          e("div", dt, [
-            e("div", rt, [
-              e("span", ut, `
-                            #` + u(l.product.id), 1),
+          e("div", it, [
+            e("div", dt, [
+              e("span", rt, `
+                            #` + u(i.product.id), 1),
               t[5] || (t[5] = s()),
-              e("span", ct, u(i.$lang("shopgo.additional.purchase.text.selected.count", n.checks)), 1),
+              e("span", ut, u(l.$lang("shopgo.additional.purchase.text.selected.count", o.checks)), 1),
               t[6] || (t[6] = s()),
               e("button", {
                 type: "button",
                 class: "btn btn-outline-secondary btn-sm",
-                onClick: t[0] || (t[0] = (o) => i.$emit("remove"))
+                onClick: t[0] || (t[0] = (n) => l.$emit("remove"))
               }, [
                 t[4] || (t[4] = e("i", { class: "fa fa-trash" }, null, -1)),
-                s(" " + u(i.$lang("shopgo.additional.purchase.button.delete")), 1)
+                s(" " + u(l.$lang("shopgo.additional.purchase.button.delete")), 1)
               ])
             ])
           ])
         ]),
         t[12] || (t[12] = s()),
-        e("div", pt, [
-          e("div", mt, [
+        e("div", ct, [
+          e("div", pt, [
             k(e("input", {
-              id: `input-sync-all-${l.product.id}`,
+              id: `input-sync-all-${i.product.id}`,
               type: "checkbox",
               class: "form-check-input",
-              "onUpdate:modelValue": t[1] || (t[1] = (o) => n.syncAll = o)
-            }, null, 8, ht), [
-              [C, n.syncAll]
+              "onUpdate:modelValue": t[1] || (t[1] = (n) => o.syncAll = n)
+            }, null, 8, mt), [
+              [S, o.syncAll]
             ]),
             t[10] || (t[10] = s()),
             e("label", {
-              for: `input-sync-all-${l.product.id}`
+              for: `input-sync-all-${i.product.id}`
             }, [
               e("i", {
-                class: P(["fa", [n.syncAll ? "fa-lock" : "fa-unlock"]])
+                class: C(["fa", [o.syncAll ? "fa-lock" : "fa-unlock"]])
               }, null, 2),
-              s(" " + u(i.$lang("shopgo.additional.purchase.text.sync.all")), 1)
-            ], 8, ft)
+              s(" " + u(l.$lang("shopgo.additional.purchase.text.sync.all")), 1)
+            ], 8, ht)
           ]),
           t[11] || (t[11] = s()),
-          e("div", vt, [
+          e("div", ft, [
             e("a", {
               href: "javascript://",
               class: "px-2 py-2",
-              onClick: t[2] || (t[2] = (o) => n.open = !n.open)
+              onClick: t[2] || (t[2] = (n) => o.open = !o.open)
             }, [
               e("i", {
-                class: P(["fa", [n.open ? "fa-chevron-down" : "fa-chevron-up"]])
+                class: C(["fa", [o.open ? "fa-chevron-down" : "fa-chevron-up"]])
               }, null, 2)
             ])
           ])
@@ -155,99 +152,99 @@ function Rt(i, t, l, n, m, g) {
       ])
     ]),
     t[31] || (t[31] = s()),
-    e("div", gt, [
-      e("table", yt, [
+    e("div", vt, [
+      e("table", gt, [
         e("thead", null, [
           e("tr", null, [
-            e("th", bt, [
+            e("th", yt, [
               e("input", {
                 type: "checkbox",
                 class: "form-check-input",
-                checked: n.checks === n.items.length,
-                ".indeterminate": n.checks !== 0 && n.checks < n.items.length,
-                onClick: t[3] || (t[3] = (o) => n.toggleAll(o.target))
+                checked: o.checks === o.items.length,
+                ".indeterminate": o.checks !== 0 && o.checks < o.items.length,
+                onClick: t[3] || (t[3] = (n) => o.toggleAll(n.target))
               }, null, 40, _t)
             ]),
             t[14] || (t[14] = s()),
-            e("th", null, u(i.$lang("unicorn.field.title")), 1),
+            e("th", null, u(l.$lang("unicorn.field.title")), 1),
             t[15] || (t[15] = s()),
-            e("th", xt, u(i.$lang("shopgo.additional.purchase.field.method")), 1),
+            e("th", bt, u(l.$lang("shopgo.additional.purchase.field.method")), 1),
             t[16] || (t[16] = s()),
-            e("th", kt, u(i.$lang("shopgo.additional.purchase.field.pricing")), 1),
+            e("th", xt, u(l.$lang("shopgo.additional.purchase.field.pricing")), 1),
             t[17] || (t[17] = s()),
-            e("th", wt, u(i.$lang("shopgo.additional.purchase.field.max.quantity")), 1)
+            e("th", kt, u(l.$lang("shopgo.additional.purchase.field.max.quantity")), 1)
           ])
         ]),
         t[30] || (t[30] = s()),
         e("tbody", null, [
-          (h(!0), v(Q, null, E(n.items, (o) => (h(), v("tr", {
-            key: o.id,
+          (m(!0), f(N, null, T(o.items, (n) => (m(), f("tr", {
+            key: n.id,
             class: ""
           }, [
             e("td", null, [
               k(e("input", {
                 type: "checkbox",
-                id: `input-variant-${o.id}`,
+                id: `input-variant-${n.id}`,
                 class: "form-check-input",
-                "onUpdate:modelValue": (d) => o.attachment.state = d,
+                "onUpdate:modelValue": (d) => n.attachment.state = d,
                 "true-value": 1,
                 "false-value": 0
               }, null, 8, At), [
-                [C, o.attachment.state]
+                [S, n.attachment.state]
               ])
             ]),
             t[26] || (t[26] = s()),
             e("td", null, [
               e("label", {
-                for: `input-variant-${o.id}`
-              }, u(o.title), 9, St),
+                for: `input-variant-${n.id}`
+              }, u(n.title), 9, wt),
               t[22] || (t[22] = s()),
-              e("div", Ct, [
+              e("div", Pt, [
                 e("input", {
-                  name: `attachments[${l.product.id}][${o.id}][id]`,
-                  value: o.attachment?.id,
+                  name: `attachments[${i.product.id}][${n.id}][id]`,
+                  value: n.attachment?.id,
                   type: "hidden"
-                }, null, 8, Pt),
+                }, null, 8, St),
                 t[18] || (t[18] = s()),
                 e("input", {
-                  name: `attachments[${l.product.id}][${o.id}][method]`,
-                  value: o.attachment.method,
+                  name: `attachments[${i.product.id}][${n.id}][method]`,
+                  value: n.attachment.method,
                   type: "hidden"
-                }, null, 8, Mt),
+                }, null, 8, Ct),
                 t[19] || (t[19] = s()),
                 e("input", {
-                  name: `attachments[${l.product.id}][${o.id}][price]`,
-                  value: o.attachment.price,
+                  name: `attachments[${i.product.id}][${n.id}][price]`,
+                  value: n.attachment.price,
                   type: "hidden"
-                }, null, 8, Vt),
+                }, null, 8, Mt),
                 t[20] || (t[20] = s()),
                 e("input", {
-                  name: `attachments[${l.product.id}][${o.id}][max_quantity]`,
-                  value: o.attachment.maxQuantity,
+                  name: `attachments[${i.product.id}][${n.id}][max_quantity]`,
+                  value: n.attachment.maxQuantity,
                   type: "hidden"
                 }, null, 8, $t),
                 t[21] || (t[21] = s()),
                 e("input", {
-                  name: `attachments[${l.product.id}][${o.id}][state]`,
-                  value: o.attachment.state,
+                  name: `attachments[${i.product.id}][${n.id}][state]`,
+                  value: n.attachment.state,
                   type: "hidden"
-                }, null, 8, Ut)
+                }, null, 8, Vt)
               ])
             ]),
             t[27] || (t[27] = s()),
             e("td", null, [
               k(e("select", {
                 class: "form-select form-select-sm",
-                "onUpdate:modelValue": (d) => o.attachment.method = d,
-                onChange: (d) => n.onMethodChange(o)
+                "onUpdate:modelValue": (d) => n.attachment.method = d,
+                onChange: (d) => o.onMethodChange(n)
               }, [
-                e("option", Qt, u(i.$lang("shopgo.discount.method.percentage")), 1),
+                e("option", Et, u(l.$lang("shopgo.discount.method.percentage")), 1),
                 t[23] || (t[23] = s()),
-                e("option", Et, u(i.$lang("shopgo.discount.method.offsets")), 1),
+                e("option", Qt, u(l.$lang("shopgo.discount.method.offsets")), 1),
                 t[24] || (t[24] = s()),
-                e("option", qt, u(i.$lang("shopgo.discount.method.fixed")), 1)
-              ], 40, Nt), [
-                [L, o.attachment.method]
+                e("option", Nt, u(l.$lang("shopgo.discount.method.fixed")), 1)
+              ], 40, Ut), [
+                [R, n.attachment.method]
               ])
             ]),
             t[28] || (t[28] = s()),
@@ -256,20 +253,20 @@ function Rt(i, t, l, n, m, g) {
                 k(e("input", {
                   type: "number",
                   class: "form-control form-control-sm",
-                  step: n.getPriceStep(o),
-                  "onUpdate:modelValue": (d) => o.attachment.price = d,
-                  onChange: (d) => n.normalizePricing(o),
+                  step: o.getPriceStep(n),
+                  "onUpdate:modelValue": (d) => n.attachment.price = d,
+                  onChange: (d) => o.normalizePricing(n),
                   style: { "min-width": "80px" }
-                }, null, 40, jt), [
+                }, null, 40, qt), [
                   [
                     M,
-                    o.attachment.price,
+                    n.attachment.price,
                     void 0,
                     { number: !0 }
                   ]
                 ]),
                 t[25] || (t[25] = s()),
-                o.attachment.method === "percentage" ? (h(), v("span", Dt, `
+                n.attachment.method === "percentage" ? (m(), f("span", jt, `
                                 %
                             `)) : q("", !0)
               ])
@@ -279,12 +276,12 @@ function Rt(i, t, l, n, m, g) {
               k(e("input", {
                 type: "number",
                 class: "form-control form-control-sm",
-                "onUpdate:modelValue": (d) => o.attachment.maxQuantity = d,
-                onChange: (d) => n.onMaxQuantityChange(o),
+                "onUpdate:modelValue": (d) => n.attachment.maxQuantity = d,
+                onChange: (d) => o.onMaxQuantityChange(n),
                 min: "0",
                 max: "30"
-              }, null, 40, Lt), [
-                [M, o.attachment.maxQuantity]
+              }, null, 40, Dt), [
+                [M, n.attachment.maxQuantity]
               ])
             ])
           ]))), 128))
@@ -293,50 +290,50 @@ function Rt(i, t, l, n, m, g) {
     ], 512)
   ]);
 }
-const zt = /* @__PURE__ */ j(tt, [["render", Rt], ["__file", "AttachmentProduct.vue"]]), Bt = /* @__PURE__ */ N({
+const Rt = /* @__PURE__ */ D(Z, [["render", Lt], ["__file", "AttachmentProduct.vue"]]), zt = E("~shopgo/modules/additional-purchase/AttachmentProduct.vue", Rt), Bt = /* @__PURE__ */ Q({
   __name: "AdditionalPurchaseAttachmentEditApp",
   props: {
     attachmentData: {}
   },
-  setup(i, { expose: t }) {
+  setup(l, { expose: t }) {
     t();
-    const l = i, n = _(
-      T(l.attachmentData).map((r) => (r.open = !1, r))
+    const i = l, o = b(
+      j(i.attachmentData).map((r) => (r.open = !1, r))
     );
-    n.value.length === 1 && (n.value[0].open = !0), J(), R(() => {
+    o.value.length === 1 && (o.value[0].open = !0), H(), z(() => {
       setTimeout(() => {
         const r = window.targetSelected;
         window.targetSelected = function(c) {
-          const f = c.value;
+          const g = c.value;
           try {
-            o(f);
-          } catch (b) {
-            $(b.message);
+            n(g);
+          } catch (_) {
+            V(_.message);
             return;
           }
           r(c);
         };
       }, 500);
     });
-    const m = _(null);
-    function g() {
-      const r = "productSelected", c = new URL(K("product_modal"));
-      c.searchParams.set("callback", r), window[r] = async function({ title: f, value: b, image: w }) {
+    const h = b(null);
+    function v() {
+      const r = "productSelected", c = new URL(J("product_modal"));
+      c.searchParams.set("callback", r), window[r] = async function({ title: g, value: _, image: A }) {
         try {
-          o(b);
+          n(_);
         } catch (x) {
-          $(x.message, "", "warning");
+          V(x.message, "", "warning");
           return;
         }
-        const { get: A } = await W(), a = await A(`@additional_purchase_ajax/getProductInfo?id=${b}`);
-        for (const x of n.value)
+        const { get: w } = await K(), a = await w(`@additional_purchase_ajax/getProductInfo?id=${_}`);
+        for (const x of o.value)
           x.open = !1;
-        const p = X(a.data.data);
-        p.open = !0, n.value.unshift(p), m.value.close();
-      }, m.value.open(c, { size: "modal-xl" });
+        const p = W(a.data.data);
+        p.open = !0, o.value.unshift(p), h.value.close();
+      }, h.value.open(c, { size: "modal-xl" });
     }
-    function o(r) {
-      for (const { product: c } of n.value)
+    function n(r) {
+      for (const { product: c } of o.value)
         if (Number(c.id) === Number(r))
           throw new Error(U("shopgo.additional.purchase.message.already.selected"));
       for (const c of document.querySelectorAll("#input-item-products-wrap .list-group-item"))
@@ -344,79 +341,78 @@ const zt = /* @__PURE__ */ j(tt, [["render", Rt], ["__file", "AttachmentProduct.
           throw new Error(U("shopgo.additional.purchase.message.already.in.targets"));
     }
     function d(r) {
-      n.value.splice(r, 1);
+      o.value.splice(r, 1);
     }
-    const y = { props: l, attachmentSet: n, productSelector: m, openProductSelector: g, checkAvailable: o, removeProduct: d, AttachmentProduct: zt };
+    const y = { props: i, attachmentSet: o, productSelector: h, openProductSelector: v, checkAvailable: n, removeProduct: d, AttachmentProduct: zt };
     return Object.defineProperty(y, "__isScriptSetup", { enumerable: !1, value: !0 }), y;
   }
 }), It = {
   class: "l-ap-attachments",
   "data-novalidate": ""
-}, Ot = { class: "mb-3" }, Ft = {
+}, Ft = { class: "mb-3" }, Gt = {
   key: 1,
   class: "card bg-light"
-}, Gt = { class: "card-body text-center py-5" };
-function Yt(i, t, l, n, m, g) {
-  const o = z("uni-iframe-modal");
-  return h(), v("div", It, [
+}, Ot = { class: "card-body text-center py-5" }, Yt = { ref: "productSelector" };
+function Ht(l, t, i, o, h, v) {
+  return m(), f("div", It, [
     t[2] || (t[2] = e("input", {
       name: "attachments",
       type: "hidden",
       value: "__EMPTY_ARRAY__"
     }, null, -1)),
     t[3] || (t[3] = s()),
-    e("div", Ot, [
-      n.attachmentSet.length > 0 ? (h(), v("button", {
+    e("div", Ft, [
+      o.attachmentSet.length > 0 ? (m(), f("button", {
         key: 0,
         type: "button",
         class: "btn btn-primary btn-sm",
         style: { "min-width": "100px" },
-        onClick: n.openProductSelector
+        onClick: o.openProductSelector
       }, [
         t[0] || (t[0] = e("i", { class: "fa fa-plus" }, null, -1)),
-        s(" " + u(i.$lang("shopgo.additional.purchase.button.add.product")), 1)
+        s(" " + u(l.$lang("shopgo.additional.purchase.button.add.product")), 1)
       ])) : q("", !0)
     ]),
     t[4] || (t[4] = s()),
-    n.attachmentSet.length > 0 ? (h(), V(I, {
+    o.attachmentSet.length > 0 ? (m(), $(B, {
       key: 0,
       name: "fade"
     }, {
-      default: O(() => [
-        (h(!0), v(Q, null, E(n.attachmentSet, ({ product: d, variants: y, open: r }, c) => (h(), V(n.AttachmentProduct, {
-          key: d.id,
-          product: d,
-          variants: y,
-          open: r,
-          onRemove: (f) => n.removeProduct(c),
+      default: I(() => [
+        (m(!0), f(N, null, T(o.attachmentSet, ({ product: n, variants: d, open: y }, r) => (m(), $(o.AttachmentProduct, {
+          key: n.id,
+          product: n,
+          variants: d,
+          open: y,
+          onRemove: (c) => o.removeProduct(r),
           class: "mb-4",
           style: { "animation-duration": ".3s" }
         }, null, 8, ["product", "variants", "open", "onRemove"]))), 128))
       ]),
       _: 1
-    })) : (h(), v("div", Ft, [
-      e("div", Gt, [
+    })) : (m(), f("div", Gt, [
+      e("div", Ot, [
         e("button", {
           type: "button",
           class: "btn btn-primary",
           style: { "min-width": "100px" },
-          onClick: n.openProductSelector
+          onClick: o.openProductSelector
         }, [
           t[1] || (t[1] = e("i", { class: "fa fa-plus" }, null, -1)),
-          s(" " + u(i.$lang("shopgo.additional.purchase.button.add.product")), 1)
+          s(" " + u(l.$lang("shopgo.additional.purchase.button.add.product")), 1)
         ])
       ])
     ])),
     t[5] || (t[5] = s()),
-    B(o, { ref: "productSelector" }, null, 512)
+    e("uni-iframe-modal", Yt, null, 512)
   ]);
 }
-const Ht = /* @__PURE__ */ j(Bt, [["render", Yt], ["__file", "AdditionalPurchaseAttachmentEditApp.vue"]]);
-function Zt(i, t) {
-  const l = F(Ht, t);
-  return l.use(Z), l.mount(i);
+const Jt = /* @__PURE__ */ D(Bt, [["render", Ht], ["__file", "AdditionalPurchaseAttachmentEditApp.vue"]]), Kt = E("~shopgo/modules/additional-purchase/AdditionalPurchaseAttachmentEditApp.vue", Jt);
+function oe(l) {
+  const t = F(Kt, l);
+  return t.use(X), t;
 }
 export {
-  Zt as init
+  oe as initApp
 };
 //# sourceMappingURL=additional-purchase-attachment-edit.js.map

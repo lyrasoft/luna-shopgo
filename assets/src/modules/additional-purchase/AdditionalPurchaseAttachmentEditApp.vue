@@ -2,7 +2,7 @@
 import { __, route, simpleAlert, useHttpClient, useIframeModal } from '@windwalker-io/unicorn-next';
 import { onMounted, reactive, ref, toRefs } from 'vue';
 import { uniqueItemList, uniqueItem } from '@lyrasoft/ts-toolkit/vue';
-import AttachmentProduct from '~shopgo/components/additional-purchase/AttachmentProduct.vue';
+import AttachmentProduct from '~shopgo/modules/additional-purchase/AttachmentProduct.vue';
 import { Product, ProductVariant } from '~shopgo/types';
 
 interface AttachmentDataItem {

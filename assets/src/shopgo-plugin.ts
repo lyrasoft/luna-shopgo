@@ -41,19 +41,21 @@ export function ShopGoPlugin(app: App) {
     return formatted;
   };
 
-  app.config.globalProperties.$priceOffset = (num: number, method: 'fixed' | 'offsets' | 'percentage' | string) => {
+  app.config.globalProperties.$priceOffset = (num: number, method: 'fixed' | 'offsets' | 'percentage' | string): string => {
     const negative = num < 0;
 
+    const { format } = useCurrency({ sign: false, code: false });
+
     if (method === 'fixed') {
-      return '=' + numberFormat(Math.abs(num));
+      return '=' + format(Math.abs(num));
     }
 
     if (method === 'offsets') {
       if (negative) {
-        return '-' + numberFormat(Math.abs(num));
+        return '-' + format(Math.abs(num));
       }
 
-      return '+' + numberFormat(Math.abs(num));
+      return '+' + format(Math.abs(num));
     }
 
     if (method === 'percentage') {
@@ -64,7 +66,7 @@ export function ShopGoPlugin(app: App) {
       return num + '%';
     }
 
-    return num;
+    return String(num);
   };
 
   app.config.globalProperties.$formatPrice = (num: number, addCode = false) => {
