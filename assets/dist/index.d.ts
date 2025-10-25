@@ -1,5 +1,7 @@
 import { App } from 'vue';
+import { default as default_2 } from 'swiper';
 import { ObjectDirective } from 'vue';
+import { SwiperOptions } from 'swiper/types';
 
 declare interface Currency {
     id: number;
@@ -52,6 +54,8 @@ export declare function useProductDiscountsEditApp(props?: Record<string, any>):
 export declare function useProductFeatureEditApp(props?: Record<string, any>): Promise<App<Element>>;
 
 export declare function useProductVariantsEditApp(props?: Record<string, any>): Promise<App<Element>>;
+
+export declare function useSwiper(selector?: HTMLElement | string, options?: SwiperOptions): Promise<default_2 | default_2>;
 
 export declare const vColorpicker: ObjectDirective<HTMLInputElement>;
 

@@ -1,88 +1,118 @@
-// JS file for ProductItem
-
-import '@main';
-
-await u.domready();
-
-// Additional Purchases
-// ----------------------------------------
+import { ShopGoPlugin } from '@lyrasoft/shopgo';
+import { useSwiper } from '@lyrasoft/shopgo';
+import { Discount, ListOption, Product, ProductFeature, ProductVariant } from '@lyrasoft/shopgo/src/types';
+import { data, useHttpClient } from '@windwalker-io/unicorn-next';
+import {
+  computed,
+  createApp,
+  defineComponent,
+  onMounted,
+  PropType,
+  ref,
+  useTemplateRef,
+  watch
+} from 'vue';
 
 // Click quantity make auto select
-u.selectAll('[data-role=attachment_quantity]', (qty) => {
-  qty.addEventListener('click', () => {
-    const idInput = qty.closest('[data-role=attachment]')
-      ?.querySelector('[data-role=attachment_id]');
+const qtyInputs = document.querySelectorAll<HTMLInputElement>('[data-role=attachment_quantity]');
+
+for (const qtyInput of qtyInputs) {
+  qtyInput.addEventListener('click', () => {
+    const idInput = qtyInput.closest<HTMLDivElement>('[data-role=attachment]')
+      ?.querySelector<HTMLInputElement>('[data-role=attachment_id]');
 
     if (idInput) {
       idInput.checked = true;
       idInput.dispatchEvent(new CustomEvent('change'));
     }
   });
-});
+}
 
 // Add highlight after selected
-u.selectAll('[data-role=attachment_id]', (idInput) => {
+const idInputs = document.querySelectorAll<HTMLInputElement>('[data-role=attachment_id]');
+
+for (const idInput of idInputs) {
   idInput.addEventListener('change', () => {
     idInput.closest('[data-role=attachment]')
       ?.classList.toggle('border-primary', idInput.checked);
   });
+}
+
+// Additional Purchase Slides
+useSwiper('.l-additional-purchases__slides', {
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  slidesPerView: 4,
+  spaceBetween: 15,
+  rewind: true,
 });
 
-// Product Variants
-const { createApp, ref, toRefs, reactive, computed, watch, provide, nextTick, onMounted } = Vue;
-
-const ProductItemApp = {
+// Product Main App
+const ProductItemApp = defineComponent({
   name: 'ProductItemApp',
   props: {
-    product: Object,
-    features: Object,
-    mainVariant: Object,
-    discounts: Array,
+    product: {
+      type: Object as PropType<Product>,
+      required: true
+    },
+    features: {
+      type: Object as PropType<ProductFeature[]>,
+      required: true
+    },
+    mainVariant: {
+      type: Object as PropType<ProductVariant>,
+      required: true
+    },
+    discounts: {
+      type: Array as PropType<Discount[]>,
+      required: true,
+    },
   },
   setup(props) {
-    const state = reactive({
-      imageView: u.data('image.default'),
-      selected: {},
-      currentVariant: null,
-      hasSubVariants: props.product.variants !== 0,
-      quantity: 1
-    });
+    // Split state into independent refs
+    const imageView = ref<string>(data('image.default'));
+    const selected = ref<Record<number, any>>({});
+    const currentVariant = ref<ProductVariant | null>(null);
+    const hasSubVariants = ref<boolean>(props.product.variants !== 0);
+    const quantity = ref<number>(1);
 
-    if (!state.hasSubVariants) {
-      state.currentVariant = props.mainVariant;
+    if (!hasSubVariants.value) {
+      currentVariant.value = props.mainVariant;
     }
 
     const hasDiscount = computed(() => {
-      return Number(state.currentVariant.priceSet.base.price) !== Number(state?.currentVariant?.priceSet?.final?.price);
+      return Number(currentVariant.value?.priceSet.base.price) !== Number(currentVariant.value?.priceSet?.final?.price);
     });
 
     // Stock
     const outOfStock = computed(() => {
-      if (!state?.currentVariant?.subtract) {
+      if (!currentVariant.value?.subtract) {
         return false;
       }
 
-      return Number(state.currentVariant.stockQuantity) - props.product.safeStock < state.quantity;
+      return Number(currentVariant.value.stockQuantity) - props.product.safeStock < quantity.value;
     });
 
     // Quantity
-    watch(() => state.quantity, (qty) => {
+    watch(quantity, (qty) => {
       if (qty < 1) {
-        state.quantity = 1;
+        quantity.value = 1;
       }
     });
 
     // Images
-    const swiper = ref(null);
+    const sliders = useTemplateRef<HTMLDivElement>('slides');
 
     onMounted(() => {
-      new Swiper(swiper.value, {
+      useSwiper(sliders.value!, {
         simulateTouch: true,
         allowTouchMove: true,
         autoHeight: true,
         slidesPerView: 6,
         spaceBetween: 8,
-        observe: true,
+        observer: true,
         rewind: true,
         navigation: {
           nextEl: '.swiper-button-next',
@@ -91,42 +121,42 @@ const ProductItemApp = {
       });
     });
 
-    const images = computed(() => {
-      let imgs = [];
-      let imgView = null;
+    const images = computed<{ url: string; [name: string]: any; }[]>(() => {
+      let imgs: { url: string; [name: string]: any; }[] = [];
 
-      if (state.currentVariant) {
-        if (!state.currentVariant.primary) {
-          imgs = [...props.mainVariant.images, ...state.currentVariant.images];
+      if (currentVariant.value) {
+        if (!currentVariant.value.primary) {
+          imgs = [...props.mainVariant.images, ...currentVariant.value.images];
         } else {
-          imgs = state.currentVariant.images;
+          imgs = currentVariant.value.images;
         }
-
-        imgView = state.currentVariant.images[0];
       } else {
         imgs = props.mainVariant.images;
-        imgView = props.mainVariant.images[0];
       }
-
-      state.imageView = imgView?.url || u.data('image.default');
 
       return imgs;
     });
 
+    watch(() => images, () => {
+      imageView.value = images.value[0]?.url || data('image.default');
+    }, { immediate: true });
+
     const allSelected = computed(() => {
-      return Object.values(props.features).length === Object.values(state.selected).length;
+      return props.features.length === Object.values(selected.value).length;
     });
 
-    watch(() => state.selected, () => {
+    watch(selected, () => {
       if (allSelected.value) {
         findVariant();
       }
     }, { deep: true });
 
     async function findVariant() {
-      const options = Object.values(state.selected).map(option => option.uid);
+      const options = Object.values(selected.value).map(option => option.uid);
 
-      const res = await u.$http.get(
+      const { get } = await useHttpClient();
+
+      const res = await get(
         '@product_ajax/getVariant',
         {
           params: {
@@ -136,29 +166,29 @@ const ProductItemApp = {
         }
       );
 
-      const { variant, discounts } = res.data.data;
+      const { variant } = res.data.data;
 
-      state.currentVariant = variant;
-      state.discounts = discounts;
+      currentVariant.value = variant;
     }
 
     const errorMsg = 'shopgo.product.message.variant.not.found';
 
-    function toggleOption(option, feature) {
-      state.selected[feature.id] = option;
+    function toggleOption(option: ListOption, feature: ProductFeature) {
+      // mutate the object inside the ref - keep reactivity
+      selected.value[feature.id] = option;
     }
 
-    function isSelected(option, feature) {
-      return state.selected[feature.id]?.uid === option.uid;
+    function isSelected(option: ListOption, feature: ProductFeature) {
+      return selected.value[feature.id]?.uid === option.uid;
     }
 
     // Discounts
     const discountNotices = computed(() => {
-      if (!state.currentVariant) {
+      if (!currentVariant.value) {
         return [];
       }
 
-      const items = [];
+      const items: any[] = [];
 
       for (const discount of props.discounts) {
         let price = null;
@@ -166,9 +196,9 @@ const ProductItemApp = {
         if (discount.method === 'fixed') {
           price = discount.price;
         } else if (discount.method === 'offsets') {
-          price = state.currentVariant.price + discount.price;
+          price = currentVariant.value.price + discount.price;
         } else {
-          price = state.currentVariant.price * discount.price / 100;
+          price = currentVariant.value.price * discount.price / 100;
         }
 
         const item = {
@@ -183,11 +213,16 @@ const ProductItemApp = {
     });
 
     return {
-      ...toRefs(state),
+      imageView,
+      selected,
+      currentVariant,
+      hasSubVariants,
+      quantity,
+
       allSelected,
       hasDiscount,
       outOfStock,
-      swiper,
+      sliders,
       images,
       discountNotices,
 
@@ -195,9 +230,9 @@ const ProductItemApp = {
       isSelected,
     };
   }
-};
+});
 
-const app = createApp(ProductItemApp, u.data('product.item.props'));
+const app = createApp(ProductItemApp, data('product.item.props'));
 
-app.use(ShopGoVuePlugin);
+app.use(ShopGoPlugin);
 app.mount('#product-item-app');

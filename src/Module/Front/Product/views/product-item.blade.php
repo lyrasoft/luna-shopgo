@@ -62,9 +62,9 @@ $shopGoScript->vueUtilities();
 $shopGoScript->wishlistButton();
 $shopGoScript->productCart();
 
-$vueScript = $app->service(VueScript::class);
-$vueScript->vue();
-$vueScript->animate();
+// $vueScript = $app->service(VueScript::class);
+// $vueScript->vue();
+// $vueScript->animate();
 
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data('product.item.props', [
@@ -78,22 +78,6 @@ $uniScript->data('image.default', $imagePlaceholder->placeholderSquare());
 $uniScript->translate('shopgo.product.discount.item');
 
 $uniScript->addRoute('@product_ajax');
-
-$shopGoScript = $app->service(ShopGoScript::class);
-
-$shopGoScript->swiper();
-$shopGoScript->swiper(
-    '.l-additional-purchases__slides',
-    [
-        'navigation' => [
-            'nextEl' => '.swiper-button-next',
-            'prevEl' => '.swiper-button-prev',
-        ],
-        'slidesPerView' => 4,
-        'spaceBetween' => 15,
-        'rewind' => true
-    ]
-);
 
 ?>
 
@@ -111,7 +95,7 @@ $shopGoScript->swiper(
                 </div>
 
                 <div class="l-product-images__nav mt-2 c-product-images swiper"
-                    ref="swiper">
+                    ref="slides">
                     <div class="swiper-wrapper">
                         <div v-for="image of images" class="c-product-image border swiper-slide"
                             style="cursor: pointer"

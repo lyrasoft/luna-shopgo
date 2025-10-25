@@ -44,7 +44,6 @@ class ProductController
         if (!$variant) {
             return [
                 'variant' => null,
-                'discounts' => []
             ];
         }
 

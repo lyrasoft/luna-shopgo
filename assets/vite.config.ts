@@ -49,6 +49,7 @@ export default defineConfig(() => {
           'sweetalert',
           'bootstrap',
           'sortablejs',
+          /^swiper/,
           '@asika32764/vue-animate',
           'bootstrap',
           'vue',

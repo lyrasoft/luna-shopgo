@@ -1,39 +1,39 @@
-import { Tooltip as p } from "bootstrap";
-import { useTomSelect as b, useColorPicker as g, data as v, __ as k, delegate as C, useHttpClient as h, simpleAlert as A, route as x, useUnicorn as N } from "@windwalker-io/unicorn-next";
-import { nextTick as T } from "vue";
+import { Tooltip as m } from "bootstrap";
+import { useTomSelect as b, useColorPicker as p, data as v, __ as T, delegate as C, useHttpClient as h, simpleAlert as P, route as N, useUnicorn as k, injectCssToDocument as x, selectOne as M } from "@windwalker-io/unicorn-next";
+import { nextTick as $ } from "vue";
 import { numberFormat as y } from "@lyrasoft/ts-toolkit/generic";
-import $ from "sweetalert";
-const L = {
+import _ from "sweetalert";
+const z = {
   async mounted(e, { value: t }) {
-    p.getOrCreateInstance(e, t);
+    m.getOrCreateInstance(e, t);
   },
   updated(e, { value: t }) {
-    p.getOrCreateInstance(e, t).update();
+    m.getOrCreateInstance(e, t).update();
   },
   beforeUnmount(e) {
-    p.getOrCreateInstance(e).dispose();
+    m.getOrCreateInstance(e).dispose();
   }
-}, Q = {
+}, K = {
   async mounted(e, { value: t }) {
-    await T(), await b(e, t);
+    await $(), await b(e, t);
   },
   async beforeUnmount(e) {
     (await b(e)).destroy();
   }
-}, V = {
+}, W = {
   async mounted(e, { value: t }) {
-    await g(e, Object.assign({}, t));
+    await p(e, Object.assign({}, t));
   },
   async updated(e, { value: t }) {
-    await g();
+    await p();
     const n = Spectrum.getInstance(e);
     JSON.stringify(t) !== JSON.stringify(n.options) && n.rebuild(Object.assign({}, t));
   },
   async unmounted(e) {
-    await g(), Spectrum.getInstance(e).destroy();
+    await p(), Spectrum.getInstance(e).destroy();
   }
 };
-function m(e = {}) {
+function g(e = {}) {
   function t() {
     return v("currency").current;
   }
@@ -43,37 +43,37 @@ function m(e = {}) {
   function r() {
     return t().code !== n().code;
   }
-  function a(o, d) {
-    return o * d.exchangeRate;
+  function a(o, f) {
+    return o * f.exchangeRate;
   }
-  function s(o, d, f = {}) {
-    let c = typeof o == "string" ? parseFloat(o) : o;
-    Number.isNaN(c) && (c = 0);
-    const i = d || t();
-    f = Object.assign({}, e, f);
-    const E = f?.code ?? !1, I = f?.sign ?? !0, O = f?.signPosition ?? i.signPosition, q = c < 0;
-    c = Math.abs(c), c = a(c, i);
-    let u = y(c, i.decimalPlace, i.decimalPoint);
-    const w = i.space ? " " : "";
-    return I && (O === "start" ? u = i.sign + w + u : u += w + i.sign), q ? "-" + u : (E && (u = i.code + " " + u), u);
+  function c(o, f, l = {}) {
+    let i = typeof o == "string" ? parseFloat(o) : o;
+    Number.isNaN(i) && (i = 0);
+    const s = f || t();
+    l = Object.assign({}, e, l);
+    const I = l?.code ?? !1, O = l?.sign ?? !0, E = l?.signPosition ?? s.signPosition, q = i < 0;
+    i = Math.abs(i), i = a(i, s);
+    let u = y(i, s.decimalPlace, s.decimalPoint);
+    const w = s.space ? " " : "";
+    return O && (E === "start" ? u = s.sign + w + u : u += w + s.sign), q ? "-" + u : (I && (u = s.code + " " + u), u);
   }
-  function l(o, d = {}) {
-    return s(o, n(), d);
+  function d(o, f = {}) {
+    return c(o, n(), f);
   }
   return {
     isSubCurrency: r,
     getCurrentCurrency: t,
     getMainCurrency: n,
-    format: s,
-    formatMainCurrency: l,
+    format: c,
+    formatMainCurrency: d,
     exchange: a
   };
 }
-function z(e) {
+function X(e) {
   e.config.compilerOptions.whitespace = "preserve", e.config.compilerOptions.isCustomElement = (t) => [
     "uni-flatpickr",
     "uni-iframe-modal"
-  ].includes(t), e.config.globalProperties.$lang = (t, ...n) => k(t, ...n), e.config.globalProperties.$numberFormat = (t, n = "") => {
+  ].includes(t), e.config.globalProperties.$lang = (t, ...n) => T(t, ...n), e.config.globalProperties.$numberFormat = (t, n = "") => {
     const r = t < 0;
     let a = n + y(Math.abs(t));
     return r && (a = "-" + a), a;
@@ -82,49 +82,49 @@ function z(e) {
     let a = n + y(Math.abs(t));
     return r ? a = "-" + a : a = "+" + a, a;
   }, e.config.globalProperties.$priceOffset = (t, n) => {
-    const r = t < 0, { format: a } = m({ sign: !1, code: !1 });
+    const r = t < 0, { format: a } = g({ sign: !1, code: !1 });
     return n === "fixed" ? "=" + a(Math.abs(t)) : n === "offsets" ? r ? "-" + a(Math.abs(t)) : "+" + a(Math.abs(t)) : n === "percentage" ? (t > 100 && (t = 100), t + "%") : String(t);
-  }, e.config.globalProperties.$formatPrice = (t, n = !1) => m().format(t, void 0, n), e.config.globalProperties.$currency = m();
+  }, e.config.globalProperties.$formatPrice = (t, n = !1) => g().format(t, void 0, n), e.config.globalProperties.$currency = g();
 }
-function K() {
+function Y() {
   C(document.body, "[data-task=add-to-cart]", "click", (e) => {
-    M(e.currentTarget);
+    F(e.currentTarget);
   }), C(document.body, "[data-task=buy]", "click", (e) => {
-    _(e.currentTarget);
+    D(e.currentTarget);
   });
 }
-async function P(e) {
+async function A(e) {
   const t = e.dataset.id;
   if (!t)
     throw new Error("No product ID");
   const n = e.dataset.variantId;
   if (!n)
     throw new Error("No variant ID");
-  const r = document.querySelector("[data-role=quantity]"), a = Number(r?.value || 1), s = B(), { post: l } = await h();
+  const r = document.querySelector("[data-role=quantity]"), a = Number(r?.value || 1), c = U(), { post: d } = await h();
   try {
-    const o = await l(
+    const o = await d(
       "@cart_ajax/addToCart",
       {
         product_id: t,
         variant_id: n,
         quantity: a,
-        attachments: s
+        attachments: c
       }
     );
-    return F(o.data.data), o.data;
+    return B(o.data.data), o.data;
   } catch (o) {
     throw console.error(o), o;
   }
 }
-async function M(e) {
+async function F(e) {
   const { isAxiosError: t } = await h();
   try {
-    await P(e);
+    await A(e);
   } catch (r) {
-    t(r) && A(r.message, "", "warning");
+    t(r) && P(r.message, "", "warning");
     return;
   }
-  await $({
+  await _({
     title: "已加入購物車",
     buttons: [
       "繼續購物",
@@ -132,22 +132,22 @@ async function M(e) {
     ]
   }) && S();
 }
-async function _(e) {
+async function D(e) {
   const { isAxiosError: t } = await h();
   try {
-    await P(e);
+    await A(e);
   } catch (n) {
-    t(n) && A(n.message, "", "warning");
+    t(n) && P(n.message, "", "warning");
     return;
   }
   S();
 }
 function S() {
-  location.href = x("cart");
+  location.href = N("cart");
 }
-function F(e) {
+function B(e) {
   const t = e.length;
-  N().trigger("cart.update", e, t), document.dispatchEvent(
+  k().trigger("cart.update", e, t), document.dispatchEvent(
     new CustomEvent("cart.update", {
       detail: {
         data: e,
@@ -157,8 +157,8 @@ function F(e) {
   );
   const r = document.querySelectorAll("[data-role=cart-button]");
   for (const a of r) {
-    const s = a.querySelector("[data-role=cart-quantity]");
-    a.classList.toggle("h-has-items", t > 0), s && (s.textContent = t), a.dispatchEvent(
+    const c = a.querySelector("[data-role=cart-quantity]");
+    a.classList.toggle("h-has-items", t > 0), c && (c.textContent = t), a.dispatchEvent(
       new CustomEvent("cart.update", {
         detail: {
           data: e,
@@ -168,7 +168,7 @@ function F(e) {
     );
   }
 }
-function B() {
+function U() {
   const e = document.querySelectorAll("[data-role=attachment]"), t = {};
   for (const n of e) {
     const r = n.querySelector("[data-role=attachment_id]"), a = n.querySelector("[data-role=attachment_quantity]");
@@ -176,49 +176,68 @@ function B() {
   }
   return t;
 }
-function D(e, t, n = [null, void 0, ""]) {
+function H(e, t, n = [null, void 0, ""]) {
   for (let r in t)
     try {
       if (n.includes(t[r]))
         continue;
-      t[r].constructor === Object ? e[r] = D(e[r], t[r]) : e[r] = t[r];
+      t[r].constructor === Object ? e[r] = H(e[r], t[r]) : e[r] = t[r];
     } catch {
       e[r] = t[r];
     }
   return e;
 }
-async function W(e = {}) {
+let J = null;
+async function Z(e, t = {}) {
+  const [{ default: n }, { Navigation: r, Pagination: a }, { default: c }] = await Promise.all([
+    import("swiper"),
+    import("swiper/modules"),
+    import("swiper/css/bundle?inline")
+  ]);
+  if (J ??= x(c), e) {
+    const d = M(e);
+    return t = Object.assign({}, {
+      simulateTouch: !1,
+      allowTouchMove: !1,
+      autoHeight: !0,
+      modules: [r, a]
+    }, t), new n(d, t);
+  }
+  return n;
+}
+async function j(e = {}) {
   const { initApp: t } = await import("./chunks/additional-purchase-attachment-edit.js");
   return t(e);
 }
-async function X(e = {}) {
+async function tt(e = {}) {
   const { initApp: t } = await import("./chunks/product-discounts-edit.js");
   return t(e);
 }
-async function Y(e = {}) {
+async function et(e = {}) {
   const { initApp: t } = await import("./chunks/product-variants-edit.js");
   return t(e);
 }
-async function Z(e = {}) {
+async function nt(e = {}) {
   const { initApp: t } = await import("./chunks/product-attribute-edit.js");
   return t(e);
 }
-async function j(e = {}) {
+async function rt(e = {}) {
   const { initApp: t } = await import("./chunks/product-feature-edit.js");
   return t(e);
 }
 export {
-  z as ShopGoPlugin,
-  D as mergeRecursive,
-  W as useAdditionalPurchaseAttachmentEditApp,
-  m as useCurrency,
-  Z as useProductAttributeEditApp,
-  K as useProductCart,
-  X as useProductDiscountsEditApp,
-  j as useProductFeatureEditApp,
-  Y as useProductVariantsEditApp,
-  V as vColorpicker,
-  Q as vTomSelect,
-  L as vTooltip
+  X as ShopGoPlugin,
+  H as mergeRecursive,
+  j as useAdditionalPurchaseAttachmentEditApp,
+  g as useCurrency,
+  nt as useProductAttributeEditApp,
+  Y as useProductCart,
+  tt as useProductDiscountsEditApp,
+  rt as useProductFeatureEditApp,
+  et as useProductVariantsEditApp,
+  Z as useSwiper,
+  W as vColorpicker,
+  K as vTomSelect,
+  z as vTooltip
 };
 //# sourceMappingURL=index.js.map
