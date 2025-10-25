@@ -102,7 +102,7 @@ const yt = /* @__PURE__ */ J({
 function jt(s, t, c, e, f, a) {
   return d(), v("div", Ct, [
     n("div", Vt, [
-      n("div", wt, l(s.$lang("shopgo.product.variant.generation.title")) + " (" + l(e.combinationCount || 0) + `)
+      n("div", wt, l(s.$lang("shopgo.product.variant.generation.title")) + " (" + l(e.combinationCount || 0) + `)\r
       `, 1),
       t[3] || (t[3] = o()),
       n("div", xt, [
@@ -560,7 +560,7 @@ function Ne(s, t, c, e, f, a) {
         n("div", Ee, l(c.item.title), 1),
         t[2] || (t[2] = o()),
         n("div", null, [
-          c.item.sku ? (d(), v("span", Ue, `
+          c.item.sku ? (d(), v("span", Ue, `\r
                     #` + l(c.item.sku), 1)) : S("", !0),
           t[0] || (t[0] = o()),
           e.priceOffset !== 0 ? (d(), v("span", Oe, l(s.$offsetFormat(e.priceOffset, "$")), 1)) : S("", !0),

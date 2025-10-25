@@ -1,5 +1,7 @@
 
+import { useProductFeatureEditApp } from '@lyrasoft/shopgo';
 import {
+  data,
   useBs5Tooltip,
   useDisableIfStackNotEmpty,
   useDisableOnSubmit,
@@ -20,101 +22,6 @@ useDisableIfStackNotEmpty();
 
 useKeepAlive(location.href);
 
-// App
-const $typeSelect = document.querySelector('#input-item-type');
-import { ref, onMounted, computed, createApp, toRefs, reactive } from 'vue';
+const app = await useProductFeatureEditApp({ options: data('options') });
 
-
-// Todo: Fix this
-const app = createApp({
-  name: 'ProductFeatureApp',
-  setup() {
-    const type = ref($typeSelect.value);
-    const state = reactive({
-      items: ShopgoVueUtilities.prepareVueItemList(
-        u.data('options') || [],
-        (item) => {
-          item.uid = item.uid || u.tid();
-          return {
-            data: item,
-            uid: item.uid,
-            selected: false
-          };
-        }
-      ),
-      current: null,
-      selected: [],
-      colorpicker: {}
-    })
-
-    onMounted(() => {
-      $typeSelect.addEventListener('change', () => {
-        type.value = $typeSelect.value;
-      });
-    });
-
-    function selectItem(item) {
-      state.current = item;
-    }
-
-    function addNewItem(item = null) {
-      const i = item ? state.items.indexOf(item) + 1 : state.items.length;
-
-      state.items.splice(
-        i,
-        0,
-        ShopgoVueUtilities.prepareVueItem(
-          {
-            value: '',
-            text: '',
-            color: ''
-          },
-          (data) => {
-            data.uid = data.uid || u.tid();
-            return {
-              data: data,
-              uid: data.uid,
-              selected: false
-            };
-          }
-        )
-      );
-    }
-
-    function removeItem(item) {
-      const i = state.items.indexOf(item);
-
-      state.items.splice(i, 1);
-    }
-
-    function removeItems() {
-      state.items = state.items.filter((item) => !state.selected.includes(item.uid));
-
-      if (state.selected.includes(state.current?.uid)) {
-        state.current = null;
-      }
-
-      state.selected = [];
-    }
-
-    function toJson(data) {
-      return JSON.stringify(data);
-    }
-
-    return {
-      type,
-      ...toRefs(state),
-
-      selectItem,
-      addNewItem,
-      removeItem,
-      removeItems,
-      toJson,
-    };
-  }
-});
-
-app.use(ShopGoVuePlugin);
-app.directive('colorpicker', ShopGoVuePlugin.Colorpicker);
-app.component('draggable', vuedraggable);
-app.mount('#product-feature-app');
+app.mount('product-feature-edit-app');

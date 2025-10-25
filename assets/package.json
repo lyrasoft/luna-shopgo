@@ -25,6 +25,7 @@
         "vite-plugin-vue-component-override": "^0.1.1"
     },
     "dependencies": {
+        "@asika32764/vue-animate": "^3.0.2",
         "@lyrasoft/ts-toolkit": "^0.2.2",
         "bootstrap": "^5.3.8",
         "sortablejs": "^1.15.6",

@@ -1,17 +1,17 @@
-import { Tooltip as g } from "bootstrap";
-import { useTomSelect as b, useColorPicker as m, data as v, __ as k, delegate as C, useHttpClient as h, simpleAlert as P, route as x, useUnicorn as N } from "@windwalker-io/unicorn-next";
+import { Tooltip as p } from "bootstrap";
+import { useTomSelect as b, useColorPicker as g, data as v, __ as k, delegate as C, useHttpClient as h, simpleAlert as A, route as x, useUnicorn as N } from "@windwalker-io/unicorn-next";
 import { nextTick as T } from "vue";
 import { numberFormat as y } from "@lyrasoft/ts-toolkit/generic";
 import $ from "sweetalert";
 const L = {
   async mounted(e, { value: t }) {
-    g.getOrCreateInstance(e, t);
+    p.getOrCreateInstance(e, t);
   },
   updated(e, { value: t }) {
-    g.getOrCreateInstance(e, t).update();
+    p.getOrCreateInstance(e, t).update();
   },
   beforeUnmount(e) {
-    g.getOrCreateInstance(e).dispose();
+    p.getOrCreateInstance(e).dispose();
   }
 }, Q = {
   async mounted(e, { value: t }) {
@@ -22,17 +22,18 @@ const L = {
   }
 }, V = {
   async mounted(e, { value: t }) {
-    await m(e, Object.assign({}, t));
+    await g(e, Object.assign({}, t));
   },
   async updated(e, { value: t }) {
-    const n = await m(e);
+    await g();
+    const n = Spectrum.getInstance(e);
     JSON.stringify(t) !== JSON.stringify(n.options) && n.rebuild(Object.assign({}, t));
   },
   async unmounted(e) {
-    (await m(e)).destroy();
+    await g(), Spectrum.getInstance(e).destroy();
   }
 };
-function p(e = {}) {
+function m(e = {}) {
   function t() {
     return v("currency").current;
   }
@@ -50,11 +51,11 @@ function p(e = {}) {
     Number.isNaN(c) && (c = 0);
     const i = d || t();
     f = Object.assign({}, e, f);
-    const O = f?.code ?? !1, q = f?.sign ?? !0, E = f?.signPosition ?? i.signPosition, I = c < 0;
+    const E = f?.code ?? !1, I = f?.sign ?? !0, O = f?.signPosition ?? i.signPosition, q = c < 0;
     c = Math.abs(c), c = a(c, i);
     let u = y(c, i.decimalPlace, i.decimalPoint);
     const w = i.space ? " " : "";
-    return q && (E === "start" ? u = i.sign + w + u : u += w + i.sign), I ? "-" + u : (O && (u = i.code + " " + u), u);
+    return I && (O === "start" ? u = i.sign + w + u : u += w + i.sign), q ? "-" + u : (E && (u = i.code + " " + u), u);
   }
   function l(o, d = {}) {
     return s(o, n(), d);
@@ -81,9 +82,9 @@ function z(e) {
     let a = n + y(Math.abs(t));
     return r ? a = "-" + a : a = "+" + a, a;
   }, e.config.globalProperties.$priceOffset = (t, n) => {
-    const r = t < 0, { format: a } = p({ sign: !1, code: !1 });
+    const r = t < 0, { format: a } = m({ sign: !1, code: !1 });
     return n === "fixed" ? "=" + a(Math.abs(t)) : n === "offsets" ? r ? "-" + a(Math.abs(t)) : "+" + a(Math.abs(t)) : n === "percentage" ? (t > 100 && (t = 100), t + "%") : String(t);
-  }, e.config.globalProperties.$formatPrice = (t, n = !1) => p().format(t, void 0, n), e.config.globalProperties.$currency = p();
+  }, e.config.globalProperties.$formatPrice = (t, n = !1) => m().format(t, void 0, n), e.config.globalProperties.$currency = m();
 }
 function K() {
   C(document.body, "[data-task=add-to-cart]", "click", (e) => {
@@ -92,7 +93,7 @@ function K() {
     _(e.currentTarget);
   });
 }
-async function A(e) {
+async function P(e) {
   const t = e.dataset.id;
   if (!t)
     throw new Error("No product ID");
@@ -118,9 +119,9 @@ async function A(e) {
 async function M(e) {
   const { isAxiosError: t } = await h();
   try {
-    await A(e);
+    await P(e);
   } catch (r) {
-    t(r) && P(r.message, "", "warning");
+    t(r) && A(r.message, "", "warning");
     return;
   }
   await $({
@@ -134,9 +135,9 @@ async function M(e) {
 async function _(e) {
   const { isAxiosError: t } = await h();
   try {
-    await A(e);
+    await P(e);
   } catch (n) {
-    t(n) && P(n.message, "", "warning");
+    t(n) && A(n.message, "", "warning");
     return;
   }
   S();
@@ -198,13 +199,23 @@ async function Y(e = {}) {
   const { initApp: t } = await import("./chunks/product-variants-edit.js");
   return t(e);
 }
+async function Z(e = {}) {
+  const { initApp: t } = await import("./chunks/product-attribute-edit.js");
+  return t(e);
+}
+async function j(e = {}) {
+  const { initApp: t } = await import("./chunks/product-feature-edit.js");
+  return t(e);
+}
 export {
   z as ShopGoPlugin,
   D as mergeRecursive,
   W as useAdditionalPurchaseAttachmentEditApp,
-  p as useCurrency,
+  m as useCurrency,
+  Z as useProductAttributeEditApp,
   K as useProductCart,
   X as useProductDiscountsEditApp,
+  j as useProductFeatureEditApp,
   Y as useProductVariantsEditApp,
   V as vColorpicker,
   Q as vTomSelect,

@@ -20,3 +20,15 @@ export async function useProductVariantsEditApp(props: Record<string, any> = {})
 
   return initApp(props);
 }
+
+export async function useProductAttributeEditApp(props: Record<string, any> = {}) {
+  const { initApp } = await import('~shopgo/modules/product-attribute/product-attribute-edit');
+
+  return initApp(props);
+}
+
+export async function useProductFeatureEditApp(props: Record<string, any> = {}) {
+  const { initApp } = await import('~shopgo/modules/product-feature/product-feature-edit');
+
+  return initApp(props);
+}

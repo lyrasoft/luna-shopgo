@@ -99,7 +99,7 @@ function Lt(l, t, i, o, h, v) {
           t[9] || (t[9] = s()),
           e("div", it, [
             e("div", dt, [
-              e("span", rt, `
+              e("span", rt, `\r
                             #` + u(i.product.id), 1),
               t[5] || (t[5] = s()),
               e("span", ut, u(l.$lang("shopgo.additional.purchase.text.selected.count", o.checks)), 1),
@@ -266,8 +266,8 @@ function Lt(l, t, i, o, h, v) {
                   ]
                 ]),
                 t[25] || (t[25] = s()),
-                n.attachment.method === "percentage" ? (m(), f("span", jt, `
-                                %
+                n.attachment.method === "percentage" ? (m(), f("span", jt, `\r
+                                %\r
                             `)) : q("", !0)
               ])
             ]),

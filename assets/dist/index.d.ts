@@ -43,16 +43,25 @@ export declare function useCurrency(currencyOptions?: CurrencyFormatOptions): {
     exchange: (num: number, currency: any) => number;
 };
 
+export declare function useProductAttributeEditApp(props?: Record<string, any>): Promise<App<Element>>;
+
 export declare function useProductCart(): void;
 
 export declare function useProductDiscountsEditApp(props?: Record<string, any>): Promise<App<Element>>;
 
+export declare function useProductFeatureEditApp(props?: Record<string, any>): Promise<App<Element>>;
+
 export declare function useProductVariantsEditApp(props?: Record<string, any>): Promise<App<Element>>;
 
-export declare const vColorpicker: ObjectDirective;
+export declare const vColorpicker: ObjectDirective<HTMLInputElement>;
 
 export declare const vTomSelect: ObjectDirective;
 
 export declare const vTooltip: ObjectDirective;
 
 export { }
+
+
+declare global {
+    var Spectrum: SpectrumGlobal;
+}
