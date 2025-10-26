@@ -7,9 +7,7 @@ export * from './services';
 export * from './utilities';
 export * from './types';
 
-export async function useShopGoCatalog() {
-  await useFormAsync();
-
+export function useShopGoCatalog() {
   return useMacro('$shopgo', {
     useProductCartButtons,
     useCurrencySwitcher,

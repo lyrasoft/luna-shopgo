@@ -240,7 +240,6 @@ async function selectAddress(address: any) {
 }
 
 function prepareAddressData(data: AddressFormData): AddressFormData {
-  console.log(data);
   data.locationPath = data.locationPath.map((v) => String(v));
   data.addressId = String(data.id);
 

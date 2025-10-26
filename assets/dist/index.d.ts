@@ -351,12 +351,12 @@ export declare interface User {
     [name: string]: any;
 }
 
-export declare function useShopGoCatalog(): Promise<{
+export declare function useShopGoCatalog(): {
     $shopgo: {
         useProductCartButtons: typeof useProductCartButtons;
         useCurrencySwitcher: typeof useCurrencySwitcher;
     };
-}>;
+};
 
 export declare function useSwiper(selector?: HTMLElement | string, options?: SwiperOptions): Promise<default_2 | default_2>;
 

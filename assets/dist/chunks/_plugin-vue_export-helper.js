@@ -1,10 +1,25 @@
-const s = (t, r) => {
-  const o = t.__vccOpts || t;
-  for (const [c, e] of r)
-    o[c] = e;
-  return o;
+import { getCurrentInstance as c } from "vue";
+function u(o, t) {
+  const e = c();
+  if (console.log(e), !e)
+    return t;
+  console.log(e.appContext.components);
+  const n = e.appContext.components;
+  return (n[o] || n[p(o)] || n[s(o)]) ?? t;
+}
+function s(o) {
+  return o.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/[\s_]+/g, "-").toLowerCase();
+}
+function p(o) {
+  return o.replace(/(^\w|-\w)/g, (t) => t.replace(/-/, "").toUpperCase());
+}
+const l = (o, t) => {
+  const e = o.__vccOpts || o;
+  for (const [n, r] of t)
+    e[n] = r;
+  return e;
 };
 export {
-  s as _
+  l as _,
+  u as r
 };
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiX3BsdWdpbi12dWVfZXhwb3J0LWhlbHBlci5qcyIsInNvdXJjZXMiOltdLCJzb3VyY2VzQ29udGVudCI6W10sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7OzsifQ==

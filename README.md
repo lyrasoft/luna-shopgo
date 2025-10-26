@@ -1,16 +1,18 @@
 # LYRASOFT ShopGo Package
 
 <!-- TOC -->
-* [Installation](#installation)
-  * [Seeders](#seeders)
-  * [Global Settings](#global-settings)
-  * [Session](#session)
-  * [Favorites Type](#favorites-type)
-  * [Language Files](#language-files)
-  * [CSS/JS](#cssjs)
-  * [Add Cart Button](#add-cart-button)
-* [Register Admin Menu](#register-admin-menu)
-* [Frontend Available Routes](#frontend-available-routes)
+* [LYRASOFT ShopGo Package](#lyrasoft-shopgo-package)
+  * [Installation](#installation)
+    * [Seeders](#seeders)
+    * [Global Settings](#global-settings)
+    * [Env](#env)
+    * [Session](#session)
+    * [Favorites Type](#favorites-type)
+    * [Language Files](#language-files)
+    * [CSS/JS](#cssjs)
+    * [Add Cart Button](#add-cart-button)
+  * [Register Admin Menu](#register-admin-menu)
+  * [Frontend Available Routes](#frontend-available-routes)
 <!-- TOC -->
 
 ## Installation
@@ -39,21 +41,21 @@ Add these files to `resources/seeders/main.php`
 return [
     // ...
     
-    __DIR__ . '/payment-seeder.php',
-    __DIR__ . '/shipping-seeder.php',
-    __DIR__ . '/manufacturer-seeder.php',
-    __DIR__ . '/product-feature-seeder.php',
-    __DIR__ . '/product-attribute-seeder.php',
-    __DIR__ . '/product-tab-seeder.php',
-    __DIR__ . '/product-seeder.php',
-    __DIR__ . '/discount-seeder.php',
-    __DIR__ . '/address-seeder.php',
-    __DIR__ . '/additional-purchase-seeder.php',
-    __DIR__ . '/order-seeder.php',
+    __DIR__ . '/payment.seeder.php',
+    __DIR__ . '/shipping.seeder.php',
+    __DIR__ . '/manufacturer.seeder.php',
+    __DIR__ . '/product-feature.seeder.php',
+    __DIR__ . '/product-attribute.seeder.php',
+    __DIR__ . '/product-tab.seeder.php',
+    __DIR__ . '/product.seeder.php',
+    __DIR__ . '/discount.seeder.php',
+    __DIR__ . '/address.seeder.php',
+    __DIR__ . '/additional-purchase.seeder.php',
+    __DIR__ . '/order.seeder.php',
 ];
 ```
 
-Add these types to `category-seeder.php`
+Add these types to `category.seeder.php`
 
 ```php
     static function () use ($seeder, $orm, $db) {
@@ -73,63 +75,63 @@ Add these types to `category-seeder.php`
 
 ### Global Settings
 
-Open `/etc/packages/shopgo.php`, you can configure there settings:
+Open `/etc/packages/shopgo.config.php`, you can configure there settings:
 
 ```php
 <?php
 // ...
 
-return [
-    'shopgo' => [
-        // ...
+return #[ConfigModule('formkit', enabled: true, priority: 100, belongsTo: ShopGoPackage::class)]
+static fn() => [
+    // ...
 
-        'currency' => [
-            'main' => 'USD' // Can be ID or code
-        ],
+    'currency' => [
+        'main' => 'USD' // Can be ID or code
+    ],
 
-        'fixtures' => [
-            // The migration/seeder faker locale
-            'locale' => 'en_US',
-        ],
+    'fixtures' => [
+        // The migration/seeder faker locale
+        'locale' => 'en_US',
+    ],
 
-        'address' => [
-            // Use fullname or firstname/lastname
-            'use_fullname' => false,
-            'use_fulladdress' => false,
-        ],
+    'address' => [
+        // Use fullname or firstname/lastname
+        'use_fullname' => false,
+        'use_fulladdress' => false,
+    ],
 
-        'order_no' => [
-            // Order No mode, cab be:
-            // INCREMENT_ID: S0000000123
-            // DAILY_SEQUENCE: S20230105000123
-            // SEQUENCE_HASHES: SfY5Sv8fhJ
-            // RANDOM_HASHES: Skf8q2FgHJ38kl (longer)
-            'mode' => OrderNoMode::INCREMENT_ID,
-            'prefix' => 'S',
-            'hash_offsets' => 100000, // Add offset to hash seed to make no un-guessable
-            'sequence_day_format' => 'Ymd',
-            // Base62
-            // If you want to update this, run:
-            // `php -r "echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');"`
-            'hash_seed' => 'E7G5FHBK9NTifV8tZban2ASvQLeRyYwMWqdhDXs61OuPg0Iploc3kUj4rCJmxz'
-        ],
+    'order_no' => [
+        // Order No mode, cab be:
+        // INCREMENT_ID: S0000000123
+        // DAILY_SEQUENCE: S20230105000123
+        // SEQUENCE_HASHES: SfY5Sv8fhJ
+        // RANDOM_HASHES: Skf8q2FgHJ38kl (longer)
+        'mode' => OrderNoMode::INCREMENT_ID,
+        'prefix' => 'S',
+        'hash_offsets' => 100000, // Add offset to hash seed to make no un-guessable
+        'sequence_day_format' => 'Ymd',
+        // Base62
+        // If you want to update this, run:
+        // `php -r "echo str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');"`
+        'hash_seed' => 'E7G5FHBK9NTifV8tZban2ASvQLeRyYwMWqdhDXs61OuPg0Iploc3kUj4rCJmxz'
+    ],
 
-        'payment_no' => [
-            // This is the max length of payment No.
-            // For intance, Ecpay's limit is 20
-            'maxlength' => 20,
-        ],
+    'payment_no' => [
+        // This is the max length of payment No.
+        // For intance, Ecpay's limit is 20
+        'maxlength' => 20,
+    ],
 
-        'invoice_no' => [
-            'prefix' => 'INV'
-        ],
-    ]
+    'invoice_no' => [
+        'prefix' => 'INV'
+    ],
+   
 ];
 
 ```
 
 After you configure the base settings, you should not change it after site release.
-And then you can run migtaiotns/seeders, all orders No and faker locale will use this setting.
+And then you can run migrations / seeders, all orders No and faker locale will use this setting.
 
 ```shell
 php windwalker mig:reset -fs
@@ -208,31 +210,16 @@ php windwalker pkg:install lyrasoft/favorite -t lang
 
 ### CSS/JS
 
-ShopGo dependents on `lyrasoft/favorite`, you must add these vendors to `fusionfile.mjs`
+ShopGo will auto add dependencies to `package.json`. You must add this line to your `main.ts` to make PHP 
+can run ShopGo JS:
 
-```javascript
-export async function install() {
-    return installVendors(
-        [
-            // ...
+```ts
+// front main.ts
+import { useShopGoCatalog } from '@lyrasoft/shopgo';
 
-            // Add these below
-            'sweetalert',
-            'swiper',
-        ],
-        [
-            // Add these 2 lines
-            'lyrasoft/shopgo',
-            'lyrasoft/favorite',
-        ]
-    );
-}
-```
+// ...
 
-Then run this command to install npm vendors:
-
-```shell
-yarn add swiper sweetalert
+useShopGoCatalog();
 ```
 
 The ShopGo Scripts will auto-register in destinestion pages. But if you want, you can register it globally in `FrontMiddleware`.
@@ -252,26 +239,35 @@ class FrontMiddleware extends AbstractLifecycleMiddleware
     {
         // ...
 
-        $this->shopGoScript->sweetAlert();
+        // Necessary if you provide multiple currencies
+        $this->shopGoScript->currencySwitcher();
+        
+        // Necessary if you put cart button in every pages
         $this->shopGoScript->productCart();
+
 ```
 
 If you want ot make all JS alert as SweetAlert style, you can replace `u.alert` at `main.js`
 
-```javascript
-// main.js
+```ts
+import { useAlertAdapter } from '@windwalker-io/unicorn-next';
 
-// ...
-
-u.alert = swal;
+useAlertAdapter({
+    alert: swal,
+    // ...
+})
 ```
 
 
 ### Add Cart Button
 
-Currently ShopGo Beta has no cart button widget. You must add it to HTML manually.
+Simply use:
 
-You must includes these 2 attributes to make JS works:
+```html
+<x-cart-button class="..." />
+```
+
+Ig you want to use your own style, you must includes these 2 attributes to make JS works:
 
 - `[data-role=cart-button]`
 - `[data-role=cart-quantity]`

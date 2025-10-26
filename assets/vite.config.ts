@@ -60,7 +60,8 @@ export default defineConfig(() => {
       },
       outDir: 'dist',
       emptyOutDir: true,
-      sourcemap: 'inline',
+      sourcemap: false,
+      // sourcemap: 'inline',
       minify: true,
     },
     plugins: [
@@ -87,7 +88,7 @@ export default defineConfig(() => {
         bundleTypes: true,
       }),
 
-      // vueComponentOverride({})
+      vueComponentOverride({})
 
 //       {
 //         name: 'vue-override',
