@@ -1,14 +1,45 @@
 
-import { delegate, useHttpClient, simpleAlert, route, useUnicorn } from '@windwalker-io/unicorn-next';
+import { delegate, useHttpClient, simpleAlert, route, useUnicorn, useUniDirective } from '@windwalker-io/unicorn-next';
 import swal from 'sweetalert';
 
-export function useProductCart() {
+export async function useProductCartButtons() {
   delegate(document.body, '[data-task=add-to-cart]', 'click', (e) => {
     addToCart(e.currentTarget as HTMLElement);
   });
 
   delegate(document.body, '[data-task=buy]', 'click', (e) => {
     buy(e.currentTarget as HTMLElement);
+  });
+
+  await Promise.all([
+    useAddToCartDirective(),
+    useInstantBuyDirective()
+  ]);
+}
+
+function useAddToCartDirective() {
+  const addCartListener = (e: MouseEvent) => addToCart(e.currentTarget as HTMLElement);
+
+  return useUniDirective<HTMLElement>('add-to-cart', {
+    mounted(el) {
+      el.addEventListener('click', addCartListener);
+    },
+    unmounted(el) {
+      el.removeEventListener('click', addCartListener);
+    }
+  });
+}
+
+function useInstantBuyDirective() {
+  const instantBuy = (e: MouseEvent) => buy(e.currentTarget as HTMLElement);
+
+  return useUniDirective<HTMLElement>('buy', {
+    mounted(el) {
+      el.addEventListener('click', instantBuy);
+    },
+    unmounted(el) {
+      el.removeEventListener('click', instantBuy);
+    }
   });
 }
 
@@ -65,6 +96,7 @@ async function addToCart(el: HTMLElement) {
     return;
   }
 
+  // Todo: Translate it
   const v = await swal({
     title: '已加入購物車',
     buttons: [

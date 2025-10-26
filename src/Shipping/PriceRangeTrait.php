@@ -175,7 +175,7 @@ trait PriceRangeTrait
                                     'location_id' => $location?->id,
                                 ]
                             );
-                            $cartItem->priceSet = $priceSet;
+                            $cartItem->setPriceSet($priceSet);
                         }
                     }
 

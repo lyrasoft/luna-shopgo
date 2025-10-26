@@ -10,6 +10,7 @@ use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Lyrasoft\ShopGo\Data\PaymentData;
 use Lyrasoft\ShopGo\Data\ShippingData;
 use Lyrasoft\ShopGo\Entity\Address;
@@ -51,7 +52,7 @@ class CheckoutService
         protected ApplicationInterface $app,
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
-        protected CurrencyService $currencyService,
+        protected CurrencyResolver $currencyResolver,
         protected OrderService $orderService,
         protected OrderHistoryService $orderHistoryService,
         protected LocationService $locationService,
@@ -63,12 +64,21 @@ class CheckoutService
     ) {
     }
 
+    /**
+     * @param  int|null                  $addressId
+     * @param  PaymentData|ShippingData  $data
+     * @param  User                      $user
+     *
+     * @return  array{ PaymentData|ShippingData, Location }
+     *
+     * @throws \JsonException
+     * @throws \ReflectionException
+     */
     public function prepareAddressData(
-        ?int $addressId,
-        array $data,
-        PaymentData|ShippingData $addressData,
+        mixed $addressId,
+        PaymentData|ShippingData $data,
         User $user
-    ): Location {
+    ): array {
         if ($addressId) {
             $address = $this->orm->mustFindOne(Address::class, $addressId);
 
@@ -83,43 +93,32 @@ class CheckoutService
             $location = $this->orm->mustFindOne(Location::class, $address->locationId);
             [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
 
-            $addressData->fillFrom($address);
-            $addressData->country = $country?->title ?? '';
-            $addressData->state = $state?->title ?? '';
-            $addressData->city = $city?->title ?? '';
-            $addressData->formatted = AddressService::formatByLocation($address, $country, true);
+            $data->fillFrom($address);
+            $data->country = $country?->title ?? '';
+            $data->state = $state?->title ?? '';
+            $data->city = $city?->title ?? '';
+            $data->formatted = AddressService::formatByLocation($address, $country, true);
         } else {
-            $location = $this->orm->mustFindOne(Location::class, $data['location_id']);
+            $location = $this->orm->mustFindOne(Location::class, $data->locationId);
             [$country, $state, $city] = $this->locationService->getPathFromLocation($location);
 
-            $addressData->locationId = $location->id;
-            $addressData->firstname = $data['firstname'];
-            $addressData->lastname = $data['lastname'];
-            $addressData->email = $data['email'];
-            $addressData->phone = $data['phone'];
-            $addressData->mobile = $data['mobile'];
-            $addressData->company = $data['company'];
-            $addressData->vat = $data['vat'];
-            $addressData->address1 = $data['address1'];
-            $addressData->address2 = $data['address2'];
-            $addressData->postcode = $data['postcode'];
-            $addressData->country = $country?->title ?? '';
-            $addressData->state = $state?->title ?? '';
-            $addressData->city = $city?->title ?? '';
-            $addressData->name = trim($data['firstname'] . ' ' . $data['lastname']);
-            $addressData->formatted = AddressService::formatByLocation($addressData, $country, true);
+            $data->locationId = $location->id;
+            $data->country = $country?->title ?? '';
+            $data->state = $state?->title ?? '';
+            $data->city = $city?->title ?? '';
+            $data->formatted = AddressService::formatByLocation($data, $country, true);
 
-            if ($data['save'] ?? false) {
+            if ($data->save) {
                 $address = new Address();
-                $address->fillFrom($addressData);
+                $address->fillFrom($data);
 
                 $this->orm->createOne(Address::class, $address);
 
-                $addressData->addressId = $address->id;
+                $data->addressId = $address->id;
             }
         }
 
-        return $location;
+        return [$data, $location];
     }
 
     /**
@@ -335,11 +334,11 @@ class CheckoutService
 
         // Check prices
         foreach ($items as $item) {
-            if ($item->getPriceSet()['final_total']->lt('0')) {
+            if ($item->priceSet['final_total']->lt('0')) {
                 throw new ValidateFailException('Cannot process product item with negative prices.');
             }
 
-            if ($item->getPriceSet()['attached_final_total']->lt('0')) {
+            if ($item->priceSet['attached_final_total']->lt('0')) {
                 throw new ValidateFailException('Cannot process product item with negative prices.');
             }
         }
@@ -454,7 +453,7 @@ class CheckoutService
             $variant->product ?? $this->getProduct($variant->productId)
         );
         $mainVariant = $item->mainVariant;
-        $currency = $this->currencyService->getCurrentCurrency();
+        $currency = $this->currencyResolver->getCurrentCurrency();
 
         $orderItem = new OrderItem();
         $orderItem->productId = $product->id;

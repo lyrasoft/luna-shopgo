@@ -18,10 +18,9 @@ namespace App\View;
 
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderItem;
-use Lyrasoft\ShopGo\Module\Admin\Invoice\InvoiceView;
-use Lyrasoft\ShopGo\Service\CurrencyService;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
@@ -44,7 +43,7 @@ $shopGo = $app->service(ShopGoPackage::class);
 $logo = value($shopGo->config('shop.logo'));
 $siteName = value($shopGo->config('shop.sitename'));
 
-$currency = $app->service(CurrencyService::class);
+$currency = $app->service(CurrencyResolver::class);
 ?><!DOCTYPE html>
 <html lang="en">
 <head>

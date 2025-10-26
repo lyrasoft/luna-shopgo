@@ -60,7 +60,7 @@ class CheckoutView implements ViewModelInterface
                     $app->state->forget('checkout.data');
                 }
 
-                return $this->nav->self()->var('cleared', '1');
+                return $this->nav->self()->allowQuery(['layout', 'no'])->var('cleared', '1');
             }
 
             $no = (string) $app->input('no');

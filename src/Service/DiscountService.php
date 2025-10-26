@@ -171,7 +171,7 @@ class DiscountService
                     /** @var BigDecimal $diff */
                     $priceSet = $this->addDiscountToProductPrice($priceSet, $discount, $diff);
 
-                    $cartItem->priceSet = $priceSet;
+                    $cartItem->setPriceSet($priceSet);
 
                     if ($cartItem->isChecked()) {
                         $total = $total->plus($diff->multipliedBy($cartItem->quantity));
@@ -197,7 +197,7 @@ class DiscountService
                                     $diff
                                 );
 
-                                $cartItem->priceSet = $priceSet;
+                                $cartItem->setPriceSet($priceSet);
                                 $total = $total->plus($diff);
                                 $itemApplied[] = $discount;
                             }

@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Lyrasoft\ShopGo\Service;
+namespace Lyrasoft\ShopGo\Currency;
 
 use Brick\Math\BigDecimal;
 use Lyrasoft\Luna\LunaPackage;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Enum\SignPosition;
 use Lyrasoft\ShopGo\ShopGoPackage;
 use Windwalker\Core\Application\ApplicationInterface;
 use Windwalker\Core\Application\AppType;
@@ -17,10 +19,12 @@ use Windwalker\ORM\ORM;
 use Windwalker\Session\Session;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
+use function Windwalker\with;
+
 /**
- * The CurrencyService class.
+ * The CurrencyResolver class.
  */
-class CurrencyService
+class CurrencyResolver
 {
     use InstanceCacheTrait;
 
@@ -28,7 +32,33 @@ class CurrencyService
         protected ORM $orm,
         protected ShopGoPackage $shopGo,
         protected ApplicationInterface $app,
+        public CurrencyOptions $options = new CurrencyOptions(),
     ) {
+    }
+
+    public function withOptions(
+        ?bool $code = null,
+        ?bool $sign = null,
+        ?SignPosition $signPosition = null,
+    ): static {
+        $new = clone $this;
+
+        $new->options = $new->options->with(
+            code: $code,
+            sign: $sign,
+            signPosition: $signPosition,
+        );
+
+        return $new;
+    }
+
+    public function withUseOptions(CurrencyOptions $options): static
+    {
+        $new = clone $this;
+
+        $new->options = clone $options;
+
+        return $new;
     }
 
     public function exchangeFromMainCurrency(mixed $num, Currency $toCurrency): BigDecimal
@@ -45,7 +75,7 @@ class CurrencyService
     public function format(
         mixed $num,
         Currency|int|string|null $currency = null,
-        bool $addCode = false
+        CurrencyOptions $options = new CurrencyOptions()
     ): string {
         if (!$currency instanceof Currency) {
             if ($currency === null) {
@@ -57,22 +87,24 @@ class CurrencyService
 
         $num = $this->exchangeFromMainCurrency($num, $currency);
 
-        return $currency->formatPrice($num, $addCode);
+        $options = $this->options->withMerge($options);
+
+        return $currency->formatPrice($num, $options);
     }
 
     public function formatWithCode(
         mixed $num,
         Currency|int|string|null $currency = null
     ): string {
-        return $this->format($num, null, true);
+        return $this->format($num, $currency, $this->options->with(code: true));
     }
 
     public static function formatByCurrency(
         PriceObject|BigDecimal|string|float $num,
         Currency $currency,
-        bool $addCode = false
+        CurrencyOptions $options = new CurrencyOptions()
     ): string {
-        return $currency->formatPrice($num, $addCode);
+        return $currency->formatPrice($num, $options);
     }
 
     public function getCurrentCurrency(): Currency

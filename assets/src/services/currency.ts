@@ -1,5 +1,5 @@
 import { numberFormat } from '@lyrasoft/ts-toolkit/generic';
-import { data } from '@windwalker-io/unicorn-next';
+import { data, route, useFormAsync, useUniDirective } from '@windwalker-io/unicorn-next';
 import { Currency } from '~shopgo/types';
 
 interface CurrencyInfo {
@@ -85,4 +85,27 @@ export function useCurrency(currencyOptions: CurrencyFormatOptions = {}) {
     formatMainCurrency,
     exchange,
   };
+}
+
+export function useCurrencySwitcher() {
+  let listener: any = null;
+
+  return useUniDirective<HTMLAnchorElement>('currency-switch', {
+    mounted(el, { value }) {
+      listener = async () => {
+        const url = route('currency_switch');
+
+        const form = await useFormAsync();
+        form.post(url, { code: value });
+      };
+
+      el.addEventListener('click', listener);
+    },
+    unmounted(el) {
+      if (listener) {
+        el.removeEventListener('click', listener);
+        listener = null;
+      }
+    },
+  });
 }

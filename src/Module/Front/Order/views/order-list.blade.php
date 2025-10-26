@@ -16,6 +16,7 @@ namespace App\View;
  * @var  $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\OrderState;
 use Lyrasoft\ShopGo\Module\Front\Order\OrderListView;
@@ -82,7 +83,8 @@ $orm = $app->service(ORM::class);
                         <div class="d-lg-flex d-grid gap-3 justify-content-between mt-3">
                             <div class=" ">
                                 <span class="">@lang('shopgo.order.field.total'): </span>
-                                <span class="fs-5 fw-bold">{{ $vm->formatPrice($entity->total, true) }}</span>
+                                <span
+                                    class="fs-5 fw-bold">{{ $vm->formatPrice($entity->total, new CurrencyOptions(code: true)) }}</span>
                             </div>
 
                             <div>

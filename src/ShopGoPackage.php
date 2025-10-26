@@ -14,7 +14,7 @@ use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\AddressService;
 use Lyrasoft\ShopGo\Service\CheckoutService;
 use Lyrasoft\ShopGo\Service\CouponService;
-use Lyrasoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Lyrasoft\ShopGo\Service\DiscountService;
 use Lyrasoft\ShopGo\Service\DiscountUsageService;
 use Lyrasoft\ShopGo\Service\InvoiceService;
@@ -37,6 +37,7 @@ use Windwalker\Core\Package\PackageInstaller;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
+use Windwalker\DI\MergeOptions;
 use Windwalker\DI\ServiceProviderInterface;
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Utilities\StrNormalize;
@@ -73,7 +74,7 @@ class ShopGoPackage extends AbstractPackage implements
         $container->prepareSharedObject(CartStorage::class);
         $container->prepareSharedObject(CheckoutService::class);
         $container->prepareSharedObject(CouponService::class);
-        $container->prepareSharedObject(CurrencyService::class);
+        $container->prepareSharedObject(CurrencyResolver::class);
         $container->prepareSharedObject(DiscountService::class);
         $container->prepareSharedObject(DiscountUsageService::class);
         $container->prepareSharedObject(InvoiceService::class);
@@ -102,15 +103,21 @@ class ShopGoPackage extends AbstractPackage implements
             [
                 static::path('views'),
             ],
-            Container::MERGE_OVERRIDE
+            new MergeOptions(override: true)
         );
 
         // View
+        // $container->mergeParameters(
+        //     'renderer.edge.components',
+        //     [
+        //         'product-card' => 'front.components.product-card',
+        //         'currency-dropdown' => 'front.components.currency-dropdown',
+        //     ],
+        // );
         $container->mergeParameters(
-            'renderer.edge.components',
+            'renderer.edge.component_scans',
             [
-                'product-card' => 'front.product.product-card',
-                'currency-dropdown' => 'front.components.currency-dropdown',
+                'Lyrasoft\\ShopGo\\Component'
             ],
         );
 
@@ -119,7 +126,6 @@ class ShopGoPackage extends AbstractPackage implements
             'asset.import_map.imports',
             [
                 '@shopgo/' => 'vendor/lyrasoft/shopgo/dist/',
-                '@sweetalert' => 'vendor/sweetalert/dist/sweetalert.min.js',
             ]
         );
     }

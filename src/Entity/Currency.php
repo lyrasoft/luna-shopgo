@@ -7,6 +7,7 @@ namespace Lyrasoft\ShopGo\Entity;
 use Brick\Math\BigDecimal;
 use DateTimeInterface;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Enum\SignPosition;
 use Lyrasoft\Luna\Attributes\Author;
 use Lyrasoft\Luna\Attributes\Modifier;
@@ -108,10 +109,10 @@ class Currency implements EntityInterface
     #[Cast(JsonCast::class)]
     public array $params = [];
 
-    public function formatPrice(mixed $num, bool $addCode = false): string
+    public function formatPrice(mixed $num, CurrencyOptions $options = new CurrencyOptions()): string
     {
         if ($num instanceof PriceObject) {
-            return $num->format($this, $addCode);
+            return $num->format($this, (bool) $options->code);
         }
 
         $num = (float) (string) $num;
@@ -129,17 +130,21 @@ class Currency implements EntityInterface
 
         $space = $this->space ? ' ' : '';
 
-        if ($this->signPosition === SignPosition::START) {
-            $formatted = $this->sign . $space . $formatted;
-        } else {
-            $formatted .= $space . $this->sign;
+        $signPosition = $options->signPosition ?? $this->signPosition;
+
+        if ($options->sign) {
+            if ($signPosition === SignPosition::START) {
+                $formatted = $this->sign . $space . $formatted;
+            } else {
+                $formatted .= $space . $this->sign;
+            }
         }
 
         if ($negative) {
             return '-' . $formatted;
         }
 
-        if ($addCode) {
+        if ($options->code) {
             $formatted = $this->code . ' ' . $formatted;
         }
 

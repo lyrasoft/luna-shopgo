@@ -17,6 +17,10 @@ class PaymentData implements AddressAwareInterface, RecordInterface
     use AddressAwaitTrait;
     use RecordTrait;
 
+    public bool $save = false;
+
+    public bool $sync = false;
+
     function __construct(
         string $name = '',
         string $firstname = '',
@@ -34,9 +38,13 @@ class PaymentData implements AddressAwareInterface, RecordInterface
         string $vat = '',
         string $formatted = '',
         int $locationId = 0,
-        int $addressId = 0,
-        public string $paymentTitle = ''
+        public mixed $addressId = null,
+        public string $paymentTitle = '',
+        mixed $save = false,
+        mixed $sync = false,
     ) {
+        $this->sync = (bool) $sync;
+        $this->save = (bool) $save;
         $this->name = $name;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
@@ -53,6 +61,5 @@ class PaymentData implements AddressAwareInterface, RecordInterface
         $this->vat = $vat;
         $this->formatted = $formatted;
         $this->locationId = $locationId;
-        $this->addressId = $addressId;
     }
 }

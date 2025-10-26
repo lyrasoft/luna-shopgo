@@ -149,7 +149,7 @@ $workflow = $app->service(BasicStateWorkflow::class);
 
                             {{-- Created by --}}
                             <td class="text-nowrap">
-                                {{ $item->user->name }}
+                                {{ $item->user?->name }}
                             </td>
 
                             {{-- Created --}}

@@ -18,8 +18,6 @@ namespace App\view;
 
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
-use Lyrasoft\ShopGo\Service\CurrencyService;
-use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -27,48 +25,14 @@ use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
 use Windwalker\Edge\Component\ComponentAttributes;
-use Windwalker\ORM\ORM;
 
 /**
  * @var $attributes     ComponentAttributes
  * @var $item           Product|object
  * @var $variant        ProductVariant|object
- * @var $minPrice       float
- * @var $maxPrice       float
- * @var $minStock       float
- * @var $maxStock       float
  */
 
-$attributes->props(
-    'item',
-    'variant',
-    'min-price',
-    'max-price',
-    'min-stock',
-    'max-stock',
-    'favorited'
-);
-
-$orm = $app->service(ORM::class);
-
-$item = $orm->toEntity(Product::class, $item);
-
-$variant ??= $item->variant;
-$variant = $orm->toEntity(ProductVariant::class, $variant);
-
-$minPrice ??= $item->min_price ?? 0;
-$maxPrice ??= $item->max_price ?? 0;
-$minStock ??= $item->min_stock ?? 0;
-$maxStock ??= $item->max_stock ?? 0;
-$favorited ??= null;
-
 $priceSet = $variant->priceSet;
-
-$currencyService = $app->service(CurrencyService::class);
-$variantService = $app->service(VariantService::class);
-
-$variant = $variantService->prepareVariantView($variant, $item);
-$isOutOfStock = $variantService::isOutOfStock($variant, $item);
 
 $attributes = $attributes->class('card c-product-card');
 
@@ -92,12 +56,12 @@ $attributes = $attributes->class('card c-product-card');
         <aside class="c-product-card__info">
             @if (!$priceSet['origin']->eq($priceSet['final']))
                 <del>
-                    {{ $currencyService->format($priceSet['origin']) }}
+                    {{ $priceFormat($priceSet['origin']) }}
                 </del>
             @endif
 
             <span class="fs-5">
-                {{ $currencyService->format($priceSet['final']) }}
+                {{ $priceFormat($priceSet['final']) }}
             </span>
         </aside>
 

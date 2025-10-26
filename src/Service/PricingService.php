@@ -8,6 +8,7 @@ use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Enum\DiscountMethod;
 use Lyrasoft\ShopGo\Traits\CurrencyAwareTrait;
@@ -116,7 +117,7 @@ class PricingService
      */
     protected function getScale(): int
     {
-        return $this->cacheStorage['scale'] ??= $this->app->service(CurrencyService::class)
+        return $this->cacheStorage['scale'] ??= $this->app->service(CurrencyResolver::class)
             ->getMainCurrency()
             ->decimalPlace;
     }

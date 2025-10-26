@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Event;
 
+use Lyrasoft\ShopGo\Data\PaymentData;
+use Lyrasoft\ShopGo\Data\ShippingData;
 use Lyrasoft\ShopGo\Entity\Order;
 use Windwalker\Event\BaseEvent;
 
@@ -16,8 +18,8 @@ class BeforeCheckoutEvent extends BaseEvent
         public Order $order,
         public array $payment,
         public array $shipping,
-        public array $paymentData,
-        public array $shippingData,
+        public PaymentData $paymentData,
+        public ShippingData $shippingData,
         public array $input,
         public bool $overridePaymentDataProcess = false,
         public bool $overrideShippingDataProcess = false,

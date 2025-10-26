@@ -246,7 +246,7 @@ class CartController
 
         $location = $orm->findOne(Location::class, $locationId);
 
-        if (!$location || !$location->canShip()) {
+        if (!$location || !$location->canShip) {
             return [];
         }
 
@@ -309,7 +309,7 @@ class CartController
 
         $location = $orm->findOne(Location::class, $locationId);
 
-        if (!$location || !$location->canShip()) {
+        if (!$location || !$location->canShip) {
             return [];
         }
 

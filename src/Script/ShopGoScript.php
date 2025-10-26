@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Script;
 
 use Lyrasoft\Favorite\Script\FavoriteScript;
-use Lyrasoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Unicorn\Script\UnicornScript;
 use Windwalker\Core\Asset\AbstractScript;
 
@@ -15,7 +15,7 @@ use Windwalker\Core\Asset\AbstractScript;
 class ShopGoScript extends AbstractScript
 {
     public function __construct(
-        protected CurrencyService $currencyService,
+        protected CurrencyResolver $currencyResolver,
         protected FavoriteScript $favoriteScript,
         protected UnicornScript $unicornScript
     ) {
@@ -34,30 +34,35 @@ class ShopGoScript extends AbstractScript
 
     public function currency(): void
     {
-        // todo: Remove this
         if ($this->available()) {
             $this->unicornScript->data(
                 'currency',
                 [
-                    'main' => $this->currencyService->getMainCurrency(),
-                    'current' => $this->currencyService->getCurrentCurrency()
+                    'main' => $this->currencyResolver->getMainCurrency(),
+                    'current' => $this->currencyResolver->getCurrentCurrency()
                 ]
             );
+        }
+    }
 
-            // $this->js('@shopgo/currency.js');
+    public function currencySwitcher(): void
+    {
+        if ($this->available()) {
+            $this->currency();
+
+            $this->unicornScript->addRoute('@currency_switch');
+
+            $this->unicornScript->importMainThen('u.$shopgo.useCurrencySwitcher();');
         }
     }
 
     public function productCart(): void
     {
-        // todo: Remove this
         if ($this->available()) {
-            // $this->sweetAlert();
-            //
-            // $this->unicornScript->addRoute('@cart_ajax');
-            // $this->unicornScript->addRoute('@cart');
-            //
-            // $this->js('@shopgo/product-cart.js');
+            $this->unicornScript->addRoute('@cart_ajax');
+            $this->unicornScript->addRoute('@cart');
+
+            $this->unicornScript->importMainThen('u.$shopgo.useProductCartButtons();');
         }
     }
 

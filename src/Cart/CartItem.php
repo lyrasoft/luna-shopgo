@@ -7,6 +7,7 @@ namespace Lyrasoft\ShopGo\Cart;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\DTO\ProductDTO;
 use Lyrasoft\ShopGo\DTO\ProductVariantDTO;
+use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Data\RecordTrait;
@@ -36,7 +37,7 @@ class CartItem
         ProductVariantDTO|ProductVariant $variant,
         ProductVariantDTO|ProductVariant $mainVariant,
         ProductDTO|Product $product,
-        public PriceSet $priceSet = new PriceSet(),
+        public protected(set) PriceSet $priceSet = new PriceSet(),
         public int $quantity = 0,
         public string $cover = '',
         public string $link = '',
@@ -45,7 +46,13 @@ class CartItem
         public bool $outOfStock = false,
         public array $payload = [],
         public array $options = [],
+        /**
+         * @var array<CartItem>
+         */
         public array $attachments = [],
+        /**
+         * @var array<Discount>
+         */
         public array $discounts = [],
     ) {
         $this->product = $product;

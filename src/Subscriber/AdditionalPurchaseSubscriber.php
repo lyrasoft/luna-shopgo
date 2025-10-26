@@ -140,7 +140,7 @@ class AdditionalPurchaseSubscriber
                 $priceSet['final_total']->plus($priceSet['attachments_total'])
             );
 
-            $item->priceSet = $priceSet;
+            $item->setPriceSet($priceSet);
         }
 
         $quantities = $cartData->getTotalQuantities(true, true);

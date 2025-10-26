@@ -52,7 +52,7 @@ $orm = $app->service(ORM::class);
                     $minStock = $item->min_stock;
                     ?>
                 <div class="col-lg-3 my-4">
-                    <x-front.product.product-card
+                    <x-product-card
                         class="h-100"
                         :item="$item"
                         :variant="$item->variant"
@@ -61,7 +61,7 @@ $orm = $app->service(ORM::class);
                         :min-stock="$minStock"
                         :max-stock="$maxStock"
                         :favorited="$item->favorited"
-                    ></x-front.product.product-card>
+                    ></x-product-card>
                 </div>
             @endforeach
         </div>

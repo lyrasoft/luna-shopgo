@@ -101,7 +101,7 @@ class VariantService
 
         if ($cartItem) {
             $cartItem->discounts = $event->appliedDiscounts;
-            $cartItem->priceSet = $priceSet;
+            $cartItem->setPriceSet($priceSet);
         }
 
         return $priceSet;

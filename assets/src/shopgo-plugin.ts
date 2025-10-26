@@ -1,7 +1,7 @@
 import { __ } from '@windwalker-io/unicorn-next';
 import type { App } from 'vue';
 import { numberFormat } from '@lyrasoft/ts-toolkit/generic';
-import { useCurrency } from '~shopgo/services/currency';
+import { CurrencyFormatOptions, useCurrency } from '~shopgo/services/currency';
 
 export function ShopGoPlugin(app: App) {
   app.config.compilerOptions.whitespace = 'preserve';
@@ -17,7 +17,8 @@ export function ShopGoPlugin(app: App) {
     return __(id, ...args);
   };
 
-  app.config.globalProperties.$numberFormat = (num: number, prefix = '') => {
+  app.config.globalProperties.$numberFormat = (num: number | string, prefix = '') => {
+    num = Number(num);
     const negative = num < 0;
     let formatted = prefix + numberFormat(Math.abs(num));
 
@@ -28,7 +29,8 @@ export function ShopGoPlugin(app: App) {
     return formatted;
   };
 
-  app.config.globalProperties.$offsetFormat = (num: number, prefix = '') => {
+  app.config.globalProperties.$offsetFormat = (num: number | string, prefix = '') => {
+    num = Number(num);
     const negative = num < 0;
     let formatted = prefix + numberFormat(Math.abs(num));
 
@@ -41,7 +43,8 @@ export function ShopGoPlugin(app: App) {
     return formatted;
   };
 
-  app.config.globalProperties.$priceOffset = (num: number, method: 'fixed' | 'offsets' | 'percentage' | string): string => {
+  app.config.globalProperties.$priceOffset = (num: number | string, method: 'fixed' | 'offsets' | 'percentage' | string): string => {
+    num = Number(num);
     const negative = num < 0;
 
     const { format } = useCurrency({ sign: false, code: false });
@@ -69,8 +72,8 @@ export function ShopGoPlugin(app: App) {
     return String(num);
   };
 
-  app.config.globalProperties.$formatPrice = (num: number, addCode = false) => {
-    return useCurrency().format(num, undefined, addCode);
+  app.config.globalProperties.$formatPrice = (num: number | string, options: CurrencyFormatOptions = {}) => {
+    return useCurrency().format(num, undefined, options);
   };
 
   app.config.globalProperties.$currency = useCurrency();

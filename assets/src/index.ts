@@ -1,7 +1,20 @@
+import { useFormAsync, useMacro } from '@windwalker-io/unicorn-next';
+import { useCurrencySwitcher, useProductCartButtons } from '~shopgo/services';
+
 export * from './directives';
 export * from './shopgo-plugin';
 export * from './services';
 export * from './utilities';
+export * from './types';
+
+export async function useShopGoCatalog() {
+  await useFormAsync();
+
+  return useMacro('$shopgo', {
+    useProductCartButtons,
+    useCurrencySwitcher,
+  });
+}
 
 export async function useAdditionalPurchaseAttachmentEditApp(props: Record<string, any> = {}) {
   const { initApp } = await import('~shopgo/modules/additional-purchase/additional-purchase-attachment-edit');
@@ -29,6 +42,12 @@ export async function useProductAttributeEditApp(props: Record<string, any> = {}
 
 export async function useProductFeatureEditApp(props: Record<string, any> = {}) {
   const { initApp } = await import('~shopgo/modules/product-feature/product-feature-edit');
+
+  return initApp(props);
+}
+
+export async function useCartApp(props: Record<string, any> = {}) {
+  const { initApp } = await import('~shopgo/modules/cart/cart');
 
   return initApp(props);
 }

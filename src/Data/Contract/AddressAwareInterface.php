@@ -25,7 +25,6 @@ interface AddressAwareInterface
     public string $vat { get; }
     public string $formatted { get; set; }
     public int $locationId { get; }
-    public ?int $addressId { get; }
 
     /**
      * @param  AddressAwareInterface  $address

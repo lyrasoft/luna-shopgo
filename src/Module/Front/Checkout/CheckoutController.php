@@ -10,6 +10,8 @@ use Lyrasoft\ShopGo\Cart\CartData;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Cart\Contract\CheckoutProcessLayoutInterface;
+use Lyrasoft\ShopGo\Data\PaymentData;
+use Lyrasoft\ShopGo\Data\ShippingData;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
@@ -70,15 +72,15 @@ class CheckoutController
          * @var Order $order
          * @var CartData $cartData
          */
-        [$order, $cartData] = $orm->getDb()->transaction(
+        [$order, $cartData] = $orm->transaction(
             function () use ($shopGo, $orm, $input, $stockService, $cartService, $user, $checkoutService) {
                 $order = new Order();
 
                 $payment = $input['payment'] ?? [];
                 $shipping = $input['shipping'] ?? [];
 
-                $paymentData = $input['payment_data'] ?? [];
-                $shippingData = $input['shipping_data'] ?? [];
+                $paymentData = PaymentData::wrap($input['payment_data'] ?? []);
+                $shippingData = ShippingData::wrap($input['shipping_data'] ?? []);
 
                 // $event = $shopGo->emit(
                 //     BeforeCheckoutEvent::class,
@@ -112,19 +114,20 @@ class CheckoutController
                 $paymentData = $event->paymentData;
                 $input = $event->input;
 
-                if ($shippingData['sync'] ?? false) {
-                    $shippingData = $paymentData;
+                if ($shippingData->sync) {
+                    $shippingData->fillFrom($paymentData);
                 }
 
                 if (!$event->overridePaymentDataProcess) {
-                    $addressId = $paymentData['address_id'] ?? null;
+                    $addressId = $paymentData->addressId;
 
-                    $paymentLocation = $checkoutService->prepareAddressData(
-                        (int) $addressId,
+                    [$paymentData, $paymentLocation] = $checkoutService->prepareAddressData(
+                        $addressId,
                         $paymentData,
-                        $order->paymentData,
                         $user
                     );
+
+                    $order->paymentData = $paymentData;
 
                     if ($order->paymentData->vat) {
                         $order->invoiceType = InvoiceType::COMPANY;
@@ -134,14 +137,15 @@ class CheckoutController
                 }
 
                 if (!$event->overrideShippingDataProcess) {
-                    $addressId = $shippingData['address_id'] ?? null;
+                    $addressId = $shippingData->addressId;
 
-                    $shippingLocation = $checkoutService->prepareAddressData(
-                        (int) $addressId,
+                    [$shippingData, $shippingLocation] = $checkoutService->prepareAddressData(
+                        $addressId,
                         $shippingData,
-                        $order->shippingData,
                         $user
                     );
+
+                    $order->shippingData = $shippingData;
                 } else {
                     $shippingLocation = $orm->mustFindOne(
                         Location::class,

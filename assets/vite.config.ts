@@ -60,7 +60,7 @@ export default defineConfig(() => {
       },
       outDir: 'dist',
       emptyOutDir: true,
-      sourcemap: true,
+      sourcemap: 'inline',
       minify: true,
     },
     plugins: [
@@ -87,11 +87,7 @@ export default defineConfig(() => {
         bundleTypes: true,
       }),
 
-      vueComponentOverride({
-        alias: {
-          '~shopgo/modules/additional-purchase-attachment-edit/components/AttachmentProduct.vue': 'AttachmentProduct'
-        }
-      })
+      // vueComponentOverride({})
 
 //       {
 //         name: 'vue-override',

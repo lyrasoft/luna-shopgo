@@ -4,3 +4,8 @@ export * from './ProductVariant';
 export * from './Discount';
 export * from './ProductFeature';
 export * from './ProductAttribute';
+export * from './User';
+export * from './OrderTotal';
+export * from './Payment';
+export * from './Shipping';
+export * from './Address';

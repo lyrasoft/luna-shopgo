@@ -16,6 +16,7 @@ namespace App\view;
  * @var $lang      LangService     The language translation service.
  */
 
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Module\Front\Product\ProductItemView;
@@ -39,20 +40,20 @@ use Windwalker\Core\Router\SystemUri;
     <div class="l-additional-purchases__slides swiper">
         <div class="l-additional-purchases__wrapper swiper-wrapper">
             @foreach ($additionalPurchases as $additionalPurchase)
-                    <?php
-                    [$additionalPurchase, $apProduct, $attachment] = $vm->prepareAdditionalPurchase(
-                        $additionalPurchase
-                    );
-                    $priceSet = $additionalPurchase->priceSet;
-                    $maxQuantity = $attachment->maxQuantity ?: 30;
+                <?php
+                [$additionalPurchase, $apProduct, $attachment] = $vm->prepareAdditionalPurchase(
+                    $additionalPurchase
+                );
+                $priceSet = $additionalPurchase->priceSet;
+                $maxQuantity = $attachment->maxQuantity ?: 30;
 
-                    if (VariantService::isOutOfStock($additionalPurchase, $apProduct)) {
-                        continue;
-                    }
+                if (VariantService::isOutOfStock($additionalPurchase, $apProduct)) {
+                    continue;
+                }
 
-                    $stock = VariantService::getAvailableQuantity($additionalPurchase, $apProduct);
-                    $maxQuantity = min($maxQuantity, $stock);
-                    ?>
+                $stock = VariantService::getAvailableQuantity($additionalPurchase, $apProduct);
+                $maxQuantity = min($maxQuantity, $stock);
+                ?>
                 <div class="c-additional-purchase-product card swiper-slide"
                     data-role="attachment">
                     <div class="card-body d-flex gap-2">
@@ -80,7 +81,7 @@ use Windwalker\Core\Router\SystemUri;
                             @endif
 
                             <div class="c-additional-purchase-product__price fs-bold">
-                                {{ $vm->formatPrice($priceSet['final'], true) }}
+                                {{ $vm->formatPrice($priceSet['final'], new CurrencyOptions(code: true)) }}
                             </div>
 
                             <div

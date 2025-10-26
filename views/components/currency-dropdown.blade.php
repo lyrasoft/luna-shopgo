@@ -16,8 +16,6 @@ namespace App\view;
  * @var $lang      LangService     The language translation service.
  */
 
-use Lyrasoft\ShopGo\Entity\Currency;
-use Lyrasoft\ShopGo\Service\CurrencyService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -30,29 +28,23 @@ use Windwalker\Edge\Component\ComponentAttributes;
  * @var $attributes ComponentAttributes
  */
 
-$currencyService = $app->service(CurrencyService::class);
-$currentCurrency = $currencyService->getCurrentCurrency();
-
-$currencies = $currencyService->getCurrencies()
-    ->filter(fn(Currency $currency) => $currency->id !== $currentCurrency->id);
-
 $attributes = $attributes->class('dropdown');
 
 $props = $attributes->props(
     'tag',
 );
 
-$tag = $props->tag ?: 'li';
+$tag = $props->tag ?: 'div';
 ?>
 <{{ $tag }} {!! $attributes !!}>
-    <a href="javascript://" class="nav-link dropdown-toggle"
+    <a href="javascript://" class="dropdown-toggle {{ $buttonClass }}"
         data-bs-toggle="dropdown">
         {{ $currentCurrency->title }}
     </a>
-    <div class="dropdown-menu">
+    <div class="dropdown-menu {{ $menuClass }}">
         @foreach ($currencies as $currency)
             <a class="dropdown-item" href="javascript://"
-                onclick="u.form().post('{{ $nav->to('currency_switch') }}', { code: '{{ $currency->code }}' })">
+                uni-currency-switch="{{ $currency->code }}">
                 {{ $currency->title }}
             </a>
         @endforeach

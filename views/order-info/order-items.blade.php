@@ -18,8 +18,8 @@ namespace App\view;
 
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Lyrasoft\ShopGo\Entity\OrderItem;
-use Lyrasoft\ShopGo\Service\CurrencyService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
  * @var $grandTotal PriceObject
  */
 
-$currency = $app->service(CurrencyService::class);
+$currency = $app->service(CurrencyResolver::class);
 
 $simple ??= false;
 
@@ -104,11 +104,11 @@ $totals = clone $totals;
                 @foreach ($attachmentItems as $atachment)
                     <tr class="bg-light">
                         @if (!$simple)
-                        <td>{{ $atachment->getId() }}</td>
-                        <td>
-                            <img src="{{ $atachment->getImage() }}" class="me-3" width="75"
-                                alt="Image">
-                        </td>
+                            <td>{{ $atachment->getId() }}</td>
+                            <td>
+                                <img src="{{ $atachment->getImage() }}" class="me-3" width="75"
+                                    alt="Image">
+                            </td>
                         @endif
                         <td>
                             <h5>
@@ -127,9 +127,9 @@ $totals = clone $totals;
                             </div>
                         </td>
                         @if (!$simple)
-                        <td class="text-end" style="width: 200px">
-                            {{ $currency->format($atachment->getPriceUnit()) }}
-                        </td>
+                            <td class="text-end" style="width: 200px">
+                                {{ $currency->format($atachment->getPriceUnit()) }}
+                            </td>
                         @endif
                         <td class="text-end" style="width: 200px">{{ $atachment->getQuantity() }}</td>
                         <td class="text-end" style="width: 200px">
@@ -176,9 +176,9 @@ $totals = clone $totals;
                             {{ $total->label }}
                         </div>
                         @if (str_starts_with($total->name, 'discount:'))
-                        <div class="small">
-                            {{ $total->params['title'] ?? '' }}
-                        </div>
+                            <div class="small">
+                                {{ $total->params['title'] ?? '' }}
+                            </div>
                         @endif
                     </th>
                     <td style="border: none; vertical-align: middle" width="150px">

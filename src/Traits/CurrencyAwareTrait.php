@@ -6,8 +6,9 @@ namespace Lyrasoft\ShopGo\Traits;
 
 use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Entity\Currency;
-use Lyrasoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Windwalker\DI\Attributes\Inject;
 
 /**
@@ -16,27 +17,36 @@ use Windwalker\DI\Attributes\Inject;
 trait CurrencyAwareTrait
 {
     #[Inject]
-    protected CurrencyService $currencyService;
+    protected CurrencyResolver $currencyResolver;
+
+    public function useCurrencyResolver(?CurrencyOptions $options = null): CurrencyResolver
+    {
+        if ($options === null) {
+            return $this->currencyResolver;
+        }
+
+        return $this->currencyResolver->withUseOptions($options);
+    }
 
     public function formatPrice(
         mixed $price,
-        bool $addCode = false
+        CurrencyOptions $options = new CurrencyOptions(),
     ): string {
-        return $this->currencyService->format($price, null, $addCode);
+        return $this->currencyResolver->format($price, null, $options);
     }
 
     public function getMainCurrency(): Currency
     {
-        return $this->currencyService->getMainCurrency();
+        return $this->currencyResolver->getMainCurrency();
     }
 
     public function findCurrencyBy(string|int $condition): Currency
     {
-        return $this->currencyService->findCurrencyBy($condition);
+        return $this->currencyResolver->findCurrencyBy($condition);
     }
 
     public function getMainInputStep(): string
     {
-        return $this->getMainCurrency()->inputStep;
+        return $this->getMainCurrency()->getInputStep();
     }
 }

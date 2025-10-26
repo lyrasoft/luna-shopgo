@@ -1,17 +1,7 @@
-import { ShopGoPlugin } from '@lyrasoft/shopgo';
-import { useSwiper } from '@lyrasoft/shopgo';
-import { Discount, ListOption, Product, ProductFeature, ProductVariant } from '@lyrasoft/shopgo/src/types';
+import type { Discount, ListOption, Product, ProductFeature, ProductVariant } from '@lyrasoft/shopgo';
+import { ShopGoPlugin, useSwiper } from '@lyrasoft/shopgo';
 import { data, useHttpClient } from '@windwalker-io/unicorn-next';
-import {
-  computed,
-  createApp,
-  defineComponent,
-  onMounted,
-  PropType,
-  ref,
-  useTemplateRef,
-  watch
-} from 'vue';
+import { computed, createApp, defineComponent, onMounted, PropType, ref, useTemplateRef, watch } from 'vue';
 
 // Click quantity make auto select
 const qtyInputs = document.querySelectorAll<HTMLInputElement>('[data-role=attachment_quantity]');

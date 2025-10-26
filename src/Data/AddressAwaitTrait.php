@@ -51,8 +51,6 @@ trait AddressAwaitTrait
 
     public int $locationId = 0;
 
-    public int $addressId = 0;
-
     public function fillFrom(AddressAwareInterface $address): static
     {
         $this->locationId = $address->locationId;

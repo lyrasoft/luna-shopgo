@@ -17,8 +17,8 @@ namespace App\View;
  */
 
 use Lyrasoft\Luna\Entity\Tag;
-use Lyrasoft\ShopGo\Module\Front\Product\ProductItemView;
 use Lyrasoft\Luna\Entity\Category;
+use Lyrasoft\ShopGo\Currency\CurrencyOptions;
 use Lyrasoft\ShopGo\Entity\Discount;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductAttribute;
@@ -27,19 +27,15 @@ use Lyrasoft\ShopGo\Entity\ProductTab;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
-use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\ProductAttributeService;
-use Lyrasoft\ShopGo\Service\VariantService;
 use Unicorn\Image\ImagePlaceholder;
 use Unicorn\Script\UnicornScript;
-use Unicorn\Script\VueScript;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Core\Router\SystemUri;
-use Windwalker\Session\Session;
 
 /**
  * @var $item                 Product
@@ -199,10 +195,10 @@ $uniScript->addRoute('@product_ajax');
                     <div v-if="hasSubVariants && !currentVariant"
                         class="l-pricing__range c-price c-price--range fs-4 fw-bold">
                         @if ($minPrice !== $maxPrice)
-                            {{ $vm->formatPrice($minPrice, true) }}
+                            {{ $vm->formatPrice($minPrice, new CurrencyOptions(code: true)) }}
                             -
                         @endif
-                        {{ $vm->formatPrice($maxPrice, true) }}
+                        {{ $vm->formatPrice($maxPrice, new CurrencyOptions(code: true)) }}
                     </div>
 
                     <template v-else>

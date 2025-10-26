@@ -19,7 +19,7 @@ namespace App\view;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Cart\Price\PriceSet;
 use Lyrasoft\ShopGo\Entity\OrderItem;
-use Lyrasoft\ShopGo\Service\CurrencyService;
+use Lyrasoft\ShopGo\Currency\CurrencyResolver;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Asset\AssetService;
 use Windwalker\Core\DateTime\ChronosService;
@@ -34,7 +34,7 @@ use Windwalker\Core\Router\SystemUri;
  * @var $grandTotal PriceObject
  */
 
-$currency = $app->service(CurrencyService::class);
+$currency = $app->service(CurrencyResolver::class);
 ?>
 
 <div class="l-order-items mb-5">
@@ -148,9 +148,9 @@ $currency = $app->service(CurrencyService::class);
                             {{ $total->label }}
                         </div>
                         @if (str_starts_with($total->name, 'discount:'))
-                        <div class="small">
-                            {{ $total->params['title'] ?? '' }}
-                        </div>
+                            <div class="small">
+                                {{ $total->params['title'] ?? '' }}
+                            </div>
                         @endif
                     </th>
                     <td style="border: none; vertical-align: middle" width="150px">
