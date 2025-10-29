@@ -1,25 +1,25 @@
 import { getCurrentInstance as c } from "vue";
-function u(o, t) {
-  const e = c();
-  if (console.log(e), !e)
-    return t;
-  console.log(e.appContext.components);
-  const n = e.appContext.components;
-  return (n[o] || n[p(o)] || n[s(o)]) ?? t;
+function u(t, e) {
+  const o = c();
+  if (!o)
+    return e;
+  const n = o.appContext.components;
+  return (n[t] || n[a(t)] || n[s(t)]) ?? e;
 }
-function s(o) {
-  return o.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/[\s_]+/g, "-").toLowerCase();
+function s(t) {
+  return t.replace(/([a-z])([A-Z])/g, "$1-$2").replace(/[\s_]+/g, "-").toLowerCase();
 }
-function p(o) {
-  return o.replace(/(^\w|-\w)/g, (t) => t.replace(/-/, "").toUpperCase());
+function a(t) {
+  return t.replace(/(^\w|-\w)/g, (e) => e.replace(/-/, "").toUpperCase());
 }
-const l = (o, t) => {
-  const e = o.__vccOpts || o;
-  for (const [n, r] of t)
-    e[n] = r;
-  return e;
+const f = (t, e) => {
+  const o = t.__vccOpts || t;
+  for (const [n, r] of e)
+    o[n] = r;
+  return o;
 };
 export {
-  l as _,
+  f as _,
   u as r
 };
+//# sourceMappingURL=_plugin-vue_export-helper.js.map

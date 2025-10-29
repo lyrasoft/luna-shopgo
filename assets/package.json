@@ -22,7 +22,7 @@
         "ts-md5": "^2.0.1",
         "unplugin-dts": "^1.0.0-beta.6",
         "vite": "^7.1.12",
-        "vite-plugin-vue-component-override": "^0.1.2",
+        "vite-plugin-vue-component-override": "^0.1.4",
         "vue-component-type-helpers": "^3.1.2"
     },
     "dependencies": {

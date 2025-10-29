@@ -295,8 +295,9 @@ const zt = /* @__PURE__ */ Q(tt, [["render", Rt], ["__file", "AttachmentProduct.
     attachmentData: {}
   },
   setup(l, { expose: t }) {
+    const i = N("AttachmentProduct", zt);
     t();
-    const i = N("AttachmentProduct", zt), a = l, p = _(
+    const a = l, p = _(
       L(a.attachmentData).map((r) => (r.open = !1, r))
     );
     p.value.length === 1 && (p.value[0].open = !0), J(), B(() => {
@@ -342,7 +343,7 @@ const zt = /* @__PURE__ */ Q(tt, [["render", Rt], ["__file", "AttachmentProduct.
     function b(r) {
       p.value.splice(r, 1);
     }
-    const y = { AttachmentProduct: i, props: a, attachmentSet: p, productSelector: f, openProductSelector: n, checkAvailable: d, removeProduct: b };
+    const y = { props: a, attachmentSet: p, productSelector: f, openProductSelector: n, checkAvailable: d, removeProduct: b, AttachmentProduct: i };
     return Object.defineProperty(y, "__isScriptSetup", { enumerable: !1, value: !0 }), y;
   }
 }), It = {
@@ -414,3 +415,4 @@ function ne(l) {
 export {
   ne as initApp
 };
+//# sourceMappingURL=additional-purchase-attachment-edit.js.map

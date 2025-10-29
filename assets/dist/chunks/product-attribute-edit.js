@@ -270,3 +270,4 @@ function Bt(i) {
 export {
   Bt as initApp
 };
+//# sourceMappingURL=product-attribute-edit.js.map
