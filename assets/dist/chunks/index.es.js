@@ -168,3 +168,4 @@ if (h.hashStr("hello") !== "5d41402abc4b2a76b9719d911017c592")
 export {
   h
 };
+//# sourceMappingURL=index.es.js.map

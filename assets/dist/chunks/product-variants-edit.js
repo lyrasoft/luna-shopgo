@@ -599,8 +599,9 @@ const Te = /* @__PURE__ */ J(we, [["render", De], ["__file", "VariantListItem.vu
     variants: {}
   },
   setup(s, { expose: t }) {
+    const p = j("VariantGeneration", Rt), e = j("VariantInfoEdit", Ve), h = j("VariantListItem", Te);
     t();
-    const p = j("VariantGeneration", Rt), e = j("VariantInfoEdit", Ve), h = j("VariantListItem", Te), l = s, i = document.querySelector("#input-item-variant-price"), r = document.querySelector("#admin-form"), d = V(L(l.variants)), y = V({
+    const l = s, i = document.querySelector("#input-item-variant-price"), r = document.querySelector("#admin-form"), d = V(L(l.variants)), y = V({
       edit: !1
     }), g = V(0), k = V(parseFloat(i.value).toString());
     et("product", l.product || {}), et("mainPrice", k), i.addEventListener("change", () => {
@@ -665,11 +666,11 @@ const Te = /* @__PURE__ */ J(we, [["render", De], ["__file", "VariantListItem.vu
     function at(m) {
       m ? d.value = d.value.filter((b) => b.hash !== m.hash) : d.value = d.value.filter((b) => !b.checked);
     }
-    const X = U(() => JSON.stringify(d.value)), Z = { VariantGeneration: p, VariantInfoEdit: e, VariantListItem: h, props: l, priceInput: i, form: r, items: d, generate: y, lastCheckItemIndex: g, mainPrice: k, get formSubmitting() {
+    const X = U(() => JSON.stringify(d.value)), Z = { props: l, priceInput: i, form: r, items: d, generate: y, lastCheckItemIndex: g, mainPrice: k, get formSubmitting() {
       return C;
     }, set formSubmitting(m) {
       C = m;
-    }, initialHash: O, saveRequired: $, checkedItems: G, prepareItems: L, checkAll: P, multiCheck: w, countChecked: x, current: T, variantEdit: u, editVariant: _, generateCombinations: v, generated: I, cancelEdit: N, confirmLeave: st, deleteVariants: at, itemsJSON: X };
+    }, initialHash: O, saveRequired: $, checkedItems: G, prepareItems: L, checkAll: P, multiCheck: w, countChecked: x, current: T, variantEdit: u, editVariant: _, generateCombinations: v, generated: I, cancelEdit: N, confirmLeave: st, deleteVariants: at, itemsJSON: X, VariantGeneration: p, VariantInfoEdit: e, VariantListItem: h };
     return Object.defineProperty(Z, "__isScriptSetup", { enumerable: !1, value: !0 }), Z;
   }
 }), Me = {
@@ -796,3 +797,4 @@ function bn(s) {
 export {
   bn as initApp
 };
+//# sourceMappingURL=product-variants-edit.js.map
