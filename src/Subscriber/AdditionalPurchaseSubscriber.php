@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Lyrasoft\ShopGo\Subscriber;
 
-use Brick\Math\BigDecimal;
 use Lyrasoft\ShopGo\Cart\CartItem;
 use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\AdditionalPurchaseAttachment;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Lyrasoft\ShopGo\Event\AfterComputeTotalsEvent;
 use Lyrasoft\ShopGo\Event\BeforeComputeTotalsEvent;
-use Lyrasoft\ShopGo\Event\ComputingTotalsEvent;
 use Lyrasoft\ShopGo\Event\PrepareCartItemEvent;
-use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Windwalker\Core\Form\Exception\ValidateFailException;
@@ -21,8 +18,8 @@ use Windwalker\Core\Manager\Logger;
 use Windwalker\Core\Router\Navigator;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
-use Windwalker\ORM\Exception\NoResultException;
 use Windwalker\ORM\ORM;
+use Windwalker\Query\Exception\NoResultException;
 
 /**
  * The AdditionalPurchaseSubscriber class.
@@ -61,7 +58,7 @@ class AdditionalPurchaseSubscriber
                 [
                     $attachProduct,
                     $attachVariant,
-                ] = $this->additionalPurchaseService->validateAttachment($attachment, $product, $event->isForUpdate());
+                ] = $this->additionalPurchaseService->validateAttachment($attachment, $product, $event->forUpdate);
 
                 $attachVariant = $this->additionalPurchaseService->prepareVariantView(
                     $attachVariant,
@@ -89,7 +86,7 @@ class AdditionalPurchaseSubscriber
                 );
 
                 $cartItem->addAttachment($attachCartItem);
-            } catch (ValidateFailException | NoResultException $e) {
+            } catch (ValidateFailException|NoResultException $e) {
                 Logger::debug('error', (string) $e);
                 continue;
             }
