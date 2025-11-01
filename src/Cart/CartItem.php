@@ -59,6 +59,8 @@ class CartItem
         $this->mainVariant = $mainVariant;
         $this->variant = $variant;
         $this->uid = uid();
+
+        $this->calcTotals();
     }
 
     /**
@@ -162,11 +164,13 @@ class CartItem
             $priceSet->set($baseTotal);
         }
 
-        $finalTotal = $priceSet->get('final')
-            ->with(name: 'final_total', label: 'Product Final Total')
-            ->multiply((string) $this->quantity);
+        if ($priceSet->has('final')) {
+            $finalTotal = $priceSet->get('final')
+                ->with(name: 'final_total', label: 'Product Final Total')
+                ->multiply((string) $this->quantity);
 
-        $priceSet->set($finalTotal);
+            $priceSet->set($finalTotal);
+        }
 
         $this->priceSet = $priceSet;
 

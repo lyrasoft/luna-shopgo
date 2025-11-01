@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { __, data, debounce, route, simpleAlert, useHttpClient, useStack } from '@windwalker-io/unicorn-next';
+import { __, data, debounce, route, simpleAlert, useHttpClient, useQueue, useStack } from '@windwalker-io/unicorn-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { ComponentExposed } from 'vue-component-type-helpers';
 import { vTooltip } from '~shopgo/directives';
@@ -29,6 +29,8 @@ const code = ref('');
 const note = ref(props.checkoutData?.note || '');
 const loading = ref(false);
 const partialCheckout = ref(data('partial.checkout'));
+const queue = useQueue('shopgo.cart');
+let abort: AbortController | null = null;
 
 const form = document.querySelector<HTMLFormElement>('#cart-form')!;
 const toggleAllInput = ref<HTMLInputElement>();
@@ -51,9 +53,12 @@ const afterItemsChanged = debounce(function () {
 }, 300);
 
 async function loadItems(updateShippings = true) {
+  abort?.abort('Cancel by next load');
+  abort = new AbortController();
+
   loadingStack.push(true);
 
-  const { get, isAxiosError } = await useHttpClient();
+  const { get, isAxiosError, isCancel } = await useHttpClient();
 
   try {
     const res = await get(
@@ -63,7 +68,8 @@ async function loadItems(updateShippings = true) {
           location_id: shippingData.value.locationId,
           shipping_id: shippingId.value,
           payment_id: paymentId.value,
-        }
+        },
+        signal: abort.signal
       }
     );
 
@@ -71,12 +77,18 @@ async function loadItems(updateShippings = true) {
 
     return res;
   } catch (e) {
+    if (isCancel(e)) {
+      console.log(e.message);
+    }
+
     console.error(e);
     if (isAxiosError(e)) {
       simpleAlert(e.message, '', 'warning');
     }
   } finally {
     popLoading();
+
+    abort = null;
   }
 }
 
@@ -140,6 +152,9 @@ function toggleChecked() {
 }
 
 const updateChecks = debounce(async () => {
+  abort?.abort('Cancel by next modify.');
+  abort = new AbortController();
+
   const checks: Record<string, '1' | '0'> = {};
 
   for (const item of items.value) {
@@ -151,7 +166,7 @@ const updateChecks = debounce(async () => {
   const { post, isAxiosError } = await useHttpClient();
 
   try {
-    const res = await post('@cart_ajax/updateChecks', { checks });
+    const res = await post('@cart_ajax/updateChecks', { checks }, { signal: abort.signal });
 
     return await loadItems();
   } catch (e) {
@@ -161,6 +176,7 @@ const updateChecks = debounce(async () => {
     }
   } finally {
     popLoading();
+    abort = null;
   }
 }, 300);
 
@@ -202,7 +218,9 @@ async function removeItem(item: CartItem, i: number) {
       simpleAlert(e.message, '', 'warning');
     }
   } finally {
-    loadingStack.pop();
+    setTimeout(() => {
+      loadingStack.pop();
+    }, 300);
   }
 }
 
@@ -256,7 +274,7 @@ const updateQuantities = debounce(async (item: CartItem) => {
   const { post, isAxiosError } = await useHttpClient();
 
   try {
-    const res = await post('@cart_ajax/updateQuantities', { values });
+    const res = await queue.push(() => post('@cart_ajax/updateQuantities', { values }));
 
     return await loadItems();
   } catch (e) {
@@ -267,7 +285,7 @@ const updateQuantities = debounce(async (item: CartItem) => {
   } finally {
     popLoading();
   }
-}, 300);
+}, 600);
 
 // Code / Coupons
 async function addCode() {
@@ -590,7 +608,7 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
               style="animation-duration: .1s"
               :shipping="shipping"
               :i="i"
-              :selected="shippingId === shipping.id"
+              :selected="String(shippingId) === String(shipping.id)"
               v-on:selected="shippingId = shipping.id"
             >
             </ShippingItem>
@@ -619,7 +637,7 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
               style="animation-duration: .1s"
               :payment="payment"
               :i="i"
-              :selected="paymentId === payment.id"
+              :selected="String(paymentId) === String(payment.id)"
               v-on:selected="paymentId = payment.id"
             >
             </PaymentItem>

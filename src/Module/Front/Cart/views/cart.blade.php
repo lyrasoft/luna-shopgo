@@ -38,10 +38,6 @@ $shopGoScript = $app->service(ShopGoScript::class);
 $shopGoScript->vueUtilities();
 $shopGoScript->productCart();
 
-// $vueScript = $app->service(VueScript::class);
-// $vueScript->vue();
-// $vueScript->animate();
-
 $locationService = $app->service(LocationService::class);
 
 $uniScript = $app->service(UnicornScript::class);
@@ -75,9 +71,4 @@ $uniScript->translate('shopgo.message.*');
             </div>
         </form>
     </div>
-
-    {{--<x-address-form></x-address-form>--}}
-    {{--<x-shipping-item></x-shipping-item>--}}
-    {{--<x-payment-item></x-payment-item>--}}
-    {{--<x-vue.cascade-select></x-vue.cascade-select>--}}
 @stop
