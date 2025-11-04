@@ -223,7 +223,7 @@ function _sfc_render$5(l, e, n, t, u, y) {
     }, null, 8, _hoisted_8$5)
   ], 512);
 }
-const CascadeSelect__Tmp66380 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CascadeSelect.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const CascadeSelect__Tmp70022 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CascadeSelect.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "AddressForm",
   props: /* @__PURE__ */ mergeModels({
     type: {},
@@ -239,7 +239,7 @@ const CascadeSelect__Tmp66380 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["rend
   }),
   emits: /* @__PURE__ */ mergeModels(["validated"], ["update:modelValue"]),
   setup(l, { expose: e, emit: n }) {
-    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp66380), u = l, y = {
+    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp70022), u = l, y = {
       // addressId: '',
       // locationId: 0,
       // firstname: '',
@@ -754,7 +754,7 @@ function _sfc_render$4(l, e, n, t, u, y) {
     ], 8, _hoisted_63)
   ]);
 }
-const AddressForm__Tmp91347 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "AddressForm.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const AddressForm__Tmp22267 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "AddressForm.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "CartListItem",
   props: {
     item: {},
@@ -950,7 +950,7 @@ function _sfc_render$3(l, e, n, t, u, y) {
           e[20] || (e[20] = createTextVNode()),
           o.outOfStock ? (openBlock(), createElementBlock("span", _hoisted_30$1, toDisplayString(l.$lang("shopgo.message.out.of.stock")), 1)) : createCommentVNode("", !0),
           e[21] || (e[21] = createTextVNode()),
-          createElementVNode("div", _hoisted_31$1, `
+          createElementVNode("div", _hoisted_31$1, `\r
             x` + toDisplayString(o.quantity * n.item.quantity), 1)
         ]),
         e[23] || (e[23] = createTextVNode()),
@@ -975,7 +975,7 @@ function _sfc_render$3(l, e, n, t, u, y) {
     ])) : createCommentVNode("", !0)
   ], 8, _hoisted_1$3);
 }
-const CartListItem__Tmp39783 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "CartListItem.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const CartListItem__Tmp46299 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "CartListItem.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "PaymentItem",
   props: {
     payment: {},
@@ -1077,7 +1077,7 @@ function _sfc_render$2(l, e, n, t, u, y) {
     })
   ], 2);
 }
-const PaymentItem__Tmp89916 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "PaymentItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const PaymentItem__Tmp30223 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "PaymentItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "ShippingItem",
   props: {
     shipping: {},
@@ -1186,14 +1186,14 @@ function _sfc_render$1(l, e, n, t, u, y) {
     })
   ], 2);
 }
-const ShippingItem__Tmp86757 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingItem.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
+const ShippingItem__Tmp124 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingItem.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "CartApp",
   props: {
     user: {},
     checkoutData: {}
   },
   setup(l, { expose: e }) {
-    const n = resolveVueComponent("AddressForm", AddressForm__Tmp91347), t = resolveVueComponent("CartListItem", CartListItem__Tmp39783), u = resolveVueComponent("PaymentItem", PaymentItem__Tmp89916), y = resolveVueComponent("ShippingItem", ShippingItem__Tmp86757);
+    const n = resolveVueComponent("AddressForm", AddressForm__Tmp22267), t = resolveVueComponent("CartListItem", CartListItem__Tmp46299), u = resolveVueComponent("PaymentItem", PaymentItem__Tmp30223), y = resolveVueComponent("ShippingItem", ShippingItem__Tmp124);
     e();
     const o = l, d = ref(!1), s = ref([]), p = ref({}), f = ref([]), T = ref(o.checkoutData?.payment?.id || ""), F = ref(o.checkoutData?.payment_data || {}), E = ref(o.checkoutData?.shipping?.id || ""), k = ref(o.checkoutData?.shipping_data || {}), b = ref([]), I = ref([]), L = ref({}), D = ref(""), H = ref(o.checkoutData?.note || ""), j = ref(!1), R = ref(data("partial.checkout")), Q = useQueue("shopgo.cart");
     let S = null;
@@ -1622,7 +1622,7 @@ function _sfc_render(l, e, n, t, u, y) {
             }, null, 8, ["payment", "i", "selected", "onSelected"]))), 128))
           ])) : (openBlock(), createElementBlock("div", _hoisted_19, [
             createElementVNode("div", _hoisted_20, [
-              t.loading ? (openBlock(), createElementBlock("span", _hoisted_21)) : t.shippingData.shippingId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+              t.loading ? (openBlock(), createElementBlock("span", _hoisted_21)) : t.shippingId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
                 createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.no.payments")), 1)
               ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
                 createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.select.shipping.first")), 1)
@@ -1736,8 +1736,8 @@ function _sfc_render(l, e, n, t, u, y) {
               t.totals.grand_total ? (openBlock(), createElementBlock("div", _hoisted_50, [
                 createElementVNode("div", null, toDisplayString(l.$formatPrice(t.totals.grand_total.price, { code: !0 })), 1),
                 e[33] || (e[33] = createTextVNode()),
-                l.$currency.isSubCurrency() ? (openBlock(), createElementBlock("div", _hoisted_51, `
-                  (` + toDisplayString(l.$currency.formatMainCurrency(t.totals.grand_total.price, { code: !0 })) + `)
+                l.$currency.isSubCurrency() ? (openBlock(), createElementBlock("div", _hoisted_51, `\r
+                  (` + toDisplayString(l.$currency.formatMainCurrency(t.totals.grand_total.price, { code: !0 })) + `)\r
                 `, 1)) : createCommentVNode("", !0)
               ])) : createCommentVNode("", !0)
             ])) : createCommentVNode("", !0),
@@ -1795,7 +1795,7 @@ function _sfc_render(l, e, n, t, u, y) {
     ])
   ]);
 }
-const CartApp__Tmp50574 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp50574);
+const CartApp__Tmp48066 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp48066);
 function initApp(l) {
   useCssImport("@vue-animate");
   const e = createApp(CartApp, l);

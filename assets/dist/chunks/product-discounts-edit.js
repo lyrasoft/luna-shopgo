@@ -468,8 +468,8 @@ function Se(u, t, k, n, a, d) {
                   step: n.current.method === "percentage" ? 0.1 : n.inputStep
                 }, null, 40, ge),
                 t[50] || (t[50] = i()),
-                n.current.method === "percentage" ? (m(), f("span", be, `
-                    %
+                n.current.method === "percentage" ? (m(), f("span", be, `\r
+                    %\r
                 `)) : y("", !0)
               ])
             ]),

@@ -6,6 +6,7 @@ namespace Lyrasoft\ShopGo\Module\Front\Cart;
 
 use Lyrasoft\Luna\User\UserService;
 use Lyrasoft\ShopGo\Cart\CartData;
+use Lyrasoft\ShopGo\Cart\CartParams;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Data\CartPricingData;
@@ -250,7 +251,11 @@ class CartController
             return [];
         }
 
-        $cartData = $cartService->getCartData(['location_id' => $location->id]);
+        $cartData = $cartService->getCartData(
+            new CartParams(
+                locationId: $location->id
+            )
+        );
 
         /** @var Product[] $products */
         $products = [];
@@ -313,7 +318,7 @@ class CartController
             return [];
         }
 
-        $cartData = $cartService->getCartData(['location_id' => $location->id]);
+        $cartData = $cartService->getCartData(new CartParams(locationId: $location->id));
         $shipping = $orm->findOne(Shipping::class, $shippingId);
 
         if (!$shipping) {

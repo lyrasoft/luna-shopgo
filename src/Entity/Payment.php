@@ -40,7 +40,7 @@ class Payment implements EntityInterface
     use EntityTrait;
 
     #[Column('id'), PK, AutoIncrement]
-    public ?int $id = null;
+    public mixed $id = null;
 
     #[Column('location_category_id')]
     public int $locationCategoryId = 0;

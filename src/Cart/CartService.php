@@ -20,7 +20,6 @@ use Lyrasoft\ShopGo\Event\PrepareCartDataEvent;
 use Lyrasoft\ShopGo\Event\PrepareCartItemEvent;
 use Lyrasoft\ShopGo\Event\PrepareProductPricesEvent;
 use Lyrasoft\ShopGo\Repository\ProductVariantRepository;
-use Lyrasoft\ShopGo\Service\PricingService;
 use Lyrasoft\ShopGo\Service\VariantService;
 use Lyrasoft\ShopGo\Shipping\ShippingService;
 use Lyrasoft\ShopGo\ShopGoPackage;
@@ -60,23 +59,22 @@ class CartService
         int $locationId,
         int|string $shippingId,
         int|string $paymentId,
-        array $options = [],
+        CartParams $options = new CartParams(),
         bool $lock = false
     ): CartData {
+        $defaultOptions = new CartParams(
+            shippingId: $shippingId,
+            paymentId: $paymentId,
+            locationId: $locationId,
+        );
+
         return $this->getCartData(
-            array_merge(
-                [
-                    'shipping_id' => $shippingId,
-                    'payment_id' => $paymentId,
-                    'location_id' => $locationId,
-                ],
-                $options
-            ),
+            $defaultOptions->withMerge($options),
             $lock ? static::FOR_UPDATE : 0
         );
     }
 
-    public function getCartData(array $params = [], int $flags = 0): CartData
+    public function getCartData(CartParams $params = new CartParams(), int $flags = 0): CartData
     {
         $cartItems = $this->getCartItems((bool) ($flags & static::FOR_UPDATE), $params);
 
@@ -84,14 +82,14 @@ class CartService
     }
 
     /**
-     * @param  bool   $forUpdate
-     * @param  array  $params
+     * @param  bool        $forUpdate
+     * @param  CartParams  $params
      *
      * @return  array<CartItem>
      *
      * @throws \ReflectionException
      */
-    public function getCartItems(bool $forUpdate = false, array $params = []): array
+    public function getCartItems(bool $forUpdate = false, CartParams $params = new CartParams()): array
     {
         $cartStorage = $this->app->service(CartStorage::class);
 
@@ -103,7 +101,7 @@ class CartService
             ->where('product_variant.id', $vIds ?: [0])
             ->tapIf(
                 $forUpdate,
-                fn (ListSelector $selector) => $selector->forUpdate()
+                fn(ListSelector $selector) => $selector->forUpdate()
             )
             ->limit(0)
             ->all(ProductVariant::class)
@@ -150,7 +148,7 @@ class CartService
                     variant: $variant,
                     storageItem: $storageItem,
                     forUpdate: $forUpdate,
-                    options: $params
+                    params: $params
                 )
             );
 
@@ -162,18 +160,18 @@ class CartService
 
     /**
      * @param  iterable<CartItem>  $cartItems
-     * @param  array               $params
+     * @param  CartParams          $params
      *
      * @return CartData
-     * @throws MathException
+     * @throws \ReflectionException
      */
-    public function createCartDataFromItems(iterable $cartItems, array $params = []): CartData
+    public function createCartDataFromItems(iterable $cartItems, CartParams $params = new CartParams()): CartData
     {
         $cartData = new CartData();
         $cartData->params = $params;
 
-        $location = $this->orm->findOne(Location::class, $params['location_id'] ?? null ?: 0);
-        $shipping = $this->orm->findOne(Shipping::class, $params['shipping_id'] ?? null ?: 0);
+        $location = $this->orm->findOne(Location::class, $params->locationId ?? null ?: 0);
+        $shipping = $this->orm->findOne(Shipping::class, $params->shippingId ?? null ?: 0);
 
         $cartData->location = $location;
         $cartData->shipping = $shipping;
@@ -289,7 +287,7 @@ class CartService
         // Calc Grand Totals
         $grandTotal = $total->with(
             name: 'grand_total',
-            label:  $this->trans('shopgo.order.total.grand.total')
+            label: $this->trans('shopgo.order.total.grand.total')
         );
 
         foreach ($totals as $tt) {
@@ -345,8 +343,8 @@ class CartService
     }
 
     /**
-     * @param  CartData    $cartData
-     * @param  PriceObject $total
+     * @param  CartData     $cartData
+     * @param  PriceObject  $total
      *
      * @return  void
      */

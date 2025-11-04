@@ -647,7 +647,7 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
               <template v-if="loading">
                 <span class="spinner spinner-border"></span>
               </template>
-              <template v-else-if="shippingData.shippingId">
+              <template v-else-if="shippingId">
                 {{ $lang('shopgo.cart.text.no.payments') }}
               </template>
               <template v-else>

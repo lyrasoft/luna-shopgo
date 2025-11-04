@@ -18,6 +18,8 @@ use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
+use function Windwalker\collect;
+
 /**
  * The PaymentService class.
  */
@@ -42,37 +44,69 @@ class PaymentService
      */
     public function getPayments(Location $location, Shipping $shipping): Collection
     {
-        $paymentIds = $shipping->payments;
+        return $this->once(
+            'payments::' . $location->id . '::' . $shipping->id,
+            function () use ($location, $shipping) {
+                $paymentIds = $shipping->payments;
 
-        return $this->repository->getAvailableListSelector()
-            ->orWhere(
-                function (Query $query) use ($location) {
-                    $query->where('payment.location_category_id', 0);
-                    $query->whereExists(
-                        fn(Query $query) => $query->from(Location::class)
-                            ->leftJoin(Category::class)
-                            ->whereRaw('category.id = payment.location_category_id')
-                            ->whereRaw('location.lft <= %a', $location->lft)
-                            ->whereRaw('location.rgt >= %a', $location->rgt)
+                $defines = $this->shopGo->config('shipping.defines');
+
+                if ($defines instanceof \Closure) {
+                    $defines = $this->app->call(
+                        $defines,
+                        [
+                            'location' => $location,
+                            Location::class => $location,
+                            'shipping' => $shipping,
+                            Shipping::class => $shipping,
+                        ]
                     );
                 }
-            )
-            ->orWhere(
-                function (Query $query) use ($location) {
-                    $query->where('payment.location_id', 0);
-                    $query->whereExists(
-                        fn(Query $query) => $query->from(Location::class)
-                            ->whereRaw('location.id = payment.location_id')
-                            ->whereRaw('location.lft <= %a', $location->lft)
-                            ->whereRaw('location.rgt >= %a', $location->rgt)
+
+                $defines = collect($defines)
+                    ->mapWithKeys(
+                        function ($instance, $key) {
+                            if (!$instance->id) {
+                                $instance->id = $instance->alias ?: $key;
+                            }
+
+                            yield $key => $instance;
+                        }
                     );
-                }
-            )
-            ->tapIf(
-                $paymentIds !== [],
-                fn (ListSelector $query) => $query->where('payment.id', $paymentIds)
-            )
-            ->all(Payment::class);
+
+                return $defines->merge(
+                    $this->repository->getAvailableListSelector()
+                        ->orWhere(
+                            function (Query $query) use ($location) {
+                                $query->where('payment.location_category_id', 0);
+                                $query->whereExists(
+                                    fn(Query $query) => $query->from(Location::class)
+                                        ->leftJoin(Category::class)
+                                        ->whereRaw('category.id = payment.location_category_id')
+                                        ->whereRaw('location.lft <= %a', $location->lft)
+                                        ->whereRaw('location.rgt >= %a', $location->rgt)
+                                );
+                            }
+                        )
+                        ->orWhere(
+                            function (Query $query) use ($location) {
+                                $query->where('payment.location_id', 0);
+                                $query->whereExists(
+                                    fn(Query $query) => $query->from(Location::class)
+                                        ->whereRaw('location.id = payment.location_id')
+                                        ->whereRaw('location.lft <= %a', $location->lft)
+                                        ->whereRaw('location.rgt >= %a', $location->rgt)
+                                );
+                            }
+                        )
+                        ->tapIf(
+                            $paymentIds !== [],
+                            fn (ListSelector $query) => $query->where('payment.id', $paymentIds)
+                        )
+                        ->all(Payment::class)
+                );
+            }
+        );
     }
 
     public function createTypeInstance(string|Payment $type, ?Payment $data = null): ?AbstractPayment

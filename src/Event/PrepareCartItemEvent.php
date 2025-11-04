@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Event;
 
 use Lyrasoft\ShopGo\Cart\CartItem;
+use Lyrasoft\ShopGo\Cart\CartParams;
 use Lyrasoft\ShopGo\Entity\Product;
 use Lyrasoft\ShopGo\Entity\ProductVariant;
 use Windwalker\Event\AbstractEvent;
@@ -22,7 +23,7 @@ class PrepareCartItemEvent extends BaseEvent
         public ProductVariant $variant,
         public array $storageItem = [],
         public bool $forUpdate = false,
-        public array $options = [],
+        public CartParams $params = new CartParams(),
     ) {
     }
 }

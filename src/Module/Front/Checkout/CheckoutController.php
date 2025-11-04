@@ -157,8 +157,7 @@ class CheckoutController
                     $shippingLocation->id,
                     $shipping['id'] ?? 0,
                     $payment['id'] ?? 0,
-                    [],
-                    true
+                    lock: true
                 );
 
                 $stockService->checkAndReduceStocks($cartData);

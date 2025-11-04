@@ -50,7 +50,7 @@ class CartData implements RecordInterface
         public PriceSet $totals = new PriceSet(),
         public ?Location $location = null,
         public ?Shipping $shipping = null,
-        public array $params = []
+        public CartParams $params = new CartParams()
     ) {
         $this->items = $items;
         $this->discounts = $discounts;
