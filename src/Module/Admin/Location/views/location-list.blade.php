@@ -233,7 +233,7 @@ $orders = [];
                             </td>
 
                             <td class="text-center">
-                                @if ($entity->canShip())
+                                @if ($entity->canShip)
                                     <i class="fa fa-check"></i>
                                 @else
                                     -

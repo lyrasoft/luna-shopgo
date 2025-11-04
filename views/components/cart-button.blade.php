@@ -31,8 +31,8 @@ use Windwalker\Edge\Component\ComponentAttributes;
  * @var $target     ?string
  */
 
-$attributes = $attributes->class('c-cart-button');
-$attributes['data-role'] = 'cart-button d-inline-block';
+$attributes = $attributes->class('c-cart-button d-inline-block');
+$attributes['data-role'] = 'cart-button';
 
 if ($link === true) {
     $attributes['href'] = (string) $nav->to('cart');

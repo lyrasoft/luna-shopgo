@@ -219,7 +219,7 @@ class VariantService
                 }
             );
 
-            $feature->options = $options;
+            $feature->options = $options->values();
         }
 
         return $features;
