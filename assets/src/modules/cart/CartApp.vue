@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { __, data, debounce, route, simpleAlert, useHttpClient, useQueue, useStack } from '@windwalker-io/unicorn-next';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, getCurrentInstance, inject, nextTick, onMounted, provide, ref, watch } from 'vue';
 import { ComponentExposed } from 'vue-component-type-helpers';
 import AddressForm from '~shopgo/modules/cart/components/AddressForm.vue';
 import AddressFormSet from '~shopgo/modules/cart/components/AddressFormSet.vue';
@@ -31,11 +31,39 @@ const note = ref(props.checkoutData?.note || '');
 const loading = ref(false);
 const partialCheckout = ref(data('partial.checkout'));
 const queue = useQueue('shopgo.cart');
-let abort: AbortController | null = null;
+const loadingStack = useStack('loading');
 
+provide('checkoutData', props.checkoutData);
+provide('items', items);
+provide('totals', totals);
+provide('coupons', coupons);
+provide('shippingData', shippingData);
+provide('paymentData', paymentData);
+provide('shippingId', shippingId);
+provide('paymentId', paymentId);
+provide('shippings', shippings);
+provide('payments', payments);
+provide('loading', loading);
+provide('code', code);
+provide('note', note);
+provide('queue', queue);
+provide('partialCheckout', partialCheckout);
+
+let abort: AbortController | null = null;
 const form = document.querySelector<HTMLFormElement>('#cart-form')!;
 const toggleAllInput = ref<HTMLInputElement>();
-const loadingStack = useStack('loading');
+
+// Forms
+const inc = getCurrentInstance();
+const components = inc?.appContext.components || {};
+
+function resolveOverrideComponent(name: string) {
+  return components[name] ?? null;
+}
+const AfterAddressForm = resolveOverrideComponent('AfterAddressForm');
+const AfterShippingForm = resolveOverrideComponent('AfterShippingForm');
+const AfterPaymentForm = resolveOverrideComponent('AfterPaymentForm');
+const AfterNoteForm = resolveOverrideComponent('AfterNoteForm');
 
 loadingStack.observe((stack, length) => {
   loading.value = length > 0;
@@ -555,21 +583,29 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
           :user
           :shippings
           :payments
+          :checkoutData
           v-model:payment="paymentData"
           v-model:shipping="shippingData"
           v-model:shipping-id="shippingId"
           v-model:payment-id="paymentId"
         >
           <!-- Addresses -->
-          <div class="">
+          <div class="l-cart-address-set">
             <AddressFormSet :user v-model:payment="paymentData" v-model:shipping="shippingData" />
           </div>
+
+          <Component v-if="AfterAddressForm" :is="AfterAddressForm" />
 
           <!-- Shippings -->
           <ShippingSelector :shippings :shippingData v-model="shippingId" />
 
+          <Component v-if="AfterShippingForm" :is="AfterShippingForm" />
+
           <!-- Payments -->
           <PaymentSelector :payments :paymentData :shippingId v-model="paymentId" />
+          <slot name="after-payment"></slot>
+
+          <Component v-if="AfterPaymentForm" :is="AfterPaymentForm" />
 
           <!-- Note -->
           <div class="l-checkout-note card mb-4">
@@ -586,6 +622,8 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
               ></textarea>
             </div>
           </div>
+
+          <Component v-if="AfterNoteForm" :is="AfterNoteForm" />
         </CartForm>
       </div>
     </div>

@@ -15,7 +15,7 @@ const shippingId = defineModel<string | number>();
   <div class="l-shippings">
     <h3>{{ $lang('shopgo.cart.shipping.title') }}</h3>
 
-    <div v-if="shippings.length > 0">
+    <div v-if="shippings.length > 0" class="d-flex flex-column gap-3">
       <ShippingItem v-for="(shipping, i) of shippings" :key="shipping.id"
         style="animation-duration: .1s"
         :shipping="shipping"

@@ -17,7 +17,7 @@ const paymentId = defineModel<string | number>();
   <div class="l-payments">
     <h3>{{ $lang('shopgo.cart.payment.title') }}</h3>
 
-    <div v-if="payments.length > 0">
+    <div v-if="payments.length > 0" class="d-flex flex-column gap-3">
       <PaymentItem v-for="(payment, i) of payments" :key="payment.id"
         style="animation-duration: .1s"
         :payment="payment"

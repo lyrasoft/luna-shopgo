@@ -41,7 +41,7 @@ const optionLayout = ref<HTMLDivElement>();
 </script>
 
 <template>
-  <div class="card my-3"
+  <div class="card"
     :class="[ selectedRef ? 'border border-primary' : '' ]">
     <div class="card-body d-flex align-items-center gap-3">
       <div class="form-check">

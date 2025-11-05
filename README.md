@@ -399,3 +399,108 @@ $menu->registerChildren(
 - `my_order_list`
 - `my_order_item`
 
+## Override Vue Components
+
+Before starting overriding ShopGo vue files, you must configure your project. First install vue dependencies:
+
+```bash
+yarn add vue @vitejs/plugin-vue --dev
+```
+
+Add this to `vite.config.js`:
+
+```diff
++import vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+    resolve: {
+        dedupe: [
+            // ...
++            '@lyrasoft/shopgo', // Optional: If some wired error occurs, try add this line
+        ]
+    },
+    // ...
+    plugins: [
++        vue(),
+        // ...
+    ],
+});
+```
+
+Add alias to `fusionfile.ts`
+
+```ts
+fusion.alias('~shopgo', resolve('./vendor/lyrasoft/shopgo/assets/src'));
+```
+
+Add this to `tsconfig.json`
+
+```diff
+    "compilerOptions": {
+        "paths": {
+            // ...
++            "~shopgo": ["./vendor/lyrasoft/shopgo/assets/src/*"]
+        }
+    }
+```
+
+Create your own Vue component in your project, in this example, we want to replace `CartForm` component:
+
+```vue
+<script setup lang="ts">
+// resources/assets/src/overrides/TaiwanCartForm.vue
+//...
+</script>
+
+<template>
+  <!-- Your custom component code -->
+</template>
+```
+
+### Method 1: Override Particular Component
+
+Then you must copy View first, we use `cart` as example:
+
+```bash
+php windwalker pkg:install lyrasoft/shopgo -t cart_front
+```
+
+And change the route to direct to the view which copied. Now edit the `cart.ts` in view file:
+
+```diff
+// ...
++import TaiwanCartForm from '~js/cart/TaiwanCartForm.vue';
+
+// ...
+
+const app = await useCartApp(data('cart.props'));
++app.component('CartForm', TaiwanCartForm);
+app.mount('cart-app');
+```
+
+And rerun `yarn dev` to compile Vue files. Now your custom component will be loaded.
+
+### Method 2: Override All Components
+
+Just run:
+
+```bash
+# Install one modules
+php windwalker pkg:install lyrasoft/shopgo -t vue_cart
+
+# OR install all vue assets
+
+php windwalker pkg:install lyrasoft/shopgo -t vue
+```
+
+Available modules are:
+
+```bash
+  [xx] lyrasoft/shopgo: vue
+  [xx] lyrasoft/shopgo: vue_additional_purchase
+  [xx] lyrasoft/shopgo: vue_cart
+  [xx] lyrasoft/shopgo: vue_product_attribute
+  [xx] lyrasoft/shopgo: vue_product_edit
+  [xx] lyrasoft/shopgo: vue_product_feature
+```
+

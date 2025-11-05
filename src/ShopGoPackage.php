@@ -8,6 +8,22 @@ use Lyrasoft\Luna\Services\ConfigService;
 use Lyrasoft\ShopGo\Cart\CartService;
 use Lyrasoft\ShopGo\Cart\CartStorage;
 use Lyrasoft\ShopGo\Config\ShopConfig;
+use Lyrasoft\ShopGo\Entity\AdditionalPurchase;
+use Lyrasoft\ShopGo\Entity\Address;
+use Lyrasoft\ShopGo\Entity\Currency;
+use Lyrasoft\ShopGo\Entity\Discount;
+use Lyrasoft\ShopGo\Entity\Location;
+use Lyrasoft\ShopGo\Entity\Manufacturer;
+use Lyrasoft\ShopGo\Entity\Order;
+use Lyrasoft\ShopGo\Entity\OrderHistory;
+use Lyrasoft\ShopGo\Entity\OrderState;
+use Lyrasoft\ShopGo\Entity\Payment;
+use Lyrasoft\ShopGo\Entity\Product;
+use Lyrasoft\ShopGo\Entity\ProductAttribute;
+use Lyrasoft\ShopGo\Entity\ProductFeature;
+use Lyrasoft\ShopGo\Entity\ProductTab;
+use Lyrasoft\ShopGo\Entity\ProductVariant;
+use Lyrasoft\ShopGo\Entity\Shipping;
 use Lyrasoft\ShopGo\Payment\PaymentService;
 use Lyrasoft\ShopGo\Script\ShopGoScript;
 use Lyrasoft\ShopGo\Service\AdditionalPurchaseService;
@@ -139,28 +155,28 @@ class ShopGoPackage extends AbstractPackage implements
         $installer->installRoutes(static::path('routes/**/*.php'), 'routes');
         $installer->installViews(static::path('views/*.blade.php'), 'views');
 
-        $this->installModules($installer, 'additional_purchase', ['admin', 'model']);
-        $this->installModules($installer, 'address', ['front', 'model']);
-        $this->installModules($installer, 'cart', ['front']);
-        $this->installModules($installer, 'checkout', ['front']);
-        $this->installModules($installer, 'config', ['admin']);
-        $this->installModules($installer, 'currency');
-        $this->installModules($installer, 'discount', ['admin', 'model']);
-        $this->installModules($installer, 'invoice', ['admin']);
-        $this->installModules($installer, 'location', ['admin', 'model']);
-        $this->installModules($installer, 'manufacturer', ['admin', 'model']);
-        $this->installModules($installer, 'order');
-        $this->installModules($installer, 'order_state', ['admin', 'model']);
-        $this->installModules($installer, 'order_history', ['model']);
-        $this->installModules($installer, 'payment', ['admin', 'model']);
-        $this->installModules($installer, 'product');
-        $this->installModules($installer, 'product_variant', ['model']);
-        $this->installModules($installer, 'product_attribute', ['admin', 'model']);
-        $this->installModules($installer, 'product_attribute_group', ['admin', 'model']);
-        $this->installModules($installer, 'product_feature', ['admin', 'model']);
-        $this->installModules($installer, 'product_tab', ['admin', 'model']);
-        $this->installModules($installer, 'shipping', ['admin', 'model']);
-        $this->installModules($installer, 'wishlist', ['front']);
+        $installer->installMVCModules(AdditionalPurchase::class, ['Admin']);
+        $installer->installMVCModules(Address::class, ['Front']);
+        $installer->installMVCModules('Cart', ['Front'], false);
+        $installer->installMVCModules('Checkout', ['Front'], false);
+        $installer->installMVCModules('Config', ['Admin'], false);
+        $installer->installMVCModules(Currency::class);
+        $installer->installMVCModules(Discount::class, ['Admin'], true);
+        $installer->installMVCModules('Invoice', ['Admin'], false);
+        $installer->installMVCModules(Location::class, ['Admin'], true);
+        $installer->installMVCModules(Manufacturer::class, ['Admin'], true);
+        $installer->installMVCModules(Order::class);
+        $installer->installMVCModules(OrderState::class, ['Admin'], true);
+        $installer->installMVCModules(OrderHistory::class, [], true);
+        $installer->installMVCModules(Payment::class, ['Admin'], true);
+        $installer->installMVCModules(Product::class);
+        $installer->installMVCModules(ProductVariant::class, [], true);
+        $installer->installMVCModules(ProductAttribute::class, ['Admin'], true);
+        $installer->installMVCModules('ProductAttributeGroup', ['Admin'], true);
+        $installer->installMVCModules(ProductFeature::class, ['Admin'], true);
+        $installer->installMVCModules(ProductTab::class, ['Admin'], true);
+        $installer->installMVCModules(Shipping::class, ['Admin'], true);
+        $installer->installMVCModules('Wishlist', ['Front'], false);
 
         $installer->installModules(
             [
@@ -174,48 +190,42 @@ class ShopGoPackage extends AbstractPackage implements
             ],
             ['modules', 'additional_purchase_model']
         );
-    }
 
-    protected function installModules(
-        PackageInstaller $installer,
-        string $name,
-        array $modules = ['front', 'admin', 'model']
-    ): void {
-        $pascal = StrNormalize::toPascalCase($name);
+        $installer->installFiles(
+            static::path('assets/src/modules/additional-purchase/**/*'),
+            'resources/assets/src/shopgo/additional-purchase',
+            ['vue', 'vue_additional_purchase']
+        );
 
-        if (in_array('admin', $modules, true)) {
-            $installer->installModules(
-                [
-                    static::path("src/Module/Admin/$pascal/**/*") => "@source/Module/Admin/$pascal",
-                ],
-                ['Lyrasoft\\ShopGo\\Module\\Admin' => 'App\\Module\\Admin'],
-                ['modules', $name . '_admin'],
-            );
-        }
+        $installer->installFiles(
+            static::path('assets/src/modules/additional-purchase/**/*'),
+            'resources/assets/src/shopgo/additional-purchase',
+            ['vue', 'vue_additional_purchase']
+        );
 
-        if (in_array('front', $modules, true)) {
-            $installer->installModules(
-                [
-                    static::path("src/Module/Front/$pascal/**/*") => "@source/Module/Front/$pascal",
-                ],
-                ['Lyrasoft\\ShopGo\\Module\\Front' => 'App\\Module\\Front'],
-                ['modules', $name . '_front']
-            );
-        }
+        $installer->installFiles(
+            static::path('assets/src/modules/cart/**/*'),
+            'resources/assets/src/shopgo/cart',
+            ['vue', 'vue_cart']
+        );
 
-        if (in_array('model', $modules, true)) {
-            $installer->installModules(
-                [
-                    static::path("src/Entity/$pascal.php") => '@source/Entity',
-                    static::path("src/Repository/{$pascal}Repository.php") => '@source/Repository',
-                ],
-                [
-                    'Lyrasoft\\ShopGo\\Entity' => 'App\\Entity',
-                    'Lyrasoft\\ShopGo\\Repository' => 'App\\Repository',
-                ],
-                ['modules', $name . '_model']
-            );
-        }
+        $installer->installFiles(
+            static::path('assets/src/modules/product-attribute/**/*'),
+            'resources/assets/src/shopgo/product-attribute',
+            ['vue', 'vue_product_attribute']
+        );
+
+        $installer->installFiles(
+            static::path('assets/src/modules/product-edit/**/*'),
+            'resources/assets/src/shopgo/product-edit',
+            ['vue', 'vue_product_edit']
+        );
+
+        $installer->installFiles(
+            static::path('assets/src/modules/product-feature/**/*'),
+            'resources/assets/src/shopgo/product-feature',
+            ['vue', 'vue_product_feature']
+        );
     }
 
     public function useFullName(): bool
