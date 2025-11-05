@@ -1,10 +1,10 @@
 import { _ as _export_sfc, r as resolveVueComponent } from "./_plugin-vue_export-helper.js";
 import { useHttpClient, __, data, route, useTomSelect, uid, slideDown, slideUp, useQueue, useStack, debounce, simpleAlert, useCssImport } from "@windwalker-io/unicorn-next";
-import { defineComponent, mergeModels, useModel, reactive, ref, watch, onMounted, nextTick, createElementBlock, openBlock, createTextVNode, createElementVNode, Fragment, renderList, normalizeClass, toDisplayString, useTemplateRef, computed, createVNode, createCommentVNode, withDirectives, vModelCheckbox, Transition, withCtx, vModelText, createBlock, createApp } from "vue";
-import { vTooltip, ShopGoPlugin } from "../index.js";
+import { defineComponent, mergeModels, useModel, reactive, ref, watch, onMounted, nextTick, createElementBlock, openBlock, createTextVNode, createElementVNode, Fragment, renderList, normalizeClass, toDisplayString, useTemplateRef, computed, createVNode, createCommentVNode, withDirectives, vModelCheckbox, Transition, withCtx, vModelText, renderSlot, createBlock, createApp } from "vue";
 import { Modal } from "bootstrap";
 import { h } from "./index.es.js";
-const _sfc_main$5 = /* @__PURE__ */ defineComponent({
+import { vTooltip, ShopGoPlugin } from "../index.js";
+const _sfc_main$a = /* @__PURE__ */ defineComponent({
   __name: "CascadeSelect",
   props: /* @__PURE__ */ mergeModels({
     options: {},
@@ -15,8 +15,8 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
     modelModifiers: {}
   }),
   emits: /* @__PURE__ */ mergeModels(["change"], ["update:modelValue"]),
-  setup(l, { expose: e, emit: n }) {
-    const t = l, u = useModel(l, "modelValue"), y = n, o = globalThis.u || window.u, d = {
+  setup(a, { expose: e, emit: n }) {
+    const t = a, d = useModel(a, "modelValue"), u = n, o = globalThis.u || window.u, r = {
       id: "cascade-select-" + (o && o.uid ? o.uid() : String(Math.random())),
       selected: "",
       ignoreSelf: null,
@@ -35,195 +35,195 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
       horizontal: null,
       horizontalColWidth: null,
       defaultValue: "",
-      onSelectInit: (i) => {
+      onSelectInit: (l) => {
       },
-      onChange: (i) => {
+      onChange: (l) => {
       },
-      onValueInit: (i) => {
+      onValueInit: (l) => {
       }
-    }, s = reactive(Object.assign({}, d, t.options || {})), p = ref([]), f = ref([]), T = ref(!0), F = ref(!1), E = ref(s.ajaxUrl || ""), k = ref(), b = ref([]);
-    function I() {
-      T.value = !s.readonly && !s.disabled, E.value = s.ajaxUrl || "";
+    }, i = reactive(Object.assign({}, r, t.options || {})), g = ref([]), p = ref([]), x = ref(!0), w = ref(!1), E = ref(i.ajaxUrl || ""), I = ref(), v = ref([]);
+    function B() {
+      x.value = !i.readonly && !i.disabled, E.value = i.ajaxUrl || "";
     }
-    async function L() {
-      if (F.value)
+    async function $() {
+      if (w.value)
         return;
-      F.value = !0, p.value = [];
-      let c = [...(u.value || []).slice().map(($) => String($))];
-      f.value = [...c], c.length === 0 ? c = [null] : c.unshift(null);
-      let N = null;
-      for (let $ in c) {
-        const q = c[$], O = await g(q);
-        O && O.length > 0 && p.value.push(O), N = q;
+      w.value = !0, g.value = [];
+      let m = [...(d.value || []).slice().map((D) => String(D))];
+      p.value = [...m], m.length === 0 ? m = [null] : m.unshift(null);
+      let b = null;
+      for (let D in m) {
+        const O = m[D], L = await k(O);
+        L && L.length > 0 && g.value.push(L), b = O;
       }
-      C(k.value, N, c), F.value = !1, await nextTick(), b.value && b.value.length > 0 && P(b.value[0]);
+      N(I.value, b, m), w.value = !1, await nextTick(), v.value && v.value.length > 0 && T(v.value[0]);
     }
-    function D() {
-      L();
+    function M() {
+      $();
     }
-    function H(i) {
-      return s.labels[i] || `Level ${i + 1}`;
+    function P(l) {
+      return i.labels[l] || `Level ${l + 1}`;
     }
-    function j(i) {
-      return `${s.id}__level-${i}`;
+    function H(l) {
+      return `${i.id}__level-${l}`;
     }
-    function R(i) {
-      return f.value[i] || "";
+    function U(l) {
+      return p.value[l] || "";
     }
-    function Q(i, c) {
-      return String(R(i)) === String(c[s.valueField]);
+    function Q(l, m) {
+      return String(U(l)) === String(m[i.valueField]);
     }
-    function S() {
-      const i = f.value.slice();
-      if (i.length === 0)
-        return s.defaultValue;
-      const c = i.filter((N) => N != null).filter((N) => N !== "").pop();
-      return c === void 0 ? s.defaultValue : c;
+    function R() {
+      const l = p.value.slice();
+      if (l.length === 0)
+        return i.defaultValue;
+      const m = l.filter((b) => b != null).filter((b) => b !== "").pop();
+      return m === void 0 ? i.defaultValue : m;
     }
-    function A() {
-      return f.value.length;
+    function C() {
+      return p.value.length;
     }
-    async function w(i, c) {
-      const N = c.target;
-      f.value[i] = N.value;
+    async function A(l, m) {
+      const b = m.target;
+      p.value[l] = b.value;
       try {
-        s.onChange(c);
+        i.onChange(m);
       } catch {
       }
-      c.stopPropagation();
-      const $ = new CustomEvent("change", {
+      m.stopPropagation();
+      const D = new CustomEvent("change", {
         detail: {
-          el: N,
-          component: B,
-          value: N.value,
-          path: f.value
+          el: b,
+          component: F,
+          value: b.value,
+          path: p.value
         }
       });
-      if (k.value?.dispatchEvent($), u.value = f.value, y("change", $), N.value === "") {
-        p.value.splice(i + 1), f.value.splice(i + 1);
+      if (I.value?.dispatchEvent(D), d.value = p.value, u("change", D), b.value === "") {
+        g.value.splice(l + 1), p.value.splice(l + 1);
         return;
       }
-      const q = await g(N.value);
-      if (p.value.splice(i + 1), f.value.splice(i + 1), q && q.length > 0) {
-        p.value.push(q), await nextTick();
-        const O = b.value.length - 1;
-        b.value && b.value[O] && P(b.value[O]);
+      const O = await k(b.value);
+      if (g.value.splice(l + 1), p.value.splice(l + 1), O && O.length > 0) {
+        g.value.push(O), await nextTick();
+        const L = v.value.length - 1;
+        v.value && v.value[L] && T(v.value[L]);
       }
     }
-    async function g(i, c) {
-      const { get: N } = await useHttpClient();
-      return (await N(
+    async function k(l, m) {
+      const { get: b } = await useHttpClient();
+      return (await b(
         E.value,
         {
           params: {
-            [s.ajaxValueField]: i,
-            self: s.ignoreSelf || null
+            [i.ajaxValueField]: l,
+            self: i.ignoreSelf || null
           }
         }
       )).data.data;
     }
-    function C(i, c, N) {
-      const $ = new CustomEvent("value.init", {
+    function N(l, m, b) {
+      const D = new CustomEvent("value.init", {
         detail: {
-          el: i,
-          component: B,
-          value: c,
-          path: N
+          el: l,
+          component: F,
+          value: m,
+          path: b
         }
       });
-      k.value?.dispatchEvent($);
+      I.value?.dispatchEvent(D);
     }
-    function P(i) {
-      const c = new CustomEvent("select.init", {
+    function T(l) {
+      const m = new CustomEvent("select.init", {
         detail: {
-          el: i,
-          component: B
+          el: l,
+          component: F
         }
       });
-      s.onSelectInit(c), k.value?.dispatchEvent(c);
+      i.onSelectInit(m), I.value?.dispatchEvent(m);
     }
-    function x(i) {
-      return i.map((c) => ({
-        [s.valueField]: c.value[s.valueField],
-        [s.textField]: c.value[s.textField],
-        children: c.children
-      })).filter((c) => s.ignoreSelf ? c[s.valueField] != s.ignoreSelf : c);
+    function q(l) {
+      return l.map((m) => ({
+        [i.valueField]: m.value[i.valueField],
+        [i.textField]: m.value[i.textField],
+        children: m.children
+      })).filter((m) => i.ignoreSelf ? m[i.valueField] != i.ignoreSelf : m);
     }
-    function U(i, c) {
-      return (i || []).filter(($) => $[s.valueField] == c).shift();
+    function S(l, m) {
+      return (l || []).filter((D) => D[i.valueField] == m).shift();
     }
-    function M(i) {
-      return s.placeholders && s.placeholders[i] ? s.placeholders[i] : s.placeholder;
+    function j(l) {
+      return i.placeholders && i.placeholders[l] ? i.placeholders[l] : i.placeholder;
     }
-    const B = {
-      opt: s,
-      lists: p,
-      values: f,
-      getFinalValue: S,
-      getLevel: A,
-      getLabel: H,
-      getId: j,
-      getListValue: R,
+    const F = {
+      opt: i,
+      lists: g,
+      values: p,
+      getFinalValue: R,
+      getLevel: C,
+      getLabel: P,
+      getId: H,
+      getListValue: U,
       isSelected: Q,
-      onChange: w,
-      loadItems: g,
-      valueInit: C,
-      selectInit: P,
-      handleSourceItems: x,
-      findFromList: U,
-      getPlaceholder: M
+      onChange: A,
+      loadItems: k,
+      valueInit: N,
+      selectInit: T,
+      handleSourceItems: q,
+      findFromList: S,
+      getPlaceholder: j
     };
-    watch(u, (i) => {
-      (!i || i.length === 0) && D();
+    watch(d, (l) => {
+      (!l || l.length === 0) && M();
     }, { deep: !0 }), onMounted(async () => {
-      I(), await L();
+      B(), await $();
     }), e({
-      prepareValues: L
+      prepareValues: $
     });
-    const r = { props: t, modelValue: u, emit: y, u: o, defaultOpt: d, opt: s, lists: p, values: f, canModify: T, loading: F, ajaxUrl: E, root: k, selects: b, init: I, prepareValues: L, reset: D, getLabel: H, getId: j, getListValue: R, isSelected: Q, getFinalValue: S, getLevel: A, onChange: w, loadItems: g, valueInit: C, selectInit: P, handleSourceItems: x, findFromList: U, getPlaceholder: M, componentAPI: B };
-    return Object.defineProperty(r, "__isScriptSetup", { enumerable: !1, value: !0 }), r;
+    const c = { props: t, modelValue: d, emit: u, u: o, defaultOpt: r, opt: i, lists: g, values: p, canModify: x, loading: w, ajaxUrl: E, root: I, selects: v, init: B, prepareValues: $, reset: M, getLabel: P, getId: H, getListValue: U, isSelected: Q, getFinalValue: R, getLevel: C, onChange: A, loadItems: k, valueInit: N, selectInit: T, handleSourceItems: q, findFromList: S, getPlaceholder: j, componentAPI: F };
+    return Object.defineProperty(c, "__isScriptSetup", { enumerable: !1, value: !0 }), c;
   }
-}), _hoisted_1$5 = { ref: "root" }, _hoisted_2$5 = ["data-level"], _hoisted_3$5 = ["for"], _hoisted_4$5 = { class: "col c-cascade-select__input" }, _hoisted_5$5 = ["id", "disabled", "onChange"], _hoisted_6$5 = { value: "" }, _hoisted_7$5 = ["value", "selected"], _hoisted_8$5 = ["name", "value"];
-function _sfc_render$5(l, e, n, t, u, y) {
-  return openBlock(), createElementBlock("div", _hoisted_1$5, [
-    (openBlock(!0), createElementBlock(Fragment, null, renderList(t.lists, (o, d) => (openBlock(), createElementBlock("div", {
+}), _hoisted_1$9 = { ref: "root" }, _hoisted_2$8 = ["data-level"], _hoisted_3$8 = ["for"], _hoisted_4$8 = { class: "col c-cascade-select__input" }, _hoisted_5$8 = ["id", "disabled", "onChange"], _hoisted_6$6 = { value: "" }, _hoisted_7$6 = ["value", "selected"], _hoisted_8$6 = ["name", "value"];
+function _sfc_render$a(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$9, [
+    (openBlock(!0), createElementBlock(Fragment, null, renderList(t.lists, (o, r) => (openBlock(), createElementBlock("div", {
       class: normalizeClass(["form-group row mb-2", [t.opt.horizontal ? t.opt.horizontalColWidth || "col" : ""]]),
       key: o,
-      "data-level": d
+      "data-level": r
     }, [
       createElementVNode("label", {
-        for: t.getId(d),
+        for: t.getId(r),
         class: normalizeClass(["c-cascade-select__label mb-2", t.opt.labelWidth || "col-md-3"])
-      }, toDisplayString(t.getLabel(d)), 11, _hoisted_3$5),
+      }, toDisplayString(t.getLabel(r)), 11, _hoisted_3$8),
       e[1] || (e[1] = createTextVNode()),
-      createElementVNode("div", _hoisted_4$5, [
+      createElementVNode("div", _hoisted_4$8, [
         createElementVNode("select", {
-          id: t.getId(d),
+          id: t.getId(r),
           disabled: !t.canModify,
           class: "form-select custom-select",
           ref_for: !0,
-          ref: (s) => t.selects[d] = s,
-          onChange: (s) => t.onChange(d, s)
+          ref: (i) => t.selects[r] = i,
+          onChange: (i) => t.onChange(r, i)
         }, [
-          createElementVNode("option", _hoisted_6$5, toDisplayString(t.getPlaceholder(d)), 1),
+          createElementVNode("option", _hoisted_6$6, toDisplayString(t.getPlaceholder(r)), 1),
           e[0] || (e[0] = createTextVNode()),
-          (openBlock(!0), createElementBlock(Fragment, null, renderList(o, (s) => (openBlock(), createElementBlock("option", {
-            value: s[t.opt.valueField],
-            key: s[t.opt.valueField],
-            selected: t.isSelected(d, s)
-          }, toDisplayString(s[t.opt.textField]), 9, _hoisted_7$5))), 128))
-        ], 40, _hoisted_5$5)
+          (openBlock(!0), createElementBlock(Fragment, null, renderList(o, (i) => (openBlock(), createElementBlock("option", {
+            value: i[t.opt.valueField],
+            key: i[t.opt.valueField],
+            selected: t.isSelected(r, i)
+          }, toDisplayString(i[t.opt.textField]), 9, _hoisted_7$6))), 128))
+        ], 40, _hoisted_5$8)
       ])
-    ], 10, _hoisted_2$5))), 128)),
+    ], 10, _hoisted_2$8))), 128)),
     e[2] || (e[2] = createTextVNode()),
     createElementVNode("input", {
       name: t.props.name,
       type: "hidden",
       value: t.getFinalValue()
-    }, null, 8, _hoisted_8$5)
+    }, null, 8, _hoisted_8$6)
   ], 512);
 }
-const CascadeSelect__Tmp70022 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CascadeSelect.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const CascadeSelect__Tmp27989 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "CascadeSelect.vue"]]), _sfc_main$9 = /* @__PURE__ */ defineComponent({
   __name: "AddressForm",
   props: /* @__PURE__ */ mergeModels({
     type: {},
@@ -238,8 +238,8 @@ const CascadeSelect__Tmp70022 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["rend
     modelModifiers: {}
   }),
   emits: /* @__PURE__ */ mergeModels(["validated"], ["update:modelValue"]),
-  setup(l, { expose: e, emit: n }) {
-    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp70022), u = l, y = {
+  setup(a, { expose: e, emit: n }) {
+    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp27989), d = a, u = {
       // addressId: '',
       // locationId: 0,
       // firstname: '',
@@ -257,130 +257,130 @@ const CascadeSelect__Tmp70022 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["rend
       // address1: '',
       // address2: '',
       // save: false,
-    }, o = n, d = useModel(l, "modelValue"), s = ref(!1), p = ref(u.syncData == null ? "initializing" : "sync"), f = ref([]), T = {
+    }, o = n, r = useModel(a, "modelValue"), i = ref(!1), g = ref(d.syncData == null ? "initializing" : "sync"), p = ref([]), x = {
       ajaxUrl: route("@address_ajax/locationOptions"),
       labels: data("location.labels") || [],
       placeholder: __("unicorn.select.placeholder"),
-      onSelectInit(r) {
-        const i = r.detail.el;
-        useTomSelect(i);
+      onSelectInit(c) {
+        const l = c.detail.el;
+        useTomSelect(l);
       }
     };
-    d.value = Object.assign(
+    r.value = Object.assign(
       {},
-      y,
+      u,
       {
-        firstName: u.user?.firstname || "",
-        lastName: u.user?.lastname || "",
-        name: u.user?.name || ""
+        firstName: d.user?.firstname || "",
+        lastName: d.user?.lastname || "",
+        name: d.user?.name || ""
       },
-      d.value
+      r.value
     );
-    const F = ref([]), E = ref(""), k = ref(u.syncData != null), b = ref(!1), I = ref(), L = ref(), D = useTemplateRef("modal");
-    (!d.value || Object.keys(d.value).length === 0) && g().then((r) => {
-      const i = r[0] || null;
-      i && (d.value = x(i));
+    const w = ref([]), E = ref(""), I = ref(d.syncData != null), v = ref(!1), B = ref(), $ = ref(), M = useTemplateRef("modal");
+    (!r.value || Object.keys(r.value).length === 0) && k().then((c) => {
+      const l = c[0] || null;
+      l && (r.value = q(l));
     }), onMounted(async () => {
-      if (k.value)
-        p.value = "form";
+      if (I.value)
+        g.value = "form";
       else {
-        const r = await g();
-        let i;
-        d.value.id && (i = r.find((c) => String(c.id) === String(d.value.id))), i || (i = r[0]), i && U(i), p.value = "selected";
+        const c = await k();
+        let l;
+        r.value.id && (l = c.find((m) => String(m.id) === String(r.value.id))), l || (l = c[0]), l && S(l), g.value = "selected";
       }
-      M();
+      j();
     });
-    function H() {
-      if (k.value)
+    function P() {
+      if (I.value)
         return !0;
-      if (I.value) {
-        let r = !0;
-        const i = I.value.querySelectorAll("input,textarea,select");
-        for (const c of i)
-          if (!c.checkValidity()) {
-            r = r && !1, c.reportValidity();
+      if (B.value) {
+        let c = !0;
+        const l = B.value.querySelectorAll("input,textarea,select");
+        for (const m of l)
+          if (!m.checkValidity()) {
+            c = c && !1, m.reportValidity();
             break;
           }
-        return o("validated", r), r;
+        return o("validated", c), c;
       }
       return !0;
     }
-    watch(() => u.syncData, async () => {
-      k.value && u.syncData && j();
-    }, { deep: !0, immediate: !0 }), watch(k, (r) => {
-      r ? u.syncData || u.syncData && (p.value = "sync", j()) : (p.value = "form", d.value.id = void 0, d.value.addressId = void 0);
+    watch(() => d.syncData, async () => {
+      I.value && d.syncData && H();
+    }, { deep: !0, immediate: !0 }), watch(I, (c) => {
+      c ? d.syncData || d.syncData && (g.value = "sync", H()) : (g.value = "form", r.value.id = void 0, r.value.addressId = void 0);
     });
-    function j() {
-      d.value = JSON.parse(JSON.stringify(u.syncData || {}));
+    function H() {
+      r.value = JSON.parse(JSON.stringify(d.syncData || {}));
     }
-    const R = computed(() => E.value !== h.hashStr(JSON.stringify(d.value)));
-    function Q(r) {
-      r.detail && (d.value.locationId = r.detail.value, f.value = r.detail.path);
+    const U = computed(() => E.value !== h.hashStr(JSON.stringify(r.value)));
+    function Q(c) {
+      c.detail && (r.value.locationId = c.detail.value, p.value = c.detail.path);
     }
-    function S(r) {
-      return `input-${u.type}-${r}`;
+    function R(c) {
+      return `input-${d.type}-${c}`;
     }
-    function A(r) {
-      return `checkout[${u.type}_data][${r}]`;
+    function C(c) {
+      return `checkout[${d.type}_data][${c}]`;
     }
-    function w() {
-      p.value = "new", f.value = [], d.value = Object.assign({}, y);
+    function A() {
+      g.value = "new", p.value = [], r.value = Object.assign({}, u);
     }
-    async function g() {
-      const { get: r } = await useHttpClient();
-      return (await r("@address_ajax/myAddresses")).data.data;
+    async function k() {
+      const { get: c } = await useHttpClient();
+      return (await c("@address_ajax/myAddresses")).data.data;
     }
-    async function C() {
-      s.value = !0, Modal.getOrCreateInstance(D.value).show();
+    async function N() {
+      i.value = !0, Modal.getOrCreateInstance(M.value).show();
       try {
-        F.value = await g();
+        w.value = await k();
       } finally {
-        s.value = !1;
+        i.value = !1;
       }
     }
-    async function P(r) {
-      b.value = !0, d.value = Object.assign(
+    async function T(c) {
+      v.value = !0, r.value = Object.assign(
         {},
-        y,
-        r
-      ), await U(r), E.value = h.hashStr(JSON.stringify(d.value)), await M(), b.value = !1;
+        u,
+        c
+      ), await S(c), E.value = h.hashStr(JSON.stringify(r.value)), await j(), v.value = !1;
     }
-    function x(r) {
-      return r.locationPath = r.locationPath.map((i) => String(i)), r.addressId = String(r.id), r;
+    function q(c) {
+      return c.locationPath = c.locationPath.map((l) => String(l)), c.addressId = String(c.id), c;
     }
-    async function U(r) {
-      const i = Object.assign(
+    async function S(c) {
+      const l = Object.assign(
         {},
-        y,
-        r
+        u,
+        c
       );
-      d.value = x(i), Modal.getOrCreateInstance(D.value).hide(), await M();
+      r.value = q(l), Modal.getOrCreateInstance(M.value).hide(), await j();
     }
-    async function M() {
-      f.value = d.value.locationPath || [], await nextTick(), await L.value?.prepareValues();
+    async function j() {
+      p.value = r.value.locationPath || [], await nextTick(), await $.value?.prepareValues();
     }
     e({
-      validate: H
+      validate: P
     });
-    const B = { props: u, defaultAddress: y, emit: o, modelValue: d, addressLoading: s, currentState: p, locationPath: f, cascadeOptions: T, addresses: F, currentAddressHash: E, sync: k, addressSelecting: b, form: I, locationSelector: L, modalElement: D, validate: H, syncAddressFromOutside: j, showSaveButton: R, locationChanged: Q, buildInputId: S, buildInputName: A, createNew: w, findMyAddress: g, openAddressSelector: C, selectAddress: P, prepareAddressData: x, setAddressToData: U, updateLocationList: M, CascadeSelect: t };
-    return Object.defineProperty(B, "__isScriptSetup", { enumerable: !1, value: !0 }), B;
+    const F = { props: d, defaultAddress: u, emit: o, modelValue: r, addressLoading: i, currentState: g, locationPath: p, cascadeOptions: x, addresses: w, currentAddressHash: E, sync: I, addressSelecting: v, form: B, locationSelector: $, modalElement: M, validate: P, syncAddressFromOutside: H, showSaveButton: U, locationChanged: Q, buildInputId: R, buildInputName: C, createNew: A, findMyAddress: k, openAddressSelector: N, selectAddress: T, prepareAddressData: q, setAddressToData: S, updateLocationList: j, CascadeSelect: t };
+    return Object.defineProperty(F, "__isScriptSetup", { enumerable: !1, value: !0 }), F;
   }
-}), _hoisted_1$4 = { class: "card mb-4" }, _hoisted_2$4 = { class: "card-body" }, _hoisted_3$4 = { class: "card-title d-flex justify-content-between" }, _hoisted_4$4 = { class: "d-flex align-items-center gap-3" }, _hoisted_5$4 = { class: "m-0" }, _hoisted_6$4 = {
+}), _hoisted_1$8 = { class: "card mb-4" }, _hoisted_2$7 = { class: "card-body" }, _hoisted_3$7 = { class: "card-title d-flex justify-content-between" }, _hoisted_4$7 = { class: "d-flex align-items-center gap-3" }, _hoisted_5$7 = { class: "m-0" }, _hoisted_6$5 = {
   key: 0,
   class: "form-check"
-}, _hoisted_7$4 = ["for"], _hoisted_8$4 = ["id", "name"], _hoisted_9$4 = { key: 0 }, _hoisted_10$4 = { key: 0 }, _hoisted_11$4 = {
+}, _hoisted_7$5 = ["for"], _hoisted_8$5 = ["id", "name"], _hoisted_9$5 = { key: 0 }, _hoisted_10$5 = { key: 0 }, _hoisted_11$5 = {
   key: 1,
   class: "mt-3",
   style: { "animation-duration": ".3s" }
-}, _hoisted_12$4 = {
+}, _hoisted_12$5 = {
   key: 2,
   class: "row mt-3",
   style: { "animation-duration": ".3s" },
   ref: "form"
-}, _hoisted_13$4 = { class: "col-lg-5" }, _hoisted_14$3 = { class: "form-group row mb-4" }, _hoisted_15$3 = ["for"], _hoisted_16$2 = { class: "col-9" }, _hoisted_17$2 = ["id", "name"], _hoisted_18$2 = { class: "form-group row mb-4" }, _hoisted_19$2 = ["for"], _hoisted_20$2 = { class: "col-9" }, _hoisted_21$2 = ["id", "name"], _hoisted_22$2 = { class: "form-group row mb-4" }, _hoisted_23$2 = ["for"], _hoisted_24$2 = { class: "col-9" }, _hoisted_25$2 = ["id", "name"], _hoisted_26$2 = { class: "form-group row mb-4" }, _hoisted_27$2 = ["for"], _hoisted_28$2 = { class: "col-9" }, _hoisted_29$2 = ["id", "name"], _hoisted_30$2 = { class: "form-group row mb-4" }, _hoisted_31$2 = ["for"], _hoisted_32$2 = { class: "col-9" }, _hoisted_33$2 = ["id", "name"], _hoisted_34$2 = { class: "form-group row mb-4" }, _hoisted_35$2 = ["for"], _hoisted_36$2 = { class: "col-9" }, _hoisted_37$2 = ["id", "name"], _hoisted_38$2 = { class: "form-group row mb-4" }, _hoisted_39$1 = ["for"], _hoisted_40$1 = { class: "col-9" }, _hoisted_41$1 = ["id", "name"], _hoisted_42$1 = { class: "col-lg-7 mb-4 mb-lg-0" }, _hoisted_43$1 = { class: "form-group mb-4" }, _hoisted_44$1 = ["for"], _hoisted_45$1 = { class: "form-group row mb-4" }, _hoisted_46$1 = ["for"], _hoisted_47$1 = { class: "col-9" }, _hoisted_48$1 = ["id", "name"], _hoisted_49$1 = { class: "form-group row mb-4" }, _hoisted_50$1 = ["for"], _hoisted_51$1 = { class: "col-9" }, _hoisted_52$1 = ["id", "name"], _hoisted_53$1 = { class: "form-group row mb-4" }, _hoisted_54$1 = ["for"], _hoisted_55$1 = { class: "col-9" }, _hoisted_56$1 = ["id", "name"], _hoisted_57$1 = {
+}, _hoisted_13$5 = { class: "col-lg-5" }, _hoisted_14$4 = { class: "form-group row mb-4" }, _hoisted_15$4 = ["for"], _hoisted_16$3 = { class: "col-9" }, _hoisted_17$2 = ["id", "name"], _hoisted_18$2 = { class: "form-group row mb-4" }, _hoisted_19$2 = ["for"], _hoisted_20$2 = { class: "col-9" }, _hoisted_21$2 = ["id", "name"], _hoisted_22$2 = { class: "form-group row mb-4" }, _hoisted_23$2 = ["for"], _hoisted_24$2 = { class: "col-9" }, _hoisted_25$2 = ["id", "name"], _hoisted_26$2 = { class: "form-group row mb-4" }, _hoisted_27$2 = ["for"], _hoisted_28$2 = { class: "col-9" }, _hoisted_29$2 = ["id", "name"], _hoisted_30$2 = { class: "form-group row mb-4" }, _hoisted_31$1 = ["for"], _hoisted_32$1 = { class: "col-9" }, _hoisted_33$1 = ["id", "name"], _hoisted_34$1 = { class: "form-group row mb-4" }, _hoisted_35$1 = ["for"], _hoisted_36$1 = { class: "col-9" }, _hoisted_37$1 = ["id", "name"], _hoisted_38$1 = { class: "form-group row mb-4" }, _hoisted_39 = ["for"], _hoisted_40 = { class: "col-9" }, _hoisted_41 = ["id", "name"], _hoisted_42 = { class: "col-lg-7 mb-4 mb-lg-0" }, _hoisted_43 = { class: "form-group mb-4" }, _hoisted_44 = ["for"], _hoisted_45 = { class: "form-group row mb-4" }, _hoisted_46 = ["for"], _hoisted_47 = { class: "col-9" }, _hoisted_48 = ["id", "name"], _hoisted_49 = { class: "form-group row mb-4" }, _hoisted_50 = ["for"], _hoisted_51 = { class: "col-9" }, _hoisted_52 = ["id", "name"], _hoisted_53 = { class: "form-group row mb-4" }, _hoisted_54 = ["for"], _hoisted_55 = { class: "col-9" }, _hoisted_56 = ["id", "name"], _hoisted_57 = {
   key: 0,
   class: "form-group row mb-4"
-}, _hoisted_58$1 = ["for"], _hoisted_59 = { class: "col-9" }, _hoisted_60 = ["id", "name"], _hoisted_61 = { class: "d-none" }, _hoisted_62 = ["id", "name"], _hoisted_63 = ["id"], _hoisted_64 = {
+}, _hoisted_58 = ["for"], _hoisted_59 = { class: "col-9" }, _hoisted_60 = ["id", "name"], _hoisted_61 = { class: "d-none" }, _hoisted_62 = ["id", "name"], _hoisted_63 = ["id"], _hoisted_64 = {
   class: "modal-dialog",
   role: "document"
 }, _hoisted_65 = { class: "modal-content" }, _hoisted_66 = { class: "modal-header" }, _hoisted_67 = {
@@ -396,18 +396,18 @@ const CascadeSelect__Tmp70022 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["rend
   key: 0,
   class: "spinner spinner-border mx-auto"
 };
-function _sfc_render$4(l, e, n, t, u, y) {
-  return openBlock(), createElementBlock("div", _hoisted_1$4, [
-    createElementVNode("div", _hoisted_2$4, [
-      createElementVNode("div", _hoisted_3$4, [
-        createElementVNode("div", _hoisted_4$4, [
-          createElementVNode("h4", _hoisted_5$4, toDisplayString(n.title), 1),
+function _sfc_render$9(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$8, [
+    createElementVNode("div", _hoisted_2$7, [
+      createElementVNode("div", _hoisted_3$7, [
+        createElementVNode("div", _hoisted_4$7, [
+          createElementVNode("h4", _hoisted_5$7, toDisplayString(n.title), 1),
           e[15] || (e[15] = createTextVNode()),
-          n.syncData ? (openBlock(), createElementBlock("div", _hoisted_6$4, [
+          n.syncData ? (openBlock(), createElementBlock("div", _hoisted_6$5, [
             createElementVNode("label", {
               for: `input-${n.type}-sync`,
               class: "form-check-label"
-            }, toDisplayString(n.syncLabel || l.$lang("shopgo.cart.address.form.same.with.buyer")), 9, _hoisted_7$4),
+            }, toDisplayString(n.syncLabel || a.$lang("shopgo.cart.address.form.same.with.buyer")), 9, _hoisted_7$5),
             e[14] || (e[14] = createTextVNode()),
             withDirectives(createElementVNode("input", {
               type: "checkbox",
@@ -416,26 +416,26 @@ function _sfc_render$4(l, e, n, t, u, y) {
               name: t.buildInputName("sync"),
               class: "form-check-input",
               value: "1"
-            }, null, 8, _hoisted_8$4), [
+            }, null, 8, _hoisted_8$5), [
               [vModelCheckbox, t.sync]
             ])
           ])) : createCommentVNode("", !0)
         ]),
         e[17] || (e[17] = createTextVNode()),
-        n.user && !t.sync ? (openBlock(), createElementBlock("div", _hoisted_9$4, [
+        n.user && !t.sync ? (openBlock(), createElementBlock("div", _hoisted_9$5, [
           createElementVNode("button", {
             type: "button",
             class: "btn btn-outline-success btn-sm",
             style: { "min-width": "100px" },
             onClick: t.createNew
-          }, toDisplayString(l.$lang("shopgo.cart.address.form.new.address")), 1),
+          }, toDisplayString(a.$lang("shopgo.cart.address.form.new.address")), 1),
           e[16] || (e[16] = createTextVNode()),
           createElementVNode("button", {
             type: "button",
             class: "btn btn-outline-primary btn-sm",
             style: { "min-width": "100px" },
             onClick: t.openAddressSelector
-          }, toDisplayString(l.$lang("shopgo.cart.address.form.select")), 1)
+          }, toDisplayString(a.$lang("shopgo.cart.address.form.select")), 1)
         ])) : createCommentVNode("", !0)
       ]),
       e[42] || (e[42] = createTextVNode()),
@@ -444,19 +444,19 @@ function _sfc_render$4(l, e, n, t, u, y) {
         mode: "out-in"
       }, {
         default: withCtx(() => [
-          t.currentState === "initializing" ? (openBlock(), createElementBlock("div", _hoisted_10$4, [...e[18] || (e[18] = [
+          t.currentState === "initializing" ? (openBlock(), createElementBlock("div", _hoisted_10$5, [...e[18] || (e[18] = [
             createElementVNode("div", { class: "placeholder-glow" }, [
               createElementVNode("span", { class: "placeholder col-7" })
             ], -1)
-          ])])) : !t.sync && t.modelValue.addressId ? (openBlock(), createElementBlock("div", _hoisted_11$4, toDisplayString(t.modelValue.formatted), 1)) : !t.sync && !t.modelValue.addressId ? (openBlock(), createElementBlock("div", _hoisted_12$4, [
-            createElementVNode("div", _hoisted_13$4, [
-              createElementVNode("div", _hoisted_14$3, [
+          ])])) : !t.sync && t.modelValue.addressId ? (openBlock(), createElementBlock("div", _hoisted_11$5, toDisplayString(t.modelValue.formatted), 1)) : !t.sync && !t.modelValue.addressId ? (openBlock(), createElementBlock("div", _hoisted_12$5, [
+            createElementVNode("div", _hoisted_13$5, [
+              createElementVNode("div", _hoisted_14$4, [
                 createElementVNode("label", {
                   for: t.buildInputId("firstname"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.firstname")), 9, _hoisted_15$3),
+                }, toDisplayString(a.$lang("shopgo.address.field.firstname")), 9, _hoisted_15$4),
                 e[19] || (e[19] = createTextVNode()),
-                createElementVNode("div", _hoisted_16$2, [
+                createElementVNode("div", _hoisted_16$3, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("firstname"),
                     type: "text",
@@ -474,7 +474,7 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 createElementVNode("label", {
                   for: t.buildInputId("lastname"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.lastname")), 9, _hoisted_19$2),
+                }, toDisplayString(a.$lang("shopgo.address.field.lastname")), 9, _hoisted_19$2),
                 e[20] || (e[20] = createTextVNode()),
                 createElementVNode("div", _hoisted_20$2, [
                   withDirectives(createElementVNode("input", {
@@ -494,7 +494,7 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 createElementVNode("label", {
                   for: t.buildInputId("email"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.email")), 9, _hoisted_23$2),
+                }, toDisplayString(a.$lang("shopgo.address.field.email")), 9, _hoisted_23$2),
                 e[21] || (e[21] = createTextVNode()),
                 createElementVNode("div", _hoisted_24$2, [
                   withDirectives(createElementVNode("input", {
@@ -514,7 +514,7 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 createElementVNode("label", {
                   for: t.buildInputId("phone"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.phone")), 9, _hoisted_27$2),
+                }, toDisplayString(a.$lang("shopgo.address.field.phone")), 9, _hoisted_27$2),
                 e[22] || (e[22] = createTextVNode()),
                 createElementVNode("div", _hoisted_28$2, [
                   withDirectives(createElementVNode("input", {
@@ -533,9 +533,9 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 createElementVNode("label", {
                   for: t.buildInputId("mobile"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.mobile")), 9, _hoisted_31$2),
+                }, toDisplayString(a.$lang("shopgo.address.field.mobile")), 9, _hoisted_31$1),
                 e[23] || (e[23] = createTextVNode()),
-                createElementVNode("div", _hoisted_32$2, [
+                createElementVNode("div", _hoisted_32$1, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("mobile"),
                     type: "text",
@@ -543,57 +543,57 @@ function _sfc_render$4(l, e, n, t, u, y) {
                     name: t.buildInputName("mobile"),
                     required: "",
                     "onUpdate:modelValue": e[5] || (e[5] = (o) => t.modelValue.mobile = o)
-                  }, null, 8, _hoisted_33$2), [
+                  }, null, 8, _hoisted_33$1), [
                     [vModelText, t.modelValue.mobile]
                   ])
                 ])
               ]),
               e[30] || (e[30] = createTextVNode()),
-              createElementVNode("div", _hoisted_34$2, [
+              createElementVNode("div", _hoisted_34$1, [
                 createElementVNode("label", {
                   for: t.buildInputId("company"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.company")), 9, _hoisted_35$2),
+                }, toDisplayString(a.$lang("shopgo.address.field.company")), 9, _hoisted_35$1),
                 e[24] || (e[24] = createTextVNode()),
-                createElementVNode("div", _hoisted_36$2, [
+                createElementVNode("div", _hoisted_36$1, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("company"),
                     type: "text",
                     class: "form-control",
                     name: t.buildInputName("company"),
                     "onUpdate:modelValue": e[6] || (e[6] = (o) => t.modelValue.company = o)
-                  }, null, 8, _hoisted_37$2), [
+                  }, null, 8, _hoisted_37$1), [
                     [vModelText, t.modelValue.company]
                   ])
                 ])
               ]),
               e[31] || (e[31] = createTextVNode()),
-              createElementVNode("div", _hoisted_38$2, [
+              createElementVNode("div", _hoisted_38$1, [
                 createElementVNode("label", {
                   for: t.buildInputId("vat"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.vat")), 9, _hoisted_39$1),
+                }, toDisplayString(a.$lang("shopgo.address.field.vat")), 9, _hoisted_39),
                 e[25] || (e[25] = createTextVNode()),
-                createElementVNode("div", _hoisted_40$1, [
+                createElementVNode("div", _hoisted_40, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("vat"),
                     type: "text",
                     class: "form-control",
                     name: t.buildInputName("vat"),
                     "onUpdate:modelValue": e[7] || (e[7] = (o) => t.modelValue.vat = o)
-                  }, null, 8, _hoisted_41$1), [
+                  }, null, 8, _hoisted_41), [
                     [vModelText, t.modelValue.vat]
                   ])
                 ])
               ])
             ]),
             e[41] || (e[41] = createTextVNode()),
-            createElementVNode("div", _hoisted_42$1, [
-              createElementVNode("div", _hoisted_43$1, [
+            createElementVNode("div", _hoisted_42, [
+              createElementVNode("div", _hoisted_43, [
                 createElementVNode("label", {
                   for: t.buildInputId("country"),
                   class: "form-label"
-                }, toDisplayString(l.$lang("shopgo.address.field.country")), 9, _hoisted_44$1),
+                }, toDisplayString(a.$lang("shopgo.address.field.country")), 9, _hoisted_44),
                 e[32] || (e[32] = createTextVNode()),
                 createVNode(t.CascadeSelect, {
                   options: t.cascadeOptions,
@@ -605,13 +605,13 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 }, null, 8, ["modelValue", "name"])
               ]),
               e[37] || (e[37] = createTextVNode()),
-              createElementVNode("div", _hoisted_45$1, [
+              createElementVNode("div", _hoisted_45, [
                 createElementVNode("label", {
                   for: t.buildInputId("postcode"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.postcode")), 9, _hoisted_46$1),
+                }, toDisplayString(a.$lang("shopgo.address.field.postcode")), 9, _hoisted_46),
                 e[33] || (e[33] = createTextVNode()),
-                createElementVNode("div", _hoisted_47$1, [
+                createElementVNode("div", _hoisted_47, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("postcode"),
                     type: "text",
@@ -619,19 +619,19 @@ function _sfc_render$4(l, e, n, t, u, y) {
                     name: t.buildInputName("postcode"),
                     "onUpdate:modelValue": e[9] || (e[9] = (o) => t.modelValue.postcode = o),
                     maxlength: "10"
-                  }, null, 8, _hoisted_48$1), [
+                  }, null, 8, _hoisted_48), [
                     [vModelText, t.modelValue.postcode]
                   ])
                 ])
               ]),
               e[38] || (e[38] = createTextVNode()),
-              createElementVNode("div", _hoisted_49$1, [
+              createElementVNode("div", _hoisted_49, [
                 createElementVNode("label", {
                   for: t.buildInputId("address1"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.address1")), 9, _hoisted_50$1),
+                }, toDisplayString(a.$lang("shopgo.address.field.address1")), 9, _hoisted_50),
                 e[34] || (e[34] = createTextVNode()),
-                createElementVNode("div", _hoisted_51$1, [
+                createElementVNode("div", _hoisted_51, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("address1"),
                     type: "text",
@@ -639,36 +639,36 @@ function _sfc_render$4(l, e, n, t, u, y) {
                     name: t.buildInputName("address1"),
                     required: "",
                     "onUpdate:modelValue": e[10] || (e[10] = (o) => t.modelValue.address1 = o)
-                  }, null, 8, _hoisted_52$1), [
+                  }, null, 8, _hoisted_52), [
                     [vModelText, t.modelValue.address1]
                   ])
                 ])
               ]),
               e[39] || (e[39] = createTextVNode()),
-              createElementVNode("div", _hoisted_53$1, [
+              createElementVNode("div", _hoisted_53, [
                 createElementVNode("label", {
                   for: t.buildInputId("address2"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.address.field.address2")), 9, _hoisted_54$1),
+                }, toDisplayString(a.$lang("shopgo.address.field.address2")), 9, _hoisted_54),
                 e[35] || (e[35] = createTextVNode()),
-                createElementVNode("div", _hoisted_55$1, [
+                createElementVNode("div", _hoisted_55, [
                   withDirectives(createElementVNode("input", {
                     id: t.buildInputId("address2"),
                     type: "text",
                     class: "form-control",
                     name: t.buildInputName("address2"),
                     "onUpdate:modelValue": e[11] || (e[11] = (o) => t.modelValue.address2 = o)
-                  }, null, 8, _hoisted_56$1), [
+                  }, null, 8, _hoisted_56), [
                     [vModelText, t.modelValue.address2]
                   ])
                 ])
               ]),
               e[40] || (e[40] = createTextVNode()),
-              t.showSaveButton ? (openBlock(), createElementBlock("div", _hoisted_57$1, [
+              t.showSaveButton ? (openBlock(), createElementBlock("div", _hoisted_57, [
                 createElementVNode("label", {
                   for: t.buildInputId("save"),
                   class: "form-label col-3"
-                }, toDisplayString(l.$lang("shopgo.cart.address.form.save.for.next")), 9, _hoisted_58$1),
+                }, toDisplayString(a.$lang("shopgo.cart.address.form.save.for.next")), 9, _hoisted_58),
                 e[36] || (e[36] = createTextVNode()),
                 createElementVNode("div", _hoisted_59, [
                   withDirectives(createElementVNode("input", {
@@ -713,7 +713,7 @@ function _sfc_render$4(l, e, n, t, u, y) {
       createElementVNode("div", _hoisted_64, [
         createElementVNode("div", _hoisted_65, [
           createElementVNode("div", _hoisted_66, [
-            createElementVNode("h4", _hoisted_67, toDisplayString(l.$lang("shopgo.cart.address.form.modal.title")), 1),
+            createElementVNode("h4", _hoisted_67, toDisplayString(a.$lang("shopgo.cart.address.form.modal.title")), 1),
             e[44] || (e[44] = createTextVNode()),
             e[45] || (e[45] = createElementVNode("button", {
               type: "button",
@@ -735,17 +735,17 @@ function _sfc_render$4(l, e, n, t, u, y) {
                 href: "javascript://",
                 class: "list-group-item d-flex gap-2 justify-content-between",
                 key: o,
-                onClick: (d) => t.selectAddress(o)
+                onClick: (r) => t.selectAddress(o)
               }, [
                 createElementVNode("div", null, toDisplayString(o.formatted), 1),
                 e[46] || (e[46] = createTextVNode()),
                 createElementVNode("div", null, [
-                  createElementVNode("span", _hoisted_71, toDisplayString(l.$lang("shopgo.cart.address.form.button.select")), 1)
+                  createElementVNode("span", _hoisted_71, toDisplayString(a.$lang("shopgo.cart.address.form.button.select")), 1)
                 ])
               ], 8, _hoisted_70))), 128))
             ])) : (openBlock(), createElementBlock("div", _hoisted_72, [
               t.addressLoading ? (openBlock(), createElementBlock("span", _hoisted_73)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                createTextVNode(toDisplayString(l.$lang("shopgo.cart.address.form.no.addresses")), 1)
+                createTextVNode(toDisplayString(a.$lang("shopgo.cart.address.form.no.addresses")), 1)
               ], 64))
             ]))
           ])
@@ -754,41 +754,134 @@ function _sfc_render$4(l, e, n, t, u, y) {
     ], 8, _hoisted_63)
   ]);
 }
-const AddressForm__Tmp22267 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "AddressForm.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const AddressForm__Tmp90358 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__file", "AddressForm.vue"]]), _sfc_main$8 = /* @__PURE__ */ defineComponent({
+  __name: "AddressFormSet",
+  props: /* @__PURE__ */ mergeModels({
+    user: {}
+  }, {
+    payment: {
+      required: !0
+    },
+    paymentModifiers: {},
+    shipping: {
+      required: !0
+    },
+    shippingModifiers: {}
+  }),
+  emits: ["update:payment", "update:shipping"],
+  setup(a, { expose: e }) {
+    const n = resolveVueComponent("AddressForm", AddressForm__Tmp90358);
+    e();
+    const t = useModel(a, "payment"), d = useModel(a, "shipping"), u = { paymentData: t, shippingData: d, AddressForm: n };
+    return Object.defineProperty(u, "__isScriptSetup", { enumerable: !1, value: !0 }), u;
+  }
+}), _hoisted_1$7 = { class: "" };
+function _sfc_render$8(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$7, [
+    createVNode(t.AddressForm, {
+      type: "payment",
+      title: a.$lang("shopgo.cart.payment.data.title"),
+      user: n.user,
+      modelValue: t.paymentData,
+      "onUpdate:modelValue": e[0] || (e[0] = (o) => t.paymentData = o),
+      ref: "paymentForm"
+    }, null, 8, ["title", "user", "modelValue"]),
+    e[2] || (e[2] = createTextVNode()),
+    createVNode(t.AddressForm, {
+      type: "shipping",
+      title: a.$lang("shopgo.cart.shipping.data.title"),
+      user: n.user,
+      modelValue: t.shippingData,
+      "onUpdate:modelValue": e[1] || (e[1] = (o) => t.shippingData = o),
+      "sync-data": t.paymentData,
+      ref: "shippingForm"
+    }, null, 8, ["title", "user", "modelValue", "sync-data"])
+  ]);
+}
+const AddressFormSet__Tmp13401 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__file", "AddressFormSet.vue"]]), _sfc_main$7 = /* @__PURE__ */ defineComponent({
+  __name: "CartForm",
+  props: /* @__PURE__ */ mergeModels({
+    user: {},
+    shippings: {},
+    payments: {}
+  }, {
+    payment: {
+      required: !0
+    },
+    paymentModifiers: {},
+    shipping: {
+      required: !0
+    },
+    shippingModifiers: {},
+    "payment-id": {
+      required: !0
+    },
+    "payment-idModifiers": {},
+    "shipping-id": {
+      required: !0
+    },
+    "shipping-idModifiers": {},
+    note: {
+      default: ""
+    },
+    noteModifiers: {}
+  }),
+  emits: ["update:payment", "update:shipping", "update:payment-id", "update:shipping-id", "update:note"],
+  setup(a, { expose: e }) {
+    e();
+    const n = useModel(a, "payment"), t = useModel(a, "shipping"), d = useModel(a, "payment-id"), u = useModel(a, "shipping-id"), o = useModel(a, "note"), r = { paymentData: n, shippingData: t, paymentId: d, shippingId: u, note: o };
+    return Object.defineProperty(r, "__isScriptSetup", { enumerable: !1, value: !0 }), r;
+  }
+});
+function _sfc_render$7(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", null, [
+    renderSlot(a.$slots, "default", {
+      user: n.user,
+      shippings: n.shippings,
+      payments: n.payments,
+      shippingData: t.shippingData,
+      paymentData: t.paymentData,
+      shippingId: t.shippingId,
+      paymentId: t.paymentId,
+      note: t.note
+    })
+  ]);
+}
+const CartForm__Tmp14737 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__file", "CartForm.vue"]]), _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "CartListItem",
   props: {
     item: {},
     hasCheckbox: { type: Boolean }
   },
   emits: ["remove-item", "update-quantities", "change-item-quantity", "update-checks"],
-  setup(l, { expose: e, emit: n }) {
+  setup(a, { expose: e, emit: n }) {
     e();
-    const t = l, u = n;
-    function y() {
-      u("remove-item");
+    const t = a, d = n;
+    function u() {
+      d("remove-item");
     }
     function o() {
-      u("update-quantities");
+      d("update-quantities");
     }
-    function d(f) {
-      u("change-item-quantity", f);
+    function r(p) {
+      d("change-item-quantity", p);
     }
-    function s() {
-      u("update-checks");
+    function i() {
+      d("update-checks");
     }
-    const p = { props: t, emits: u, removeItem: y, updateQuantities: o, changeItemQuantity: d, updateChecks: s };
-    return Object.defineProperty(p, "__isScriptSetup", { enumerable: !1, value: !0 }), p;
+    const g = { props: t, emits: d, removeItem: u, updateQuantities: o, changeItemQuantity: r, updateChecks: i };
+    return Object.defineProperty(g, "__isScriptSetup", { enumerable: !1, value: !0 }), g;
   }
-}), _hoisted_1$3 = ["data-product-id", "data-variant-id"], _hoisted_2$3 = { class: "card-body d-grid d-lg-flex gap-3" }, _hoisted_3$3 = { class: "d-flex gap-3 me-auto" }, _hoisted_4$3 = {
+}), _hoisted_1$6 = ["data-product-id", "data-variant-id"], _hoisted_2$6 = { class: "card-body d-grid d-lg-flex gap-3" }, _hoisted_3$6 = { class: "d-flex gap-3 me-auto" }, _hoisted_4$6 = {
   key: 0,
   class: "c-cart-item__checkbox"
-}, _hoisted_5$3 = { class: "c-cart-item__image" }, _hoisted_6$3 = {
+}, _hoisted_5$6 = { class: "c-cart-item__image" }, _hoisted_6$4 = {
   style: { width: "75px" },
   class: "ratio ratio-1x1"
-}, _hoisted_7$3 = ["src", "alt"], _hoisted_8$3 = { class: "c-cart-item__content" }, _hoisted_9$3 = ["href"], _hoisted_10$3 = {
+}, _hoisted_7$4 = ["src", "alt"], _hoisted_8$4 = { class: "c-cart-item__content" }, _hoisted_9$4 = ["href"], _hoisted_10$4 = {
   key: 0,
   class: "fs-6 text-muted"
-}, _hoisted_11$3 = { class: "text-muted small" }, _hoisted_12$3 = { key: 1 }, _hoisted_13$3 = { class: "badge bg-danger" }, _hoisted_14$2 = { class: "c-cart-item__quantity d-flex gap-2" }, _hoisted_15$2 = { class: "" }, _hoisted_16$1 = { class: "input-group flex-nowrap" }, _hoisted_17$1 = { class: "d-flex gap-3" }, _hoisted_18$1 = {
+}, _hoisted_11$4 = { class: "text-muted small" }, _hoisted_12$4 = { key: 1 }, _hoisted_13$4 = { class: "badge bg-danger" }, _hoisted_14$3 = { class: "c-cart-item__quantity d-flex gap-2" }, _hoisted_15$3 = { class: "" }, _hoisted_16$2 = { class: "input-group flex-nowrap" }, _hoisted_17$1 = { class: "d-flex gap-3" }, _hoisted_18$1 = {
   class: "c-cart-item__price text-end text-nowrap",
   style: { "min-width": "135px" }
 }, _hoisted_19$1 = {
@@ -806,25 +899,25 @@ const AddressForm__Tmp22267 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render
 }, _hoisted_30$1 = {
   key: 0,
   class: "badge bg-danger"
-}, _hoisted_31$1 = { class: "c-attachment__quantity ms-auto" }, _hoisted_32$1 = { class: "d-flex gap-3 ms-auto ms-lg-0" }, _hoisted_33$1 = {
+}, _hoisted_31 = { class: "c-attachment__quantity ms-auto" }, _hoisted_32 = { class: "d-flex gap-3 ms-auto ms-lg-0" }, _hoisted_33 = {
   class: "c-attachment__total d-flex justify-content-end gap-3",
   style: { width: "250px" }
-}, _hoisted_34$1 = {
+}, _hoisted_34 = {
   class: "c-cart-item__price d-flex align-items-center gap-2 text-end text-nowrap",
   style: { "min-width": "135px" }
-}, _hoisted_35$1 = {
+}, _hoisted_35 = {
   key: 0,
   class: "small text-muted"
-}, _hoisted_36$1 = { class: "" }, _hoisted_37$1 = { class: "mt-3 text-end fs-5" }, _hoisted_38$1 = { class: "" };
-function _sfc_render$3(l, e, n, t, u, y) {
+}, _hoisted_36 = { class: "" }, _hoisted_37 = { class: "mt-3 text-end fs-5" }, _hoisted_38 = { class: "" };
+function _sfc_render$6(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: "c-cart-item card mb-3",
     "data-product-id": n.item.product.id,
     "data-variant-id": n.item.variant.id
   }, [
-    createElementVNode("div", _hoisted_2$3, [
-      createElementVNode("div", _hoisted_3$3, [
-        n.hasCheckbox ? (openBlock(), createElementBlock("div", _hoisted_4$3, [
+    createElementVNode("div", _hoisted_2$6, [
+      createElementVNode("div", _hoisted_3$6, [
+        n.hasCheckbox ? (openBlock(), createElementBlock("div", _hoisted_4$6, [
           withDirectives(createElementVNode("input", {
             type: "checkbox",
             class: "form-check-input",
@@ -835,38 +928,38 @@ function _sfc_render$3(l, e, n, t, u, y) {
           ])
         ])) : createCommentVNode("", !0),
         e[6] || (e[6] = createTextVNode()),
-        createElementVNode("div", _hoisted_5$3, [
-          createElementVNode("div", _hoisted_6$3, [
+        createElementVNode("div", _hoisted_5$6, [
+          createElementVNode("div", _hoisted_6$4, [
             createElementVNode("img", {
               class: "object-fit-cover",
               src: n.item.cover,
               alt: n.item.product.title,
               style: {}
-            }, null, 8, _hoisted_7$3)
+            }, null, 8, _hoisted_7$4)
           ])
         ]),
         e[7] || (e[7] = createTextVNode()),
-        createElementVNode("div", _hoisted_8$3, [
+        createElementVNode("div", _hoisted_8$4, [
           createElementVNode("h5", null, [
             createElementVNode("a", {
               href: n.item.link,
               target: "_blank"
-            }, toDisplayString(n.item.product.title), 9, _hoisted_9$3)
+            }, toDisplayString(n.item.product.title), 9, _hoisted_9$4)
           ]),
           e[4] || (e[4] = createTextVNode()),
-          n.item.variant.primary ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_10$3, toDisplayString(n.item.variant.title), 1)),
+          n.item.variant.primary ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_10$4, toDisplayString(n.item.variant.title), 1)),
           e[5] || (e[5] = createTextVNode()),
-          createElementVNode("div", _hoisted_11$3, toDisplayString(n.item.product.model), 1)
+          createElementVNode("div", _hoisted_11$4, toDisplayString(n.item.product.model), 1)
         ]),
         e[8] || (e[8] = createTextVNode()),
-        n.item.outOfStock ? (openBlock(), createElementBlock("div", _hoisted_12$3, [
-          createElementVNode("span", _hoisted_13$3, toDisplayString(l.$lang("shopgo.message.out.of.stock")), 1)
+        n.item.outOfStock ? (openBlock(), createElementBlock("div", _hoisted_12$4, [
+          createElementVNode("span", _hoisted_13$4, toDisplayString(a.$lang("shopgo.message.out.of.stock")), 1)
         ])) : createCommentVNode("", !0)
       ]),
       e[16] || (e[16] = createTextVNode()),
-      createElementVNode("div", _hoisted_14$2, [
-        createElementVNode("div", _hoisted_15$2, [
-          createElementVNode("div", _hoisted_16$1, [
+      createElementVNode("div", _hoisted_14$3, [
+        createElementVNode("div", _hoisted_15$3, [
+          createElementVNode("div", _hoisted_16$2, [
             createElementVNode("button", {
               type: "button",
               class: "btn btn-secondary btn-sm",
@@ -904,10 +997,10 @@ function _sfc_render$3(l, e, n, t, u, y) {
       createElementVNode("div", _hoisted_17$1, [
         createElementVNode("div", _hoisted_18$1, [
           n.item.priceSet.base_total.price !== n.item.priceSet.final_total.price ? (openBlock(), createElementBlock("div", _hoisted_19$1, [
-            createElementVNode("del", null, toDisplayString(l.$formatPrice(n.item.priceSet.base_total.price)), 1)
+            createElementVNode("del", null, toDisplayString(a.$formatPrice(n.item.priceSet.base_total.price)), 1)
           ])) : createCommentVNode("", !0),
           e[13] || (e[13] = createTextVNode()),
-          createElementVNode("div", _hoisted_20$1, toDisplayString(l.$formatPrice(n.item.priceSet.final_total.price, { code: !0 })), 1)
+          createElementVNode("div", _hoisted_20$1, toDisplayString(a.$formatPrice(n.item.priceSet.final_total.price, { code: !0 })), 1)
         ]),
         e[15] || (e[15] = createTextVNode()),
         createElementVNode("div", { class: "c-cart-item__actions ms-auto" }, [
@@ -923,7 +1016,7 @@ function _sfc_render$3(l, e, n, t, u, y) {
     ]),
     e[27] || (e[27] = createTextVNode()),
     n.item.attachments.length > 0 ? (openBlock(), createElementBlock("div", _hoisted_21$1, [
-      createElementVNode("h6", null, toDisplayString(l.$lang("shopgo.cart.title.attachments")), 1),
+      createElementVNode("h6", null, toDisplayString(a.$lang("shopgo.cart.title.attachments")), 1),
       e[25] || (e[25] = createTextVNode()),
       (openBlock(!0), createElementBlock(Fragment, null, renderList(n.item.attachments, (o) => (openBlock(), createElementBlock("div", {
         class: "c-attachment w-100 d-grid d-lg-flex gap-3 align-items-center py-2 border-bottom",
@@ -948,34 +1041,254 @@ function _sfc_render$3(l, e, n, t, u, y) {
             o.variant.primary ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_29$1, toDisplayString(o.variant.title), 1))
           ]),
           e[20] || (e[20] = createTextVNode()),
-          o.outOfStock ? (openBlock(), createElementBlock("span", _hoisted_30$1, toDisplayString(l.$lang("shopgo.message.out.of.stock")), 1)) : createCommentVNode("", !0),
+          o.outOfStock ? (openBlock(), createElementBlock("span", _hoisted_30$1, toDisplayString(a.$lang("shopgo.message.out.of.stock")), 1)) : createCommentVNode("", !0),
           e[21] || (e[21] = createTextVNode()),
-          createElementVNode("div", _hoisted_31$1, `\r
+          createElementVNode("div", _hoisted_31, `
             x` + toDisplayString(o.quantity * n.item.quantity), 1)
         ]),
         e[23] || (e[23] = createTextVNode()),
-        createElementVNode("div", _hoisted_32$1, [
-          createElementVNode("div", _hoisted_33$1, [
-            createElementVNode("div", _hoisted_34$1, [
-              o.priceSet.base_total.price !== o.priceSet.final_total.price ? (openBlock(), createElementBlock("div", _hoisted_35$1, [
-                createElementVNode("del", null, toDisplayString(l.$formatPrice(o.priceSet.base_total.price)), 1)
+        createElementVNode("div", _hoisted_32, [
+          createElementVNode("div", _hoisted_33, [
+            createElementVNode("div", _hoisted_34, [
+              o.priceSet.base_total.price !== o.priceSet.final_total.price ? (openBlock(), createElementBlock("div", _hoisted_35, [
+                createElementVNode("del", null, toDisplayString(a.$formatPrice(o.priceSet.base_total.price)), 1)
               ])) : createCommentVNode("", !0),
               e[22] || (e[22] = createTextVNode()),
-              createElementVNode("div", _hoisted_36$1, toDisplayString(l.$formatPrice(o.priceSet.final_total.price)), 1)
+              createElementVNode("div", _hoisted_36, toDisplayString(a.$formatPrice(o.priceSet.final_total.price)), 1)
             ])
           ])
         ])
       ], 8, _hoisted_22$1))), 256)),
       e[26] || (e[26] = createTextVNode()),
-      createElementVNode("div", _hoisted_37$1, [
-        createElementVNode("strong", null, toDisplayString(l.$lang("shopgo.cart.label.attached.product.total")), 1),
+      createElementVNode("div", _hoisted_37, [
+        createElementVNode("strong", null, toDisplayString(a.$lang("shopgo.cart.label.attached.product.total")), 1),
         e[24] || (e[24] = createTextVNode()),
-        createElementVNode("span", _hoisted_38$1, toDisplayString(l.$formatPrice(n.item.priceSet.attached_final_total.price, { code: !0 })), 1)
+        createElementVNode("span", _hoisted_38, toDisplayString(a.$formatPrice(n.item.priceSet.attached_final_total.price, { code: !0 })), 1)
       ])
     ])) : createCommentVNode("", !0)
-  ], 8, _hoisted_1$3);
+  ], 8, _hoisted_1$6);
 }
-const CartListItem__Tmp46299 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "CartListItem.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const CartListItem__Tmp53134 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__file", "CartListItem.vue"]]), _sfc_main$5 = /* @__PURE__ */ defineComponent({
+  __name: "CartSidebar",
+  props: /* @__PURE__ */ mergeModels({
+    totals: {},
+    coupons: {},
+    loading: { type: Boolean },
+    loaded: { type: Boolean },
+    selectedShipping: {},
+    selectedPayment: {},
+    canCheckout: { type: Boolean }
+  }, {
+    code: {
+      default: ""
+    },
+    codeModifiers: {}
+  }),
+  emits: /* @__PURE__ */ mergeModels(["add-code", "remove-code", "checkout"], ["update:code"]),
+  setup(a, { expose: e, emit: n }) {
+    e();
+    const t = a, d = n, u = useModel(a, "code");
+    async function o() {
+      u.value !== "" && d("add-code", u.value);
+    }
+    async function r(x) {
+      d("remove-code", x);
+    }
+    const i = computed(() => {
+      const x = [];
+      for (const w in t.totals) {
+        if (w === "total" || w === "grand_total")
+          continue;
+        const E = t.totals[w];
+        Number(E.price) !== 0 && x.push(E);
+      }
+      return x;
+    });
+    function g() {
+      d("checkout");
+    }
+    const p = { props: t, emits: d, code: u, addCode: o, removeCode: r, filteredTotals: i, checkout: g, get vTooltip() {
+      return vTooltip;
+    } };
+    return Object.defineProperty(p, "__isScriptSetup", { enumerable: !1, value: !0 }), p;
+  }
+}), _hoisted_1$5 = {
+  class: "l-cart-sidebar position-sticky",
+  style: { top: "var(--sidebar-offsets-top, 90px)" }
+}, _hoisted_2$5 = { class: "card" }, _hoisted_3$5 = { class: "card-body l-cart-coupons border-bottom" }, _hoisted_4$5 = { class: "d-flex gap-2" }, _hoisted_5$5 = ["disabled"], _hoisted_6$3 = {
+  key: 0,
+  "data-cloak": "",
+  class: "list-group list-group-flush mt-4"
+}, _hoisted_7$3 = { class: "list-group-item border-top d-flex" }, _hoisted_8$3 = { class: "small text-muted" }, _hoisted_9$3 = { class: "ms-auto" }, _hoisted_10$3 = ["onClick"], _hoisted_11$3 = {
+  key: 0,
+  class: "card-body"
+}, _hoisted_12$3 = {
+  key: 1,
+  "data-cloak": "",
+  class: "card-body l-cart-totals text-end"
+}, _hoisted_13$3 = { class: "l-cart-total d-flex justify-content-between gap-1 mb-1 w-100" }, _hoisted_14$2 = { class: "l-cart-total__label" }, _hoisted_15$2 = {
+  key: 0,
+  class: "l-cart-total__value"
+}, _hoisted_16$1 = { class: "l-cart-total d-flex justify-content-between gap-1 mb-1 w-100" }, _hoisted_17 = { class: "l-cart-total__label d-flex gap-2" }, _hoisted_18 = { key: 0 }, _hoisted_19 = { class: "l-cart-total__value" }, _hoisted_20 = {
+  class: "card mt-3 position-sticky",
+  style: { bottom: "0" }
+}, _hoisted_21 = { class: "card-body d-grid gap-3" }, _hoisted_22 = {
+  key: 0,
+  class: "l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold",
+  "data-cloak": ""
+}, _hoisted_23 = { class: "l-cart-total__label" }, _hoisted_24 = {
+  key: 0,
+  class: "l-cart-total__value text-end"
+}, _hoisted_25 = {
+  key: 0,
+  class: "mt-1 small text-muted fw-normal"
+}, _hoisted_26 = {
+  key: 1,
+  class: "d-flex justify-content-between",
+  "data-cloak": ""
+}, _hoisted_27 = { key: 2 }, _hoisted_28 = { key: 3 }, _hoisted_29 = ["disabled"], _hoisted_30 = {
+  key: 0,
+  class: "spinner spinner-grow spinner-grow-sm"
+};
+function _sfc_render$5(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$5, [
+    createElementVNode("div", _hoisted_2$5, [
+      createElementVNode("div", _hoisted_3$5, [
+        createElementVNode("h5", null, toDisplayString(a.$lang("shopgo.cart.label.discount.code")), 1),
+        e[5] || (e[5] = createTextVNode()),
+        createElementVNode("div", _hoisted_4$5, [
+          withDirectives(createElementVNode("input", {
+            type: "text",
+            class: "form-control",
+            "onUpdate:modelValue": e[0] || (e[0] = (o) => t.code = o)
+          }, null, 512), [
+            [vModelText, t.code]
+          ]),
+          e[1] || (e[1] = createTextVNode()),
+          createElementVNode("button", {
+            type: "button",
+            class: "btn btn-secondary text-nowrap",
+            style: { "min-width": "100px" },
+            onClick: t.addCode,
+            disabled: t.code === "" || n.loading
+          }, toDisplayString(a.$lang("shopgo.cart.button.use.discount.code")), 9, _hoisted_5$5)
+        ]),
+        e[6] || (e[6] = createTextVNode()),
+        n.coupons.length ? (openBlock(), createElementBlock("div", _hoisted_6$3, [
+          (openBlock(!0), createElementBlock(Fragment, null, renderList(n.coupons, (o) => (openBlock(), createElementBlock("div", _hoisted_7$3, [
+            createElementVNode("div", null, [
+              createElementVNode("div", null, [
+                createElementVNode("strong", null, toDisplayString(o.title), 1)
+              ]),
+              e[2] || (e[2] = createTextVNode()),
+              createElementVNode("div", _hoisted_8$3, toDisplayString(o.code), 1)
+            ]),
+            e[4] || (e[4] = createTextVNode()),
+            createElementVNode("div", _hoisted_9$3, [
+              withDirectives((openBlock(), createElementBlock("a", {
+                href: "javascript://",
+                class: "link-secondary",
+                title: "{{ $lang('shopgo.cart.button.remove.discount.code') }}",
+                onClick: (r) => t.removeCode(o.id)
+              }, [...e[3] || (e[3] = [
+                createElementVNode("i", { class: "fa fa-trash" }, null, -1)
+              ])], 8, _hoisted_10$3)), [
+                [t.vTooltip]
+              ])
+            ])
+          ]))), 256))
+        ])) : createCommentVNode("", !0)
+      ]),
+      e[12] || (e[12] = createTextVNode()),
+      n.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_11$3, [...e[7] || (e[7] = [
+        createElementVNode("div", { class: "card-text placeholder-glow d-flex my-2" }, [
+          createElementVNode("span", { class: "placeholder col-4" }),
+          createTextVNode(),
+          createElementVNode("span", { class: "placeholder col-3 ms-auto" })
+        ], -1)
+      ])])),
+      e[13] || (e[13] = createTextVNode()),
+      n.loaded ? (openBlock(), createElementBlock("div", _hoisted_12$3, [
+        createElementVNode("div", _hoisted_13$3, [
+          createElementVNode("div", _hoisted_14$2, toDisplayString(a.$lang("shopgo.cart.label.total")), 1),
+          e[8] || (e[8] = createTextVNode()),
+          n.totals.total ? (openBlock(), createElementBlock("div", _hoisted_15$2, toDisplayString(a.$formatPrice(n.totals.total.price, { code: !0 })), 1)) : createCommentVNode("", !0)
+        ]),
+        e[11] || (e[11] = createTextVNode()),
+        (openBlock(!0), createElementBlock(Fragment, null, renderList(t.filteredTotals, (o) => (openBlock(), createElementBlock("div", _hoisted_16$1, [
+          createElementVNode("div", _hoisted_17, [
+            createElementVNode("div", null, toDisplayString(o.label), 1),
+            e[9] || (e[9] = createTextVNode()),
+            o.params.type === "coupon" || o.params.subtype === "code" ? (openBlock(), createElementBlock("div", _hoisted_18, [
+              createElementVNode("small", null, "(" + toDisplayString(o.params.code) + ")", 1)
+            ])) : createCommentVNode("", !0)
+          ]),
+          e[10] || (e[10] = createTextVNode()),
+          createElementVNode("div", _hoisted_19, toDisplayString(a.$formatPrice(o.price, { code: !0 })), 1)
+        ]))), 256))
+      ])) : createCommentVNode("", !0)
+    ]),
+    e[25] || (e[25] = createTextVNode()),
+    createElementVNode("div", _hoisted_20, [
+      createElementVNode("div", _hoisted_21, [
+        n.loaded ? (openBlock(), createElementBlock("div", _hoisted_22, [
+          createElementVNode("div", _hoisted_23, toDisplayString(a.$lang("shopgo.cart.label.grand.total")), 1),
+          e[15] || (e[15] = createTextVNode()),
+          n.totals.grand_total ? (openBlock(), createElementBlock("div", _hoisted_24, [
+            createElementVNode("div", null, toDisplayString(a.$formatPrice(n.totals.grand_total.price, { code: !0 })), 1),
+            e[14] || (e[14] = createTextVNode()),
+            a.$currency.isSubCurrency() ? (openBlock(), createElementBlock("div", _hoisted_25, `
+              (` + toDisplayString(a.$currency.formatMainCurrency(n.totals.grand_total.price, { code: !0 })) + `)
+            `, 1)) : createCommentVNode("", !0)
+          ])) : createCommentVNode("", !0)
+        ])) : createCommentVNode("", !0),
+        e[21] || (e[21] = createTextVNode()),
+        n.loaded ? (openBlock(), createElementBlock("div", _hoisted_26, [
+          createElementVNode("div", null, [
+            e[16] || (e[16] = createElementVNode("i", { class: "fa fa-truck" }, null, -1)),
+            createTextVNode(" " + toDisplayString(n.selectedShipping?.title || a.$lang("shopgo.message.no.shipping.selected")), 1)
+          ]),
+          e[18] || (e[18] = createTextVNode()),
+          createElementVNode("div", null, [
+            e[17] || (e[17] = createElementVNode("i", { class: "fa fa-credit-card" }, null, -1)),
+            createTextVNode(" " + toDisplayString(n.selectedPayment?.title || a.$lang("shopgo.message.no.payment.selected")), 1)
+          ])
+        ])) : createCommentVNode("", !0),
+        e[22] || (e[22] = createTextVNode()),
+        n.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_27, [...e[19] || (e[19] = [
+          createElementVNode("div", {
+            class: "card-text placeholder-glow d-flex mb-1",
+            style: { height: "1.25rem" }
+          }, [
+            createElementVNode("span", { class: "placeholder col-3" }),
+            createTextVNode(),
+            createElementVNode("span", { class: "placeholder col-4 ms-auto" })
+          ], -1)
+        ])])),
+        e[23] || (e[23] = createTextVNode()),
+        n.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_28, [...e[20] || (e[20] = [
+          createElementVNode("div", { class: "card-text placeholder-glow d-flex" }, [
+            createElementVNode("span", { class: "placeholder col-3" }),
+            createTextVNode(),
+            createElementVNode("span", { class: "placeholder col-3 ms-auto" })
+          ], -1)
+        ])])),
+        e[24] || (e[24] = createTextVNode()),
+        createElementVNode("button", {
+          type: "button",
+          class: "btn btn-primary btn-lg",
+          disabled: n.loading || !n.canCheckout,
+          onClick: t.checkout
+        }, [
+          n.loading ? (openBlock(), createElementBlock("span", _hoisted_30)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+            createTextVNode(toDisplayString(a.$lang("shopgo.cart.button.process.checkout")), 1)
+          ], 64))
+        ], 8, _hoisted_29)
+      ])
+    ])
+  ]);
+}
+const CartSidebar__Tmp50628 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CartSidebar.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "PaymentItem",
   props: {
     payment: {},
@@ -983,21 +1296,21 @@ const CartListItem__Tmp46299 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["rende
     selected: { type: Boolean }
   },
   emits: ["selected"],
-  setup(l, { expose: e, emit: n }) {
+  setup(a, { expose: e, emit: n }) {
     e();
-    const t = l, u = n, y = ref(uid()), o = ref({}), d = ref(t.selected), s = ref(data("image.default"));
+    const t = a, d = n, u = ref(uid()), o = ref({}), r = ref(t.selected), i = ref(data("image.default"));
     watch(() => t.selected, () => {
-      d.value = t.selected, setTimeout(() => {
-        d.value ? slideDown(f.value) : slideUp(f.value);
+      r.value = t.selected, setTimeout(() => {
+        r.value ? slideDown(p.value) : slideUp(p.value);
       }, 0);
     });
-    function p() {
-      d.value = !0, u("selected");
+    function g() {
+      r.value = !0, d("selected");
     }
-    const f = ref(), T = { props: t, emit: u, uidRef: y, data: o, selectedRef: d, imageDefault: s, onSelected: p, optionLayout: f };
-    return Object.defineProperty(T, "__isScriptSetup", { enumerable: !1, value: !0 }), T;
+    const p = ref(), x = { props: t, emit: d, uidRef: u, data: o, selectedRef: r, imageDefault: i, onSelected: g, optionLayout: p };
+    return Object.defineProperty(x, "__isScriptSetup", { enumerable: !1, value: !0 }), x;
   }
-}), _hoisted_1$2 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$2 = { class: "form-check" }, _hoisted_3$2 = ["id", "value", "checked"], _hoisted_4$2 = ["for"], _hoisted_5$2 = { class: "" }, _hoisted_6$2 = {
+}), _hoisted_1$4 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$4 = { class: "form-check" }, _hoisted_3$4 = ["id", "value", "checked"], _hoisted_4$4 = ["for"], _hoisted_5$4 = { class: "" }, _hoisted_6$2 = {
   class: "ratio ratio-1x1",
   style: { width: "45px" }
 }, _hoisted_7$2 = ["src"], _hoisted_8$2 = { class: "m-0" }, _hoisted_9$2 = {
@@ -1010,12 +1323,12 @@ const CartListItem__Tmp46299 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["rende
   ref: "optionLayout",
   style: { display: "none", overflow: "hidden", "animation-duration": ".3s" }
 }, _hoisted_13$2 = ["innerHTML"];
-function _sfc_render$2(l, e, n, t, u, y) {
+function _sfc_render$4(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["card my-3", [t.selectedRef ? "border border-primary" : ""]])
   }, [
-    createElementVNode("div", _hoisted_1$2, [
-      createElementVNode("div", _hoisted_2$2, [
+    createElementVNode("div", _hoisted_1$4, [
+      createElementVNode("div", _hoisted_2$4, [
         createElementVNode("input", {
           type: "radio",
           id: `input-payment-id-${n.payment.id}`,
@@ -1024,16 +1337,16 @@ function _sfc_render$2(l, e, n, t, u, y) {
           class: "form-check-input",
           onChange: t.onSelected,
           checked: t.selectedRef
-        }, null, 40, _hoisted_3$2),
+        }, null, 40, _hoisted_3$4),
         e[0] || (e[0] = createTextVNode()),
         createElementVNode("label", {
           for: `input-payment-id-${n.payment.id}`,
           class: "stretched-link",
           style: { cursor: "pointer" }
-        }, null, 8, _hoisted_4$2)
+        }, null, 8, _hoisted_4$4)
       ]),
       e[2] || (e[2] = createTextVNode()),
-      createElementVNode("div", _hoisted_5$2, [
+      createElementVNode("div", _hoisted_5$4, [
         createElementVNode("div", _hoisted_6$2, [
           createElementVNode("img", {
             class: "object-fit-cover",
@@ -1077,7 +1390,56 @@ function _sfc_render$2(l, e, n, t, u, y) {
     })
   ], 2);
 }
-const PaymentItem__Tmp30223 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "PaymentItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const PaymentItem__Tmp4722 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "PaymentItem.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
+  __name: "PaymentSelector",
+  props: /* @__PURE__ */ mergeModels({
+    payments: {},
+    paymentData: {},
+    loading: { type: Boolean },
+    shippingId: {}
+  }, {
+    modelValue: {},
+    modelModifiers: {}
+  }),
+  emits: ["update:modelValue"],
+  setup(a, { expose: e }) {
+    const n = resolveVueComponent("PaymentItem", PaymentItem__Tmp4722);
+    e();
+    const d = { paymentId: useModel(a, "modelValue"), PaymentItem: n };
+    return Object.defineProperty(d, "__isScriptSetup", { enumerable: !1, value: !0 }), d;
+  }
+}), _hoisted_1$3 = { class: "l-payments" }, _hoisted_2$3 = { key: 0 }, _hoisted_3$3 = {
+  key: 1,
+  class: "card bg-light"
+}, _hoisted_4$3 = { class: "card-body py-5 text-center" }, _hoisted_5$3 = {
+  key: 0,
+  class: "spinner spinner-border"
+};
+function _sfc_render$3(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$3, [
+    createElementVNode("h3", null, toDisplayString(a.$lang("shopgo.cart.payment.title")), 1),
+    e[0] || (e[0] = createTextVNode()),
+    n.payments.length > 0 ? (openBlock(), createElementBlock("div", _hoisted_2$3, [
+      (openBlock(!0), createElementBlock(Fragment, null, renderList(n.payments, (o, r) => (openBlock(), createBlock(t.PaymentItem, {
+        key: o.id,
+        style: { "animation-duration": ".1s" },
+        payment: o,
+        i: r,
+        selected: String(t.paymentId) === String(o.id),
+        onSelected: (i) => t.paymentId = o.id
+      }, null, 8, ["payment", "i", "selected", "onSelected"]))), 128))
+    ])) : (openBlock(), createElementBlock("div", _hoisted_3$3, [
+      createElementVNode("div", _hoisted_4$3, [
+        n.loading ? (openBlock(), createElementBlock("span", _hoisted_5$3)) : n.shippingId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+          createTextVNode(toDisplayString(a.$lang("shopgo.cart.text.no.payments")), 1)
+        ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+          createTextVNode(toDisplayString(a.$lang("shopgo.cart.text.select.shipping.first")), 1)
+        ], 64))
+      ])
+    ]))
+  ]);
+}
+const PaymentSelector__Tmp24092 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "PaymentSelector.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "ShippingItem",
   props: {
     shipping: {},
@@ -1105,7 +1467,7 @@ const PaymentItem__Tmp30223 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render
     const form = ref(), __returned__ = { props, emit, uidRef, data: data$1, selectedRef, imageDefault, onSelected, form };
     return Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: !1, value: !0 }), __returned__;
   }
-}), _hoisted_1$1 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$1 = { class: "form-check" }, _hoisted_3$1 = ["id", "value", "checked"], _hoisted_4$1 = ["for"], _hoisted_5$1 = { class: "" }, _hoisted_6$1 = {
+}), _hoisted_1$2 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$2 = { class: "form-check" }, _hoisted_3$2 = ["id", "value", "checked"], _hoisted_4$2 = ["for"], _hoisted_5$2 = { class: "" }, _hoisted_6$1 = {
   class: "ratio ratio-1x1",
   style: { width: "45px" }
 }, _hoisted_7$1 = ["src"], _hoisted_8$1 = { class: "m-0" }, _hoisted_9$1 = {
@@ -1118,12 +1480,12 @@ const PaymentItem__Tmp30223 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render
   ref: "form",
   style: { display: "none", postion: "relative", "z-index": "1", overflow: "hidden", "animation-duration": ".3s" }
 }, _hoisted_15$1 = ["innerHTML"];
-function _sfc_render$1(l, e, n, t, u, y) {
+function _sfc_render$2(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["card my-3", [t.selectedRef ? "border border-primary" : ""]])
   }, [
-    createElementVNode("div", _hoisted_1$1, [
-      createElementVNode("div", _hoisted_2$1, [
+    createElementVNode("div", _hoisted_1$2, [
+      createElementVNode("div", _hoisted_2$2, [
         createElementVNode("input", {
           type: "radio",
           id: `input-shipping-id-${n.shipping.id}`,
@@ -1132,16 +1494,16 @@ function _sfc_render$1(l, e, n, t, u, y) {
           class: "form-check-input",
           onChange: t.onSelected,
           checked: t.selectedRef
-        }, null, 40, _hoisted_3$1),
+        }, null, 40, _hoisted_3$2),
         e[0] || (e[0] = createTextVNode()),
         createElementVNode("label", {
           for: `input-shipping-id-${n.shipping.id}`,
           class: "stretched-link",
           style: { cursor: "pointer" }
-        }, null, 8, _hoisted_4$1)
+        }, null, 8, _hoisted_4$2)
       ]),
       e[2] || (e[2] = createTextVNode()),
-      createElementVNode("div", _hoisted_5$1, [
+      createElementVNode("div", _hoisted_5$2, [
         createElementVNode("div", _hoisted_6$1, [
           createElementVNode("img", {
             src: n.shipping.image || t.imageDefault,
@@ -1157,7 +1519,7 @@ function _sfc_render$1(l, e, n, t, u, y) {
       ]),
       e[4] || (e[4] = createTextVNode()),
       createElementVNode("div", _hoisted_10$1, [
-        createElementVNode("span", _hoisted_11$1, toDisplayString(l.$formatPrice(n.shipping.fee, !0)), 1)
+        createElementVNode("span", _hoisted_11$1, toDisplayString(a.$formatPrice(n.shipping.fee, !0)), 1)
       ])
     ]),
     e[5] || (e[5] = createTextVNode()),
@@ -1186,237 +1548,276 @@ function _sfc_render$1(l, e, n, t, u, y) {
     })
   ], 2);
 }
-const ShippingItem__Tmp124 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingItem.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
+const ShippingItem__Tmp15943 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "ShippingItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "ShippingSelector",
+  props: /* @__PURE__ */ mergeModels({
+    shippings: {},
+    shippingData: {},
+    loading: { type: Boolean }
+  }, {
+    modelValue: {},
+    modelModifiers: {}
+  }),
+  emits: ["update:modelValue"],
+  setup(a, { expose: e }) {
+    const n = resolveVueComponent("ShippingItem", ShippingItem__Tmp15943);
+    e();
+    const d = { shippingId: useModel(a, "modelValue"), ShippingItem: n };
+    return Object.defineProperty(d, "__isScriptSetup", { enumerable: !1, value: !0 }), d;
+  }
+}), _hoisted_1$1 = { class: "l-shippings" }, _hoisted_2$1 = { key: 0 }, _hoisted_3$1 = {
+  key: 1,
+  class: "card bg-light"
+}, _hoisted_4$1 = { class: "card-body py-5 text-center" }, _hoisted_5$1 = {
+  key: 0,
+  class: "spinner spinner-border"
+};
+function _sfc_render$1(a, e, n, t, d, u) {
+  return openBlock(), createElementBlock("div", _hoisted_1$1, [
+    createElementVNode("h3", null, toDisplayString(a.$lang("shopgo.cart.shipping.title")), 1),
+    e[0] || (e[0] = createTextVNode()),
+    n.shippings.length > 0 ? (openBlock(), createElementBlock("div", _hoisted_2$1, [
+      (openBlock(!0), createElementBlock(Fragment, null, renderList(n.shippings, (o, r) => (openBlock(), createBlock(t.ShippingItem, {
+        key: o.id,
+        style: { "animation-duration": ".1s" },
+        shipping: o,
+        i: r,
+        selected: String(t.shippingId) === String(o.id),
+        onSelected: (i) => t.shippingId = o.id
+      }, null, 8, ["shipping", "i", "selected", "onSelected"]))), 128))
+    ])) : (openBlock(), createElementBlock("div", _hoisted_3$1, [
+      createElementVNode("div", _hoisted_4$1, [
+        n.loading ? (openBlock(), createElementBlock("span", _hoisted_5$1)) : n.shippingData?.locationId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
+          createTextVNode(toDisplayString(a.$lang("shopgo.cart.text.no.shippings")), 1)
+        ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
+          createTextVNode(toDisplayString(a.$lang("shopgo.cart.text.select.location.first")), 1)
+        ], 64))
+      ])
+    ]))
+  ]);
+}
+const ShippingSelector__Tmp8462 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingSelector.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "CartApp",
   props: {
     user: {},
     checkoutData: {}
   },
-  setup(l, { expose: e }) {
-    const n = resolveVueComponent("AddressForm", AddressForm__Tmp22267), t = resolveVueComponent("CartListItem", CartListItem__Tmp46299), u = resolveVueComponent("PaymentItem", PaymentItem__Tmp30223), y = resolveVueComponent("ShippingItem", ShippingItem__Tmp124);
+  setup(a, { expose: e }) {
+    resolveVueComponent("AddressForm", AddressForm__Tmp90358);
+    const n = resolveVueComponent("AddressFormSet", AddressFormSet__Tmp13401), t = resolveVueComponent("CartForm", CartForm__Tmp14737), d = resolveVueComponent("CartListItem", CartListItem__Tmp53134), u = resolveVueComponent("CartSidebar", CartSidebar__Tmp50628), o = resolveVueComponent("PaymentSelector", PaymentSelector__Tmp24092), r = resolveVueComponent("ShippingSelector", ShippingSelector__Tmp8462);
     e();
-    const o = l, d = ref(!1), s = ref([]), p = ref({}), f = ref([]), T = ref(o.checkoutData?.payment?.id || ""), F = ref(o.checkoutData?.payment_data || {}), E = ref(o.checkoutData?.shipping?.id || ""), k = ref(o.checkoutData?.shipping_data || {}), b = ref([]), I = ref([]), L = ref({}), D = ref(""), H = ref(o.checkoutData?.note || ""), j = ref(!1), R = ref(data("partial.checkout")), Q = useQueue("shopgo.cart");
-    let S = null;
-    const A = document.querySelector("#cart-form"), w = ref(), g = useStack("loading");
-    g.observe((a, _) => {
-      j.value = _ > 0;
-    }), q();
-    function C(a = 300) {
+    const i = a, g = ref(!1), p = ref([]), x = ref({}), w = ref([]), E = ref(i.checkoutData?.payment?.id || ""), I = ref(i.checkoutData?.payment_data || {}), v = ref(i.checkoutData?.shipping?.id || ""), B = ref(i.checkoutData?.shipping_data || {}), $ = ref([]), M = ref([]), P = ref(""), H = ref(i.checkoutData?.note || ""), U = ref(!1), Q = ref(data("partial.checkout")), R = useQueue("shopgo.cart");
+    let C = null;
+    const A = document.querySelector("#cart-form"), k = ref(), N = useStack("loading");
+    N.observe((s, f) => {
+      U.value = f > 0;
+    }), L();
+    function T(s = 300) {
       setTimeout(() => {
-        g.pop();
-      }, a);
+        N.pop();
+      }, s);
     }
-    const P = debounce(function() {
-      return x();
+    const q = debounce(function() {
+      return S();
     }, 300);
-    async function x(a = !0) {
-      S?.abort("Cancel by next load"), S = new AbortController(), g.push(!0);
-      const { get: _, isAxiosError: m, isCancel: v } = await useHttpClient();
+    async function S(s = !0) {
+      C?.abort("Cancel by next load"), C = new AbortController(), N.push(!0);
+      const { get: f, isAxiosError: _, isCancel: y } = await useHttpClient();
       try {
-        const V = await _(
+        const V = await f(
           "@cart_ajax/getItems",
           {
             params: {
-              location_id: k.value.locationId,
-              shipping_id: E.value,
-              payment_id: T.value
+              location_id: B.value.locationId,
+              shipping_id: v.value,
+              payment_id: E.value
             },
-            signal: S.signal
+            signal: C.signal
           }
         );
-        return await U(V.data.data, a), V;
+        return await j(V.data.data, s), V;
       } catch (V) {
-        v(V) && console.log(V.message), console.error(V), m(V) && simpleAlert(V.message, "", "warning");
+        y(V) && console.log(V.message), console.error(V), _(V) && simpleAlert(V.message, "", "warning");
       } finally {
-        C(), S = null;
+        T(), C = null;
       }
     }
-    async function U(a, _ = !0) {
-      if (s.value = a.items, p.value = a.totals, f.value = a.coupons, _)
+    async function j(s, f = !0) {
+      if (p.value = s.items, x.value = s.totals, w.value = s.coupons, f)
         return await z();
     }
-    watch(s, () => {
-      i();
+    watch(p, () => {
+      m();
     }, { deep: !0 });
-    const M = computed(() => s.value.map((a) => a.options.checked == null ? !0 : a.options.checked)), B = computed(() => M.value.filter((a) => a === !0).length), r = computed(() => M.value.filter((a) => a === !1).length);
-    function i() {
-      w.value && (w.value.checked = !1, w.value.indeterminate = !1, B.value > 0 && r.value === 0 ? w.value.checked = !0 : r.value > 0 && B.value === 0 ? w.value.checked = !1 : B.value > 0 && r.value > 0 && (w.value.indeterminate = !0));
+    const F = computed(() => p.value.map((s) => s.options.checked == null ? !0 : s.options.checked)), c = computed(() => F.value.filter((s) => s === !0).length), l = computed(() => F.value.filter((s) => s === !1).length);
+    function m() {
+      k.value && (k.value.checked = !1, k.value.indeterminate = !1, c.value > 0 && l.value === 0 ? k.value.checked = !0 : l.value > 0 && c.value === 0 ? k.value.checked = !1 : c.value > 0 && l.value > 0 && (k.value.indeterminate = !0));
     }
-    function c() {
-      if (w.value) {
-        for (const a of s.value)
-          a.options.checked = w.value.checked;
-        N();
+    function b() {
+      if (k.value) {
+        for (const s of p.value)
+          s.options.checked = k.value.checked;
+        D();
       }
     }
-    const N = debounce(async () => {
-      S?.abort("Cancel by next modify."), S = new AbortController();
-      const a = {};
-      for (const v of s.value)
-        a[v.key] = v.options.checked ? "1" : "0";
-      g.push(!0);
-      const { post: _, isAxiosError: m } = await useHttpClient();
+    const D = debounce(async () => {
+      C?.abort("Cancel by next modify."), C = new AbortController();
+      const s = {};
+      for (const y of p.value)
+        s[y.key] = y.options.checked ? "1" : "0";
+      N.push(!0);
+      const { post: f, isAxiosError: _ } = await useHttpClient();
       try {
-        const v = await _("@cart_ajax/updateChecks", { checks: a }, { signal: S.signal });
-        return await x();
-      } catch (v) {
-        console.error(v), m(v) && simpleAlert(v.message, "", "warning");
+        const y = await f("@cart_ajax/updateChecks", { checks: s }, { signal: C.signal });
+        return await S();
+      } catch (y) {
+        console.error(y), _(y) && simpleAlert(y.message, "", "warning");
       } finally {
-        C(), S = null;
+        T(), C = null;
       }
     }, 300);
     onMounted(() => {
-      $(A);
+      O(A);
     });
-    function $(a, _ = 30) {
-      const m = document.querySelector("header .navbar, .navbar");
-      if (!m)
+    function O(s, f = 30) {
+      const _ = document.querySelector("header .navbar, .navbar");
+      if (!_)
         return;
-      const v = m.clientHeight + _;
-      a.style.setProperty("--sidebar-offsets-top", v + "px");
+      const y = _.clientHeight + f;
+      s.style.setProperty("--sidebar-offsets-top", y + "px");
     }
-    async function q() {
-      await x(), d.value = !0;
+    async function L() {
+      await S(), g.value = !0;
     }
-    async function O(a, _) {
-      g.push(!0);
-      const { delete: m, isAxiosError: v } = await useHttpClient();
+    async function ee(s, f) {
+      N.push(!0);
+      const { delete: _, isAxiosError: y } = await useHttpClient();
       try {
-        const V = await m(`@cart_ajax/removeItem?key=${a.key}`);
-        return await P();
+        const V = await _(`@cart_ajax/removeItem?key=${s.key}`);
+        return await q();
       } catch (V) {
-        console.error(V), v(V) && simpleAlert(V.message, "", "warning");
+        console.error(V), y(V) && simpleAlert(V.message, "", "warning");
       } finally {
         setTimeout(() => {
-          g.pop();
+          N.pop();
         }, 300);
       }
     }
-    async function ee() {
-      g.push(!0);
-      const { put: a, isAxiosError: _ } = await useHttpClient();
+    async function te() {
+      N.push(!0);
+      const { put: s, isAxiosError: f } = await useHttpClient();
       try {
-        await a("@cart_ajax/clearCart"), await x(), await simpleAlert(
+        await s("@cart_ajax/clearCart"), await S(), await simpleAlert(
           __("shopgo.cart.message.items.removed"),
           __("shopgo.cart.message.will.back.to.home"),
           "success"
         ), location.href = route("home");
-      } catch (m) {
-        console.error(m), _(m) && simpleAlert(m.message, "", "warning");
+      } catch (_) {
+        console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
-        g.pop();
+        N.pop();
       }
     }
-    async function te(a, _) {
-      a.quantity += _, a.quantity = Math.max(a.quantity, 1), await G(a);
+    async function oe(s, f) {
+      s.quantity += f, s.quantity = Math.max(s.quantity, 1), await G(s);
     }
-    const G = debounce(async (a) => {
-      a.quantity = Math.max(a.quantity, 1);
-      const _ = {};
-      for (const V of s.value)
-        _[V.key] = V.quantity;
-      g.push(!0);
-      const { post: m, isAxiosError: v } = await useHttpClient();
+    const G = debounce(async (s) => {
+      s.quantity = Math.max(s.quantity, 1);
+      const f = {};
+      for (const V of p.value)
+        f[V.key] = V.quantity;
+      N.push(!0);
+      const { post: _, isAxiosError: y } = await useHttpClient();
       try {
-        const V = await Q.push(() => m("@cart_ajax/updateQuantities", { values: _ }));
-        return await x();
+        const V = await R.push(() => _("@cart_ajax/updateQuantities", { values: f }));
+        return await S();
       } catch (V) {
-        console.error(V), v(V) && simpleAlert(V.message, "", "warning");
+        console.error(V), y(V) && simpleAlert(V.message, "", "warning");
       } finally {
-        C();
+        T();
       }
     }, 600);
-    async function oe() {
-      if (D.value === "")
+    async function ne() {
+      if (P.value === "")
         return;
-      g.push(!0);
-      const { post: a, isAxiosError: _ } = await useHttpClient();
+      N.push(!0);
+      const { post: s, isAxiosError: f } = await useHttpClient();
       try {
-        const m = await a("@cart_ajax/addCode", { code: D.value });
-        D.value = "", await x();
-      } catch (m) {
-        console.error(m), _(m) && simpleAlert(m.message, "", "warning");
+        const _ = await s("@cart_ajax/addCode", { code: P.value });
+        P.value = "", await S();
+      } catch (_) {
+        console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
-        C();
+        T();
       }
     }
-    async function le(a) {
-      g.push(!0);
-      const { delete: _, isAxiosError: m } = await useHttpClient();
+    async function ae(s) {
+      N.push(!0);
+      const { delete: f, isAxiosError: _ } = await useHttpClient();
       try {
-        const v = await _("@cart_ajax/removeCode", { id: a });
-        await x();
-      } catch (v) {
-        console.error(v), m(v) && simpleAlert(v.message, "", "warning");
+        const y = await f("@cart_ajax/removeCode", { id: s });
+        await S();
+      } catch (y) {
+        console.error(y), _(y) && simpleAlert(y.message, "", "warning");
       } finally {
-        C();
+        T();
       }
     }
-    const ne = computed(() => {
-      const a = [];
-      for (const _ in p.value) {
-        if (_ === "total" || _ === "grand_total")
-          continue;
-        const m = p.value[_];
-        Number(m.price) !== 0 && a.push(m);
-      }
-      return a;
-    });
-    watch(() => k.value.locationId, () => {
+    watch(() => B.value.locationId, () => {
       z();
-    }), watch(() => E.value, () => {
-      x(!1);
+    }), watch(() => v.value, () => {
+      S(!1);
     });
-    const K = computed(() => b.value.find((a) => String(a.id) === String(E.value))), z = debounce(async function() {
-      g.push(!0);
-      const { get: a, isAxiosError: _ } = await useHttpClient();
+    const K = computed(() => $.value.find((s) => String(s.id) === String(v.value))), z = debounce(async function() {
+      N.push(!0);
+      const { get: s, isAxiosError: f } = await useHttpClient();
       try {
-        const m = await a(`@cart_ajax/shippings?location_id=${k.value.locationId}`);
-        b.value = m.data.data, await nextTick(), await nextTick(), b.value.length > 0 ? K.value || (E.value = b.value[0].id) : E.value = null;
-      } catch (m) {
-        console.error(m), _(m) && simpleAlert(m.message, "", "warning");
+        const _ = await s(`@cart_ajax/shippings?location_id=${B.value.locationId}`);
+        $.value = _.data.data, await nextTick(), await nextTick(), $.value.length > 0 ? K.value || (v.value = $.value[0].id) : v.value = null;
+      } catch (_) {
+        console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
-        C();
+        T();
       }
     }, 300);
-    watch(() => [k.value.locationId, E.value], () => {
+    watch(() => [B.value.locationId, v.value], () => {
       X();
     });
-    const ae = computed(() => I.value.find((a) => a.id === T.value)), X = debounce(async function() {
-      g.push(!0);
-      const { get: a, isAxiosError: _ } = await useHttpClient();
+    const le = computed(() => M.value.find((s) => s.id === E.value)), X = debounce(async function() {
+      N.push(!0);
+      const { get: s, isAxiosError: f } = await useHttpClient();
       try {
-        const m = await a(
+        const _ = await s(
           "@cart_ajax/payments",
           {
             params: {
-              location_id: k.value.locationId,
-              shipping_id: E.value
+              location_id: B.value.locationId,
+              shipping_id: v.value
             }
           }
         );
-        I.value = m.data.data, await nextTick(), await nextTick(), I.value.length > 0 ? I.value.find((v) => v.id === T.value) || (T.value = I.value[0].id) : T.value = null;
-      } catch (m) {
-        console.error(m), _(m) && simpleAlert(m.message, "", "warning");
+        M.value = _.data.data, await nextTick(), await nextTick(), M.value.length > 0 ? M.value.find((y) => y.id === E.value) || (E.value = M.value[0].id) : E.value = null;
+      } catch (_) {
+        console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
-        C();
+        T();
       }
-    }, 300), se = computed(() => !(B.value === 0 || !k.value.locationId || !F.value.locationId || !E.value || !T.value)), W = ref(), J = ref();
+    }, 300), se = computed(() => !(c.value === 0 || !B.value.locationId || !I.value.locationId || !v.value || !E.value)), W = ref(), J = ref();
     function ie() {
-      if (B.value === 0) {
+      if (c.value === 0) {
         console.warn("No checked items");
         return;
       }
-      if (Number(p.value.grand_total.price) < 0) {
+      if (Number(x.value.grand_total.price) < 0) {
         swal("Cannot process cart with negative prices.", "", "warning");
         return;
       }
-      for (const a of s.value) {
-        if (Number(a.priceSet.final_total.price) < 0) {
+      for (const s of p.value) {
+        if (Number(s.priceSet.final_total.price) < 0) {
           swal("Cannot process product items with negative prices.", "", "warning");
           return;
         }
-        if (Number(a.priceSet.attached_final_total.price) < 0) {
+        if (Number(s.priceSet.attached_final_total.price) < 0) {
           swal("Cannot process product items with negative prices.", "", "warning");
           return;
         }
@@ -1431,22 +1832,20 @@ const ShippingItem__Tmp124 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render"
       }
       if (!A.checkValidity()) {
         A.reportValidity();
-        const a = A.querySelector(":invalid");
-        a && !Y(a) && a.dataset.validationMessage && simpleAlert(a.dataset.validationMessage);
+        const s = A.querySelector(":invalid");
+        s && !Y(s) && s.dataset.validationMessage && simpleAlert(s.dataset.validationMessage);
         return;
       }
-      j.value = !0, A.requestSubmit();
+      U.value = !0, A.requestSubmit();
     }
-    function Y(a) {
-      return !!(a.offsetWidth || a.offsetHeight || a.getClientRects().length);
+    function Y(s) {
+      return !!(s.offsetWidth || s.offsetHeight || s.getClientRects().length);
     }
-    const Z = { props: o, loaded: d, items: s, totals: p, coupons: f, paymentId: T, paymentData: F, shippingId: E, shippingData: k, shippings: b, payments: I, receiptData: L, code: D, note: H, loading: j, partialCheckout: R, queue: Q, get abort() {
-      return S;
-    }, set abort(a) {
-      S = a;
-    }, form: A, toggleAllInput: w, loadingStack: g, popLoading: C, afterItemsChanged: P, loadItems: x, setCartData: U, itemChecks: M, checks: B, unchecks: r, updateToggleAll: i, toggleChecked: c, updateChecks: N, calcNavAndStickySidebar: $, init: q, removeItem: O, clearCart: ee, changeItemQuantity: te, updateQuantities: G, addCode: oe, removeCode: le, filteredTotals: ne, selectedShipping: K, loadShippings: z, selectedPayment: ae, loadPayments: X, canCheckout: se, shippingForm: W, paymentForm: J, checkout: ie, isVisible: Y, get vTooltip() {
-      return vTooltip;
-    }, AddressForm: n, CartListItem: t, PaymentItem: u, ShippingItem: y };
+    const Z = { props: i, loaded: g, items: p, totals: x, coupons: w, paymentId: E, paymentData: I, shippingId: v, shippingData: B, shippings: $, payments: M, code: P, note: H, loading: U, partialCheckout: Q, queue: R, get abort() {
+      return C;
+    }, set abort(s) {
+      C = s;
+    }, form: A, toggleAllInput: k, loadingStack: N, popLoading: T, afterItemsChanged: q, loadItems: S, setCartData: j, itemChecks: F, checks: c, unchecks: l, updateToggleAll: m, toggleChecked: b, updateChecks: D, calcNavAndStickySidebar: O, init: L, removeItem: ee, clearCart: te, changeItemQuantity: oe, updateQuantities: G, addCode: ne, removeCode: ae, selectedShipping: K, loadShippings: z, selectedPayment: le, loadPayments: X, canCheckout: se, shippingForm: W, paymentForm: J, checkout: ie, isVisible: Y, AddressFormSet: n, CartForm: t, CartListItem: d, CartSidebar: u, PaymentSelector: o, ShippingSelector: r };
     return Object.defineProperty(Z, "__isScriptSetup", { enumerable: !1, value: !0 }), Z;
   }
 }), _hoisted_1 = { class: "row" }, _hoisted_2 = { class: "col-lg-8 l-cart-page__content" }, _hoisted_3 = { class: "d-flex align-items-center justify-content-between mb-4" }, _hoisted_4 = { class: "d-flex align-items-center gap-2" }, _hoisted_5 = { class: "m-0" }, _hoisted_6 = {
@@ -1459,66 +1858,14 @@ const ShippingItem__Tmp124 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render"
   key: 1,
   class: "spinner spinner-border-sm spinner-border",
   "data-cloak": ""
-}, _hoisted_9 = { class: "l-cart-data" }, _hoisted_10 = { class: "l-cart-items" }, _hoisted_11 = { class: "" }, _hoisted_12 = { class: "l-shippings mb-4" }, _hoisted_13 = { key: 0 }, _hoisted_14 = {
-  key: 1,
-  class: "card bg-light"
-}, _hoisted_15 = { class: "card-body py-5 text-center" }, _hoisted_16 = {
-  key: 0,
-  class: "spinner spinner-border"
-}, _hoisted_17 = { class: "l-payments mb-4" }, _hoisted_18 = { key: 0 }, _hoisted_19 = {
-  key: 1,
-  class: "card bg-light"
-}, _hoisted_20 = { class: "card-body py-5 text-center" }, _hoisted_21 = {
-  key: 0,
-  class: "spinner spinner-border"
-}, _hoisted_22 = { class: "l-checkout-note card mb-4" }, _hoisted_23 = { class: "card-body" }, _hoisted_24 = { class: "card-title mb-3" }, _hoisted_25 = ["placeholder"], _hoisted_26 = { class: "col-lg-4 l-cart-page__sidebar" }, _hoisted_27 = {
-  class: "l-cart-sidebar position-sticky",
-  style: { top: "var(--sidebar-offsets-top, 90px)" }
-}, _hoisted_28 = { class: "card" }, _hoisted_29 = { class: "card-body l-cart-coupons border-bottom" }, _hoisted_30 = { class: "d-flex gap-2" }, _hoisted_31 = ["disabled"], _hoisted_32 = {
-  key: 0,
-  "data-cloak": "",
-  class: "list-group list-group-flush mt-4"
-}, _hoisted_33 = { class: "list-group-item border-top d-flex" }, _hoisted_34 = { class: "small text-muted" }, _hoisted_35 = { class: "ms-auto" }, _hoisted_36 = ["onClick"], _hoisted_37 = {
-  key: 0,
-  class: "card-body"
-}, _hoisted_38 = {
-  key: 1,
-  "data-cloak": "",
-  class: "card-body l-cart-totals text-end"
-}, _hoisted_39 = { class: "l-cart-total d-flex justify-content-between gap-1 mb-1 w-100" }, _hoisted_40 = { class: "l-cart-total__label" }, _hoisted_41 = {
-  key: 0,
-  class: "l-cart-total__value"
-}, _hoisted_42 = { class: "l-cart-total d-flex justify-content-between gap-1 mb-1 w-100" }, _hoisted_43 = { class: "l-cart-total__label d-flex gap-2" }, _hoisted_44 = { key: 0 }, _hoisted_45 = { class: "l-cart-total__value" }, _hoisted_46 = {
-  class: "card mt-3 position-sticky",
-  style: { bottom: "0" }
-}, _hoisted_47 = { class: "card-body d-grid gap-3" }, _hoisted_48 = {
-  key: 0,
-  class: "l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold",
-  "data-cloak": ""
-}, _hoisted_49 = { class: "l-cart-total__label" }, _hoisted_50 = {
-  key: 0,
-  class: "l-cart-total__value text-end"
-}, _hoisted_51 = {
-  key: 0,
-  class: "mt-1 small text-muted fw-normal"
-}, _hoisted_52 = {
-  key: 1,
-  class: "d-flex justify-content-between",
-  "data-cloak": ""
-}, _hoisted_53 = { key: 2 }, _hoisted_54 = { key: 3 }, _hoisted_55 = ["disabled"], _hoisted_56 = { "data-cloak": "" }, _hoisted_57 = {
-  key: 0,
-  class: "spinner spinner-grow spinner-grow-sm"
-}, _hoisted_58 = {
-  key: 0,
-  "data-loading": ""
-};
-function _sfc_render(l, e, n, t, u, y) {
+}, _hoisted_9 = { class: "l-cart-data d-flex flex-column gap-4" }, _hoisted_10 = { class: "l-cart-items" }, _hoisted_11 = { class: "" }, _hoisted_12 = { class: "l-checkout-note card mb-4" }, _hoisted_13 = { class: "card-body" }, _hoisted_14 = { class: "card-title mb-3" }, _hoisted_15 = ["placeholder"], _hoisted_16 = { class: "col-lg-4 l-cart-page__sidebar" };
+function _sfc_render(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1, [
     createElementVNode("div", _hoisted_2, [
       createElementVNode("header", _hoisted_3, [
         createElementVNode("div", _hoisted_4, [
-          createElementVNode("h3", _hoisted_5, toDisplayString(l.$lang("shopgo.cart.title")), 1),
-          e[5] || (e[5] = createTextVNode()),
+          createElementVNode("h3", _hoisted_5, toDisplayString(a.$lang("shopgo.cart.title")), 1),
+          e[11] || (e[11] = createTextVNode()),
           t.partialCheckout ? (openBlock(), createElementBlock("div", _hoisted_6, [
             createElementVNode("input", {
               id: "input-toggle-all",
@@ -1527,278 +1874,120 @@ function _sfc_render(l, e, n, t, u, y) {
               ref: "toggleAllInput",
               onClick: t.toggleChecked
             }, null, 512),
-            e[4] || (e[4] = createTextVNode()),
-            createElementVNode("label", _hoisted_7, toDisplayString(l.$lang("shopgo.cart.toggle.all")), 1)
+            e[10] || (e[10] = createTextVNode()),
+            createElementVNode("label", _hoisted_7, toDisplayString(a.$lang("shopgo.cart.toggle.all")), 1)
           ])) : createCommentVNode("", !0),
-          e[6] || (e[6] = createTextVNode()),
+          e[12] || (e[12] = createTextVNode()),
           t.loading ? (openBlock(), createElementBlock("div", _hoisted_8)) : createCommentVNode("", !0)
         ]),
-        e[8] || (e[8] = createTextVNode()),
+        e[14] || (e[14] = createTextVNode()),
         createElementVNode("div", null, [
           createElementVNode("a", {
             href: "javascript://",
             onClick: t.clearCart
           }, [
-            e[7] || (e[7] = createElementVNode("i", { class: "fa fa-times" }, null, -1)),
-            createTextVNode(" " + toDisplayString(l.$lang("shopgo.cart.button.remove.all")), 1)
+            e[13] || (e[13] = createElementVNode("i", { class: "fa fa-times" }, null, -1)),
+            createTextVNode(" " + toDisplayString(a.$lang("shopgo.cart.button.remove.all")), 1)
           ])
         ])
       ]),
-      e[17] || (e[17] = createTextVNode()),
-      e[18] || (e[18] = createElementVNode("div", { "data-loading": "" }, [
-        createElementVNode("div", { class: "d-flex py-5" }, [
-          createElementVNode("span", { class: "spinner spinner-grow spinner-lg mx-auto" })
-        ])
-      ], -1)),
-      e[19] || (e[19] = createTextVNode()),
+      e[20] || (e[20] = createTextVNode()),
       createElementVNode("div", _hoisted_9, [
         createElementVNode("div", _hoisted_10, [
-          (openBlock(!0), createElementBlock(Fragment, null, renderList(t.items, (o, d) => (openBlock(), createBlock(t.CartListItem, {
+          (openBlock(!0), createElementBlock(Fragment, null, renderList(t.items, (o, r) => (openBlock(), createBlock(t.CartListItem, {
             key: o.key,
             item: o,
             "has-checkbox": t.partialCheckout,
-            onRemoveItem: (s) => t.removeItem(o, d),
-            onUpdateQuantity: (s) => t.updateQuantities(o),
-            onChangeItemQuantity: (s) => t.changeItemQuantity(o, s),
+            onRemoveItem: (i) => t.removeItem(o, r),
+            onUpdateQuantity: (i) => t.updateQuantities(o),
+            onChangeItemQuantity: (i) => t.changeItemQuantity(o, i),
             onUpdateChecks: t.updateChecks
           }, null, 8, ["item", "has-checkbox", "onRemoveItem", "onUpdateQuantity", "onChangeItemQuantity", "onUpdateChecks"]))), 128))
         ]),
-        e[13] || (e[13] = createTextVNode()),
-        createElementVNode("div", _hoisted_11, [
-          createVNode(t.AddressForm, {
-            type: "payment",
-            title: l.$lang("shopgo.cart.payment.data.title"),
-            user: n.user,
-            modelValue: t.paymentData,
-            "onUpdate:modelValue": e[0] || (e[0] = (o) => t.paymentData = o),
-            ref: "paymentForm"
-          }, null, 8, ["title", "user", "modelValue"]),
-          e[9] || (e[9] = createTextVNode()),
-          createVNode(t.AddressForm, {
-            type: "shipping",
-            title: l.$lang("shopgo.cart.shipping.data.title"),
-            user: n.user,
-            modelValue: t.shippingData,
-            "onUpdate:modelValue": e[1] || (e[1] = (o) => t.shippingData = o),
-            "sync-data": t.paymentData,
-            ref: "shippingForm"
-          }, null, 8, ["title", "user", "modelValue", "sync-data"])
-        ]),
-        e[14] || (e[14] = createTextVNode()),
-        createElementVNode("div", _hoisted_12, [
-          createElementVNode("h3", null, toDisplayString(l.$lang("shopgo.cart.shipping.title")), 1),
-          e[10] || (e[10] = createTextVNode()),
-          t.shippings.length > 0 ? (openBlock(), createElementBlock("div", _hoisted_13, [
-            (openBlock(!0), createElementBlock(Fragment, null, renderList(t.shippings, (o, d) => (openBlock(), createBlock(t.ShippingItem, {
-              key: o.id,
-              style: { "animation-duration": ".1s" },
-              shipping: o,
-              i: d,
-              selected: String(t.shippingId) === String(o.id),
-              onSelected: (s) => t.shippingId = o.id
-            }, null, 8, ["shipping", "i", "selected", "onSelected"]))), 128))
-          ])) : (openBlock(), createElementBlock("div", _hoisted_14, [
-            createElementVNode("div", _hoisted_15, [
-              t.loading ? (openBlock(), createElementBlock("span", _hoisted_16)) : t.shippingData.locationId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.no.shippings")), 1)
-              ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
-                createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.select.location.first")), 1)
-              ], 64))
+        e[19] || (e[19] = createTextVNode()),
+        createVNode(t.CartForm, {
+          class: "l-cart-form d-flex flex-column gap-4",
+          user: n.user,
+          shippings: t.shippings,
+          payments: t.payments,
+          payment: t.paymentData,
+          "onUpdate:payment": e[5] || (e[5] = (o) => t.paymentData = o),
+          shipping: t.shippingData,
+          "onUpdate:shipping": e[6] || (e[6] = (o) => t.shippingData = o),
+          "shipping-id": t.shippingId,
+          "onUpdate:shippingId": e[7] || (e[7] = (o) => t.shippingId = o),
+          "payment-id": t.paymentId,
+          "onUpdate:paymentId": e[8] || (e[8] = (o) => t.paymentId = o)
+        }, {
+          default: withCtx(() => [
+            createElementVNode("div", _hoisted_11, [
+              createVNode(t.AddressFormSet, {
+                user: n.user,
+                payment: t.paymentData,
+                "onUpdate:payment": e[0] || (e[0] = (o) => t.paymentData = o),
+                shipping: t.shippingData,
+                "onUpdate:shipping": e[1] || (e[1] = (o) => t.shippingData = o)
+              }, null, 8, ["user", "payment", "shipping"])
+            ]),
+            e[16] || (e[16] = createTextVNode()),
+            createVNode(t.ShippingSelector, {
+              shippings: t.shippings,
+              shippingData: t.shippingData,
+              modelValue: t.shippingId,
+              "onUpdate:modelValue": e[2] || (e[2] = (o) => t.shippingId = o)
+            }, null, 8, ["shippings", "shippingData", "modelValue"]),
+            e[17] || (e[17] = createTextVNode()),
+            createVNode(t.PaymentSelector, {
+              payments: t.payments,
+              paymentData: t.paymentData,
+              shippingId: t.shippingId,
+              modelValue: t.paymentId,
+              "onUpdate:modelValue": e[3] || (e[3] = (o) => t.paymentId = o)
+            }, null, 8, ["payments", "paymentData", "shippingId", "modelValue"]),
+            e[18] || (e[18] = createTextVNode()),
+            createElementVNode("div", _hoisted_12, [
+              createElementVNode("div", _hoisted_13, [
+                createElementVNode("h5", _hoisted_14, toDisplayString(a.$lang("shopgo.cart.field.note")), 1),
+                e[15] || (e[15] = createTextVNode()),
+                withDirectives(createElementVNode("textarea", {
+                  rows: "4",
+                  class: "form-control",
+                  "onUpdate:modelValue": e[4] || (e[4] = (o) => t.note = o),
+                  name: "checkout[note]",
+                  placeholder: a.$lang("shopgo.cart.field.note.placeholder")
+                }, null, 8, _hoisted_15), [
+                  [vModelText, t.note]
+                ])
+              ])
             ])
-          ]))
-        ]),
-        e[15] || (e[15] = createTextVNode()),
-        createElementVNode("div", _hoisted_17, [
-          createElementVNode("h3", null, toDisplayString(l.$lang("shopgo.cart.payment.title")), 1),
-          e[11] || (e[11] = createTextVNode()),
-          t.payments.length > 0 ? (openBlock(), createElementBlock("div", _hoisted_18, [
-            (openBlock(!0), createElementBlock(Fragment, null, renderList(t.payments, (o, d) => (openBlock(), createBlock(t.PaymentItem, {
-              key: o.id,
-              style: { "animation-duration": ".1s" },
-              payment: o,
-              i: d,
-              selected: String(t.paymentId) === String(o.id),
-              onSelected: (s) => t.paymentId = o.id
-            }, null, 8, ["payment", "i", "selected", "onSelected"]))), 128))
-          ])) : (openBlock(), createElementBlock("div", _hoisted_19, [
-            createElementVNode("div", _hoisted_20, [
-              t.loading ? (openBlock(), createElementBlock("span", _hoisted_21)) : t.shippingId ? (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.no.payments")), 1)
-              ], 64)) : (openBlock(), createElementBlock(Fragment, { key: 2 }, [
-                createTextVNode(toDisplayString(l.$lang("shopgo.cart.text.select.shipping.first")), 1)
-              ], 64))
-            ])
-          ]))
-        ]),
-        e[16] || (e[16] = createTextVNode()),
-        createElementVNode("div", _hoisted_22, [
-          createElementVNode("div", _hoisted_23, [
-            createElementVNode("h5", _hoisted_24, toDisplayString(l.$lang("shopgo.cart.field.note")), 1),
-            e[12] || (e[12] = createTextVNode()),
-            withDirectives(createElementVNode("textarea", {
-              rows: "4",
-              class: "form-control",
-              "onUpdate:modelValue": e[2] || (e[2] = (o) => t.note = o),
-              name: "checkout[note]",
-              placeholder: l.$lang("shopgo.cart.field.note.placeholder")
-            }, null, 8, _hoisted_25), [
-              [vModelText, t.note]
-            ])
-          ])
-        ])
+          ]),
+          _: 1
+        }, 8, ["user", "shippings", "payments", "payment", "shipping", "shipping-id", "payment-id"])
       ])
     ]),
-    e[47] || (e[47] = createTextVNode()),
-    createElementVNode("div", _hoisted_26, [
-      createElementVNode("div", _hoisted_27, [
-        createElementVNode("div", _hoisted_28, [
-          createElementVNode("div", _hoisted_29, [
-            createElementVNode("h5", null, toDisplayString(l.$lang("shopgo.cart.label.discount.code")), 1),
-            e[24] || (e[24] = createTextVNode()),
-            createElementVNode("div", _hoisted_30, [
-              withDirectives(createElementVNode("input", {
-                type: "text",
-                class: "form-control",
-                "onUpdate:modelValue": e[3] || (e[3] = (o) => t.code = o)
-              }, null, 512), [
-                [vModelText, t.code]
-              ]),
-              e[20] || (e[20] = createTextVNode()),
-              createElementVNode("button", {
-                type: "button",
-                class: "btn btn-secondary text-nowrap",
-                style: { "min-width": "100px" },
-                onClick: t.addCode,
-                disabled: t.code === "" || t.loading
-              }, toDisplayString(l.$lang("shopgo.cart.button.use.discount.code")), 9, _hoisted_31)
-            ]),
-            e[25] || (e[25] = createTextVNode()),
-            t.coupons.length ? (openBlock(), createElementBlock("div", _hoisted_32, [
-              (openBlock(!0), createElementBlock(Fragment, null, renderList(t.coupons, (o) => (openBlock(), createElementBlock("div", _hoisted_33, [
-                createElementVNode("div", null, [
-                  createElementVNode("div", null, [
-                    createElementVNode("strong", null, toDisplayString(o.title), 1)
-                  ]),
-                  e[21] || (e[21] = createTextVNode()),
-                  createElementVNode("div", _hoisted_34, toDisplayString(o.code), 1)
-                ]),
-                e[23] || (e[23] = createTextVNode()),
-                createElementVNode("div", _hoisted_35, [
-                  withDirectives((openBlock(), createElementBlock("a", {
-                    href: "javascript://",
-                    class: "link-secondary",
-                    title: "{{ $lang('shopgo.cart.button.remove.discount.code') }}",
-                    onClick: (d) => t.removeCode(o.id)
-                  }, [...e[22] || (e[22] = [
-                    createElementVNode("i", { class: "fa fa-trash" }, null, -1)
-                  ])], 8, _hoisted_36)), [
-                    [t.vTooltip]
-                  ])
-                ])
-              ]))), 256))
-            ])) : createCommentVNode("", !0)
-          ]),
-          e[31] || (e[31] = createTextVNode()),
-          t.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_37, [...e[26] || (e[26] = [
-            createElementVNode("div", { class: "card-text placeholder-glow d-flex my-2" }, [
-              createElementVNode("span", { class: "placeholder col-4" }),
-              createTextVNode(),
-              createElementVNode("span", { class: "placeholder col-3 ms-auto" })
-            ], -1)
-          ])])),
-          e[32] || (e[32] = createTextVNode()),
-          t.loaded ? (openBlock(), createElementBlock("div", _hoisted_38, [
-            createElementVNode("div", _hoisted_39, [
-              createElementVNode("div", _hoisted_40, toDisplayString(l.$lang("shopgo.cart.label.total")), 1),
-              e[27] || (e[27] = createTextVNode()),
-              t.totals.total ? (openBlock(), createElementBlock("div", _hoisted_41, toDisplayString(l.$formatPrice(t.totals.total.price, { code: !0 })), 1)) : createCommentVNode("", !0)
-            ]),
-            e[30] || (e[30] = createTextVNode()),
-            (openBlock(!0), createElementBlock(Fragment, null, renderList(t.filteredTotals, (o) => (openBlock(), createElementBlock("div", _hoisted_42, [
-              createElementVNode("div", _hoisted_43, [
-                createElementVNode("div", null, toDisplayString(o.label), 1),
-                e[28] || (e[28] = createTextVNode()),
-                o.params.type === "coupon" || o.params.subtype === "code" ? (openBlock(), createElementBlock("div", _hoisted_44, [
-                  createElementVNode("small", null, "(" + toDisplayString(o.params.code) + ")", 1)
-                ])) : createCommentVNode("", !0)
-              ]),
-              e[29] || (e[29] = createTextVNode()),
-              createElementVNode("div", _hoisted_45, toDisplayString(l.$formatPrice(o.price, { code: !0 })), 1)
-            ]))), 256))
-          ])) : createCommentVNode("", !0)
-        ]),
-        e[46] || (e[46] = createTextVNode()),
-        createElementVNode("div", _hoisted_46, [
-          createElementVNode("div", _hoisted_47, [
-            t.loaded ? (openBlock(), createElementBlock("div", _hoisted_48, [
-              createElementVNode("div", _hoisted_49, toDisplayString(l.$lang("shopgo.cart.label.grand.total")), 1),
-              e[34] || (e[34] = createTextVNode()),
-              t.totals.grand_total ? (openBlock(), createElementBlock("div", _hoisted_50, [
-                createElementVNode("div", null, toDisplayString(l.$formatPrice(t.totals.grand_total.price, { code: !0 })), 1),
-                e[33] || (e[33] = createTextVNode()),
-                l.$currency.isSubCurrency() ? (openBlock(), createElementBlock("div", _hoisted_51, `\r
-                  (` + toDisplayString(l.$currency.formatMainCurrency(t.totals.grand_total.price, { code: !0 })) + `)\r
-                `, 1)) : createCommentVNode("", !0)
-              ])) : createCommentVNode("", !0)
-            ])) : createCommentVNode("", !0),
-            e[42] || (e[42] = createTextVNode()),
-            t.loaded ? (openBlock(), createElementBlock("div", _hoisted_52, [
-              createElementVNode("div", null, [
-                e[35] || (e[35] = createElementVNode("i", { class: "fa fa-truck" }, null, -1)),
-                createTextVNode(" " + toDisplayString(t.selectedShipping?.title || l.$lang("shopgo.message.no.shipping.selected")), 1)
-              ]),
-              e[37] || (e[37] = createTextVNode()),
-              createElementVNode("div", null, [
-                e[36] || (e[36] = createElementVNode("i", { class: "fa fa-credit-card" }, null, -1)),
-                createTextVNode(" " + toDisplayString(t.selectedPayment?.title || l.$lang("shopgo.message.no.payment.selected")), 1)
-              ])
-            ])) : createCommentVNode("", !0),
-            e[43] || (e[43] = createTextVNode()),
-            t.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_53, [...e[38] || (e[38] = [
-              createElementVNode("div", {
-                class: "card-text placeholder-glow d-flex mb-1",
-                style: { height: "1.25rem" }
-              }, [
-                createElementVNode("span", { class: "placeholder col-3" }),
-                createTextVNode(),
-                createElementVNode("span", { class: "placeholder col-4 ms-auto" })
-              ], -1)
-            ])])),
-            e[44] || (e[44] = createTextVNode()),
-            t.loaded ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_54, [...e[39] || (e[39] = [
-              createElementVNode("div", { class: "card-text placeholder-glow d-flex" }, [
-                createElementVNode("span", { class: "placeholder col-3" }),
-                createTextVNode(),
-                createElementVNode("span", { class: "placeholder col-3 ms-auto" })
-              ], -1)
-            ])])),
-            e[45] || (e[45] = createTextVNode()),
-            createElementVNode("button", {
-              type: "button",
-              class: "btn btn-primary btn-lg",
-              disabled: t.loading || !t.canCheckout,
-              onClick: t.checkout
-            }, [
-              createElementVNode("div", _hoisted_56, [
-                t.loading ? (openBlock(), createElementBlock("span", _hoisted_57)) : (openBlock(), createElementBlock(Fragment, { key: 1 }, [
-                  createTextVNode(toDisplayString(l.$lang("shopgo.cart.button.process.checkout")), 1)
-                ], 64))
-              ]),
-              e[41] || (e[41] = createTextVNode()),
-              t.loading ? createCommentVNode("", !0) : (openBlock(), createElementBlock("div", _hoisted_58, [...e[40] || (e[40] = [
-                createElementVNode("span", { class: "spinner spinner-grow spinner-grow-sm" }, null, -1)
-              ])]))
-            ], 8, _hoisted_55)
-          ])
-        ])
-      ])
+    e[21] || (e[21] = createTextVNode()),
+    createElementVNode("div", _hoisted_16, [
+      createVNode(t.CartSidebar, {
+        totals: t.totals,
+        coupons: t.coupons,
+        loaded: t.loaded,
+        loading: t.loading,
+        selectedShipping: t.selectedShipping,
+        selectedPayment: t.selectedPayment,
+        canCheckout: t.canCheckout,
+        code: t.code,
+        "onUpdate:code": e[9] || (e[9] = (o) => t.code = o),
+        onAddCode: t.addCode,
+        onRemoveCode: t.removeCode,
+        onCheckout: t.checkout
+      }, null, 8, ["totals", "coupons", "loaded", "loading", "selectedShipping", "selectedPayment", "canCheckout", "code"])
     ])
   ]);
 }
-const CartApp__Tmp48066 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp48066);
-function initApp(l) {
+const CartApp__Tmp28628 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp28628);
+function initApp(a) {
   useCssImport("@vue-animate");
-  const e = createApp(CartApp, l);
+  const e = createApp(CartApp, a);
   return e.use(ShopGoPlugin), e;
 }
 export {

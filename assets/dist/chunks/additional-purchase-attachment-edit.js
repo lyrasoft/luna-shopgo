@@ -98,7 +98,7 @@ function Rt(l, t, i, a, p, f) {
           t[9] || (t[9] = s()),
           e("div", dt, [
             e("div", rt, [
-              e("span", ct, `\r
+              e("span", ct, `
                             #` + c(i.product.id), 1),
               t[5] || (t[5] = s()),
               e("span", ut, c(l.$lang("shopgo.additional.purchase.text.selected.count", a.checks)), 1),
@@ -265,8 +265,8 @@ function Rt(l, t, i, a, p, f) {
                   ]
                 ]),
                 t[25] || (t[25] = s()),
-                n.attachment.method === "percentage" ? (h(), g("span", Dt, `\r
-                                %\r
+                n.attachment.method === "percentage" ? (h(), g("span", Dt, `
+                                %
                             `)) : D("", !0)
               ])
             ]),

@@ -111,6 +111,7 @@ class CheckoutService
             if ($data->save) {
                 $address = new Address();
                 $address->fillFrom($data);
+                $address->type = 'address';
 
                 $this->orm->createOne(Address::class, $address);
 

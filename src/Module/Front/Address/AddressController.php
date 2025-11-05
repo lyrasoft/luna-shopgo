@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Lyrasoft\ShopGo\Module\Front\Address;
 
 use Lyrasoft\Luna\User\UserService;
-use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Enum\LocationType;
 use Lyrasoft\ShopGo\Service\AddressService;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Attributes\Controller;
+use Windwalker\Core\Attributes\Request\Input;
 use Windwalker\Data\Collection;
-use Windwalker\ORM\NestedSetMapper;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 
@@ -70,10 +69,13 @@ class AddressController
         return $items;
     }
 
-    public function myAddresses(UserService $userService, AddressService $addressService): iterable
-    {
+    public function myAddresses(
+        UserService $userService,
+        AddressService $addressService,
+        #[Input] string $type = 'address',
+    ): iterable {
         $user = $userService->getUser();
 
-        return $addressService->getUserAddresses($user);
+        return $addressService->getUserAddresses($user, $type);
     }
 }

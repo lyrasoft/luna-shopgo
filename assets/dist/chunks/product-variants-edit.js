@@ -101,7 +101,7 @@ const wt = /* @__PURE__ */ R({
 function Jt(s, t, p, e, h, l) {
   return c(), f("div", xt, [
     n("div", St, [
-      n("div", It, a(s.$lang("shopgo.product.variant.generation.title")) + " (" + a(e.combinationCount || 0) + `)\r
+      n("div", It, a(s.$lang("shopgo.product.variant.generation.title")) + " (" + a(e.combinationCount || 0) + `)
       `, 1),
       t[3] || (t[3] = o()),
       n("div", Et, [
@@ -559,7 +559,7 @@ function De(s, t, p, e, h, l) {
         n("div", $e, a(p.item.title), 1),
         t[2] || (t[2] = o()),
         n("div", null, [
-          p.item.sku ? (c(), f("span", Ge, `\r
+          p.item.sku ? (c(), f("span", Ge, `
                     #` + a(p.item.sku), 1)) : S("", !0),
           t[0] || (t[0] = o()),
           e.priceOffset !== 0 ? (c(), f("span", Pe, a(s.$offsetFormat(e.priceOffset, "$")), 1)) : S("", !0),

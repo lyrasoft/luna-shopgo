@@ -9,6 +9,7 @@ use Lyrasoft\ShopGo\Data\Contract\AddressAwareInterface;
 use Lyrasoft\ShopGo\Entity\Address;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Repository\AddressRepository;
+use Unicorn\Selector\ListSelector;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Autowire;
 use Windwalker\ORM\NestedSetMapper;
@@ -35,10 +36,14 @@ class AddressService
      *
      * @throws \ReflectionException
      */
-    public function getUserAddresses(User $user): Collection
+    public function getUserAddresses(User $user, ?string $type = 'address'): Collection
     {
         $addresses = $this->repository->getFrontListSelector()
             ->where('address.user_id', $user->id)
+            ->tapIf(
+                (bool) $type,
+                fn(ListSelector $selector) => $selector->where('address.type', $type)
+            )
             ->order('address.id', 'DESC')
             ->all(Address::class);
 
@@ -48,7 +53,7 @@ class AddressService
         /** @var Address $address */
         foreach ($addresses as $address) {
             // If location not exists, just ignore.
-            if (!$address->location?->id) {
+            if (!$address->location) {
                 continue;
             }
 

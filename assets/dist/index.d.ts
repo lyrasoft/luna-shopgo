@@ -29,6 +29,12 @@ export declare interface Address {
     [prop: string]: any;
 }
 
+export declare type AddressFormData = Address & {
+    addressId?: string | number;
+    locationPath: (number | string)[];
+    formatted: string;
+};
+
 export declare interface CartData {
     items: CartItem[];
     totals: Record<string, OrderTotal>;

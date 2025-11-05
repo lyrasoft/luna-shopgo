@@ -46,7 +46,7 @@ return new /** Order Seeder */ class extends AbstractSeeder {
         $mapper = $this->orm->mapper(Order::class);
 
         $states = $this->orm->findList(OrderState::class)->all()->dump();
-        $addresses = $this->orm->findList(Address::class)->all()->dump();
+        $addresses = $this->orm->findList(Address::class, ['type' => 'address'])->all()->dump();
         $products = $this->orm->findList(Product::class)->all()->dump();
         $payments = $this->orm->findList(Payment::class)->all()->dump();
         $shippings = $this->orm->findList(Shipping::class)->all()->dump();

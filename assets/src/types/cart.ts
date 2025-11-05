@@ -1,5 +1,4 @@
-import { Discount, OrderTotal, Product, ProductVariant, Shipping } from '~shopgo/types/entity';
-import { PriceSet } from '~shopgo/types/price';
+import { Address, Discount, OrderTotal, PriceSet, Product, ProductVariant, Shipping } from '~shopgo/types';
 
 export interface CartData {
   items: CartItem[];
@@ -29,4 +28,11 @@ export interface CartItem {
   };
   attachments: CartItem[];
   discounts: Discount[];
+}
+
+export type AddressFormData = Address & {
+  // We save id as addressId to avoid confusion of shipping / payment data
+  addressId?: string | number;
+  locationPath: (number | string)[];
+  formatted: string;
 }

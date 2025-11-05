@@ -2,11 +2,13 @@
 import { __, data, debounce, route, simpleAlert, useHttpClient, useQueue, useStack } from '@windwalker-io/unicorn-next';
 import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { ComponentExposed } from 'vue-component-type-helpers';
-import { vTooltip } from '~shopgo/directives';
 import AddressForm from '~shopgo/modules/cart/components/AddressForm.vue';
+import AddressFormSet from '~shopgo/modules/cart/components/AddressFormSet.vue';
+import CartForm from '~shopgo/modules/cart/components/CartForm.vue';
 import CartListItem from '~shopgo/modules/cart/components/CartListItem.vue';
-import PaymentItem from '~shopgo/modules/cart/components/PaymentItem.vue';
-import ShippingItem from '~shopgo/modules/cart/components/ShippingItem.vue';
+import CartSidebar from '~shopgo/modules/cart/components/CartSidebar.vue';
+import PaymentSelector from '~shopgo/modules/cart/components/PaymentSelector.vue';
+import ShippingSelector from '~shopgo/modules/cart/components/ShippingSelector.vue';
 import { CartData, CartItem, Discount, OrderTotal, Payment, Shipping, User } from '~shopgo/types';
 
 const props = defineProps<{
@@ -16,7 +18,7 @@ const props = defineProps<{
 
 const loaded = ref(false);
 const items = ref<CartItem[]>([]);
-const totals = ref<Record<string, any>>({});
+const totals = ref<Record<string, OrderTotal>>({});
 const coupons = ref<Discount[]>([]);
 const paymentId = ref(props.checkoutData?.payment?.id || '');
 const paymentData = ref(props.checkoutData?.payment_data || {});
@@ -24,7 +26,6 @@ const shippingId = ref(props.checkoutData?.shipping?.id || '');
 const shippingData = ref(props.checkoutData?.shipping_data || {});
 const shippings = ref<Shipping[]>([]);
 const payments = ref<Payment[]>([]);
-const receiptData = ref<any>({});
 const code = ref('');
 const note = ref(props.checkoutData?.note || '');
 const loading = ref(false);
@@ -332,31 +333,6 @@ async function removeCode(id: number | string) {
   }
 }
 
-// Totals
-const filteredTotals = computed(() => {
-  const _totals: any[] = [];
-
-  for (const name in totals.value) {
-    if (name === 'total') {
-      continue;
-    }
-
-    if (name === 'grand_total') {
-      continue;
-    }
-
-    const total = totals.value[name];
-
-    if (Number(total.price) === 0) {
-      continue;
-    }
-
-    _totals.push(total);
-  }
-
-  return _totals;
-});
-
 // Shippings
 watch(() => shippingData.value.locationId, () => {
   loadShippings();
@@ -561,14 +537,7 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
         </div>
       </header>
 
-      <!-- Body Loading -->
-      <div data-loading>
-        <div class="d-flex py-5">
-          <span class="spinner spinner-grow spinner-lg mx-auto"></span>
-        </div>
-      </div>
-
-      <div class="l-cart-data">
+      <div class="l-cart-data d-flex flex-column gap-4">
 
         <!-- Cart Items -->
         <div class="l-cart-items">
@@ -582,258 +551,60 @@ function isVisible(el: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElemen
           />
         </div>
 
-        <!-- Addresses -->
-        <div class="">
-          <AddressForm type="payment"
-            :title="$lang('shopgo.cart.payment.data.title')"
-            :user="user"
-            v-model="paymentData"
-            ref="paymentForm"
-          ></AddressForm>
-          <AddressForm type="shipping"
-            :title="$lang('shopgo.cart.shipping.data.title')"
-            :user="user"
-            v-model="shippingData"
-            :sync-data="paymentData"
-            ref="shippingForm"
-          ></AddressForm>
-        </div>
-
-        <!-- Shippings -->
-        <div class="l-shippings mb-4">
-          <h3>{{ $lang('shopgo.cart.shipping.title') }}</h3>
-
-          <div v-if="shippings.length > 0">
-            <ShippingItem v-for="(shipping, i) of shippings" :key="shipping.id"
-              style="animation-duration: .1s"
-              :shipping="shipping"
-              :i="i"
-              :selected="String(shippingId) === String(shipping.id)"
-              v-on:selected="shippingId = shipping.id"
-            >
-            </ShippingItem>
+        <CartForm class="l-cart-form d-flex flex-column gap-4"
+          :user
+          :shippings
+          :payments
+          v-model:payment="paymentData"
+          v-model:shipping="shippingData"
+          v-model:shipping-id="shippingId"
+          v-model:payment-id="paymentId"
+        >
+          <!-- Addresses -->
+          <div class="">
+            <AddressFormSet :user v-model:payment="paymentData" v-model:shipping="shippingData" />
           </div>
-          <div v-else class="card bg-light">
-            <div class="card-body py-5 text-center">
-              <template v-if="loading">
-                <span class="spinner spinner-border"></span>
-              </template>
-              <template v-else-if="shippingData.locationId">
-                {{ $lang('shopgo.cart.text.no.shippings') }}
-              </template>
-              <template v-else>
-                {{ $lang('shopgo.cart.text.select.location.first') }}
-              </template>
+
+          <!-- Shippings -->
+          <ShippingSelector :shippings :shippingData v-model="shippingId" />
+
+          <!-- Payments -->
+          <PaymentSelector :payments :paymentData :shippingId v-model="paymentId" />
+
+          <!-- Note -->
+          <div class="l-checkout-note card mb-4">
+            <div class="card-body">
+              <h5 class="card-title mb-3">
+                {{ $lang('shopgo.cart.field.note') }}
+              </h5>
+
+              <textarea rows="4"
+                class="form-control"
+                v-model="note"
+                name="checkout[note]"
+                :placeholder="$lang('shopgo.cart.field.note.placeholder')"
+              ></textarea>
             </div>
           </div>
-        </div>
-
-        <!-- Payments -->
-        <div class="l-payments mb-4">
-          <h3>{{ $lang('shopgo.cart.payment.title') }}</h3>
-
-          <div v-if="payments.length > 0">
-            <PaymentItem v-for="(payment, i) of payments" :key="payment.id"
-              style="animation-duration: .1s"
-              :payment="payment"
-              :i="i"
-              :selected="String(paymentId) === String(payment.id)"
-              v-on:selected="paymentId = payment.id"
-            >
-            </PaymentItem>
-          </div>
-          <div v-else class="card bg-light">
-            <div class="card-body py-5 text-center">
-              <template v-if="loading">
-                <span class="spinner spinner-border"></span>
-              </template>
-              <template v-else-if="shippingId">
-                {{ $lang('shopgo.cart.text.no.payments') }}
-              </template>
-              <template v-else>
-                {{ $lang('shopgo.cart.text.select.shipping.first') }}
-              </template>
-            </div>
-          </div>
-        </div>
-
-        <!-- Note -->
-        <div class="l-checkout-note card mb-4">
-          <div class="card-body">
-            <h5 class="card-title mb-3">
-              {{ $lang('shopgo.cart.field.note') }}
-            </h5>
-
-            <textarea rows="4"
-              class="form-control"
-              v-model="note"
-              name="checkout[note]"
-              :placeholder="$lang('shopgo.cart.field.note.placeholder')"
-            ></textarea>
-          </div>
-        </div>
+        </CartForm>
       </div>
     </div>
 
     <!-- Sidebar -->
     <div class="col-lg-4 l-cart-page__sidebar">
-      <div class="l-cart-sidebar position-sticky"
-        style="top: var(--sidebar-offsets-top, 90px);"
-      >
-        <div class="card">
-          <!-- Code Input -->
-          <div class="card-body l-cart-coupons border-bottom">
-            <h5>{{ $lang('shopgo.cart.label.discount.code') }}</h5>
-            <div class="d-flex gap-2">
-              <input type="text" class="form-control" v-model="code" />
-              <button type="button" class="btn btn-secondary text-nowrap"
-                style="min-width: 100px"
-                @click="addCode"
-                :disabled="code === '' || loading"
-              >
-                {{ $lang('shopgo.cart.button.use.discount.code') }}
-              </button>
-            </div>
-
-            <!-- Coupons -->
-            <div v-if="coupons.length" data-cloak class="list-group list-group-flush mt-4">
-              <div v-for="coupon of coupons" class="list-group-item border-top d-flex">
-                <div>
-                  <div>
-                    <strong>
-                      {{ coupon.title }}
-                    </strong>
-                  </div>
-                  <div class="small text-muted">
-                    {{ coupon.code }}
-                  </div>
-                </div>
-
-                <div class="ms-auto">
-                  <a href="javascript://"
-                    class="link-secondary"
-                    v-tooltip
-                    title="{{ $lang('shopgo.cart.button.remove.discount.code') }}"
-                    @click="removeCode(coupon.id)">
-                    <i class="fa fa-trash"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Totals Loading -->
-          <div v-if="!loaded" class="card-body">
-            <div class="card-text placeholder-glow d-flex my-2">
-              <span class="placeholder col-4"></span>
-              <span class="placeholder col-3 ms-auto"></span>
-            </div>
-          </div>
-
-          <!-- Totals -->
-          <div v-if="loaded" data-cloak class="card-body l-cart-totals text-end">
-            <div class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100">
-              <div class="l-cart-total__label">
-                {{ $lang('shopgo.cart.label.total') }}
-              </div>
-
-              <div v-if="totals.total" class="l-cart-total__value">
-                {{ $formatPrice(totals.total.price, { code: true }) }}
-              </div>
-            </div>
-
-            <div class="l-cart-total d-flex justify-content-between gap-1 mb-1 w-100"
-              v-for="total of filteredTotals">
-              <div class="l-cart-total__label d-flex gap-2">
-                <div>
-                  {{ total.label }}
-                </div>
-                <div
-                  v-if="total.params.type === 'coupon' || total.params.subtype === 'code'">
-                  <small>({{ total.params.code }})</small>
-                </div>
-              </div>
-
-              <div class="l-cart-total__value">
-                {{ $formatPrice(total.price, { code: true }) }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Checkbox -->
-        <div class="card mt-3 position-sticky"
-          style="bottom: 0;">
-          <div class="card-body d-grid gap-3">
-            <!-- Grand Total -->
-            <div v-if="loaded"
-              class="l-cart-total d-flex justify-content-between gap-1 w-100 fs-5 fw-bold"
-              data-cloak>
-              <div class="l-cart-total__label">
-                {{ $lang('shopgo.cart.label.grand.total') }}
-              </div>
-
-              <div v-if="totals.grand_total" class="l-cart-total__value text-end">
-                <div>
-                  {{ $formatPrice(totals.grand_total.price, { code: true }) }}
-                </div>
-                <div v-if="$currency.isSubCurrency()" class="mt-1 small text-muted fw-normal">
-                  ({{ $currency.formatMainCurrency(totals.grand_total.price, { code: true }) }})
-                </div>
-              </div>
-            </div>
-
-            <!-- Shipping / Payment Info -->
-            <div v-if="loaded" class="d-flex justify-content-between"
-              data-cloak>
-              <div>
-                <i class="fa fa-truck"></i>
-                {{ selectedShipping?.title || $lang('shopgo.message.no.shipping.selected') }}
-              </div>
-
-              <div>
-                <i class="fa fa-credit-card"></i>
-                {{ selectedPayment?.title || $lang('shopgo.message.no.payment.selected') }}
-              </div>
-            </div>
-
-            <!-- Loading -->
-            <div v-if="!loaded">
-              <div class="card-text placeholder-glow d-flex mb-1" style="height: 1.25rem;">
-                <span class="placeholder col-3"></span>
-                <span class="placeholder col-4 ms-auto"></span>
-              </div>
-            </div>
-
-            <!-- Loading -->
-            <div v-if="!loaded">
-              <div class="card-text placeholder-glow d-flex">
-                <span class="placeholder col-3"></span>
-                <span class="placeholder col-3 ms-auto"></span>
-              </div>
-            </div>
-
-            <!-- Checkout Button -->
-            <button type="button" class="btn btn-primary btn-lg"
-              :disabled="loading || !canCheckout"
-              @click="checkout"
-            >
-              <div data-cloak>
-                <template v-if="loading">
-                  <span class="spinner spinner-grow spinner-grow-sm"></span>
-                </template>
-                <template v-else>
-                  {{ $lang('shopgo.cart.button.process.checkout') }}
-                </template>
-              </div>
-              <div v-if="!loading" data-loading>
-                <span class="spinner spinner-grow spinner-grow-sm"></span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- End Sidebar-->
+      <CartSidebar
+        :totals
+        :coupons
+        :loaded
+        :loading
+        :selectedShipping
+        :selectedPayment
+        :canCheckout
+        v-model:code="code"
+        @add-code="addCode"
+        @remove-code="removeCode"
+        @checkout="checkout"
+      />
     </div>
   </div>
 </template>

@@ -40,6 +40,8 @@ class Address implements EntityInterface, AddressAwareInterface
 
     #[Column('location_id')]
     public int $locationId = 0;
+    #[Column('type')]
+    public string $type = '';
 
     #[Column('firstname')]
     public string $firstname = '';

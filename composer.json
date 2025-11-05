@@ -30,7 +30,12 @@
             ],
             "modules": [
                 "src/Module"
-            ]
+            ],
+            "assets": {
+                "vendors": {
+                    "@lyrasoft/shopgo": "portal:./vendor/lyrasoft/shopgo/assets"
+                }
+            }
         }
     },
     "minimum-stability": "beta"

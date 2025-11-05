@@ -5,7 +5,7 @@ import { Md5 } from 'ts-md5';
 import { nextTick, watch, ref, computed, onMounted, useTemplateRef } from 'vue';
 import { ComponentExposed } from 'vue-component-type-helpers';
 import CascadeSelect from '~shopgo/modules/cart/components/CascadeSelect.vue';
-import { Address, User } from '~shopgo/types';
+import { Address, AddressFormData, User } from '~shopgo/types';
 
 const props = defineProps<{
   type: string;
@@ -34,13 +34,6 @@ const defaultAddress = {
   // address2: '',
   // save: false,
 };
-
-type AddressFormData = Address & {
-  // We save id as addressId to avoid confusion of shipping / payment data
-  addressId?: string | number;
-  locationPath: (number | string)[];
-  formatted: string;
-}
 
 const emit = defineEmits<{
   'validated': [pass: boolean];
