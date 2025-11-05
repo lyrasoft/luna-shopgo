@@ -13,6 +13,9 @@
     * [Add Cart Button](#add-cart-button)
   * [Register Admin Menu](#register-admin-menu)
   * [Frontend Available Routes](#frontend-available-routes)
+  * [Override Vue Components](#override-vue-components)
+    * [Method 1: Override Particular Component](#method-1-override-particular-component)
+    * [Method 2: Override All Components](#method-2-override-all-components)
 <!-- TOC -->
 
 ## Installation
