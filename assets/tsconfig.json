@@ -6,8 +6,9 @@
         "@windwalker-io/unicorn-next/tsconfig.js.json"
     ],
     "include": [
-        "src/**/*.ts",
-        "src/**/*.vue"
+        "./src/**/*.ts",
+        "./src/types/shims.d.ts",
+        "./src/**/*.vue"
     ],
     "exclude": [
         "node_modules/**/*"
