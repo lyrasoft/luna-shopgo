@@ -102,7 +102,7 @@ return new /** Order Seeder */ class extends AbstractSeeder {
             }
 
             // Create Cart Data
-            $cartData = $cartService->createCartDataFromItems($cartItems, []);
+            $cartData = $cartService->createCartDataFromItems($cartItems);
 
             foreach ($cartData->getItems() as $orderItem) {
                 $finalTotal = $orderItem->priceSet['final_total'];
