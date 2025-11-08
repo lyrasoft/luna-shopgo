@@ -87,9 +87,9 @@ abstract class AbstractShipping implements FieldDefinitionInterface
      *
      * @param  Location  $location
      *
-     * @return  string
+     * @return  array{ injectId: string|null, props: object|array }|null
      */
-    abstract public function form(Location $location): string;
+    abstract public function form(Location $location): ?array;
 
     /**
      * Prepare order data before create when checkout processing.
@@ -272,6 +272,7 @@ abstract class AbstractShipping implements FieldDefinitionInterface
     {
         return (new \ReflectionClass(static::class))->getFileName();
     }
+
     // public function computeAndAddShippingFee(ApplicationInterface $app, CartData $cartData, Location $location): void
     // {
     //     $fee = $this->computeShippingFee($app, $cartData, $location);

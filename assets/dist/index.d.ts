@@ -297,7 +297,7 @@ export declare interface ProductVariant {
     [prop: string]: any;
 }
 
-export declare interface Shipping {
+export declare interface Shipping<Params = any> {
     id: number;
     locationCategoryId: number;
     locationId: number;
@@ -319,7 +319,7 @@ export declare interface Shipping {
     modified: string | null;
     createdBy: number;
     modifiedBy: number;
-    params: any;
+    params: Params;
     [prop: string]: any;
 }
 

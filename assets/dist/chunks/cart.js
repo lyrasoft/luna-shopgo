@@ -1,6 +1,6 @@
 import { _ as _export_sfc, r as resolveVueComponent } from "./_plugin-vue_export-helper.js";
-import { useHttpClient, __, data, route, useTomSelect, uid, slideDown, slideUp, useQueue, useStack, debounce, simpleAlert, useCssImport } from "@windwalker-io/unicorn-next";
-import { defineComponent, mergeModels, useModel, reactive, ref, watch, onMounted, nextTick, createElementBlock, openBlock, createTextVNode, createElementVNode, Fragment, renderList, normalizeClass, toDisplayString, useTemplateRef, computed, createVNode, createCommentVNode, withDirectives, vModelCheckbox, Transition, withCtx, vModelText, renderSlot, createBlock, provide, getCurrentInstance, resolveDynamicComponent, createApp } from "vue";
+import { useHttpClient, __, data, route, useTomSelect, uid, useInject, slideDown, slideUp, useQueue, useStack, debounce, simpleAlert, useCssImport } from "@windwalker-io/unicorn-next";
+import { defineComponent, mergeModels, useModel, reactive, ref, watch, onMounted, nextTick, createElementBlock, openBlock, createTextVNode, createElementVNode, Fragment, renderList, normalizeClass, toDisplayString, useTemplateRef, computed, createVNode, createCommentVNode, withDirectives, vModelCheckbox, Transition, withCtx, vModelText, renderSlot, createBlock, resolveDynamicComponent, mergeProps, provide, getCurrentInstance, createApp } from "vue";
 import { Modal } from "bootstrap";
 import { h } from "./index.es.js";
 import { vTooltip, ShopGoPlugin } from "../index.js";
@@ -16,7 +16,7 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
   }),
   emits: /* @__PURE__ */ mergeModels(["change"], ["update:modelValue"]),
   setup(a, { expose: e, emit: n }) {
-    const t = a, d = useModel(a, "modelValue"), p = n, o = globalThis.u || window.u, r = {
+    const t = a, d = useModel(a, "modelValue"), u = n, o = globalThis.u || window.u, r = {
       id: "cascade-select-" + (o && o.uid ? o.uid() : String(Math.random())),
       selected: "",
       ignoreSelf: null,
@@ -41,79 +41,79 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
       },
       onValueInit: (i) => {
       }
-    }, l = reactive(Object.assign({}, r, t.options || {})), g = ref([]), u = ref([]), x = ref(!0), C = ref(!1), b = ref(l.ajaxUrl || ""), T = ref(), v = ref([]);
+    }, l = reactive(Object.assign({}, r, t.options || {})), g = ref([]), p = ref([]), C = ref(!0), S = ref(!1), v = ref(l.ajaxUrl || ""), x = ref(), y = ref([]);
     function B() {
-      x.value = !l.readonly && !l.disabled, b.value = l.ajaxUrl || "";
+      C.value = !l.readonly && !l.disabled, v.value = l.ajaxUrl || "";
     }
     async function D() {
-      if (C.value)
+      if (S.value)
         return;
-      C.value = !0, g.value = [];
-      let c = [...(d.value || []).slice().map((V) => String(V))];
-      u.value = [...c], c.length === 0 ? c = [null] : c.unshift(null);
-      let k = null;
-      for (let V in c) {
-        const H = c[V], M = await S(H);
-        M && M.length > 0 && g.value.push(M), k = H;
+      S.value = !0, g.value = [];
+      let c = [...(d.value || []).slice().map((N) => String(N))];
+      p.value = [...c], c.length === 0 ? c = [null] : c.unshift(null);
+      let b = null;
+      for (let N in c) {
+        const R = c[N], M = await T(R);
+        M && M.length > 0 && g.value.push(M), b = R;
       }
-      w(T.value, k, c), C.value = !1, await nextTick(), v.value && v.value.length > 0 && L(v.value[0]);
+      w(x.value, b, c), S.value = !1, await nextTick(), y.value && y.value.length > 0 && U(y.value[0]);
     }
     function $() {
       D();
     }
-    function F(i) {
+    function A(i) {
       return l.labels[i] || `Level ${i + 1}`;
     }
     function j(i) {
       return `${l.id}__level-${i}`;
     }
     function P(i) {
-      return u.value[i] || "";
+      return p.value[i] || "";
     }
     function Q(i, c) {
       return String(P(i)) === String(c[l.valueField]);
     }
-    function R() {
-      const i = u.value.slice();
+    function H() {
+      const i = p.value.slice();
       if (i.length === 0)
         return l.defaultValue;
-      const c = i.filter((k) => k != null).filter((k) => k !== "").pop();
+      const c = i.filter((b) => b != null).filter((b) => b !== "").pop();
       return c === void 0 ? l.defaultValue : c;
     }
     function E() {
-      return u.value.length;
+      return p.value.length;
     }
     async function I(i, c) {
-      const k = c.target;
-      u.value[i] = k.value;
+      const b = c.target;
+      p.value[i] = b.value;
       try {
         l.onChange(c);
       } catch {
       }
       c.stopPropagation();
-      const V = new CustomEvent("change", {
+      const N = new CustomEvent("change", {
         detail: {
-          el: k,
+          el: b,
           component: O,
-          value: k.value,
-          path: u.value
+          value: b.value,
+          path: p.value
         }
       });
-      if (T.value?.dispatchEvent(V), d.value = u.value, p("change", V), k.value === "") {
-        g.value.splice(i + 1), u.value.splice(i + 1);
+      if (x.value?.dispatchEvent(N), d.value = p.value, u("change", N), b.value === "") {
+        g.value.splice(i + 1), p.value.splice(i + 1);
         return;
       }
-      const H = await S(k.value);
-      if (g.value.splice(i + 1), u.value.splice(i + 1), H && H.length > 0) {
-        g.value.push(H), await nextTick();
-        const M = v.value.length - 1;
-        v.value && v.value[M] && L(v.value[M]);
+      const R = await T(b.value);
+      if (g.value.splice(i + 1), p.value.splice(i + 1), R && R.length > 0) {
+        g.value.push(R), await nextTick();
+        const M = y.value.length - 1;
+        y.value && y.value[M] && U(y.value[M]);
       }
     }
-    async function S(i, c) {
-      const { get: k } = await useHttpClient();
-      return (await k(
-        b.value,
+    async function T(i, c) {
+      const { get: b } = await useHttpClient();
+      return (await b(
+        v.value,
         {
           params: {
             [l.ajaxValueField]: i,
@@ -122,56 +122,56 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
         }
       )).data.data;
     }
-    function w(i, c, k) {
-      const V = new CustomEvent("value.init", {
+    function w(i, c, b) {
+      const N = new CustomEvent("value.init", {
         detail: {
           el: i,
           component: O,
           value: c,
-          path: k
+          path: b
         }
       });
-      T.value?.dispatchEvent(V);
+      x.value?.dispatchEvent(N);
     }
-    function L(i) {
+    function U(i) {
       const c = new CustomEvent("select.init", {
         detail: {
           el: i,
           component: O
         }
       });
-      l.onSelectInit(c), T.value?.dispatchEvent(c);
+      l.onSelectInit(c), x.value?.dispatchEvent(c);
     }
-    function U(i) {
+    function q(i) {
       return i.map((c) => ({
         [l.valueField]: c.value[l.valueField],
         [l.textField]: c.value[l.textField],
         children: c.children
       })).filter((c) => l.ignoreSelf ? c[l.valueField] != l.ignoreSelf : c);
     }
-    function A(i, c) {
-      return (i || []).filter((V) => V[l.valueField] == c).shift();
+    function F(i, c) {
+      return (i || []).filter((N) => N[l.valueField] == c).shift();
     }
-    function q(i) {
+    function L(i) {
       return l.placeholders && l.placeholders[i] ? l.placeholders[i] : l.placeholder;
     }
     const O = {
       opt: l,
       lists: g,
-      values: u,
-      getFinalValue: R,
+      values: p,
+      getFinalValue: H,
       getLevel: E,
-      getLabel: F,
+      getLabel: A,
       getId: j,
       getListValue: P,
       isSelected: Q,
       onChange: I,
-      loadItems: S,
+      loadItems: T,
       valueInit: w,
-      selectInit: L,
-      handleSourceItems: U,
-      findFromList: A,
-      getPlaceholder: q
+      selectInit: U,
+      handleSourceItems: q,
+      findFromList: F,
+      getPlaceholder: L
     };
     watch(d, (i) => {
       (!i || i.length === 0) && $();
@@ -180,11 +180,11 @@ const _sfc_main$a = /* @__PURE__ */ defineComponent({
     }), e({
       prepareValues: D
     });
-    const m = { props: t, modelValue: d, emit: p, u: o, defaultOpt: r, opt: l, lists: g, values: u, canModify: x, loading: C, ajaxUrl: b, root: T, selects: v, init: B, prepareValues: D, reset: $, getLabel: F, getId: j, getListValue: P, isSelected: Q, getFinalValue: R, getLevel: E, onChange: I, loadItems: S, valueInit: w, selectInit: L, handleSourceItems: U, findFromList: A, getPlaceholder: q, componentAPI: O };
+    const m = { props: t, modelValue: d, emit: u, u: o, defaultOpt: r, opt: l, lists: g, values: p, canModify: C, loading: S, ajaxUrl: v, root: x, selects: y, init: B, prepareValues: D, reset: $, getLabel: A, getId: j, getListValue: P, isSelected: Q, getFinalValue: H, getLevel: E, onChange: I, loadItems: T, valueInit: w, selectInit: U, handleSourceItems: q, findFromList: F, getPlaceholder: L, componentAPI: O };
     return Object.defineProperty(m, "__isScriptSetup", { enumerable: !1, value: !0 }), m;
   }
 }), _hoisted_1$9 = { ref: "root" }, _hoisted_2$8 = ["data-level"], _hoisted_3$8 = ["for"], _hoisted_4$8 = { class: "col c-cascade-select__input" }, _hoisted_5$8 = ["id", "disabled", "onChange"], _hoisted_6$6 = { value: "" }, _hoisted_7$6 = ["value", "selected"], _hoisted_8$6 = ["name", "value"];
-function _sfc_render$a(a, e, n, t, d, p) {
+function _sfc_render$a(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$9, [
     (openBlock(!0), createElementBlock(Fragment, null, renderList(t.lists, (o, r) => (openBlock(), createElementBlock("div", {
       class: normalizeClass(["form-group row mb-2", [t.opt.horizontal ? t.opt.horizontalColWidth || "col" : ""]]),
@@ -223,7 +223,7 @@ function _sfc_render$a(a, e, n, t, d, p) {
     }, null, 8, _hoisted_8$6)
   ], 512);
 }
-const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "CascadeSelect.vue"]]), _sfc_main$9 = /* @__PURE__ */ defineComponent({
+const CascadeSelect__Tmp74475 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$a], ["__file", "CascadeSelect.vue"]]), _sfc_main$9 = /* @__PURE__ */ defineComponent({
   __name: "AddressForm",
   props: /* @__PURE__ */ mergeModels({
     type: {},
@@ -239,7 +239,7 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
   }),
   emits: /* @__PURE__ */ mergeModels(["validated"], ["update:modelValue"]),
   setup(a, { expose: e, emit: n }) {
-    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp26171), d = a, p = {
+    const t = resolveVueComponent("CascadeSelect", CascadeSelect__Tmp74475), d = a, u = {
       // addressId: '',
       // locationId: 0,
       // firstname: '',
@@ -257,7 +257,7 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
       // address1: '',
       // address2: '',
       // save: false,
-    }, o = n, r = useModel(a, "modelValue"), l = ref(!1), g = ref(d.syncData == null ? "initializing" : "sync"), u = ref([]), x = {
+    }, o = n, r = useModel(a, "modelValue"), l = ref(!1), g = ref(d.syncData == null ? "initializing" : "sync"), p = ref([]), C = {
       ajaxUrl: route("@address_ajax/locationOptions"),
       labels: data("location.labels") || [],
       placeholder: __("unicorn.select.placeholder"),
@@ -268,7 +268,7 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
     };
     r.value = Object.assign(
       {},
-      p,
+      u,
       {
         firstName: d.user?.firstname || "",
         lastName: d.user?.lastname || "",
@@ -276,22 +276,22 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
       },
       r.value
     );
-    const C = ref([]), b = ref(""), T = ref(d.syncData != null), v = ref(!1), B = ref(), D = ref(), $ = useTemplateRef("modal");
-    (!r.value || Object.keys(r.value).length === 0) && S().then((m) => {
+    const S = ref([]), v = ref(""), x = ref(d.syncData != null), y = ref(!1), B = ref(), D = ref(), $ = useTemplateRef("modal");
+    (!r.value || Object.keys(r.value).length === 0) && T().then((m) => {
       const i = m[0] || null;
-      i && (r.value = U(i));
+      i && (r.value = q(i));
     }), onMounted(async () => {
-      if (T.value)
+      if (x.value)
         g.value = "form";
       else {
-        const m = await S();
+        const m = await T();
         let i;
-        r.value.id && (i = m.find((c) => String(c.id) === String(r.value.id))), i || (i = m[0]), i && A(i), g.value = "selected";
+        r.value.id && (i = m.find((c) => String(c.id) === String(r.value.id))), i || (i = m[0]), i && F(i), g.value = "selected";
       }
-      q();
+      L();
     });
-    function F() {
-      if (T.value)
+    function A() {
+      if (x.value)
         return !0;
       if (B.value) {
         let m = !0;
@@ -306,63 +306,63 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
       return !0;
     }
     watch(() => d.syncData, async () => {
-      T.value && d.syncData && j();
-    }, { deep: !0, immediate: !0 }), watch(T, (m) => {
+      x.value && d.syncData && j();
+    }, { deep: !0, immediate: !0 }), watch(x, (m) => {
       m ? d.syncData || d.syncData && (g.value = "sync", j()) : (g.value = "form", r.value.id = void 0, r.value.addressId = void 0);
     });
     function j() {
       r.value = JSON.parse(JSON.stringify(d.syncData || {}));
     }
-    const P = computed(() => b.value !== h.hashStr(JSON.stringify(r.value)));
+    const P = computed(() => v.value !== h.hashStr(JSON.stringify(r.value)));
     function Q(m) {
-      m.detail && (r.value.locationId = m.detail.value, u.value = m.detail.path);
+      m.detail && (r.value.locationId = m.detail.value, p.value = m.detail.path);
     }
-    function R(m) {
+    function H(m) {
       return `input-${d.type}-${m}`;
     }
     function E(m) {
       return `checkout[${d.type}_data][${m}]`;
     }
     function I() {
-      g.value = "new", u.value = [], r.value = Object.assign({}, p);
+      g.value = "new", p.value = [], r.value = Object.assign({}, u);
     }
-    async function S() {
+    async function T() {
       const { get: m } = await useHttpClient();
       return (await m("@address_ajax/myAddresses")).data.data;
     }
     async function w() {
       l.value = !0, Modal.getOrCreateInstance($.value).show();
       try {
-        C.value = await S();
+        S.value = await T();
       } finally {
         l.value = !1;
       }
     }
-    async function L(m) {
-      v.value = !0, r.value = Object.assign(
+    async function U(m) {
+      y.value = !0, r.value = Object.assign(
         {},
-        p,
+        u,
         m
-      ), await A(m), b.value = h.hashStr(JSON.stringify(r.value)), await q(), v.value = !1;
+      ), await F(m), v.value = h.hashStr(JSON.stringify(r.value)), await L(), y.value = !1;
     }
-    function U(m) {
+    function q(m) {
       return m.locationPath = m.locationPath.map((i) => String(i)), m.addressId = String(m.id), m;
     }
-    async function A(m) {
+    async function F(m) {
       const i = Object.assign(
         {},
-        p,
+        u,
         m
       );
-      r.value = U(i), Modal.getOrCreateInstance($.value).hide(), await q();
+      r.value = q(i), Modal.getOrCreateInstance($.value).hide(), await L();
     }
-    async function q() {
-      u.value = r.value.locationPath || [], await nextTick(), await D.value?.prepareValues();
+    async function L() {
+      p.value = r.value.locationPath || [], await nextTick(), await D.value?.prepareValues();
     }
     e({
-      validate: F
+      validate: A
     });
-    const O = { props: d, defaultAddress: p, emit: o, modelValue: r, addressLoading: l, currentState: g, locationPath: u, cascadeOptions: x, addresses: C, currentAddressHash: b, sync: T, addressSelecting: v, form: B, locationSelector: D, modalElement: $, validate: F, syncAddressFromOutside: j, showSaveButton: P, locationChanged: Q, buildInputId: R, buildInputName: E, createNew: I, findMyAddress: S, openAddressSelector: w, selectAddress: L, prepareAddressData: U, setAddressToData: A, updateLocationList: q, CascadeSelect: t };
+    const O = { props: d, defaultAddress: u, emit: o, modelValue: r, addressLoading: l, currentState: g, locationPath: p, cascadeOptions: C, addresses: S, currentAddressHash: v, sync: x, addressSelecting: y, form: B, locationSelector: D, modalElement: $, validate: A, syncAddressFromOutside: j, showSaveButton: P, locationChanged: Q, buildInputId: H, buildInputName: E, createNew: I, findMyAddress: T, openAddressSelector: w, selectAddress: U, prepareAddressData: q, setAddressToData: F, updateLocationList: L, CascadeSelect: t };
     return Object.defineProperty(O, "__isScriptSetup", { enumerable: !1, value: !0 }), O;
   }
 }), _hoisted_1$8 = { class: "card mb-4" }, _hoisted_2$7 = { class: "card-body" }, _hoisted_3$7 = { class: "card-title d-flex justify-content-between" }, _hoisted_4$7 = { class: "d-flex align-items-center gap-3" }, _hoisted_5$7 = { class: "m-0" }, _hoisted_6$5 = {
@@ -396,7 +396,7 @@ const CascadeSelect__Tmp26171 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["rend
   key: 0,
   class: "spinner spinner-border mx-auto"
 };
-function _sfc_render$9(a, e, n, t, d, p) {
+function _sfc_render$9(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$8, [
     createElementVNode("div", _hoisted_2$7, [
       createElementVNode("div", _hoisted_3$7, [
@@ -754,7 +754,7 @@ function _sfc_render$9(a, e, n, t, d, p) {
     ], 8, _hoisted_63)
   ]);
 }
-const AddressForm__Tmp87771 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__file", "AddressForm.vue"]]), _sfc_main$8 = /* @__PURE__ */ defineComponent({
+const AddressForm__Tmp73897 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$9], ["__file", "AddressForm.vue"]]), _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __name: "AddressFormSet",
   props: /* @__PURE__ */ mergeModels({
     user: {}
@@ -770,13 +770,13 @@ const AddressForm__Tmp87771 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render
   }),
   emits: ["update:payment", "update:shipping"],
   setup(a, { expose: e }) {
-    const n = resolveVueComponent("AddressForm", AddressForm__Tmp87771);
+    const n = resolveVueComponent("AddressForm", AddressForm__Tmp73897);
     e();
-    const t = useModel(a, "payment"), d = useModel(a, "shipping"), p = { paymentData: t, shippingData: d, AddressForm: n };
-    return Object.defineProperty(p, "__isScriptSetup", { enumerable: !1, value: !0 }), p;
+    const t = useModel(a, "payment"), d = useModel(a, "shipping"), u = { paymentData: t, shippingData: d, AddressForm: n };
+    return Object.defineProperty(u, "__isScriptSetup", { enumerable: !1, value: !0 }), u;
   }
 }), _hoisted_1$7 = { class: "" };
-function _sfc_render$8(a, e, n, t, d, p) {
+function _sfc_render$8(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$7, [
     createVNode(t.AddressForm, {
       type: "payment",
@@ -798,7 +798,7 @@ function _sfc_render$8(a, e, n, t, d, p) {
     }, null, 8, ["title", "user", "modelValue", "sync-data"])
   ]);
 }
-const AddressFormSet__Tmp3628 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__file", "AddressFormSet.vue"]]), _sfc_main$7 = /* @__PURE__ */ defineComponent({
+const AddressFormSet__Tmp62698 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$8], ["__file", "AddressFormSet.vue"]]), _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "CartForm",
   props: /* @__PURE__ */ mergeModels({
     user: {},
@@ -830,11 +830,11 @@ const AddressFormSet__Tmp3628 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["rend
   emits: ["update:payment", "update:shipping", "update:payment-id", "update:shipping-id", "update:note"],
   setup(a, { expose: e }) {
     e();
-    const n = a, t = useModel(a, "payment"), d = useModel(a, "shipping"), p = useModel(a, "payment-id"), o = useModel(a, "shipping-id"), r = useModel(a, "note"), l = { props: n, paymentData: t, shippingData: d, paymentId: p, shippingId: o, note: r };
+    const n = a, t = useModel(a, "payment"), d = useModel(a, "shipping"), u = useModel(a, "payment-id"), o = useModel(a, "shipping-id"), r = useModel(a, "note"), l = { props: n, paymentData: t, shippingData: d, paymentId: u, shippingId: o, note: r };
     return Object.defineProperty(l, "__isScriptSetup", { enumerable: !1, value: !0 }), l;
   }
 });
-function _sfc_render$7(a, e, n, t, d, p) {
+function _sfc_render$7(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", null, [
     renderSlot(a.$slots, "default", {
       user: n.user,
@@ -849,7 +849,7 @@ function _sfc_render$7(a, e, n, t, d, p) {
     })
   ]);
 }
-const CartForm__Tmp89306 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__file", "CartForm.vue"]]), _sfc_main$6 = /* @__PURE__ */ defineComponent({
+const CartForm__Tmp66219 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$7], ["__file", "CartForm.vue"]]), _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "CartListItem",
   props: {
     item: {},
@@ -859,19 +859,19 @@ const CartForm__Tmp89306 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", 
   setup(a, { expose: e, emit: n }) {
     e();
     const t = a, d = n;
-    function p() {
+    function u() {
       d("remove-item");
     }
     function o() {
       d("update-quantities");
     }
-    function r(u) {
-      d("change-item-quantity", u);
+    function r(p) {
+      d("change-item-quantity", p);
     }
     function l() {
       d("update-checks");
     }
-    const g = { props: t, emits: d, removeItem: p, updateQuantities: o, changeItemQuantity: r, updateChecks: l };
+    const g = { props: t, emits: d, removeItem: u, updateQuantities: o, changeItemQuantity: r, updateChecks: l };
     return Object.defineProperty(g, "__isScriptSetup", { enumerable: !1, value: !0 }), g;
   }
 }), _hoisted_1$6 = ["data-product-id", "data-variant-id"], _hoisted_2$6 = { class: "card-body d-grid d-lg-flex gap-3" }, _hoisted_3$6 = { class: "d-flex gap-3 me-auto" }, _hoisted_4$6 = {
@@ -911,7 +911,7 @@ const CartForm__Tmp89306 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", 
   key: 0,
   class: "small text-muted"
 }, _hoisted_36 = { class: "" }, _hoisted_37 = { class: "mt-3 text-end fs-5" }, _hoisted_38 = { class: "" };
-function _sfc_render$6(a, e, n, t, d, p) {
+function _sfc_render$6(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: "c-cart-item card mb-3",
     "data-product-id": n.item.product.id,
@@ -1070,7 +1070,7 @@ function _sfc_render$6(a, e, n, t, d, p) {
     ])) : createCommentVNode("", !0)
   ], 8, _hoisted_1$6);
 }
-const CartListItem__Tmp38900 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__file", "CartListItem.vue"]]), _sfc_main$5 = /* @__PURE__ */ defineComponent({
+const CartListItem__Tmp70120 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$6], ["__file", "CartListItem.vue"]]), _sfc_main$5 = /* @__PURE__ */ defineComponent({
   __name: "CartSidebar",
   props: /* @__PURE__ */ mergeModels({
     totals: {},
@@ -1089,30 +1089,30 @@ const CartListItem__Tmp38900 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["rende
   emits: /* @__PURE__ */ mergeModels(["add-code", "remove-code", "checkout"], ["update:code"]),
   setup(a, { expose: e, emit: n }) {
     e();
-    const t = a, d = n, p = useModel(a, "code");
+    const t = a, d = n, u = useModel(a, "code");
     async function o() {
-      p.value !== "" && d("add-code", p.value);
+      u.value !== "" && d("add-code", u.value);
     }
-    async function r(x) {
-      d("remove-code", x);
+    async function r(C) {
+      d("remove-code", C);
     }
     const l = computed(() => {
-      const x = [];
-      for (const C in t.totals) {
-        if (C === "total" || C === "grand_total")
+      const C = [];
+      for (const S in t.totals) {
+        if (S === "total" || S === "grand_total")
           continue;
-        const b = t.totals[C];
-        Number(b.price) !== 0 && x.push(b);
+        const v = t.totals[S];
+        Number(v.price) !== 0 && C.push(v);
       }
-      return x;
+      return C;
     });
     function g() {
       d("checkout");
     }
-    const u = { props: t, emits: d, code: p, addCode: o, removeCode: r, filteredTotals: l, checkout: g, get vTooltip() {
+    const p = { props: t, emits: d, code: u, addCode: o, removeCode: r, filteredTotals: l, checkout: g, get vTooltip() {
       return vTooltip;
     } };
-    return Object.defineProperty(u, "__isScriptSetup", { enumerable: !1, value: !0 }), u;
+    return Object.defineProperty(p, "__isScriptSetup", { enumerable: !1, value: !0 }), p;
   }
 }), _hoisted_1$5 = {
   class: "l-cart-sidebar position-sticky",
@@ -1152,7 +1152,7 @@ const CartListItem__Tmp38900 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["rende
   key: 0,
   class: "spinner spinner-grow spinner-grow-sm"
 };
-function _sfc_render$5(a, e, n, t, d, p) {
+function _sfc_render$5(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$5, [
     createElementVNode("div", _hoisted_2$5, [
       createElementVNode("div", _hoisted_3$5, [
@@ -1290,7 +1290,7 @@ function _sfc_render$5(a, e, n, t, d, p) {
     ])
   ]);
 }
-const CartSidebar__Tmp10534 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CartSidebar.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
+const CartSidebar__Tmp4712 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$5], ["__file", "CartSidebar.vue"]]), _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "PaymentItem",
   props: {
     payment: {},
@@ -1300,16 +1300,16 @@ const CartSidebar__Tmp10534 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render
   emits: ["selected"],
   setup(a, { expose: e, emit: n }) {
     e();
-    const t = a, d = n, p = ref(uid()), o = ref({}), r = ref(t.selected), l = ref(data("image.default"));
+    const t = a, d = n, u = ref(uid()), o = ref(t.payment.checkoutFormComponent), r = ref({}), l = ref(t.selected), g = ref(data("image.default")), p = computed(() => o.value?.injectId ? useInject(o.value.injectId) : null), C = computed(() => o.value?.props || {});
     watch(() => t.selected, () => {
-      r.value = t.selected, setTimeout(() => {
-        r.value ? slideDown(u.value) : slideUp(u.value);
+      l.value = t.selected, setTimeout(() => {
+        l.value ? slideDown(v.value) : slideUp(v.value);
       }, 0);
     });
-    function g() {
-      r.value = !0, d("selected");
+    function S() {
+      l.value = !0, d("selected");
     }
-    const u = ref(), x = { props: t, emit: d, uidRef: p, data: o, selectedRef: r, imageDefault: l, onSelected: g, optionLayout: u };
+    const v = ref(), x = { props: t, emit: d, uidRef: u, checkoutFormComponent: o, data: r, selectedRef: l, imageDefault: g, PaymentForm: p, formProps: C, onSelected: S, optionLayout: v };
     return Object.defineProperty(x, "__isScriptSetup", { enumerable: !1, value: !0 }), x;
   }
 }), _hoisted_1$4 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$4 = { class: "form-check" }, _hoisted_3$4 = ["id", "value", "checked"], _hoisted_4$4 = ["for"], _hoisted_5$4 = { class: "" }, _hoisted_6$2 = {
@@ -1324,8 +1324,11 @@ const CartSidebar__Tmp10534 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render
 }, _hoisted_11$2 = ["innerHTML"], _hoisted_12$2 = {
   ref: "optionLayout",
   style: { display: "none", overflow: "hidden", "animation-duration": ".3s" }
-}, _hoisted_13$2 = ["innerHTML"];
-function _sfc_render$4(a, e, n, t, d, p) {
+}, _hoisted_13$2 = {
+  key: 0,
+  class: "card-body border-top"
+};
+function _sfc_render$4(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["card", [t.selectedRef ? "border border-primary" : ""]])
   }, [
@@ -1381,18 +1384,19 @@ function _sfc_render$4(a, e, n, t, d, p) {
     }, {
       default: withCtx(() => [
         createElementVNode("div", _hoisted_12$2, [
-          n.payment.optionLayout && t.selectedRef ? (openBlock(), createElementBlock("div", {
-            key: 0,
-            class: "card-body border-top",
-            innerHTML: n.payment.optionLayout
-          }, null, 8, _hoisted_13$2)) : createCommentVNode("", !0)
+          t.PaymentForm && t.selectedRef ? (openBlock(), createElementBlock("div", _hoisted_13$2, [
+            (openBlock(), createBlock(resolveDynamicComponent(t.PaymentForm), mergeProps({
+              uid: t.uidRef,
+              payment: n.payment
+            }, t.formProps), null, 16, ["uid", "payment"]))
+          ])) : createCommentVNode("", !0)
         ], 512)
       ]),
       _: 1
     })
   ], 2);
 }
-const PaymentItem__Tmp8908 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "PaymentItem.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
+const PaymentItem__Tmp48356 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$4], ["__file", "PaymentItem.vue"]]), _sfc_main$3 = /* @__PURE__ */ defineComponent({
   __name: "PaymentSelector",
   props: /* @__PURE__ */ mergeModels({
     payments: {},
@@ -1405,7 +1409,7 @@ const PaymentItem__Tmp8908 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render"
   }),
   emits: ["update:modelValue"],
   setup(a, { expose: e }) {
-    const n = resolveVueComponent("PaymentItem", PaymentItem__Tmp8908);
+    const n = resolveVueComponent("PaymentItem", PaymentItem__Tmp48356);
     e();
     const d = { paymentId: useModel(a, "modelValue"), PaymentItem: n };
     return Object.defineProperty(d, "__isScriptSetup", { enumerable: !1, value: !0 }), d;
@@ -1420,7 +1424,7 @@ const PaymentItem__Tmp8908 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render"
   key: 0,
   class: "spinner spinner-border"
 };
-function _sfc_render$3(a, e, n, t, d, p) {
+function _sfc_render$3(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$3, [
     createElementVNode("h3", null, toDisplayString(a.$lang("shopgo.cart.payment.title")), 1),
     e[0] || (e[0] = createTextVNode()),
@@ -1444,7 +1448,7 @@ function _sfc_render$3(a, e, n, t, d, p) {
     ]))
   ]);
 }
-const PaymentSelector__Tmp8822 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "PaymentSelector.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
+const PaymentSelector__Tmp60855 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$3], ["__file", "PaymentSelector.vue"]]), _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "ShippingItem",
   props: {
     shipping: {},
@@ -1454,7 +1458,7 @@ const PaymentSelector__Tmp8822 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["ren
   emits: ["selected"],
   setup(__props, { expose: __expose, emit: __emit }) {
     __expose();
-    const props = __props, emit = __emit, uidRef = ref(uid()), data$1 = ref({}), selectedRef = ref(props.selected), imageDefault = ref(data("image.default"));
+    const props = __props, emit = __emit, uidRef = ref(uid()), checkoutFormComponent = ref(props.shipping.checkoutFormComponent), data$1 = ref({}), selectedRef = ref(props.selected), imageDefault = ref(data("image.default")), ShippingForm = computed(() => checkoutFormComponent.value?.injectId ? useInject(checkoutFormComponent.value.injectId) : null), formProps = computed(() => checkoutFormComponent.value?.props || {});
     watch(() => props.selected, () => {
       selectedRef.value = props.selected, setTimeout(() => {
         if (selectedRef.value) {
@@ -1469,7 +1473,7 @@ const PaymentSelector__Tmp8822 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["ren
     function onSelected() {
       selectedRef.value = !0, emit("selected");
     }
-    const form = ref(), __returned__ = { props, emit, uidRef, data: data$1, selectedRef, imageDefault, onSelected, form };
+    const form = ref(), __returned__ = { props, emit, uidRef, checkoutFormComponent, data: data$1, selectedRef, imageDefault, ShippingForm, formProps, onSelected, form };
     return Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: !1, value: !0 }), __returned__;
   }
 }), _hoisted_1$2 = { class: "card-body d-flex align-items-center gap-3" }, _hoisted_2$2 = { class: "form-check" }, _hoisted_3$2 = ["id", "value", "checked"], _hoisted_4$2 = ["for"], _hoisted_5$2 = { class: "" }, _hoisted_6$1 = {
@@ -1483,9 +1487,12 @@ const PaymentSelector__Tmp8822 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["ren
   class: "card-body border-top ps-5"
 }, _hoisted_13$1 = ["innerHTML"], _hoisted_14$1 = {
   ref: "form",
-  style: { display: "none", postion: "relative", "z-index": "1", overflow: "hidden", "animation-duration": ".3s" }
-}, _hoisted_15$1 = ["innerHTML"];
-function _sfc_render$2(a, e, n, t, d, p) {
+  style: { display: "none", position: "relative", "z-index": "1", overflow: "hidden", "animation-duration": ".3s" }
+}, _hoisted_15$1 = {
+  key: 0,
+  class: "card-body border-top"
+};
+function _sfc_render$2(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", {
     class: normalizeClass(["card", [t.selectedRef ? "border border-primary" : ""]])
   }, [
@@ -1524,7 +1531,7 @@ function _sfc_render$2(a, e, n, t, d, p) {
       ]),
       e[4] || (e[4] = createTextVNode()),
       createElementVNode("div", _hoisted_10$1, [
-        createElementVNode("span", _hoisted_11$1, toDisplayString(a.$formatPrice(n.shipping.fee, !0)), 1)
+        createElementVNode("span", _hoisted_11$1, toDisplayString(a.$formatPrice(n.shipping.fee, { code: !0 })), 1)
       ])
     ]),
     e[5] || (e[5] = createTextVNode()),
@@ -1542,18 +1549,19 @@ function _sfc_render$2(a, e, n, t, d, p) {
     }, {
       default: withCtx(() => [
         createElementVNode("div", _hoisted_14$1, [
-          n.shipping.checkoutForm && t.selectedRef ? (openBlock(), createElementBlock("div", {
-            key: 0,
-            class: "card-body border-top",
-            innerHTML: n.shipping.checkoutForm
-          }, null, 8, _hoisted_15$1)) : createCommentVNode("", !0)
+          t.ShippingForm && t.selectedRef ? (openBlock(), createElementBlock("div", _hoisted_15$1, [
+            (openBlock(), createBlock(resolveDynamicComponent(t.ShippingForm), mergeProps({
+              uid: t.uidRef,
+              shipping: n.shipping
+            }, t.formProps), null, 16, ["uid", "shipping"]))
+          ])) : createCommentVNode("", !0)
         ], 512)
       ]),
       _: 1
     })
   ], 2);
 }
-const ShippingItem__Tmp29000 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "ShippingItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
+const ShippingItem__Tmp49479 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render$2], ["__file", "ShippingItem.vue"]]), _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "ShippingSelector",
   props: /* @__PURE__ */ mergeModels({
     shippings: {},
@@ -1565,7 +1573,7 @@ const ShippingItem__Tmp29000 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["rende
   }),
   emits: ["update:modelValue"],
   setup(a, { expose: e }) {
-    const n = resolveVueComponent("ShippingItem", ShippingItem__Tmp29000);
+    const n = resolveVueComponent("ShippingItem", ShippingItem__Tmp49479);
     e();
     const d = { shippingId: useModel(a, "modelValue"), ShippingItem: n };
     return Object.defineProperty(d, "__isScriptSetup", { enumerable: !1, value: !0 }), d;
@@ -1580,7 +1588,7 @@ const ShippingItem__Tmp29000 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["rende
   key: 0,
   class: "spinner spinner-border"
 };
-function _sfc_render$1(a, e, n, t, d, p) {
+function _sfc_render$1(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1$1, [
     createElementVNode("h3", null, toDisplayString(a.$lang("shopgo.cart.shipping.title")), 1),
     e[0] || (e[0] = createTextVNode()),
@@ -1604,24 +1612,24 @@ function _sfc_render$1(a, e, n, t, d, p) {
     ]))
   ]);
 }
-const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingSelector.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
+const ShippingSelector__Tmp81147 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__file", "ShippingSelector.vue"]]), _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "CartApp",
   props: {
     user: {},
     checkoutData: {}
   },
   setup(a, { expose: e }) {
-    resolveVueComponent("AddressForm", AddressForm__Tmp87771);
-    const n = resolveVueComponent("AddressFormSet", AddressFormSet__Tmp3628), t = resolveVueComponent("CartForm", CartForm__Tmp89306), d = resolveVueComponent("CartListItem", CartListItem__Tmp38900), p = resolveVueComponent("CartSidebar", CartSidebar__Tmp10534), o = resolveVueComponent("PaymentSelector", PaymentSelector__Tmp8822), r = resolveVueComponent("ShippingSelector", ShippingSelector__Tmp4508);
+    resolveVueComponent("AddressForm", AddressForm__Tmp73897);
+    const n = resolveVueComponent("AddressFormSet", AddressFormSet__Tmp62698), t = resolveVueComponent("CartForm", CartForm__Tmp66219), d = resolveVueComponent("CartListItem", CartListItem__Tmp70120), u = resolveVueComponent("CartSidebar", CartSidebar__Tmp4712), o = resolveVueComponent("PaymentSelector", PaymentSelector__Tmp60855), r = resolveVueComponent("ShippingSelector", ShippingSelector__Tmp81147);
     e();
-    const l = a, g = ref(!1), u = ref([]), x = ref({}), C = ref([]), b = ref(l.checkoutData?.payment?.id || ""), T = ref(l.checkoutData?.payment_data || {}), v = ref(l.checkoutData?.shipping?.id || ""), B = ref(l.checkoutData?.shipping_data || {}), D = ref([]), $ = ref([]), F = ref(""), j = ref(l.checkoutData?.note || ""), P = ref(!1), Q = ref(data("partial.checkout")), R = useQueue("shopgo.cart"), E = useStack("loading");
-    provide("checkoutData", l.checkoutData), provide("items", u), provide("totals", x), provide("coupons", C), provide("shippingData", B), provide("paymentData", T), provide("shippingId", v), provide("paymentId", b), provide("shippings", D), provide("payments", $), provide("loading", P), provide("code", F), provide("note", j), provide("queue", R), provide("partialCheckout", Q);
+    const l = a, g = ref(!1), p = ref([]), C = ref({}), S = ref([]), v = ref(l.checkoutData?.payment?.id || ""), x = ref(l.checkoutData?.payment_data || {}), y = ref(l.checkoutData?.shipping?.id || ""), B = ref(l.checkoutData?.shipping_data || {}), D = ref([]), $ = ref([]), A = ref(""), j = ref(l.checkoutData?.note || ""), P = ref(!1), Q = ref(data("partial.checkout")), H = useQueue("shopgo.cart"), E = useStack("loading");
+    provide("checkoutData", l.checkoutData), provide("items", p), provide("totals", C), provide("coupons", S), provide("shippingData", B), provide("paymentData", x), provide("shippingId", y), provide("paymentId", v), provide("shippings", D), provide("payments", $), provide("loading", P), provide("code", A), provide("note", j), provide("queue", H), provide("partialCheckout", Q);
     let I = null;
-    const S = document.querySelector("#cart-form"), w = ref(), L = getCurrentInstance(), U = L?.appContext.components || {};
-    function A(s) {
-      return U[s] ?? null;
+    const T = document.querySelector("#cart-form"), w = ref(), U = getCurrentInstance(), q = U?.appContext.components || {};
+    function F(s) {
+      return q[s] ?? null;
     }
-    const q = A("AfterAddressForm"), O = A("AfterShippingForm"), m = A("AfterPaymentForm"), i = A("AfterNoteForm");
+    const L = F("AfterAddressForm"), O = F("AfterShippingForm"), m = F("AfterPaymentForm"), i = F("AfterNoteForm");
     E.observe((s, f) => {
       P.value = f > 0;
     }), ee();
@@ -1630,45 +1638,45 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
         E.pop();
       }, s);
     }
-    const k = debounce(function() {
-      return V();
+    const b = debounce(function() {
+      return N();
     }, 300);
-    async function V(s = !0) {
+    async function N(s = !0) {
       I?.abort("Cancel by next load"), I = new AbortController(), E.push(!0);
-      const { get: f, isAxiosError: _, isCancel: y } = await useHttpClient();
+      const { get: f, isAxiosError: _, isCancel: V } = await useHttpClient();
       try {
-        const N = await f(
+        const k = await f(
           "@cart_ajax/getItems",
           {
             params: {
               location_id: B.value.locationId,
-              shipping_id: v.value,
-              payment_id: b.value
+              shipping_id: y.value,
+              payment_id: v.value
             },
             signal: I.signal
           }
         );
-        return await H(N.data.data, s), N;
-      } catch (N) {
-        y(N) && console.log(N.message), console.error(N), _(N) && simpleAlert(N.message, "", "warning");
+        return await R(k.data.data, s), k;
+      } catch (k) {
+        V(k) && console.log(k.message), console.error(k), _(k) && simpleAlert(k.message, "", "warning");
       } finally {
         c(), I = null;
       }
     }
-    async function H(s, f = !0) {
-      if (u.value = s.items, x.value = s.totals, C.value = s.coupons, f)
+    async function R(s, f = !0) {
+      if (p.value = s.items, C.value = s.totals, S.value = s.coupons, f)
         return await J();
     }
-    watch(u, () => {
+    watch(p, () => {
       X();
     }, { deep: !0 });
-    const M = computed(() => u.value.map((s) => s.options.checked == null ? !0 : s.options.checked)), z = computed(() => M.value.filter((s) => s === !0).length), W = computed(() => M.value.filter((s) => s === !1).length);
+    const M = computed(() => p.value.map((s) => s.options.checked == null ? !0 : s.options.checked)), z = computed(() => M.value.filter((s) => s === !0).length), W = computed(() => M.value.filter((s) => s === !1).length);
     function X() {
       w.value && (w.value.checked = !1, w.value.indeterminate = !1, z.value > 0 && W.value === 0 ? w.value.checked = !0 : W.value > 0 && z.value === 0 ? w.value.checked = !1 : z.value > 0 && W.value > 0 && (w.value.indeterminate = !0));
     }
     function se() {
       if (w.value) {
-        for (const s of u.value)
+        for (const s of p.value)
           s.options.checked = w.value.checked;
         Y();
       }
@@ -1676,40 +1684,40 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
     const Y = debounce(async () => {
       I?.abort("Cancel by next modify."), I = new AbortController();
       const s = {};
-      for (const y of u.value)
-        s[y.key] = y.options.checked ? "1" : "0";
+      for (const V of p.value)
+        s[V.key] = V.options.checked ? "1" : "0";
       E.push(!0);
       const { post: f, isAxiosError: _ } = await useHttpClient();
       try {
-        const y = await f("@cart_ajax/updateChecks", { checks: s }, { signal: I.signal });
-        return await V();
-      } catch (y) {
-        console.error(y), _(y) && simpleAlert(y.message, "", "warning");
+        const V = await f("@cart_ajax/updateChecks", { checks: s }, { signal: I.signal });
+        return await N();
+      } catch (V) {
+        console.error(V), _(V) && simpleAlert(V.message, "", "warning");
       } finally {
         c(), I = null;
       }
     }, 300);
     onMounted(() => {
-      Z(S);
+      Z(T);
     });
     function Z(s, f = 30) {
       const _ = document.querySelector("header .navbar, .navbar");
       if (!_)
         return;
-      const y = _.clientHeight + f;
-      s.style.setProperty("--sidebar-offsets-top", y + "px");
+      const V = _.clientHeight + f;
+      s.style.setProperty("--sidebar-offsets-top", V + "px");
     }
     async function ee() {
-      await V(), g.value = !0;
+      await N(), g.value = !0;
     }
     async function ie(s, f) {
       E.push(!0);
-      const { delete: _, isAxiosError: y } = await useHttpClient();
+      const { delete: _, isAxiosError: V } = await useHttpClient();
       try {
-        const N = await _(`@cart_ajax/removeItem?key=${s.key}`);
-        return await k();
-      } catch (N) {
-        console.error(N), y(N) && simpleAlert(N.message, "", "warning");
+        const k = await _(`@cart_ajax/removeItem?key=${s.key}`);
+        return await b();
+      } catch (k) {
+        console.error(k), V(k) && simpleAlert(k.message, "", "warning");
       } finally {
         setTimeout(() => {
           E.pop();
@@ -1720,7 +1728,7 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
       E.push(!0);
       const { put: s, isAxiosError: f } = await useHttpClient();
       try {
-        await s("@cart_ajax/clearCart"), await V(), await simpleAlert(
+        await s("@cart_ajax/clearCart"), await N(), await simpleAlert(
           __("shopgo.cart.message.items.removed"),
           __("shopgo.cart.message.will.back.to.home"),
           "success"
@@ -1737,27 +1745,27 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
     const te = debounce(async (s) => {
       s.quantity = Math.max(s.quantity, 1);
       const f = {};
-      for (const N of u.value)
-        f[N.key] = N.quantity;
+      for (const k of p.value)
+        f[k.key] = k.quantity;
       E.push(!0);
-      const { post: _, isAxiosError: y } = await useHttpClient();
+      const { post: _, isAxiosError: V } = await useHttpClient();
       try {
-        const N = await R.push(() => _("@cart_ajax/updateQuantities", { values: f }));
-        return await V();
-      } catch (N) {
-        console.error(N), y(N) && simpleAlert(N.message, "", "warning");
+        const k = await H.push(() => _("@cart_ajax/updateQuantities", { values: f }));
+        return await N();
+      } catch (k) {
+        console.error(k), V(k) && simpleAlert(k.message, "", "warning");
       } finally {
         c();
       }
     }, 600);
     async function ce() {
-      if (F.value === "")
+      if (A.value === "")
         return;
       E.push(!0);
       const { post: s, isAxiosError: f } = await useHttpClient();
       try {
-        const _ = await s("@cart_ajax/addCode", { code: F.value });
-        F.value = "", await V();
+        const _ = await s("@cart_ajax/addCode", { code: A.value });
+        A.value = "", await N();
       } catch (_) {
         console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
@@ -1768,35 +1776,35 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
       E.push(!0);
       const { delete: f, isAxiosError: _ } = await useHttpClient();
       try {
-        const y = await f("@cart_ajax/removeCode", { id: s });
-        await V();
-      } catch (y) {
-        console.error(y), _(y) && simpleAlert(y.message, "", "warning");
+        const V = await f("@cart_ajax/removeCode", { id: s });
+        await N();
+      } catch (V) {
+        console.error(V), _(V) && simpleAlert(V.message, "", "warning");
       } finally {
         c();
       }
     }
     watch(() => B.value.locationId, () => {
       J();
-    }), watch(() => v.value, () => {
-      V(!1);
+    }), watch(() => y.value, () => {
+      N(!1);
     });
-    const oe = computed(() => D.value.find((s) => String(s.id) === String(v.value))), J = debounce(async function() {
+    const oe = computed(() => D.value.find((s) => String(s.id) === String(y.value))), J = debounce(async function() {
       E.push(!0);
       const { get: s, isAxiosError: f } = await useHttpClient();
       try {
         const _ = await s(`@cart_ajax/shippings?location_id=${B.value.locationId}`);
-        D.value = _.data.data, await nextTick(), await nextTick(), D.value.length > 0 ? oe.value || (v.value = D.value[0].id) : v.value = null;
+        D.value = _.data.data, await nextTick(), await nextTick(), D.value.length > 0 ? oe.value || (y.value = D.value[0].id) : y.value = null;
       } catch (_) {
         console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
         c();
       }
     }, 300);
-    watch(() => [B.value.locationId, v.value], () => {
+    watch(() => [B.value.locationId, y.value], () => {
       ne();
     });
-    const ue = computed(() => $.value.find((s) => s.id === b.value)), ne = debounce(async function() {
+    const ue = computed(() => $.value.find((s) => s.id === v.value)), ne = debounce(async function() {
       E.push(!0);
       const { get: s, isAxiosError: f } = await useHttpClient();
       try {
@@ -1805,27 +1813,27 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
           {
             params: {
               location_id: B.value.locationId,
-              shipping_id: v.value
+              shipping_id: y.value
             }
           }
         );
-        $.value = _.data.data, await nextTick(), await nextTick(), $.value.length > 0 ? $.value.find((y) => y.id === b.value) || (b.value = $.value[0].id) : b.value = null;
+        $.value = _.data.data, await nextTick(), await nextTick(), $.value.length > 0 ? $.value.find((V) => V.id === v.value) || (v.value = $.value[0].id) : v.value = null;
       } catch (_) {
         console.error(_), f(_) && simpleAlert(_.message, "", "warning");
       } finally {
         c();
       }
-    }, 300), pe = computed(() => !(z.value === 0 || !B.value.locationId || !T.value.locationId || !v.value || !b.value)), G = ref(), K = ref();
+    }, 300), pe = computed(() => !(z.value === 0 || !B.value.locationId || !x.value.locationId || !y.value || !v.value)), G = ref(), K = ref();
     function _e() {
       if (z.value === 0) {
         console.warn("No checked items");
         return;
       }
-      if (Number(x.value.grand_total.price) < 0) {
+      if (Number(C.value.grand_total.price) < 0) {
         swal("Cannot process cart with negative prices.", "", "warning");
         return;
       }
-      for (const s of u.value) {
+      for (const s of p.value) {
         if (Number(s.priceSet.final_total.price) < 0) {
           swal("Cannot process product items with negative prices.", "", "warning");
           return;
@@ -1843,22 +1851,22 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
         console.log("Payment Validate Fail");
         return;
       }
-      if (!S.checkValidity()) {
-        S.reportValidity();
-        const s = S.querySelector(":invalid");
+      if (!T.checkValidity()) {
+        T.reportValidity();
+        const s = T.querySelector(":invalid");
         s && !ae(s) && s.dataset.validationMessage && simpleAlert(s.dataset.validationMessage);
         return;
       }
-      P.value = !0, S.requestSubmit();
+      P.value = !0, T.requestSubmit();
     }
     function ae(s) {
       return !!(s.offsetWidth || s.offsetHeight || s.getClientRects().length);
     }
-    const le = { props: l, loaded: g, items: u, totals: x, coupons: C, paymentId: b, paymentData: T, shippingId: v, shippingData: B, shippings: D, payments: $, code: F, note: j, loading: P, partialCheckout: Q, queue: R, loadingStack: E, get abort() {
+    const le = { props: l, loaded: g, items: p, totals: C, coupons: S, paymentId: v, paymentData: x, shippingId: y, shippingData: B, shippings: D, payments: $, code: A, note: j, loading: P, partialCheckout: Q, queue: H, loadingStack: E, get abort() {
       return I;
     }, set abort(s) {
       I = s;
-    }, form: S, toggleAllInput: w, inc: L, components: U, resolveOverrideComponent: A, AfterAddressForm: q, AfterShippingForm: O, AfterPaymentForm: m, AfterNoteForm: i, popLoading: c, afterItemsChanged: k, loadItems: V, setCartData: H, itemChecks: M, checks: z, unchecks: W, updateToggleAll: X, toggleChecked: se, updateChecks: Y, calcNavAndStickySidebar: Z, init: ee, removeItem: ie, clearCart: de, changeItemQuantity: re, updateQuantities: te, addCode: ce, removeCode: me, selectedShipping: oe, loadShippings: J, selectedPayment: ue, loadPayments: ne, canCheckout: pe, shippingForm: G, paymentForm: K, checkout: _e, isVisible: ae, AddressFormSet: n, CartForm: t, CartListItem: d, CartSidebar: p, PaymentSelector: o, ShippingSelector: r };
+    }, form: T, toggleAllInput: w, inc: U, components: q, resolveOverrideComponent: F, AfterAddressForm: L, AfterShippingForm: O, AfterPaymentForm: m, AfterNoteForm: i, popLoading: c, afterItemsChanged: b, loadItems: N, setCartData: R, itemChecks: M, checks: z, unchecks: W, updateToggleAll: X, toggleChecked: se, updateChecks: Y, calcNavAndStickySidebar: Z, init: ee, removeItem: ie, clearCart: de, changeItemQuantity: re, updateQuantities: te, addCode: ce, removeCode: me, selectedShipping: oe, loadShippings: J, selectedPayment: ue, loadPayments: ne, canCheckout: pe, shippingForm: G, paymentForm: K, checkout: _e, isVisible: ae, AddressFormSet: n, CartForm: t, CartListItem: d, CartSidebar: u, PaymentSelector: o, ShippingSelector: r };
     return Object.defineProperty(le, "__isScriptSetup", { enumerable: !1, value: !0 }), le;
   }
 }), _hoisted_1 = { class: "row" }, _hoisted_2 = { class: "col-lg-8 l-cart-page__content" }, _hoisted_3 = { class: "d-flex align-items-center justify-content-between mb-4" }, _hoisted_4 = { class: "d-flex align-items-center gap-2" }, _hoisted_5 = { class: "m-0" }, _hoisted_6 = {
@@ -1872,7 +1880,7 @@ const ShippingSelector__Tmp4508 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["re
   class: "spinner spinner-border-sm spinner-border",
   "data-cloak": ""
 }, _hoisted_9 = { class: "l-cart-data d-flex flex-column gap-4" }, _hoisted_10 = { class: "l-cart-items" }, _hoisted_11 = { class: "l-cart-address-set" }, _hoisted_12 = { class: "l-checkout-note card mb-4" }, _hoisted_13 = { class: "card-body" }, _hoisted_14 = { class: "card-title mb-3" }, _hoisted_15 = ["placeholder"], _hoisted_16 = { class: "col-lg-4 l-cart-page__sidebar" };
-function _sfc_render(a, e, n, t, d, p) {
+function _sfc_render(a, e, n, t, d, u) {
   return openBlock(), createElementBlock("div", _hoisted_1, [
     createElementVNode("div", _hoisted_2, [
       createElementVNode("header", _hoisted_3, [
@@ -2008,7 +2016,7 @@ function _sfc_render(a, e, n, t, d, p) {
     ])
   ]);
 }
-const CartApp__Tmp11659 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp11659);
+const CartApp__Tmp97151 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "CartApp.vue"]]), CartApp = resolveVueComponent("CartApp", CartApp__Tmp97151);
 function initApp(a) {
   useCssImport("@vue-animate");
   const e = createApp(CartApp, a);

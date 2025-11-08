@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { uid, data as udata, slideUp, slideDown } from '@windwalker-io/unicorn-next';
-import { watch, ref } from 'vue';
+import { uid, data as udata, slideUp, slideDown, useInject } from '@windwalker-io/unicorn-next';
+import { watch, ref, computed } from 'vue';
 import { Shipping } from '~shopgo/types';
 
 const props = defineProps<{
@@ -15,9 +15,25 @@ const emit = defineEmits<{
 
 // split state into independent refs
 const uidRef = ref(uid());
+const checkoutFormComponent = ref<{
+  injectId: string | null;
+  props: Record<string, any>;
+} | null>(props.shipping.checkoutFormComponent);
 const data = ref({});
 const selectedRef = ref(props.selected);
 const imageDefault = ref(udata('image.default'));
+
+const ShippingForm = computed(() => {
+  if (!checkoutFormComponent.value?.injectId) {
+    return null;
+  }
+
+  return useInject(checkoutFormComponent.value.injectId);
+});
+const formProps = computed(() => {
+  return checkoutFormComponent.value?.props || {};
+});
+
 
 watch(() => props.selected, () => {
   selectedRef.value = props.selected;
@@ -80,7 +96,7 @@ const form = ref<HTMLDivElement>();
 
       <div class="ms-auto">
             <span class="fs-5">
-            {{ $formatPrice(shipping.fee, true) }}
+            {{ $formatPrice(shipping.fee, { code: true }) }}
             </span>
       </div>
     </div>
@@ -95,10 +111,10 @@ const form = ref<HTMLDivElement>();
     <transition name="fade" mode="out-in">
       <div
         ref="form"
-        style="display: none; postion: relative; z-index: 1; overflow: hidden; animation-duration: .3s">
-        <div v-if="shipping.checkoutForm && selectedRef"
-           class="card-body border-top"
-           v-html="shipping.checkoutForm">
+        style="display: none; position: relative; z-index: 1; overflow: hidden; animation-duration: .3s">
+        <div v-if="ShippingForm && selectedRef"
+           class="card-body border-top">
+          <Component :is="ShippingForm" :uid="uidRef" :shipping v-bind="formProps" />
         </div>
       </div>
     </transition>

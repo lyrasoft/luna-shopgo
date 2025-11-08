@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { data as udata, slideDown, slideUp, uid } from '@windwalker-io/unicorn-next';
-import { watch, ref } from 'vue';
+import { data as udata, slideDown, slideUp, uid, useInject } from '@windwalker-io/unicorn-next';
+import { watch, ref, computed } from 'vue';
 import { Payment } from '~shopgo/types';
 
 const props = defineProps<{
@@ -15,9 +15,24 @@ const emit = defineEmits<{
 
 // split state into individual refs
 const uidRef = ref(uid());
+const checkoutFormComponent = ref<{
+  injectId: string | null;
+  props: Record<string, any>;
+} | null>(props.payment.checkoutFormComponent);
 const data = ref({});
 const selectedRef = ref(props.selected);
 const imageDefault = ref(udata('image.default'));
+
+const PaymentForm = computed(() => {
+  if (!checkoutFormComponent.value?.injectId) {
+    return null;
+  }
+
+  return useInject(checkoutFormComponent.value.injectId);
+});
+const formProps = computed(() => {
+  return checkoutFormComponent.value?.props || {};
+});
 
 watch(() => props.selected, () => {
   selectedRef.value = props.selected;
@@ -89,10 +104,9 @@ const optionLayout = ref<HTMLDivElement>();
       <div
         ref="optionLayout"
         style="display: none; overflow: hidden; animation-duration: .3s">
-        <div v-if="payment.optionLayout && selectedRef"
-          class="card-body border-top"
-          v-html="payment.optionLayout"
-        >
+        <div v-if="PaymentForm && selectedRef"
+          class="card-body border-top">
+          <Component :is="PaymentForm" :uid="uidRef" :payment v-bind="formProps" />
         </div>
       </div>
     </transition>

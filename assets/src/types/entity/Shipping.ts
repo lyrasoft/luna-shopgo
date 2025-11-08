@@ -1,4 +1,4 @@
-export interface Shipping {
+export interface Shipping<Params = any> {
   id: number;
   locationCategoryId: number;
   locationId: number;
@@ -20,6 +20,6 @@ export interface Shipping {
   modified: string | null;
   createdBy: number;
   modifiedBy: number;
-  params: any;
+  params: Params;
   [prop: string]: any;
 }

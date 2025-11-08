@@ -9,6 +9,7 @@ use Lyrasoft\ShopGo\Cart\Price\PriceObject;
 use Lyrasoft\ShopGo\Entity\Location;
 use Lyrasoft\ShopGo\Entity\Order;
 use Lyrasoft\ShopGo\Entity\Payment;
+use Psr\Http\Message\UriInterface;
 use Windwalker\Core\Application\AppContext;
 use Windwalker\Core\Language\LangService;
 use Windwalker\Core\Router\RouteUri;
@@ -50,7 +51,12 @@ abstract class AbstractPayment implements FieldDefinitionInterface
         static::$type = $type;
     }
 
-    abstract public function form(Location $location): string;
+    /**
+     * @param  Location  $location
+     *
+     * @return  array{ injectId: string|null, props: object|array }|null
+     */
+    abstract public function form(Location $location): ?array;
 
     abstract public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order;
 

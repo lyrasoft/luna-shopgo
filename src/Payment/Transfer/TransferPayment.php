@@ -58,9 +58,9 @@ class TransferPayment extends AbstractPayment
             ));
     }
 
-    public function form(Location $location): string
+    public function form(Location $location): ?array
     {
-        return '';
+        return null;
     }
 
     public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order

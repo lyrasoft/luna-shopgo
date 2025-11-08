@@ -57,8 +57,8 @@ class BasicShipping extends AbstractShipping implements ShipmentPrintableInterfa
                 ->title($this->trans('shopgo.shipping.fieldset.layout'))
                 ->register(
                     function (Form $form) {
-                        $form->add('checkout_form_layout', TextField::class)
-                            ->label($this->trans('shopgo.shipping.field.checkout.form.layout'));
+                        $form->add('checkout_form_inject_id', TextField::class)
+                            ->label($this->trans('shopgo.shipping.field.checkout.form.inject.id'));
 
                         $form->add('print_shipment_layout', TextField::class)
                             ->label($this->trans('shopgo.shipping.field.print.shipment.layout'));
@@ -69,20 +69,18 @@ class BasicShipping extends AbstractShipping implements ShipmentPrintableInterfa
         $this->registerPricingForm($form);
     }
 
-    public function form(Location $location): string
+    public function form(Location $location): ?array
     {
-        $layout = $this->getParams()['checkout_form_layout'] ?? '';
+        $injectId = $this->getParams()['checkout_form_inject_id'] ?? '';
 
-        if (!$layout) {
-            return '';
+        if (!$injectId) {
+            return null;
         }
 
-        return $this->renderLayout(
-            $layout,
-            [
-                'shipping' => $this,
-            ]
-        );
+        return [
+            'injectId' => $injectId,
+            'props' => [],
+        ];
     }
 
     public function prepareOrder(Order $order, CartData $cartData, array $checkoutData = []): Order

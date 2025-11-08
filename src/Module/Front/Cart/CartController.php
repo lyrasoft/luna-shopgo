@@ -295,7 +295,7 @@ class CartController
 
             $shipping->fee = $fee;
 
-            $shipping->checkoutForm = $instance->form($location);
+            $shipping->checkoutFormComponent = $instance->form($location);
 
             $validShippings[] = $shipping;
         }
@@ -343,7 +343,7 @@ class CartController
                 continue;
             }
 
-            $payment->checkoutForm = $instance->form($location);
+            $payment->checkoutFormComponent = $instance->form($location);
 
             $validPayments[] = $payment;
         }

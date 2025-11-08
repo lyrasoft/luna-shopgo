@@ -22,7 +22,9 @@ class ShippingHistory implements RecordInterface
         public string $statusText = '',
         public string $note = '',
         #[CastNullable(Chronos::class)]
-        public ?Chronos $time = null
+        public ?Chronos $time = null {
+            set(mixed $value) => Chronos::tryWrap($value);
+        }
     ) {
     }
 }
