@@ -77,6 +77,7 @@ class AddressService
         $format ??= static::DEFAULT_FORMAT;
 
         $data = [
+            'postcode' => $addressData->postcode,
             'email' => $addressData->email,
             'phone' => $addressData->phone,
             'mobile' => $addressData->mobile,

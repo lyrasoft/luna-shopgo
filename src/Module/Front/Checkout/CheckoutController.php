@@ -82,18 +82,6 @@ class CheckoutController
                 $paymentData = PaymentData::wrap($input['payment_data'] ?? []);
                 $shippingData = ShippingData::wrap($input['shipping_data'] ?? []);
 
-                // $event = $shopGo->emit(
-                //     BeforeCheckoutEvent::class,
-                //     compact(
-                //         'order',
-                //         'payment',
-                //         'shipping',
-                //         'paymentData',
-                //         'shippingData',
-                //         'input'
-                //     )
-                // );
-
                 // Emit Event use constructor
                 $event = $shopGo->emit(
                     new BeforeCheckoutEvent(
@@ -105,7 +93,6 @@ class CheckoutController
                         input: $input,
                     )
                 );
-
 
                 $order = $event->order;
                 $shipping = $event->shipping;
@@ -152,7 +139,7 @@ class CheckoutController
                         $order->shippingData->locationId
                     );
                 }
-
+                
                 $cartData = $cartService->getCartDataForCheckout(
                     $shippingLocation->id,
                     $shipping['id'] ?? 0,
