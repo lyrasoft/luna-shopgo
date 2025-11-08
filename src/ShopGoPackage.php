@@ -191,39 +191,55 @@ class ShopGoPackage extends AbstractPackage implements
             ['modules', 'additional_purchase_model']
         );
 
+        $folders = [
+            'directives',
+            'field',
+            'services',
+            'types',
+            'utilities',
+        ];
+
+        foreach ($folders as $folder) {
+            $installer->installFiles(
+                static::path("assets/src/$folder/**/*"),
+                "resources/assets/src/shopgo/$folder",
+                ['vue', 'vue_base']
+            );
+        }
+
         $installer->installFiles(
-            static::path('assets/src/modules/additional-purchase/**/*'),
-            'resources/assets/src/shopgo/additional-purchase',
-            ['vue', 'vue_additional_purchase']
+            static::path('assets/src/shopgo-plugin.ts'),
+            'resources/assets/src/shopgo/',
+            ['vue', 'vue_base']
         );
 
         $installer->installFiles(
             static::path('assets/src/modules/additional-purchase/**/*'),
-            'resources/assets/src/shopgo/additional-purchase',
+            'resources/assets/src/shopgo/modules/additional-purchase',
             ['vue', 'vue_additional_purchase']
         );
 
         $installer->installFiles(
             static::path('assets/src/modules/cart/**/*'),
-            'resources/assets/src/shopgo/cart',
+            'resources/assets/src/shopgo/modules/cart',
             ['vue', 'vue_cart']
         );
 
         $installer->installFiles(
             static::path('assets/src/modules/product-attribute/**/*'),
-            'resources/assets/src/shopgo/product-attribute',
+            'resources/assets/src/shopgo/modules/product-attribute',
             ['vue', 'vue_product_attribute']
         );
 
         $installer->installFiles(
             static::path('assets/src/modules/product-edit/**/*'),
-            'resources/assets/src/shopgo/product-edit',
+            'resources/assets/src/shopgo/modules/product-edit',
             ['vue', 'vue_product_edit']
         );
 
         $installer->installFiles(
             static::path('assets/src/modules/product-feature/**/*'),
-            'resources/assets/src/shopgo/product-feature',
+            'resources/assets/src/shopgo/modules/product-feature',
             ['vue', 'vue_product_feature']
         );
     }
