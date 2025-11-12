@@ -239,7 +239,7 @@ class DiscountService
         return $priceSet;
     }
 
-    public function checkDiscountCombine(Discount $discount, array $applied, string &$action = null): string|bool
+    public function checkDiscountCombine(Discount $discount, array $applied, ?string &$action = null): string|bool
     {
         foreach ($applied as $appliedDiscount) {
             if ($appliedDiscount->getCombine() === DiscountCombine::STOP) {
