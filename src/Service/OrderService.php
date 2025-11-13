@@ -75,7 +75,7 @@ class OrderService
                 }
 
                 if (!$notify) {
-                    $notify = $to?->shouldNotice() ?? false;
+                    $notify = $to?->notice ?? false;
                 }
 
                 $history = $this->orderHistoryService->createHistoryAndNotify(
