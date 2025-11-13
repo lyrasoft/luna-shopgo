@@ -1,69 +1,93 @@
+import { uniqueItem } from '@lyrasoft/ts-toolkit/vue';
+import { data, IFrameModalElement, route, useIframeModal } from '@windwalker-io/unicorn-next';
+import { Modal } from 'bootstrap';
+import { computed, createApp, defineComponent, PropType, ref } from 'vue';
+import { ShopGoPlugin } from '~shopgo/shopgo-plugin';
 
+useIframeModal();
 
-// App
-const { ref, onMounted, computed, createApp, toRefs, reactive } = Vue;
+type PricingSegment = {
+  fee: number | string;
+  threshold: number | string;
+  uid: string;
+}
 
-const ShippingPricing = {
-  name: 'ShippingPricingApp',
+type LocationPricing = {
+  id?: string;
+  title?: string;
+  path?: string;
+  free: boolean;
+  pricing: PricingSegment[];
+}
+
+const ShippingPricingEditApp = defineComponent({
+  name: 'ShippingPricingEditApp',
   props: {
-    pricing: Object
+    pricing: Object as PropType<{
+      global: LocationPricing;
+      locationCategories: LocationPricing[];
+      locations: LocationPricing[];
+    }>
   },
   setup(props) {
-    u.$ui.iframeModal();
-
-    const state = reactive({
-      global: props.pricing?.global || {
-        free: false,
-        pricing: getEmptyPricing()
-      },
-      locationCategories: props.pricing?.locationCategories || [],
-      locations: props.pricing?.locations || [],
-      currentItem: null,
+    const global = ref(props.pricing?.global || {
+      free: false,
+      pricing: getEmptyPricing(),
     });
 
-    const selectModal = ref(null);
-    const pricingModal = ref(null);
+    const locationCategories = ref(props.pricing?.locationCategories || []);
+    const locations = ref(props.pricing?.locations || []);
+    const currentItem = ref(null as LocationPricing | null);
+
+    const selectModal = ref<IFrameModalElement>();
+    const pricingModal = ref<HTMLDivElement>();
 
     function openLocationCategorySelector() {
-      const url = u.route('category_modal', { callback: 'locationCategorySelected' });
+      const url = route('category_modal', { callback: 'locationCategorySelected' });
 
+      // @ts-ignore
       window.locationCategorySelected = function ({ value: id, title }) {
-        state.locationCategories.push({
-          id,
-          title,
+        locationCategories.value.push({
+          id: id as string,
+          title: title as string,
           free: false,
           pricing: getEmptyPricing(),
         });
 
-        selectModal.value.close();
-      }
+        selectModal.value?.close();
+      };
 
-      selectModal.value.open(url, { size: 'modal-xl' });
+      selectModal.value?.open(url, { size: 'modal-xl' });
     }
 
     function openLocationSelector() {
-      const url = u.route('location_modal', { callback: 'locationSelected' });
+      const url = route('location_modal', { callback: 'locationSelected' });
 
+      // @ts-ignore
       window.locationSelected = function ({ value: id, title, path }) {
 
-        state.locations.push({
-          id,
-          title,
-          path,
+        locations.value.push({
+          id: id as string,
+          title: title as string,
+          path: path as string,
           free: false,
           pricing: getEmptyPricing(),
         });
 
-        selectModal.value.close();
-      }
+        selectModal.value?.close();
+      };
 
-      selectModal.value.open(url, { size: 'modal-xl' });
+      selectModal.value?.open(url, { size: 'modal-xl' });
     }
 
-    function configurePricing(item) {
-      state.currentItem = item;
+    function calcLocationPricingCount(location: LocationPricing) {
+      return location.pricing.filter((item) => item.fee !== '' && item.threshold !== '').length;
+    }
 
-      u.$ui.bootstrap.modal(pricingModal.value).show();
+    function configurePricing(item: LocationPricing) {
+      currentItem.value = item;
+
+      Modal.getOrCreateInstance(pricingModal.value!).show();
     }
 
     function getEmptyPricing() {
@@ -73,8 +97,8 @@ const ShippingPricing = {
       return [seg];
     }
 
-    function getEmptyPricingSegment() {
-      return ShopgoVueUtilities.prepareVueItem(
+    function getEmptyPricingSegment(): PricingSegment {
+      return uniqueItem(
         {
           threshold: '',
           fee: '',
@@ -83,47 +107,51 @@ const ShippingPricing = {
     }
 
     function addPricingSegment(i = 0) {
-      state.currentItem.pricing.splice(i + 1, 0, getEmptyPricingSegment());
+      currentItem.value?.pricing.splice(i + 1, 0, getEmptyPricingSegment());
     }
 
-    function removePricingSegment(i) {
-      state.currentItem.pricing.splice(i, 1);
+    function removePricingSegment(i: number) {
+      currentItem.value?.pricing.splice(i, 1);
     }
 
     const finalResult = computed(() => {
       return JSON.stringify(
         {
-          global: state.global,
-          locationCategories: state.locationCategories,
-          locations: state.locations,
+          global: global.value,
+          locationCategories: locationCategories.value,
+          locations: locations.value,
         }
       );
     });
 
     return {
-      ...toRefs(state),
+      global,
+      locationCategories,
+      locations,
+      currentItem,
       finalResult,
       selectModal,
       pricingModal,
 
       openLocationSelector,
       openLocationCategorySelector,
+      calcLocationPricingCount,
       configurePricing,
       addPricingSegment,
       removePricingSegment,
     };
   },
+});
 
-  create(el) {
-    const id = el.getAttribute('id');
+export function useShippingPricingEditApp(el: HTMLDivElement) {
+  const id = el.getAttribute('id');
 
-    const app = createApp(
-      this,
-      u.data(id + '.props')
-    );
+  const app = createApp(
+    ShippingPricingEditApp,
+    data(id + '.props')
+  );
 
-    app.use(ShopGoVuePlugin);
-    app.component('draggable', vuedraggable);
-    app.mount(el);
-  },
-};
+  app.use(ShopGoPlugin);
+  // app.component('VueDraggable', VueDraggable);
+  app.mount(el);
+}

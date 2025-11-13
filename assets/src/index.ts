@@ -1,4 +1,5 @@
 import { useFormAsync, useMacro } from '@windwalker-io/unicorn-next';
+import { useShippingPricingEditApp } from '~shopgo/field/shipping-pricing';
 import { useCurrencySwitcher, useProductCartButtons } from '~shopgo/services';
 
 export * from './directives';
@@ -6,6 +7,7 @@ export * from './shopgo-plugin';
 export * from './services';
 export * from './utilities';
 export * from './types';
+export * from './field/shipping-pricing';
 
 export function useShopGoCatalog() {
   return useMacro('$shopgo', {

@@ -357,6 +357,8 @@ export declare interface User {
     [name: string]: any;
 }
 
+export declare function useShippingPricingEditApp(el: HTMLDivElement): void;
+
 export declare function useShopGoCatalog(): {
     $shopgo: {
         useProductCartButtons: typeof useProductCartButtons;

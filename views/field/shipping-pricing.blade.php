@@ -41,10 +41,10 @@ $input->setAttribute(':value', 'finalResult');
 
 $app->service(ShopGoScript::class)->vueUtilities();
 
-$vueScript = $app->service(VueScript::class);
-$vueScript->vue();
-$vueScript->draggable();
-$vueScript->animate();
+// $vueScript = $app->service(VueScript::class);
+// $vueScript->vue();
+// $vueScript->draggable();
+// $vueScript->animate();
 
 $uniScript = $app->service(UnicornScript::class);
 $uniScript->data(
@@ -57,12 +57,22 @@ $uniScript->data(
 $uniScript->addRoute('location_modal', $nav->to('location_list')->layout('modal'));
 $uniScript->addRoute('category_modal', $nav->to('category_list')->var('type', 'location')->layout('modal'));
 
-$uniScript->importThen(
-    '@shopgo/field/shipping-pricing.js',
-    "u.module('#$id', 'shipping.pricing', (el) => ShippingPricing.create(el))",
-    true
-);
+// $uniScript->importThen(
+//     '@shopgo/field/shipping-pricing.js',
+//     "u.module('#$id', 'shipping.pricing', (el) => ShippingPricing.create(el))",
+//     true
+// );
 ?>
+
+<script data-macro="shopgo.field.shipping.pricing" lang="ts" type="module"
+    data-prop:id="$id">
+    import { useShippingPricingEditApp } from '@lyrasoft/shopgo';
+    import { useMacroProps } from '@windwalker-io/core/app';
+    const { id } = useMacroProps<{ id: string }>();
+
+    useShippingPricingEditApp(document.querySelector<HTMLDivElement>(`#${id}`));
+</script>
+
 
 <shipping-pricing-app id="{{ $id }}">
     <div class="c-shipping-pricing">
@@ -75,23 +85,24 @@ $uniScript->importThen(
                         @lang('shopgo.shipping.pricing.global.title')
                     </h5>
                 </div>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch m-0">
+                    <input type="checkbox" id="input-free-global"
+                        v-model="global.free"
+                        class="form-check-input"
+                    />
                     <label for="input-free-global"
                         class="form-check-label"
                     >
                         @lang('shopgo.shipping.field.free')
                     </label>
-                    <input type="checkbox" id="input-free-global"
-                        v-model="global.free"
-                        class="form-check-input"
-                    />
                 </div>
                 <div class="">
                     <button type="button" class="btn btn-primary"
                         style="min-width: 150px"
                         @click="configurePricing(global)"
+                        :disabled="global.free"
                     >
-                        @lang('shopgo.shipping.pricing.configuration') (@{{ global.pricing.length }})
+                        @lang('shopgo.shipping.pricing.configuration') (@{{ calcLocationPricingCount(global) }})
                     </button>
                 </div>
             </div>
@@ -118,7 +129,9 @@ $uniScript->importThen(
 
             <div class="list-group list-group-flush">
                 <div v-for="(category, i) of locationCategories"
-                    class="list-group-item d-flex align-items-center gap-3">
+                    class="list-group-item d-flex align-items-center gap-3"
+                    :key="category.id"
+                >
                     <div>
                         <span class="badge bg-secondary">
                             #@{{ category.id }}
@@ -130,25 +143,27 @@ $uniScript->importThen(
                         </span>
                     </div>
 
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch m-0">
+                        <input type="checkbox" :id="`input-free-category-${category.id}`"
+                            v-model="category.free"
+                            class="form-check-input"
+                        />
                         <label :for="`input-free-category-${category.id}`"
                             class="form-check-label"
                         >
                             @lang('shopgo.shipping.field.free')
                         </label>
-                        <input type="checkbox" :id="`input-free-category-${category.id}`"
-                            v-model="category.free"
-                            class="form-check-input"
-                        />
                     </div>
 
                     <div>
                         <button type="button" class="btn btn-primary btn-sm"
-                            @click="configurePricing(category)">
+                            @click="configurePricing(category)"
+                            :disabled="category.free"
+                        >
                             @lang('shopgo.shipping.pricing.configuration')
-                            (@{{ category.pricing.length }})
+                            (@{{ calcLocationPricingCount(category) }})
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm ms-3"
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-3"
                             @click="locationCategories.splice(i, 1)">
                             <i class="fa fa-trash"></i>
                         </button>
@@ -177,14 +192,16 @@ $uniScript->importThen(
             </div>
 
             <div class="list-group list-group-flush">
-                <div v-for="location of locations"
-                    class="list-group-item d-flex align-items-center gap-3">
+                <div v-for="(location, i) of locations"
+                    class="list-group-item d-flex align-items-center gap-3"
+                    :key="location.id"
+                >
                     <div>
                         <span class="badge bg-secondary">
                             #@{{ location.id }}
                         </span>
                     </div>
-                    <div class="me-auto">
+                    <div class="flex-grow-1">
                         <span v-if="location.path.length > 0" class="text-muted">
                             @{{ location.path.join(' / ') }} /
                         </span>
@@ -193,24 +210,25 @@ $uniScript->importThen(
                         </span>
                     </div>
 
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch m-0">
+                        <input type="checkbox" :id="`input-free-location-${location.id}`" v-model="location.free"
+                            class="form-check-input"
+                        />
                         <label :for="`input-free-location-${location.id}`"
                             class="form-check-label"
                         >
                             @lang('shopgo.shipping.field.free')
                         </label>
-                        <input type="checkbox" :id="`input-free-location-${location.id}`" v-model="location.free"
-                            class="form-check-input"
-                        />
                     </div>
 
                     <div>
                         <button type="button" class="btn btn-primary btn-sm"
+                            :disabled="location.free"
                             @click="configurePricing(location)">
                             @lang('shopgo.shipping.pricing.configuration')
-                            (@{{ location.pricing.length }})
+                            <span>(@{{ calcLocationPricingCount(location) }})</span>
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm ms-3"
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-3"
                             @click="locations.splice(i, 1)">
                             <i class="fa fa-trash"></i>
                         </button>

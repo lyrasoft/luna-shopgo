@@ -371,6 +371,10 @@ $menu->registerChildren(
         $menu->link($lang('unicorn.title.grid', title: $lang('shopgo.currency.title')))
             ->to($nav->to('currency_list'))
             ->icon('fal fa-sterling-sign');
+            
+        $menu->link($lang('shopgo.location.category.title'))
+            ->to($nav->to('category_list', ['type' => 'location']))
+            ->icon('fal fa-sitemap');
 
         $menu->link($lang('unicorn.title.grid', title: $lang('luna.location.title')))
             ->to($nav->to('location_list'))
