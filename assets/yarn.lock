@@ -319,6 +319,7 @@ __metadata:
     "@asika32764/vue-animate": "npm:^3.0.2"
     "@lyrasoft/ts-toolkit": "npm:^0.2.2"
     "@microsoft/api-extractor": "npm:^7.53.2"
+    "@popperjs/core": "npm:^2.11.8"
     "@types/bootstrap": "npm:^5"
     "@types/node": "npm:^24.9.1"
     "@types/sortablejs": "npm:^1"
@@ -449,7 +450,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.9.2":
+"@popperjs/core@npm:^2.11.8, @popperjs/core@npm:^2.9.2":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
   checksum: 10c0/4681e682abc006d25eb380d0cf3efc7557043f53b6aea7a5057d0d1e7df849a00e281cd8ea79c902a35a414d7919621fc2ba293ecec05f413598e0b23d5a1e63
